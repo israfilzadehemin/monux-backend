@@ -30,7 +30,7 @@ public class CustomNotification {
     private long id;
 
     @Column(name = "custom_notification_id")
-    private String userId;
+    private String customNotificationId;
 
     @Column(name = "custom_notification_name")
     private String name;
