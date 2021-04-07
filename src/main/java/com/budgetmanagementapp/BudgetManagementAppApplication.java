@@ -7,7 +7,8 @@ import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.entity.CustomCategory;
 import com.budgetmanagementapp.entity.CustomNotification;
 import com.budgetmanagementapp.entity.CustomTag;
-import com.budgetmanagementapp.entity.DebtTemplate;
+import com.budgetmanagementapp.entity.Tag;
+import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CategoryRepository;
@@ -24,13 +25,13 @@ import com.budgetmanagementapp.repository.NoteRepository;
 import com.budgetmanagementapp.repository.NotificationRepository;
 import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.TagRepository;
-import com.budgetmanagementapp.repository.TransactionTypeRepository;
 import com.budgetmanagementapp.repository.TransferTemplateRepository;
 import com.budgetmanagementapp.repository.TransferTransactionRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.UUID;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -53,10 +54,23 @@ public class BudgetManagementAppApplication {
             FeedbackRepository feedbackRepo, InOutTemplateRepository inOutTemplateRepo,
             InOutTransactionRepository inOutTransactionRepo, NoteRepository noteRepo,
             NotificationRepository notificationRepo, OtpRepository otpRepo,
-            TagRepository tagRepo, TransactionTypeRepository transactionTypeRepo,
+            TagRepository tagRepo,
             TransferTemplateRepository transferTemplateRepo,
             TransferTransactionRepository transferTransactionRepo, UserRepository userRepo
     ) {
+
+
+        AccountType cashAccountType = AccountType.builder()
+                .accountTypeId(UUID.randomUUID().toString())
+                .accountTypeName("Cash account")
+                .build();
+        accountTypeRepo.save(cashAccountType);
+
+        Currency azn = Currency.builder()
+                .currencyId(UUID.randomUUID().toString())
+                .name("AZN")
+                .build();
+        currencyRepo.save(azn);
 
         Account cashAccount = Account.builder()
                 .accountId(UUID.randomUUID().toString())
@@ -65,16 +79,20 @@ public class BudgetManagementAppApplication {
                 .enabled(true)
                 .name("Cash")
                 .showInSum(true)
+                .accountType(cashAccountType)
+                .currency(azn)
                 .build();
-
-        AccountType cashAccountType = AccountType.builder()
-                .accountTypeId(UUID.randomUUID().toString())
-                .accountTypeName("Cash account")
-                .build();
+        accountRepo.save(cashAccount);
 
         Category food = Category.builder()
                 .categoryId(UUID.randomUUID().toString())
                 .name("Food")
+                .type("Outcome")
+                .build();
+
+        Category clothes = Category.builder()
+                .categoryId(UUID.randomUUID().toString())
+                .name("Clothes")
                 .type("Outcome")
                 .build();
 
@@ -84,10 +102,7 @@ public class BudgetManagementAppApplication {
                 .type("Income")
                 .build();
 
-        Currency azn = Currency.builder()
-                .currencyId(UUID.randomUUID().toString())
-                .name("AZN")
-                .build();
+        categoryRepo.saveAll(Arrays.asList(food, clothes, salary));
 
         CustomCategory customIncome = CustomCategory.builder()
                 .customCategoryId(UUID.randomUUID().toString())
@@ -101,6 +116,8 @@ public class BudgetManagementAppApplication {
                 .type("Outcome")
                 .build();
 
+        customCategoryRepo.saveAll(Arrays.asList(customIncome, customOutcome));
+
         CustomNotification netflixNotification = CustomNotification.builder()
                 .customNotificationId(UUID.randomUUID().toString())
                 .name("Netflix")
@@ -108,20 +125,35 @@ public class BudgetManagementAppApplication {
                 .frequency("1-1")
                 .time(LocalTime.of(18, 00))
                 .build();
+        customNotificationRepo.save(netflixNotification);
 
         CustomTag newCustomTag = CustomTag.builder()
                 .customTagId(UUID.randomUUID().toString())
                 .name("New custom tag")
                 .visibility(true)
                 .build();
+        customTagRepo.save(newCustomTag);
 
-        DebtTemplate debtTemplate = DebtTemplate.builder()
-                .debtTemplateId(UUID.randomUUID().toString())
-                .creationDate(LocalDateTime.now())
-                .amount(BigDecimal.valueOf(15))
-                .oppositeAccount("Emin")
-                .account(cashAccount)
+        Tag coffeeTag = Tag.builder()
+                .tagId(UUID.randomUUID().toString())
+                .name("Coffee")
+                .visibility(true)
                 .build();
+        tagRepo.save(coffeeTag);
+
+        User user = User.builder()
+                .userId(UUID.randomUUID().toString())
+                .username("israfilzadehemin@gmail.com")
+                .password("12345")
+                .creationDateTime(LocalDateTime.now())
+                .enabled(true)
+                .paymentStatus(true)
+                .accounts(Arrays.asList(cashAccount))
+                .customCategories(Arrays.asList(customIncome))
+                .customTags(Arrays.asList(newCustomTag))
+                .customNotifications(Arrays.asList(netflixNotification))
+                .build();
+        userRepo.save(user);
 
         return null;
 

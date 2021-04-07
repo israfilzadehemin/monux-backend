@@ -51,6 +51,5 @@ public class CustomNotification {
                     {@JoinColumn(name = "custom_notification_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "user_id", referencedColumnName = "id")})
-
     private User user;
 }

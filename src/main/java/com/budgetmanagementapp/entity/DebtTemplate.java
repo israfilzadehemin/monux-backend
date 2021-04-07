@@ -41,14 +41,8 @@ public class DebtTemplate {
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
-    @ManyToOne
-    @JoinTable(
-            name = "rel_debt_template_with_transaction_type",
-            joinColumns =
-                    {@JoinColumn(name = "debt_template_id", referencedColumnName = "id")},
-            inverseJoinColumns =
-                    {@JoinColumn(name = "transaction_type_id", referencedColumnName = "id")})
-    private TransactionType transactionType;
+    @Column(name = "transaction_type")
+    private String transactionType;
 
     @ManyToOne
     @JoinTable(

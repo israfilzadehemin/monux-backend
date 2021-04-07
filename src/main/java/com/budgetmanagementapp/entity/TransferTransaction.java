@@ -32,20 +32,17 @@ public class TransferTransaction {
     @Column(name = "transafer_transaction_id")
     private String transferTransactionId;
 
-    @ManyToOne
-    @JoinTable(
-            name = "rel_transfer_transaction_with_transaction_type",
-            joinColumns =
-                    {@JoinColumn(name = "transfer_transaction_id", referencedColumnName = "id")},
-            inverseJoinColumns =
-                    {@JoinColumn(name = "transaction_type_id", referencedColumnName = "id")})
-    private TransactionType transactionType;
+    @Column(name = "transaction_type")
+    private String transactionType;
 
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
 
     @Column(name = "amount")
     private BigDecimal amount;
+
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne
     @JoinTable(
@@ -65,8 +62,6 @@ public class TransferTransaction {
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
     private Account accountTo;
 
-    @Column(name = "description")
-    private String description;
 
     @ManyToOne
     @JoinTable(

@@ -32,22 +32,19 @@ public class InOutTransaction {
     private long id;
 
     @Column(name = "in_out_transaction_id")
-    private String InOutTransactionId;
-
-    @ManyToOne
-    @JoinTable(
-            name = "rel_in_out_transaction_with_transaction_type",
-            joinColumns =
-                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
-            inverseJoinColumns =
-                    {@JoinColumn(name = "transaction_type_id", referencedColumnName = "id")})
-    private TransactionType transactionType;
+    private String inOutTransactionId;
 
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
 
     @Column(name = "amount")
     private BigDecimal amount;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "transaction_type")
+    private String transactionType;
 
     @ManyToOne
     @JoinTable(
@@ -66,9 +63,6 @@ public class InOutTransaction {
             inverseJoinColumns =
                     {@JoinColumn(name = "category_id", referencedColumnName = "id")})
     private Category category;
-
-    @Column(name = "description")
-    private String description;
 
     @ManyToMany()
     @JoinTable(

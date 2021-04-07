@@ -7,8 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,7 +37,7 @@ public class User {
     private String password;
 
     @Column(name = "creation_date_time")
-    private LocalDateTime creationDate;
+    private LocalDateTime creationDateTime;
 
     @Column(name = "enabled")
     private boolean enabled;
@@ -75,7 +73,7 @@ public class User {
     private List<Note> notes;
 
     @OneToMany(mappedBy = "user")
-    private List<CustomCategory> customC3ategories;
+    private List<CustomCategory> customCategories;
 
     @OneToMany(mappedBy = "user")
     private List<CustomTag> customTags;

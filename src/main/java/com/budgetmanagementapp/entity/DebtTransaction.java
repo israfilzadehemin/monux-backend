@@ -32,20 +32,19 @@ public class DebtTransaction {
     @Column(name = "debt_transaction_id")
     private String debtTransactionId;
 
-    @ManyToOne
-    @JoinTable(
-            name = "rel_debt_transaction_with_transaction_type",
-            joinColumns =
-                    {@JoinColumn(name = "debt_transaction_id", referencedColumnName = "id")},
-            inverseJoinColumns =
-                    {@JoinColumn(name = "transaction_type_id", referencedColumnName = "id")})
-    private TransactionType transactionType;
 
     @Column(name = "creation_date")
     private LocalDateTime creationDate;
 
+
     @Column(name = "amount")
     private BigDecimal amount;
+
+    @Column(name = "opposite_account")
+    private String oppositeAccount;
+
+    @Column(name = "transaction_type")
+    private String transactionType;
 
     @ManyToOne
     @JoinTable(
@@ -56,8 +55,6 @@ public class DebtTransaction {
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
     private Account account;
 
-    @Column(name = "opposite_account")
-    private String oppositeAccount;
 
     @ManyToOne
     @JoinTable(

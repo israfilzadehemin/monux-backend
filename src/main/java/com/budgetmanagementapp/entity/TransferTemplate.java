@@ -32,20 +32,17 @@ public class TransferTemplate {
     @Column(name = "transafer_template_id")
     private String transferTemplateId;
 
-    @ManyToOne
-    @JoinTable(
-            name = "rel_transfer_template_with_transaction_type",
-            joinColumns =
-                    {@JoinColumn(name = "transfer_template_id", referencedColumnName = "id")},
-            inverseJoinColumns =
-                    {@JoinColumn(name = "transaction_type_id", referencedColumnName = "id")})
-    private TransactionType transactionType;
+    @Column(name = "transaction_type")
+    private String transactionType;
 
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
 
     @Column(name = "amount")
     private BigDecimal amount;
+
+    @Column(name = "description")
+    private String description;
 
     @ManyToOne
     @JoinTable(
@@ -64,9 +61,6 @@ public class TransferTemplate {
             inverseJoinColumns =
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
     private Account accountTo;
-
-    @Column(name = "description")
-    private String description;
 
     @ManyToOne
     @JoinTable(
