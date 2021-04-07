@@ -1,0 +1,6 @@
+jwt:
+  expiry:
+    default: 86400000
+    remember: 604800000
+
+  secret: temporarysecretkey
