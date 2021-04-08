@@ -7,6 +7,7 @@ import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.entity.CustomCategory;
 import com.budgetmanagementapp.entity.CustomNotification;
 import com.budgetmanagementapp.entity.CustomTag;
+import com.budgetmanagementapp.entity.Role;
 import com.budgetmanagementapp.entity.Tag;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.repository.AccountRepository;
@@ -16,17 +17,8 @@ import com.budgetmanagementapp.repository.CurrencyRepository;
 import com.budgetmanagementapp.repository.CustomCategoryRepository;
 import com.budgetmanagementapp.repository.CustomNotificationRepository;
 import com.budgetmanagementapp.repository.CustomTagRepository;
-import com.budgetmanagementapp.repository.DebtTemplateRepository;
-import com.budgetmanagementapp.repository.DebtTransactionRepository;
-import com.budgetmanagementapp.repository.FeedbackRepository;
-import com.budgetmanagementapp.repository.InOutTemplateRepository;
-import com.budgetmanagementapp.repository.InOutTransactionRepository;
-import com.budgetmanagementapp.repository.NoteRepository;
-import com.budgetmanagementapp.repository.NotificationRepository;
-import com.budgetmanagementapp.repository.OtpRepository;
+import com.budgetmanagementapp.repository.RoleRepository;
 import com.budgetmanagementapp.repository.TagRepository;
-import com.budgetmanagementapp.repository.TransferTemplateRepository;
-import com.budgetmanagementapp.repository.TransferTransactionRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -37,9 +29,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class BudgetManagementAppApplication {
+    private final BCryptPasswordEncoder encoder;
+
+    public BudgetManagementAppApplication(BCryptPasswordEncoder encoder) {
+        this.encoder = encoder;
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(BudgetManagementAppApplication.class, args);
@@ -50,16 +48,8 @@ public class BudgetManagementAppApplication {
             AccountRepository accountRepo, AccountTypeRepository accountTypeRepo, CategoryRepository categoryRepo,
             CurrencyRepository currencyRepo, CustomCategoryRepository customCategoryRepo,
             CustomNotificationRepository customNotificationRepo, CustomTagRepository customTagRepo,
-            DebtTemplateRepository debtTemplateRepo, DebtTransactionRepository debtTransactionRepo,
-            FeedbackRepository feedbackRepo, InOutTemplateRepository inOutTemplateRepo,
-            InOutTransactionRepository inOutTransactionRepo, NoteRepository noteRepo,
-            NotificationRepository notificationRepo, OtpRepository otpRepo,
-            TagRepository tagRepo,
-            TransferTemplateRepository transferTemplateRepo,
-            TransferTransactionRepository transferTransactionRepo, UserRepository userRepo
+            TagRepository tagRepo, UserRepository userRepo, RoleRepository roleRepository
     ) {
-
-
         AccountType cashAccountType = AccountType.builder()
                 .accountTypeId(UUID.randomUUID().toString())
                 .accountTypeName("Cash account")
@@ -141,10 +131,23 @@ public class BudgetManagementAppApplication {
                 .build();
         tagRepo.save(coffeeTag);
 
+        Role adminRole = Role.builder()
+                .roleId(UUID.randomUUID().toString())
+                .name("ROLE_ADMIN")
+                .build();
+
+        Role userRole = Role.builder()
+                .roleId(UUID.randomUUID().toString())
+                .name("ROLE_USER")
+                .build();
+
+        roleRepository.saveAll(Arrays.asList(adminRole, userRole));
+
         User user = User.builder()
                 .userId(UUID.randomUUID().toString())
                 .username("israfilzadehemin@gmail.com")
-                .password("12345")
+                .password(encoder.encode("12345"))
+                .roles(Arrays.asList(userRole))
                 .creationDateTime(LocalDateTime.now())
                 .enabled(true)
                 .paymentStatus(true)
