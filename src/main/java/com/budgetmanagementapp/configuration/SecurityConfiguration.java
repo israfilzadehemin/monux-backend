@@ -1,6 +1,12 @@
 package com.budgetmanagementapp.configuration;
 
-import com.budgetmanagementapp.security.JwtFilter;
+import static com.budgetmanagementapp.utility.Constant.H2_CONSOLE_URL;
+import static com.budgetmanagementapp.utility.Constant.USER_LOGIN_URL;
+
+import com.budgetmanagementapp.security.AuthenticationFilter;
+import com.budgetmanagementapp.security.AuthorizationFilter;
+import com.budgetmanagementapp.security.JwtService;
+import com.budgetmanagementapp.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -14,7 +20,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @AllArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final JwtFilter jwtFilter;
+    private final AuthorizationFilter authorizationFilter;
+    private final UserService userService;
+    private final JwtService jwtService;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -27,12 +35,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/v1/user/login/**").permitAll()
-                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers(HttpMethod.POST, USER_LOGIN_URL).permitAll()
+                .antMatchers(H2_CONSOLE_URL).permitAll()
                 .anyRequest().authenticated();
 
         http
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilter(new AuthenticationFilter(authenticationManager(), userService, jwtService));
+
+        http
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http
                 .headers().frameOptions().disable();

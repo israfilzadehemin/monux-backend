@@ -2,13 +2,9 @@ package com.budgetmanagementapp.security;
 
 import com.budgetmanagementapp.utility.Constant;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import java.util.Date;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +30,6 @@ public class JwtService {
     public String generateToken(long userId, boolean rememberMe) {
         final Date now = new Date();
         final long delta = rememberMe ? expiryRememberMe : expiryDefault;
-
         return Jwts.builder()
                 .setSubject(Long.toString(userId))
                 .setIssuedAt(now)
@@ -45,28 +40,14 @@ public class JwtService {
     }
 
     public Optional<String> extractToken(HttpServletRequest request) {
-        return Optional.ofNullable(request.getHeader(Constant.HEADER))
-                .filter(header -> header.startsWith(Constant.PREFIX))
-                .map(header -> header.substring(Constant.PREFIX.length()));
+        return Optional.ofNullable(request.getHeader(Constant.JWT_HEADER))
+                .filter(header -> header.startsWith(Constant.JWT_PREFIX))
+                .map(header -> header.substring(Constant.JWT_PREFIX.length()));
     }
 
     public Optional<Jws<Claims>> parseTokenToClaims(String token) {
-        try {
-            return Optional.of(
-                    Jwts.parser().setSigningKey(secret).parseClaimsJws(token)
-            );
-        } catch (SignatureException ex) {
-            log.error("JWT: Invalid signature");
-        } catch (MalformedJwtException ex) {
-            log.error("JWT: Invalid token");
-        } catch (ExpiredJwtException ex) {
-            log.error("JWT: Expired token");
-        } catch (UnsupportedJwtException ex) {
-            log.error("JWT: Unsupported token");
-        } catch (IllegalArgumentException ex) {
-            log.error("JWT: token is empty.");
-        }
-        return Optional.empty();
+        return Optional.of(
+                Jwts.parser().setSigningKey(secret).parseClaimsJws(token));
     }
 
     public String getSubjectFromClaims(Jws<Claims> claimsJws) {

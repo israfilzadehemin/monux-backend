@@ -1,5 +1,7 @@
 package com.budgetmanagementapp.security;
 
+import static com.budgetmanagementapp.utility.Constant.USER_NOT_FOUND_MSG;
+
 import com.budgetmanagementapp.model.UserAuthModel;
 import com.budgetmanagementapp.service.UserService;
 import lombok.AllArgsConstructor;
@@ -25,7 +27,7 @@ public class MUserDetailsService implements UserDetailsService {
         return userService.findByUsername(username)
                 .map(MUserDetailsService::map)
                 .orElseThrow(() -> {
-                    String message = String.format("User %s is not found in the database", username);
+                    String message = String.format(USER_NOT_FOUND_MSG, username);
                     log.warn(message);
                     return new UsernameNotFoundException(message);
                 });
@@ -36,7 +38,7 @@ public class MUserDetailsService implements UserDetailsService {
         return userService.findById(userId)
                 .map(MUserDetailsService::map)
                 .orElseThrow(() -> {
-                    String message = String.format("User with id %d is not found in the database", userId);
+                    String message = String.format(USER_NOT_FOUND_MSG, Long.toString(userId));
                     log.warn(message);
                     return new UsernameNotFoundException(message);
                 });
