@@ -8,9 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,7 +40,7 @@ public class Otp {
     @Column(name = "status")
     private String status;
 
-    @ManyToOne
+    @OneToOne
     @JoinTable(
             name = "rel_otp_with_user",
             joinColumns = {@JoinColumn(name = "otp_id", referencedColumnName = "id")},

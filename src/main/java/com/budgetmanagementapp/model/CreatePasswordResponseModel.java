@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model;
 
-import com.budgetmanagementapp.entity.Role;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,20 +10,14 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
 @Builder
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleAuthModel {
-
-    long id;
-    String name;
-
-    public RoleAuthModel(Role role) {
-        this.id = role.getId();
-        this.name = role.getName();
-    }
+public class CreatePasswordResponseModel {
+    String username;
+    String password;
 }

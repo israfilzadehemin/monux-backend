@@ -2,12 +2,12 @@ package com.budgetmanagementapp.security;
 
 import static com.budgetmanagementapp.utility.Constant.CONTENT_TYPE_JSON;
 import static com.budgetmanagementapp.utility.Constant.HEADER_REMEMBER_ME;
-import static com.budgetmanagementapp.utility.Constant.INVALID_CREDENTIALS_MSG;
-import static com.budgetmanagementapp.utility.Constant.INVALID_REQUEST_MODEL_MSG;
 import static com.budgetmanagementapp.utility.Constant.JWT_TOKEN_FORMAT;
-import static com.budgetmanagementapp.utility.Constant.JWT_TOKEN_GENERATED_MSG;
-import static com.budgetmanagementapp.utility.Constant.USER_LOGIN_URL;
-import static com.budgetmanagementapp.utility.Constant.USER_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INVALID_CREDENTIALS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INVALID_REQUEST_MODEL_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.JWT_TOKEN_GENERATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_LOGIN_URL;
 
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.model.ResponseModel;

@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,14 +44,14 @@ public class User {
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
 
-    @Column(name = "enabled")
-    private boolean enabled;
+    @Column(name = "status")
+    private String status;
 
     @Column(name = "paymentStatus")
-    private boolean paymentStatus;
+    private String paymentStatus;
 
-    @OneToMany(mappedBy = "user")
-    private List<Otp> otps;
+    @OneToOne(mappedBy = "user")
+    private Otp otp;
 
     @OneToMany(mappedBy = "user")
     private List<Account> accounts;
