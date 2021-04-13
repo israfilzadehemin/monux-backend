@@ -9,6 +9,7 @@ import com.budgetmanagementapp.exception.InitialAccountExistingException;
 import com.budgetmanagementapp.exception.InvalidEmailException;
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.exception.InvalidOtpException;
+import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
@@ -50,7 +51,8 @@ public class CustomExceptionHandler {
                 || exception instanceof AccountTypeNotFoundException
                 || exception instanceof CurrencyNotFoundException
                 || exception instanceof PasswordNotSufficientException
-                || exception instanceof InvalidEmailException) {
+                || exception instanceof InvalidEmailException
+                || exception instanceof InvalidPhoneNumberException){
             return handleException(exception, HttpStatus.BAD_REQUEST);
         }
         throw new RuntimeException(String.valueOf(exception.getClass()));

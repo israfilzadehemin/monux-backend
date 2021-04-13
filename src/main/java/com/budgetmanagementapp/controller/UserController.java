@@ -5,6 +5,7 @@ import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_INITIAL_AC
 import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_WITH_EMAIL_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_WITH_PHONE_NUMBER_URL;
 
 import com.budgetmanagementapp.model.ConfirmOtpRequestModel;
 import com.budgetmanagementapp.model.CreateAccountModel;
@@ -35,13 +36,24 @@ public class UserController {
     private final OtpService otpService;
 
     @PostMapping(USER_SIGNUP_WITH_EMAIL_URL)
-    public ResponseEntity<?> signupWithEmail(@RequestBody SignupRequestModel sigunpRequestModel)
+    public ResponseEntity<?> signupWithEmail(@RequestBody SignupRequestModel signupRequestModel)
             throws MessagingException {
-        log.info(String.format(REQUEST_MSG, USER_SIGNUP_WITH_EMAIL_URL, sigunpRequestModel));
+        log.info(String.format(REQUEST_MSG, USER_SIGNUP_WITH_EMAIL_URL, signupRequestModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(userService.signupWithEmail(sigunpRequestModel))
+                        .body(userService.signupWithEmail(signupRequestModel))
+                        .build()
+        );
+    }
+
+    @PostMapping(USER_SIGNUP_WITH_PHONE_NUMBER_URL)
+    public ResponseEntity<?> signupWithPhoneNumber(@RequestBody SignupRequestModel signupRequestModel) {
+        log.info(String.format(REQUEST_MSG, USER_SIGNUP_WITH_PHONE_NUMBER_URL, signupRequestModel));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.CREATED)
+                        .body(userService.signupWithPhoneNumber(signupRequestModel))
                         .build()
         );
     }

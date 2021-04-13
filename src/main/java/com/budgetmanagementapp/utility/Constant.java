@@ -13,7 +13,7 @@ public class Constant {
     public static final String STATUS_NOT_PAID = "NOT PAID";
     public static final String STATUS_USED = "USED";
     public static final String CASH_ACCOUNT = "Nəğd pul hesabı";
-    public static final String OTP_MAIL_SUBJECT = "Confirmation code for your account";
-    public static final String OTP_MAIL_BODY = "Your confirmation code is: %s";
+    public static final String OTP_CONFIRMATION_SUBJECT = "Confirmation code for your account";
+    public static final String OTP_CONFIRMATION_BODY = "Your confirmation code is: %s";
     public static final String ROLE_USER = "ROLE_USER";
 }

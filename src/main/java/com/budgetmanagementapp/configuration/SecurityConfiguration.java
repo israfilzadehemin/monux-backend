@@ -8,6 +8,7 @@ import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_U
 import static com.budgetmanagementapp.utility.UrlConstant.USER_LOGIN_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_WITH_EMAIL_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_WITH_PHONE_NUMBER_URL;
 
 import com.budgetmanagementapp.security.AuthenticationFilter;
 import com.budgetmanagementapp.security.AuthorizationFilter;
@@ -43,6 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, USER_LOGIN_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_SIGNUP_WITH_EMAIL_URL).permitAll()
+                .antMatchers(HttpMethod.POST, USER_SIGNUP_WITH_PHONE_NUMBER_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_OTP_CONFIRM_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_CREATE_PASSWORD_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_CREATE_INITIAL_ACCOUNT_URL).permitAll()

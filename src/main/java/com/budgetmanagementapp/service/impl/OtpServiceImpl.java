@@ -5,6 +5,7 @@ import static com.budgetmanagementapp.utility.Constant.STATUS_NEW;
 import static com.budgetmanagementapp.utility.Constant.STATUS_USED;
 import static com.budgetmanagementapp.utility.MsgConstant.EXPIRED_OTP_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_OTP_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.OTP_CONFIRMED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_OTP_NOT_FOUND_MSG;
 
 import com.budgetmanagementapp.entity.Otp;
@@ -47,6 +48,8 @@ public class OtpServiceImpl implements OtpService {
             otpRepo.save(otp);
             user.setStatus(STATUS_CONFIRMED);
             userRepo.save(user);
+
+            log.info(String.format(OTP_CONFIRMED_MSG, otp.getUser().getUsername()));
 
             return ConfirmOtpResponseModel.builder()
                     .otpId(otp.getOtpId())

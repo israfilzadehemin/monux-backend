@@ -13,7 +13,9 @@ public interface UserService  {
     Optional<UserAuthModel> findByUsername(String username);
     Optional<UserAuthModel> findById(long id);
 
-    UserResponseModel signupWithEmail(SignupRequestModel email) throws MessagingException;
+    UserResponseModel signupWithEmail(SignupRequestModel username) throws MessagingException;
+
+    UserResponseModel signupWithPhoneNumber(SignupRequestModel username);
 
     CreatePasswordResponseModel createPassword(CreatePasswordRequestModel passwordRequestModel);
 }

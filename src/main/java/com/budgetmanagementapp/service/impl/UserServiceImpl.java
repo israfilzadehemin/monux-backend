@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.OTP_MAIL_BODY;
-import static com.budgetmanagementapp.utility.Constant.OTP_MAIL_SUBJECT;
+import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
+import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
 import static com.budgetmanagementapp.utility.Constant.ROLE_USER;
 import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
 import static com.budgetmanagementapp.utility.Constant.STATUS_CONFIRMED;
@@ -30,6 +30,7 @@ import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.MailSenderService;
+import com.budgetmanagementapp.utility.SmsSenderService;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
@@ -50,6 +51,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
     private final RoleRepository roleRepo;
     private final MailSenderService mailSenderService;
+    private final SmsSenderService smsSenderService;
     private final OtpRepository otpRepo;
     private final BCryptPasswordEncoder encoder;
 
@@ -65,22 +67,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseModel signupWithEmail(SignupRequestModel signupRequestModel) throws MessagingException {
-        CustomValidator.validateEmailFormat(signupRequestModel.getUsername());
-        checkEmailUniqueness(signupRequestModel.getUsername());
+    public UserResponseModel signupWithEmail(SignupRequestModel username) throws MessagingException {
+        CustomValidator.validateEmailFormat(username.getUsername());
+        checkUsernameUniqueness(username.getUsername());
 
-        User user = userRepo.save(createUser(signupRequestModel.getUsername()));
+        User user = userRepo.save(createUser(username.getUsername()));
 
         String otp = generateOtp();
         otpRepo.save(createOtp(otp, user));
 
         mailSenderService.sendOtp(
-                signupRequestModel.getUsername(),
-                OTP_MAIL_SUBJECT,
-                String.format(OTP_MAIL_BODY, otp));
+                username.getUsername(),
+                OTP_CONFIRMATION_SUBJECT,
+                String.format(OTP_CONFIRMATION_BODY, otp));
 
         log.info(
-                String.format(USER_ADDED_MSG, signupRequestModel.getUsername()));
+                String.format(USER_ADDED_MSG, username.getUsername()));
 
         return UserResponseModel.builder()
                 .userId(user.getUserId())
@@ -91,6 +93,35 @@ public class UserServiceImpl implements UserService {
                 .build();
 
     }
+
+    @Override
+    @Transactional
+    public UserResponseModel signupWithPhoneNumber(SignupRequestModel username) {
+        CustomValidator.validatePhoneNumberFormat(username.getUsername());
+        checkUsernameUniqueness(username.getUsername());
+
+        User user = userRepo.save(createUser(username.getUsername()));
+
+        String otp = generateOtp();
+        otpRepo.save(createOtp(otp, user));
+
+        smsSenderService.sendOtp(
+                username.getUsername(),
+                OTP_CONFIRMATION_SUBJECT,
+                String.format(OTP_CONFIRMATION_BODY, otp));
+
+        log.info(
+                String.format(USER_ADDED_MSG, username.getUsername()));
+
+        return UserResponseModel.builder()
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .creationDateTime(user.getCreationDateTime())
+                .status(user.getStatus())
+                .paymentStatus(user.getPaymentStatus())
+                .build();
+    }
+
 
     @Override
     public CreatePasswordResponseModel createPassword(CreatePasswordRequestModel passwordModel) {
@@ -114,7 +145,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void checkEmailUniqueness(String username) {
+    private void checkUsernameUniqueness(String username) {
         if (userRepo.findByUsername(username).isPresent()) {
             throw new UsernameNotUniqueException(USERNAME_NOT_UNIQUE_MSG);
         }
