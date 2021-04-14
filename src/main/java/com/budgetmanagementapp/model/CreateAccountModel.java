@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model;
 
-import com.budgetmanagementapp.entity.Role;
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,20 +10,21 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
 @Builder
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RoleAuthModel {
+public class CreateAccountModel {
 
-    long id;
-    String name;
-
-    public RoleAuthModel(Role role) {
-        this.id = role.getId();
-        this.name = role.getName();
-    }
+    String username;
+    String icon;
+    String accountName;
+    String accountTypeName;
+    String currency;
+    boolean allowNegative;
+    BigDecimal balance;
+    boolean showInSum;
 }

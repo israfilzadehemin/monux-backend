@@ -1,6 +1,5 @@
 package com.budgetmanagementapp;
 
-import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.Currency;
@@ -9,7 +8,6 @@ import com.budgetmanagementapp.entity.CustomNotification;
 import com.budgetmanagementapp.entity.CustomTag;
 import com.budgetmanagementapp.entity.Role;
 import com.budgetmanagementapp.entity.Tag;
-import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CategoryRepository;
@@ -20,8 +18,6 @@ import com.budgetmanagementapp.repository.CustomTagRepository;
 import com.budgetmanagementapp.repository.RoleRepository;
 import com.budgetmanagementapp.repository.TagRepository;
 import com.budgetmanagementapp.repository.UserRepository;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.UUID;
@@ -52,7 +48,7 @@ public class BudgetManagementAppApplication {
     ) {
         AccountType cashAccountType = AccountType.builder()
                 .accountTypeId(UUID.randomUUID().toString())
-                .accountTypeName("Cash account")
+                .accountTypeName("Nəğd pul hesabı")
                 .build();
         accountTypeRepo.save(cashAccountType);
 
@@ -61,18 +57,6 @@ public class BudgetManagementAppApplication {
                 .name("AZN")
                 .build();
         currencyRepo.save(azn);
-
-        Account cashAccount = Account.builder()
-                .accountId(UUID.randomUUID().toString())
-                .allowNegative(true)
-                .balance(BigDecimal.valueOf(150))
-                .enabled(true)
-                .name("Cash")
-                .showInSum(true)
-                .accountType(cashAccountType)
-                .currency(azn)
-                .build();
-        accountRepo.save(cashAccount);
 
         Category food = Category.builder()
                 .categoryId(UUID.randomUUID().toString())
@@ -142,21 +126,6 @@ public class BudgetManagementAppApplication {
                 .build();
 
         roleRepository.saveAll(Arrays.asList(adminRole, userRole));
-
-        User user = User.builder()
-                .userId(UUID.randomUUID().toString())
-                .username("israfilzadehemin@gmail.com")
-                .password(encoder.encode("12345"))
-                .roles(Arrays.asList(userRole))
-                .creationDateTime(LocalDateTime.now())
-                .enabled(true)
-                .paymentStatus(true)
-                .accounts(Arrays.asList(cashAccount))
-                .customCategories(Arrays.asList(customIncome))
-                .customTags(Arrays.asList(newCustomTag))
-                .customNotifications(Arrays.asList(netflixNotification))
-                .build();
-        userRepo.save(user);
 
         return null;
 

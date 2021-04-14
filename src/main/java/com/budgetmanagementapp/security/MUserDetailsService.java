@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.security;
 
-import static com.budgetmanagementapp.utility.Constant.USER_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
 
 import com.budgetmanagementapp.model.UserAuthModel;
 import com.budgetmanagementapp.service.UserService;
@@ -38,7 +38,7 @@ public class MUserDetailsService implements UserDetailsService {
         return userService.findById(userId)
                 .map(MUserDetailsService::map)
                 .orElseThrow(() -> {
-                    String message = String.format(USER_NOT_FOUND_MSG, Long.toString(userId));
+                    String message = String.format(USER_NOT_FOUND_MSG, userId);
                     log.warn(message);
                     return new UsernameNotFoundException(message);
                 });
