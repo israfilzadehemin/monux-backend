@@ -8,7 +8,6 @@ import com.budgetmanagementapp.entity.CustomNotification;
 import com.budgetmanagementapp.entity.CustomTag;
 import com.budgetmanagementapp.entity.Role;
 import com.budgetmanagementapp.entity.Tag;
-import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.repository.CurrencyRepository;
@@ -17,7 +16,6 @@ import com.budgetmanagementapp.repository.CustomNotificationRepository;
 import com.budgetmanagementapp.repository.CustomTagRepository;
 import com.budgetmanagementapp.repository.RoleRepository;
 import com.budgetmanagementapp.repository.TagRepository;
-import com.budgetmanagementapp.repository.UserRepository;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.UUID;
@@ -25,15 +23,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class BudgetManagementAppApplication {
-    private final BCryptPasswordEncoder encoder;
-
-    public BudgetManagementAppApplication(BCryptPasswordEncoder encoder) {
-        this.encoder = encoder;
-    }
 
     public static void main(String[] args) {
         SpringApplication.run(BudgetManagementAppApplication.class, args);
@@ -41,10 +33,10 @@ public class BudgetManagementAppApplication {
 
     @Bean
     CommandLineRunner createInitialData(
-            AccountRepository accountRepo, AccountTypeRepository accountTypeRepo, CategoryRepository categoryRepo,
+            AccountTypeRepository accountTypeRepo, CategoryRepository categoryRepo,
             CurrencyRepository currencyRepo, CustomCategoryRepository customCategoryRepo,
             CustomNotificationRepository customNotificationRepo, CustomTagRepository customTagRepo,
-            TagRepository tagRepo, UserRepository userRepo, RoleRepository roleRepository
+            TagRepository tagRepo, RoleRepository roleRepository
     ) {
         AccountType cashAccountType = AccountType.builder()
                 .accountTypeId(UUID.randomUUID().toString())

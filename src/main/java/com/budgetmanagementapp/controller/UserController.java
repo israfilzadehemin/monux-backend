@@ -7,8 +7,8 @@ import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_WITH_EMAIL_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_WITH_PHONE_NUMBER_URL;
 
+import com.budgetmanagementapp.model.AccountRequestModel;
 import com.budgetmanagementapp.model.ConfirmOtpRequestModel;
-import com.budgetmanagementapp.model.CreateAccountModel;
 import com.budgetmanagementapp.model.CreatePasswordRequestModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.SignupRequestModel;
@@ -81,12 +81,12 @@ public class UserController {
     }
 
     @PostMapping(USER_CREATE_INITIAL_ACCOUNT_URL)
-    public ResponseEntity<?> createInitialAccount(@RequestBody CreateAccountModel createAccountModel) {
-        log.info(String.format(REQUEST_MSG, USER_CREATE_INITIAL_ACCOUNT_URL, createAccountModel));
+    public ResponseEntity<?> createInitialAccount(@RequestBody AccountRequestModel accountRequestModel) {
+        log.info(String.format(REQUEST_MSG, USER_CREATE_INITIAL_ACCOUNT_URL, accountRequestModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(accountService.createInitialAccount(createAccountModel))
+                        .body(accountService.createAccount(accountRequestModel, true))
                         .build()
         );
     }
