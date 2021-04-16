@@ -17,14 +17,14 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreateAccountModel {
+public class AccountRequestModel {
 
     String username;
     String icon;
     String accountName;
     String accountTypeName;
     String currency;
-    boolean allowNegative;
+    Boolean allowNegative;
     BigDecimal balance;
-    boolean showInSum;
+    Boolean showInSum;
 }
