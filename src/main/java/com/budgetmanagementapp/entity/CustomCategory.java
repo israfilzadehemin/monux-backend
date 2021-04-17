@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.entity;
 
+import com.budgetmanagementapp.utility.CategoryType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -37,7 +38,7 @@ public class CustomCategory {
     private String name;
 
     @Column(name = "custom_category_type")
-    private String type;
+    private CategoryType type;
 
     @ManyToOne()
     @JoinTable(

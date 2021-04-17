@@ -20,10 +20,14 @@ public class MsgConstant {
     public static final String USER_BY_OTP_NOT_FOUND_MSG = "User is not found by OTP: %s";
     public static final String ACCOUNT_TYPE_NOT_FOUND_MSG = "Account type  %s is not found";
     public static final String ACCOUNT_CREATED_MSG = "User %s created an account: %s";
+    public static final String CUSTOM_CATEGORY_CREATED_MSG = "User %s created a custom category: %s";
     public static final String ACCOUNT_UPDATED_MSG = "User %s updated an account: %s";
-    public static final String BALANCE_UPDATED_MSG = "Balance updated: %s";
+    public static final String BALANCE_UPDATED_MSG = "User %s updated balance of account %s: %s";
+    public static final String CATEGORY_UPDATED_MSG = "User %s updated a category: %s";
     public static final String ACCOUNT_NOT_FOUND_MSG = "User %s does not have existing account";
-    public static final String CURRENCY_NOT_FOUND_MSG = "Currency %s is not found";
+    public static final String CUSTOM_CATEGORY_NOT_FOUND_MSG = "User %s does not have any custom categories";
+    public static final String CATEGORY_TYPE_NOT_FOUND_MSG = "Category type '%s' not found";
+    public static final String CURRENCY_NOT_FOUND_MSG = "Currency '%s' is not found";
     public static final String ROLE_NOT_FOUND_MSG = "Role is not found in database";
     public static final String PASSWORD_CREATED_MSG = "Password has been created for %s";
     public static final String PASSWORD_MISMATCH_MSG = "Password and confirm password must be the same";
@@ -32,8 +36,11 @@ public class MsgConstant {
     public static final String OTP_CONFIRMED_MSG = "User %s confirmed their OTP";
     public static final String NO_BODY_MSG = "No body required";
     public static final String DUPLICATE_ACCOUNT_NAME_MSG = "User %s has existing account with name: %s";
+    public static final String DUPLICATE_CATEGORY_NAME_MSG = "Category '%s' already exists";
     public static final String UNAUTHORIZED_ACCOUNT_MSG = "User '%s' does not own account '%s'";
+    public static final String UNAUTHORIZED_CATEGORY_MSG = "User '%s' does not own category '%s'";
     public static final String ALLOW_NEGATIVE_TOGGLED_MSG = "'Allow negative' property changed for: %s";
     public static final String SHOW_IN_SUM_TOGGLED_MSG = "'Show in sum' property changed for: %s";
     public static final String ALL_ACCOUNTS_MSG = "All accounts of %s: %s";
+    public static final String ALL_CATEGORIES_MSG = "All categories of %s: %s";
 }

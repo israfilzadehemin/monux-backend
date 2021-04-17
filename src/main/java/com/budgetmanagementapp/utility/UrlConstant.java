@@ -14,4 +14,8 @@ public class UrlConstant {
     public static final String ACCOUNT_GET_ALL_ACCOUNTS_URL = "/v1/account/get-all-accounts";
     public static final String ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL = "/v1/account/toggle-allow-negative";
     public static final String ACCOUNT_TOGGLE_SHOW_IN_SUM_URL = "/v1/account/toggle-show-in-sum";
+    public static final String CATEGORY_CREATE_CUSTOM_CATEGORY_URL = "/v1/category/create-custom-category";
+    public static final String CATEGORY_UPDATE_CUSTOM_CATEGORY_URL = "/v1/category/update-custom-category";
+    public static final String CATEGORY_GET_ALL_CATEGORIES_URL = "/v1/category/get-all-categories";
+    public static final String CATEGORY_GET_CUSTOM_CATEGORIES_URL = "/v1/category/get-custom-categories";
 }

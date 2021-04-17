@@ -11,6 +11,7 @@ public class Constant {
     public static final String STATUS_CONFIRMED = "CONFIRMED";
     public static final String STATUS_PROCESSING = "PROCESSING";
     public static final String STATUS_NOT_PAID = "NOT PAID";
+    public static final String STATUS_PAID = "PAID";
     public static final String STATUS_USED = "USED";
     public static final String CASH_ACCOUNT = "Nəğd pul hesabı";
     public static final String OTP_CONFIRMATION_SUBJECT = "Confirmation code for your account";

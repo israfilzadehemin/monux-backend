@@ -163,7 +163,7 @@ public class AccountServiceImpl implements AccountService {
         account.setBalance(balanceModel.getBalance());
         accountRepo.save(account);
 
-        log.info(String.format(BALANCE_UPDATED_MSG, buildAccountResponseModel(account)));
+        log.info(String.format(BALANCE_UPDATED_MSG, username, account.getName(), buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 

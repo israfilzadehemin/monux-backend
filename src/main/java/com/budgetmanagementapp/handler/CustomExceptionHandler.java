@@ -3,8 +3,11 @@ package com.budgetmanagementapp.handler;
 
 import com.budgetmanagementapp.exception.AccountNotFoundException;
 import com.budgetmanagementapp.exception.AccountTypeNotFoundException;
+import com.budgetmanagementapp.exception.CategoryNotFoundException;
+import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
 import com.budgetmanagementapp.exception.CurrencyNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateAccountException;
+import com.budgetmanagementapp.exception.DuplicateCategoryException;
 import com.budgetmanagementapp.exception.ExpiredOtpException;
 import com.budgetmanagementapp.exception.GenericException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
@@ -55,12 +58,15 @@ public class CustomExceptionHandler {
                 || exception instanceof PasswordNotSufficientException
                 || exception instanceof InvalidEmailException
                 || exception instanceof DuplicateAccountException
+                || exception instanceof DuplicateCategoryException
                 || exception instanceof InvalidPhoneNumberException) {
             return handleException(exception, HttpStatus.BAD_REQUEST);
 
         } else if (exception instanceof UserRoleNotFoundException
                 || exception instanceof UserNotFoundException
                 || exception instanceof AccountTypeNotFoundException
+                || exception instanceof CategoryNotFoundException
+                || exception instanceof CategoryTypeNotFoundException
                 || exception instanceof CurrencyNotFoundException
                 || exception instanceof AccountNotFoundException
         ) {
