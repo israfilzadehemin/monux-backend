@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.utility;
 
+import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_TYPE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_EMAIL_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_INITIAL_ACCOUNT_MODEL_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_PHONE_NUMBER_MSG;
@@ -8,14 +9,18 @@ import static com.budgetmanagementapp.utility.MsgConstant.INVALID_REQUEST_PARAM_
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_MISMATCH_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_NOT_SUFFICIENT_MSG;
 
+import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
 import com.budgetmanagementapp.exception.InvalidEmailException;
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
 import com.budgetmanagementapp.model.AccountRequestModel;
+import com.budgetmanagementapp.model.CategoryRequestModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
+import com.budgetmanagementapp.model.UpdateCategoryModel;
+import java.util.Arrays;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -109,4 +114,30 @@ public class CustomValidator {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }
     }
+
+    public static void validateCategoryType(String value) {
+        if ((int) Arrays.stream(CategoryType.values()).filter(type -> type.name().equals(value.toUpperCase()))
+                .count() == 0) {
+            throw new CategoryTypeNotFoundException(String.format(CATEGORY_TYPE_NOT_FOUND_MSG, value));
+        }
+    }
+
+    public static void validateCategoryRequestModel(CategoryRequestModel requestModel) {
+        if (requestModel.getIcon() == null || requestModel.getIcon().isBlank()
+                || requestModel.getCategoryName() == null || requestModel.getCategoryName().isBlank()
+                || requestModel.getCategoryTypeName() == null || requestModel.getCategoryTypeName().isBlank()) {
+            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
+        }
+    }
+
+    public static void validateUpdateCategoryModel(UpdateCategoryModel updateCategoryModel) {
+        if (updateCategoryModel.getIcon() == null || updateCategoryModel.getIcon().isBlank()
+                || updateCategoryModel.getNewCategoryName() == null
+                || updateCategoryModel.getNewCategoryName().isBlank() || updateCategoryModel.getCategoryId() == null
+                || updateCategoryModel.getCategoryId().isBlank() || updateCategoryModel.getNewCategoryType() == null
+                || updateCategoryModel.getNewCategoryType().isBlank()) {
+            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
+        }
+    }
 }
+
