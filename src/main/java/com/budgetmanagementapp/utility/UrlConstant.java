@@ -23,4 +23,7 @@ public class UrlConstant {
     public static final String TAG_GET_ALL_TAGS_URL = "/v1/tag/get-all-tags";
     public static final String TAG_GET_CUSTOM_TAGS_URL = "/v1/tag/get-custom-tags";
     public static final String TAG_TOGGLE_VISIBILITY_URL = "/v1/tag/toggle-visibility";
+    public static final String FEEDBACK_CREATE_URL = "/v1/feedback/create";
+    public static final String FEEDBACK_GET_ALL_FEEDBACKS_URL = "/v1/feedback/get-all-feedbacks";
+    public static final String FEEDBACK_GET_FEEDBACK_BY_ID_URL = "/v1/feedback/get-by-id";
 }

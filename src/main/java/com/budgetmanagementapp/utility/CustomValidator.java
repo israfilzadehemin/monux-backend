@@ -17,12 +17,14 @@ import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
 import com.budgetmanagementapp.model.AccountRequestModel;
 import com.budgetmanagementapp.model.CategoryRequestModel;
+import com.budgetmanagementapp.model.FeedbackRequestModel;
 import com.budgetmanagementapp.model.TagRequestModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
 import com.budgetmanagementapp.model.UpdateCategoryModel;
 import com.budgetmanagementapp.model.UpdateTagModel;
 import java.util.Arrays;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -161,6 +163,18 @@ public class CustomValidator {
             throw new InvalidModelException(INVALID_REQUEST_PARAM_MSG);
         }
 
+    }
+
+    public static void validateFeedbackModel(FeedbackRequestModel requestBody) {
+        if (Objects.isNull(requestBody.getDescription()) || requestBody.getDescription().isBlank()) {
+            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
+        }
+    }
+
+    public static void validateFeedbackId(String feedbackId) {
+        if (Objects.isNull(feedbackId) || feedbackId.isBlank()) {
+            throw new InvalidModelException(INVALID_REQUEST_PARAM_MSG);
+        }
     }
 }
 
