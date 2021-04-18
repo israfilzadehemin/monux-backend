@@ -18,4 +18,9 @@ public class UrlConstant {
     public static final String CATEGORY_UPDATE_CUSTOM_CATEGORY_URL = "/v1/category/update-custom-category";
     public static final String CATEGORY_GET_ALL_CATEGORIES_URL = "/v1/category/get-all-categories";
     public static final String CATEGORY_GET_CUSTOM_CATEGORIES_URL = "/v1/category/get-custom-categories";
+    public static final String TAG_CREATE_CUSTOM_TAG_URL = "/v1/tag/create-custom-tag";
+    public static final String TAG_UPDATE_CUSTOM_TAG_URL = "/v1/tag/update-custom-tag";
+    public static final String TAG_GET_ALL_TAGS_URL = "/v1/tag/get-all-tags";
+    public static final String TAG_GET_CUSTOM_TAGS_URL = "/v1/tag/get-custom-tags";
+    public static final String TAG_TOGGLE_VISIBILITY_URL = "/v1/tag/toggle-visibility";
 }

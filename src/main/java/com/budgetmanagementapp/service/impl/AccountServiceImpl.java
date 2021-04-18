@@ -113,7 +113,7 @@ public class AccountServiceImpl implements AccountService {
         account.setAllowNegative(!account.isAllowNegative());
         accountRepo.save(account);
 
-        log.info(String.format(ALLOW_NEGATIVE_TOGGLED_MSG, buildAccountResponseModel(account)));
+        log.info(String.format(ALLOW_NEGATIVE_TOGGLED_MSG, username, buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 
@@ -129,7 +129,7 @@ public class AccountServiceImpl implements AccountService {
         account.setShowInSum(!account.isShowInSum());
         accountRepo.save(account);
 
-        log.info(String.format(SHOW_IN_SUM_TOGGLED_MSG, buildAccountResponseModel(account)));
+        log.info(String.format(SHOW_IN_SUM_TOGGLED_MSG, username, buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 

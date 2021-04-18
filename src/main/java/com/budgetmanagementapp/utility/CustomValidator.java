@@ -17,9 +17,11 @@ import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
 import com.budgetmanagementapp.model.AccountRequestModel;
 import com.budgetmanagementapp.model.CategoryRequestModel;
+import com.budgetmanagementapp.model.TagRequestModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
 import com.budgetmanagementapp.model.UpdateCategoryModel;
+import com.budgetmanagementapp.model.UpdateTagModel;
 import java.util.Arrays;
 import org.springframework.stereotype.Component;
 
@@ -69,23 +71,23 @@ public class CustomValidator {
         }
     }
 
-    public static void validateAccountModel(AccountRequestModel accountRequestModel, boolean isInitialAccount) {
+    public static void validateAccountModel(AccountRequestModel requestModel, boolean isInitialAccount) {
 
         if (isInitialAccount) {
-            if (accountRequestModel.getUsername() == null || accountRequestModel.getUsername().isBlank()
-                    || accountRequestModel.getAccountName() == null || accountRequestModel.getAccountName().isBlank()
-                    || accountRequestModel.getCurrency() == null || accountRequestModel.getCurrency().isBlank()
-                    || accountRequestModel.getBalance() == null
+            if (requestModel.getUsername() == null || requestModel.getUsername().isBlank()
+                    || requestModel.getAccountName() == null || requestModel.getAccountName().isBlank()
+                    || requestModel.getCurrency() == null || requestModel.getCurrency().isBlank()
+                    || requestModel.getBalance() == null
             ) {
                 throw new InvalidModelException(INVALID_INITIAL_ACCOUNT_MODEL_MSG);
             }
         } else {
-            if (accountRequestModel.getIcon() == null || accountRequestModel.getIcon().isBlank()
-                    || accountRequestModel.getAccountName() == null || accountRequestModel.getAccountName().isBlank()
-                    || accountRequestModel.getAccountTypeName() == null
-                    || accountRequestModel.getAccountTypeName().isBlank() || accountRequestModel.getCurrency() == null
-                    || accountRequestModel.getCurrency().isBlank() || accountRequestModel.getBalance() == null
-                    || accountRequestModel.getAllowNegative() == null || accountRequestModel.getShowInSum() == null
+            if (requestModel.getIcon() == null || requestModel.getIcon().isBlank()
+                    || requestModel.getAccountName() == null || requestModel.getAccountName().isBlank()
+                    || requestModel.getAccountTypeName() == null
+                    || requestModel.getAccountTypeName().isBlank() || requestModel.getCurrency() == null
+                    || requestModel.getCurrency().isBlank() || requestModel.getBalance() == null
+                    || requestModel.getAllowNegative() == null || requestModel.getShowInSum() == null
             ) {
                 throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
             }
@@ -93,11 +95,11 @@ public class CustomValidator {
 
     }
 
-    public static void validateUpdateAccountModel(UpdateAccountModel accountModel) {
-        if (accountModel.getAccountId() == null || accountModel.getAccountId().isBlank()
-                || accountModel.getNewAccountName() == null || accountModel.getNewAccountName().isBlank()
-                || accountModel.getIcon() == null || accountModel.getIcon().isBlank()
-                || accountModel.getAccountTypeName() == null || accountModel.getAccountTypeName().isBlank()) {
+    public static void validateUpdateAccountModel(UpdateAccountModel requestModel) {
+        if (requestModel.getAccountId() == null || requestModel.getAccountId().isBlank()
+                || requestModel.getNewAccountName() == null || requestModel.getNewAccountName().isBlank()
+                || requestModel.getIcon() == null || requestModel.getIcon().isBlank()
+                || requestModel.getAccountTypeName() == null || requestModel.getAccountTypeName().isBlank()) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }
     }
@@ -108,9 +110,9 @@ public class CustomValidator {
         }
     }
 
-    public static void validateUpdateBalanceModel(UpdateBalanceModel balanceModel) {
-        if (balanceModel.getAccountId() == null || balanceModel.getAccountId().isBlank()
-                || balanceModel.getBalance() == null) {
+    public static void validateUpdateBalanceModel(UpdateBalanceModel requestModel) {
+        if (requestModel.getAccountId() == null || requestModel.getAccountId().isBlank()
+                || requestModel.getBalance() == null) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }
     }
@@ -130,14 +132,35 @@ public class CustomValidator {
         }
     }
 
-    public static void validateUpdateCategoryModel(UpdateCategoryModel updateCategoryModel) {
-        if (updateCategoryModel.getIcon() == null || updateCategoryModel.getIcon().isBlank()
-                || updateCategoryModel.getNewCategoryName() == null
-                || updateCategoryModel.getNewCategoryName().isBlank() || updateCategoryModel.getCategoryId() == null
-                || updateCategoryModel.getCategoryId().isBlank() || updateCategoryModel.getNewCategoryType() == null
-                || updateCategoryModel.getNewCategoryType().isBlank()) {
+    public static void validateUpdateCategoryModel(UpdateCategoryModel requestModel) {
+        if (requestModel.getIcon() == null || requestModel.getIcon().isBlank()
+                || requestModel.getNewCategoryName() == null
+                || requestModel.getNewCategoryName().isBlank() || requestModel.getCategoryId() == null
+                || requestModel.getCategoryId().isBlank() || requestModel.getNewCategoryType() == null
+                || requestModel.getNewCategoryType().isBlank()) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }
+    }
+
+    public static void validateTagRequestModel(TagRequestModel requestModel) {
+        if (requestModel.getTagName() == null || requestModel.getTagName().isBlank()) {
+            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
+        }
+    }
+
+    public static void validateUpdateTagModel(UpdateTagModel requestBody) {
+        if (requestBody.getTagId() == null || requestBody.getTagId().isBlank()
+                || requestBody.getNewTagName() == null || requestBody.getNewTagName().isBlank()
+        ) {
+            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
+        }
+    }
+
+    public static void validateTagId(String tagId) {
+        if (tagId == null || tagId.isBlank()) {
+            throw new InvalidModelException(INVALID_REQUEST_PARAM_MSG);
+        }
+
     }
 }
 

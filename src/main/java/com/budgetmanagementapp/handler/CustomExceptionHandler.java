@@ -8,6 +8,7 @@ import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
 import com.budgetmanagementapp.exception.CurrencyNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.DuplicateCategoryException;
+import com.budgetmanagementapp.exception.DuplicateTagException;
 import com.budgetmanagementapp.exception.ExpiredOtpException;
 import com.budgetmanagementapp.exception.GenericException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
@@ -17,6 +18,7 @@ import com.budgetmanagementapp.exception.InvalidOtpException;
 import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
+import com.budgetmanagementapp.exception.TagNotFoundException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
@@ -59,6 +61,7 @@ public class CustomExceptionHandler {
                 || exception instanceof InvalidEmailException
                 || exception instanceof DuplicateAccountException
                 || exception instanceof DuplicateCategoryException
+                || exception instanceof DuplicateTagException
                 || exception instanceof InvalidPhoneNumberException) {
             return handleException(exception, HttpStatus.BAD_REQUEST);
 
@@ -66,6 +69,7 @@ public class CustomExceptionHandler {
                 || exception instanceof UserNotFoundException
                 || exception instanceof AccountTypeNotFoundException
                 || exception instanceof CategoryNotFoundException
+                || exception instanceof TagNotFoundException
                 || exception instanceof CategoryTypeNotFoundException
                 || exception instanceof CurrencyNotFoundException
                 || exception instanceof AccountNotFoundException
