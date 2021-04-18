@@ -10,6 +10,7 @@ import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.DuplicateCategoryException;
 import com.budgetmanagementapp.exception.DuplicateTagException;
 import com.budgetmanagementapp.exception.ExpiredOtpException;
+import com.budgetmanagementapp.exception.FeedbackNotFoundException;
 import com.budgetmanagementapp.exception.GenericException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
 import com.budgetmanagementapp.exception.InvalidEmailException;
@@ -70,6 +71,7 @@ public class CustomExceptionHandler {
                 || exception instanceof AccountTypeNotFoundException
                 || exception instanceof CategoryNotFoundException
                 || exception instanceof TagNotFoundException
+                || exception instanceof FeedbackNotFoundException
                 || exception instanceof CategoryTypeNotFoundException
                 || exception instanceof CurrencyNotFoundException
                 || exception instanceof AccountNotFoundException
