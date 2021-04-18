@@ -49,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
         if (customCategoryRepo.byNameAndUser(requestBody.getCategoryName(), user).isPresent()
                 || categoryRepo.byName(requestBody.getCategoryName()).isPresent()) {
             throw new DuplicateCategoryException(
-                    String.format(DUPLICATE_CATEGORY_NAME_MSG, requestBody.getCategoryName()));
+                    String.format(DUPLICATE_CATEGORY_NAME_MSG, username, requestBody.getCategoryName()));
         }
 
         CustomCategory customCategory = buildCustomCategory(requestBody, user);

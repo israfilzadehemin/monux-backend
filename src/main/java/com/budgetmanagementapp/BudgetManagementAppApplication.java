@@ -98,13 +98,6 @@ public class BudgetManagementAppApplication {
                 .build();
         customNotificationRepo.save(netflixNotification);
 
-        CustomTag newCustomTag = CustomTag.builder()
-                .customTagId(UUID.randomUUID().toString())
-                .name("New custom tag")
-                .visibility(true)
-                .build();
-        customTagRepo.save(newCustomTag);
-
         Tag coffeeTag = Tag.builder()
                 .tagId(UUID.randomUUID().toString())
                 .name("Coffee")
@@ -178,8 +171,16 @@ public class BudgetManagementAppApplication {
                 .paymentStatus(STATUS_NOT_PAID)
                 .accounts(Collections.singletonList(cardAccount3))
                 .build();
-
         userRepo.saveAll(Arrays.asList(user1, user2));
+
+        CustomTag newCustomTag = CustomTag.builder()
+                .customTagId(UUID.randomUUID().toString())
+                .name("New custom tag")
+                .visibility(true)
+                .user(user2)
+                .build();
+        customTagRepo.save(newCustomTag);
+
 
         return null;
 
