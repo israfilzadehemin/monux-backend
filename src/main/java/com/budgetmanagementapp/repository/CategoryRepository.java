@@ -10,5 +10,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         return findByNameIgnoreCase(name);
     }
 
+    default Optional<Category> byIdAndType(String categoryId, String categoryType) {
+        return findByCategoryIdAndType(categoryId, categoryType);
+    }
+
+    Optional<Category> findByCategoryIdAndType(String categoryId, String type);
+
     Optional<Category> findByNameIgnoreCase(String name);
 }

@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.entity;
 
-import com.budgetmanagementapp.utility.CategoryType;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +36,7 @@ public class Category {
     private String name;
 
     @Column(name = "category_type")
-    private CategoryType type;
+    private String type;
 
     @OneToMany(mappedBy = "category")
     private List<InOutTemplate> inOutTemplates;

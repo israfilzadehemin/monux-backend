@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.entity;
 
-import com.budgetmanagementapp.utility.CategoryType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +39,10 @@ public class CustomCategory {
     private String name;
 
     @Column(name = "custom_category_type")
-    private CategoryType type;
+    private String type;
+
+    @OneToMany(mappedBy = "customCategory")
+    private List<InOutTransaction> inOutTransactions;
 
     @ManyToOne()
     @JoinTable(

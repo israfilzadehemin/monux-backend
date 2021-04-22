@@ -41,6 +41,10 @@ public class CustomTag {
     @ManyToMany(mappedBy = "customTags")
     private List<InOutTemplate> inOutTemplates;
 
+    @ManyToMany(mappedBy = "customTags")
+    private List<InOutTransaction> inOutTransactions;
+
+
     @ManyToOne
     @JoinTable(
             name = "rel_custom_tag_with_user",

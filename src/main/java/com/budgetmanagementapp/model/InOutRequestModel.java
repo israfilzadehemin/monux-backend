@@ -1,5 +1,7 @@
 package com.budgetmanagementapp.model;
 
+import java.math.BigDecimal;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +18,12 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryResponseModel {
+public class InOutRequestModel {
 
+    String creationDateTime;
+    BigDecimal amount;
+    String description;
+    String accountId;
     String categoryId;
-    String icon;
-    String categoryName;
-    String categoryType;
+    List<String> tagIds;
 }

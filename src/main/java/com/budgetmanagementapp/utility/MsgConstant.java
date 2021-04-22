@@ -23,15 +23,17 @@ public class MsgConstant {
     public static final String CUSTOM_CATEGORY_CREATED_MSG = "User %s created a custom category: %s";
     public static final String FEEDBACK_CREATED_MSG = "User %s created a feedback: %s";
     public static final String CUSTOM_TAG_CREATED_MSG = "User %s created a custom tag: %s";
+    public static final String IN_OUT_TRANSACTION_CREATED_MSG = "User %s created an in out transaction: %s";
     public static final String ACCOUNT_UPDATED_MSG = "User %s updated an account: %s";
     public static final String BALANCE_UPDATED_MSG = "User '%s' updated balance of account %s: %s";
     public static final String CATEGORY_UPDATED_MSG = "User '%s' updated a category: %s";
     public static final String TAG_UPDATED_MSG = "User '%s' updated a tag: %s";
-    public static final String ACCOUNT_NOT_FOUND_MSG = "User '%s' does not have existing account";
+    public static final String NO_ACCOUNT_MSG = "User '%s' does not have existing account";
     public static final String CUSTOM_CATEGORY_NOT_FOUND_MSG = "User '%s' does not have any custom categories";
     public static final String CUSTOM_TAG_NOT_FOUND_MSG = "User '%s' does not have any custom tags";
     public static final String FEEDBACK_NOT_FOUND_MSG = "User '%s' does not have any feedbacks";
     public static final String CATEGORY_TYPE_NOT_FOUND_MSG = "Category type '%s' not found";
+    public static final String TRANSACTION_TYPE_NOT_FOUND_MSG = "Transaction type '%s' not found";
     public static final String CURRENCY_NOT_FOUND_MSG = "Currency '%s' is not found";
     public static final String ROLE_NOT_FOUND_MSG = "Role is not found in database";
     public static final String PASSWORD_CREATED_MSG = "Password has been created for %s";
@@ -55,4 +57,8 @@ public class MsgConstant {
     public static final String ALL_TAGS_MSG = "All tags of %s: %s";
     public static final String ALL_FEEDBACKS_MSG = "All feedbacks of %s: %s";
     public static final String FEEDBACK_BY_ID_MSG = "Feedback with ID '%s': %s";
+    public static final String INVALID_CATEGORY_ID = "Category '%s' is not found";
+    public static final String INSUFFICIENT_BALANCE_MSG = "There is no enough balance for this operation in '%s'";
+    public static final String INVALID_DATE_TIME_FORMAT_MSG =
+            "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
 }

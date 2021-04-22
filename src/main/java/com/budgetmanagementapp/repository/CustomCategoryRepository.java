@@ -15,6 +15,10 @@ public interface CustomCategoryRepository extends JpaRepository<CustomCategory, 
         return findByCustomCategoryIdAndUser(id, user);
     }
 
+    default Optional<CustomCategory> byIdAndUserAndType(String id, User user, String categoryType) {
+        return findByCustomCategoryIdAndUserAndType(id, user, categoryType);
+    }
+
     default List<CustomCategory> allByUser(User user) {
         return findAllByUser(user);
     }
@@ -22,6 +26,10 @@ public interface CustomCategoryRepository extends JpaRepository<CustomCategory, 
     Optional<CustomCategory> findByNameIgnoreCaseAndUser(String name, User user);
 
     Optional<CustomCategory> findByCustomCategoryIdAndUser(String categoryId, User user);
+
+    Optional<CustomCategory> findByCustomCategoryIdAndUserAndType(String categoryId,
+                                                                  User user,
+                                                                  String categoryType);
 
     List<CustomCategory> findAllByUser(User user);
 }

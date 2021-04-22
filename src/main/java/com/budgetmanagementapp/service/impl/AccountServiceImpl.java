@@ -3,7 +3,6 @@ package com.budgetmanagementapp.service.impl;
 import static com.budgetmanagementapp.utility.Constant.CASH_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
 import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.ALLOW_NEGATIVE_TOGGLED_MSG;
@@ -12,9 +11,11 @@ import static com.budgetmanagementapp.utility.MsgConstant.BALANCE_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_ACCOUNT_NAME_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INITIAL_ACCOUNT_EXISTING_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.NO_ACCOUNT_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.SHOW_IN_SUM_TOGGLED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_ACCOUNT_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
+import static java.lang.String.format;
 
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
@@ -61,12 +62,12 @@ public class AccountServiceImpl implements AccountService {
         User user = findUserByUsername(accountRequestModel.getUsername());
 
         if (isInitialAccount && !user.getAccounts().isEmpty()) {
-            throw new InitialAccountExistingException(String.format(INITIAL_ACCOUNT_EXISTING_MSG, user.getUsername()));
+            throw new InitialAccountExistingException(format(INITIAL_ACCOUNT_EXISTING_MSG, user.getUsername()));
         }
 
-        if (accountRepo.findByNameAndUser(accountRequestModel.getAccountName(), user).isPresent()) {
+        if (accountRepo.byNameAndUser(accountRequestModel.getAccountName(), user).isPresent()) {
             throw new DuplicateAccountException(
-                    String.format(DUPLICATE_ACCOUNT_NAME_MSG,
+                    format(DUPLICATE_ACCOUNT_NAME_MSG,
                             user.getUsername(),
                             accountRequestModel.getAccountName()));
         }
@@ -79,7 +80,7 @@ public class AccountServiceImpl implements AccountService {
                 isInitialAccount
         );
 
-        log.info(String.format(ACCOUNT_CREATED_MSG, user.getUsername(), buildAccountResponseModel(account)));
+        log.info(format(ACCOUNT_CREATED_MSG, user.getUsername(), buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 
@@ -88,16 +89,16 @@ public class AccountServiceImpl implements AccountService {
         CustomValidator.validateUpdateAccountModel(accountModel);
 
         Account account = accountRepo
-                .findByAccountIdAndUser(accountModel.getAccountId(), findUserByUsername(username))
+                .byIdAndUser(accountModel.getAccountId(), findUserByUsername(username))
                 .orElseThrow(() -> new AccountNotFoundException(
-                        String.format(UNAUTHORIZED_ACCOUNT_MSG, username, accountModel.getAccountId())));
+                        format(UNAUTHORIZED_ACCOUNT_MSG, username, accountModel.getAccountId())));
 
         account.setIcon(accountModel.getIcon());
         account.setName(accountModel.getNewAccountName());
         account.setAccountType(getAccountType(accountModel.getAccountTypeName(), false));
         accountRepo.save(account);
 
-        log.info(String.format(ACCOUNT_UPDATED_MSG, username, buildAccountResponseModel(account)));
+        log.info(format(ACCOUNT_UPDATED_MSG, username, buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 
@@ -106,14 +107,14 @@ public class AccountServiceImpl implements AccountService {
         CustomValidator.validateAccountId(accountId);
 
         Account account = accountRepo
-                .findByAccountIdAndUser(accountId, findUserByUsername(username))
+                .byIdAndUser(accountId, findUserByUsername(username))
                 .orElseThrow(() -> new AccountNotFoundException(
-                        String.format(UNAUTHORIZED_ACCOUNT_MSG, username, accountId)));
+                        format(UNAUTHORIZED_ACCOUNT_MSG, username, accountId)));
 
         account.setAllowNegative(!account.isAllowNegative());
         accountRepo.save(account);
 
-        log.info(String.format(ALLOW_NEGATIVE_TOGGLED_MSG, username, buildAccountResponseModel(account)));
+        log.info(format(ALLOW_NEGATIVE_TOGGLED_MSG, username, buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 
@@ -122,14 +123,14 @@ public class AccountServiceImpl implements AccountService {
         CustomValidator.validateAccountId(accountId);
 
         Account account = accountRepo
-                .findByAccountIdAndUser(accountId, findUserByUsername(username))
+                .byIdAndUser(accountId, findUserByUsername(username))
                 .orElseThrow(() -> new AccountNotFoundException(
-                        String.format(UNAUTHORIZED_ACCOUNT_MSG, username, accountId)));
+                        format(UNAUTHORIZED_ACCOUNT_MSG, username, accountId)));
 
         account.setShowInSum(!account.isShowInSum());
         accountRepo.save(account);
 
-        log.info(String.format(SHOW_IN_SUM_TOGGLED_MSG, username, buildAccountResponseModel(account)));
+        log.info(format(SHOW_IN_SUM_TOGGLED_MSG, username, buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 
@@ -137,14 +138,13 @@ public class AccountServiceImpl implements AccountService {
     public List<AccountResponseModel> getAllAccountsByUser(String username) {
         User user = findUserByUsername(username);
 
-        List<Account> accounts = accountRepo.findAllByUser(user);
+        List<Account> accounts = accountRepo.allByUser(user);
 
         if (accounts.isEmpty()) {
-            throw new AccountNotFoundException(String.format(ACCOUNT_NOT_FOUND_MSG,
-                    user.getUsername()));
+            throw new AccountNotFoundException(format(NO_ACCOUNT_MSG, user.getUsername()));
         }
 
-        log.info(String.format(
+        log.info(format(
                 ALL_ACCOUNTS_MSG,
                 user.getUsername(),
                 accounts.stream().map(this::buildAccountResponseModel).collect(Collectors.toList())));
@@ -156,14 +156,14 @@ public class AccountServiceImpl implements AccountService {
         CustomValidator.validateUpdateBalanceModel(balanceModel);
 
         Account account = accountRepo
-                .findByAccountIdAndUser(balanceModel.getAccountId(), findUserByUsername(username))
+                .byIdAndUser(balanceModel.getAccountId(), findUserByUsername(username))
                 .orElseThrow(() -> new AccountNotFoundException(
-                        String.format(UNAUTHORIZED_ACCOUNT_MSG, username, balanceModel.getAccountId())));
+                        format(UNAUTHORIZED_ACCOUNT_MSG, username, balanceModel.getAccountId())));
 
         account.setBalance(balanceModel.getBalance());
         accountRepo.save(account);
 
-        log.info(String.format(BALANCE_UPDATED_MSG, username, account.getName(), buildAccountResponseModel(account)));
+        log.info(format(BALANCE_UPDATED_MSG, username, account.getName(), buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 
@@ -171,14 +171,14 @@ public class AccountServiceImpl implements AccountService {
     private User findUserByUsername(String username) {
         return userRepo
                 .findByUsernameAndStatus(username, STATUS_ACTIVE)
-                .orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
+                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
     }
 
     private Currency getCurrency(AccountRequestModel accountRequestModel) {
         return currencyRepo
                 .findByName(accountRequestModel.getCurrency())
                 .orElseThrow(() ->
-                        new CurrencyNotFoundException(String.format(CURRENCY_NOT_FOUND_MSG,
+                        new CurrencyNotFoundException(format(CURRENCY_NOT_FOUND_MSG,
                                 accountRequestModel.getCurrency())));
     }
 
@@ -186,7 +186,7 @@ public class AccountServiceImpl implements AccountService {
         return accountTypeRepo
                 .findByAccountTypeName(isInitialAccount ? CASH_ACCOUNT : accountTypeName)
                 .orElseThrow(() ->
-                        new AccountTypeNotFoundException(String.format(ACCOUNT_TYPE_NOT_FOUND_MSG, accountTypeName)));
+                        new AccountTypeNotFoundException(format(ACCOUNT_TYPE_NOT_FOUND_MSG, accountTypeName)));
     }
 
     private Account buildAccount(AccountRequestModel accountRequestModel, User user, AccountType accountType,

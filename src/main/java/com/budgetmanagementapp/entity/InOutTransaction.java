@@ -64,6 +64,15 @@ public class InOutTransaction {
                     {@JoinColumn(name = "category_id", referencedColumnName = "id")})
     private Category category;
 
+    @ManyToOne
+    @JoinTable(
+            name = "rel_in_out_transaction_with_custom_category",
+            joinColumns =
+                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "custom_category_id", referencedColumnName = "id")})
+    private CustomCategory customCategory;
+
     @ManyToMany()
     @JoinTable(
             name = "rel_in_out_transaction_with_tag",
@@ -72,6 +81,15 @@ public class InOutTransaction {
             inverseJoinColumns =
                     {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
     private List<Tag> tags;
+
+    @ManyToMany()
+    @JoinTable(
+            name = "rel_in_out_transaction_with_custom_tag",
+            joinColumns =
+                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "custom_tag_id", referencedColumnName = "id")})
+    private List<CustomTag> customTags;
 
     @ManyToOne()
     @JoinTable(

@@ -72,19 +72,19 @@ public class BudgetManagementAppApplication {
         Category food = Category.builder()
                 .categoryId(UUID.randomUUID().toString())
                 .name("Food")
-                .type(CategoryType.OUTCOME)
+                .type(CategoryType.OUTCOME.name())
                 .build();
 
         Category clothes = Category.builder()
                 .categoryId(UUID.randomUUID().toString())
                 .name("Clothes")
-                .type(CategoryType.OUTCOME)
+                .type(CategoryType.OUTCOME.name())
                 .build();
 
         Category salary = Category.builder()
                 .categoryId(UUID.randomUUID().toString())
                 .name("Salary")
-                .type(CategoryType.INCOME)
+                .type(CategoryType.INCOME.name())
                 .build();
 
         categoryRepo.saveAll(Arrays.asList(food, clothes, salary));

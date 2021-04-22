@@ -22,7 +22,6 @@ import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.repository.CustomCategoryRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.CategoryService;
-import com.budgetmanagementapp.utility.CategoryType;
 import com.budgetmanagementapp.utility.CustomValidator;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -100,7 +99,7 @@ public class CategoryServiceImpl implements CategoryService {
 
         category.setIcon(requestBody.getIcon());
         category.setName(requestBody.getNewCategoryName());
-        category.setType(CategoryType.valueOf(requestBody.getNewCategoryType().toUpperCase()));
+        category.setType(requestBody.getNewCategoryType().toUpperCase());
         customCategoryRepo.save(category);
 
         log.info(String.format(CATEGORY_UPDATED_MSG, username, buildCustomCategoryResponseModel(category)));
@@ -114,7 +113,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .customCategoryId(UUID.randomUUID().toString())
                 .icon(requestModel.getIcon())
                 .name(requestModel.getCategoryName())
-                .type(CategoryType.valueOf(requestModel.getCategoryTypeName().toUpperCase()))
+                .type(requestModel.getCategoryTypeName().toUpperCase())
                 .user(user)
                 .build());
     }

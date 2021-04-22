@@ -8,6 +8,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.INVALID_REQUEST_MODEL_
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_REQUEST_PARAM_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_MISMATCH_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_NOT_SUFFICIENT_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_TYPE_NOT_FOUND_MSG;
 
 import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
 import com.budgetmanagementapp.exception.InvalidEmailException;
@@ -15,9 +16,11 @@ import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
+import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
 import com.budgetmanagementapp.model.AccountRequestModel;
 import com.budgetmanagementapp.model.CategoryRequestModel;
 import com.budgetmanagementapp.model.FeedbackRequestModel;
+import com.budgetmanagementapp.model.InOutRequestModel;
 import com.budgetmanagementapp.model.TagRequestModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
@@ -175,6 +178,25 @@ public class CustomValidator {
         if (Objects.isNull(feedbackId) || feedbackId.isBlank()) {
             throw new InvalidModelException(INVALID_REQUEST_PARAM_MSG);
         }
+    }
+
+    public static void validateIncomeModel(InOutRequestModel requestBody) {
+        if (Objects.isNull(requestBody.getAccountId()) || requestBody.getAccountId().isBlank()
+                || Objects.isNull(requestBody.getDescription()) || requestBody.getDescription().isBlank()
+                || Objects.isNull(requestBody.getAmount()) || Objects.isNull(requestBody.getCreationDateTime())
+                || requestBody.getCreationDateTime().isBlank() || Objects.isNull(requestBody.getCategoryId())
+                || Objects.isNull(requestBody.getTagIds())
+        ) {
+            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
+        }
+    }
+
+    public static void validateTransactionType(String value) {
+        if ((int) Arrays.stream(TransactionType.values()).filter(type -> type.name().equals(value.toUpperCase()))
+                .count() == 0) {
+            throw new TransactionTypeNotFoundException(String.format(TRANSACTION_TYPE_NOT_FOUND_MSG, value));
+        }
+
     }
 }
 
