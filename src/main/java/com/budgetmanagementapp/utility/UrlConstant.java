@@ -27,6 +27,8 @@ public class UrlConstant {
     public static final String FEEDBACK_GET_ALL_FEEDBACKS_URL = "/v1/feedback/get-all-feedbacks";
     public static final String FEEDBACK_GET_FEEDBACK_BY_ID_URL = "/v1/feedback/get-by-id";
     public static final String TRANSACTION_CREATE_INCOME_TRANSACTION_URL = "/v1/transaction/create-income-transaction";
+    public static final String TRANSACTION_CREATE_TRANSFER_TRANSACTION_URL =
+            "/v1/transaction/create-transfer-transaction";
     public static final String TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL =
             "/v1/transaction/create-outcome-transaction";
 }

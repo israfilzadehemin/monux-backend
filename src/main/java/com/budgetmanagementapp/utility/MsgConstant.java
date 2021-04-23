@@ -24,6 +24,7 @@ public class MsgConstant {
     public static final String FEEDBACK_CREATED_MSG = "User %s created a feedback: %s";
     public static final String CUSTOM_TAG_CREATED_MSG = "User %s created a custom tag: %s";
     public static final String IN_OUT_TRANSACTION_CREATED_MSG = "User %s created an in out transaction: %s";
+    public static final String TRANSFER_TRANSACTION_CREATED_MSG = "User %s created a transfer transaction: %s";
     public static final String ACCOUNT_UPDATED_MSG = "User %s updated an account: %s";
     public static final String BALANCE_UPDATED_MSG = "User '%s' updated balance of account %s: %s";
     public static final String CATEGORY_UPDATED_MSG = "User '%s' updated a category: %s";
@@ -57,7 +58,8 @@ public class MsgConstant {
     public static final String ALL_TAGS_MSG = "All tags of %s: %s";
     public static final String ALL_FEEDBACKS_MSG = "All feedbacks of %s: %s";
     public static final String FEEDBACK_BY_ID_MSG = "Feedback with ID '%s': %s";
-    public static final String INVALID_CATEGORY_ID = "Category '%s' is not found";
+    public static final String INVALID_CATEGORY_ID_MSG = "Category '%s' is not found";
+    public static final String TRANSFER_TO_SELF_MSG = "Sender and receiver accounts are the same";
     public static final String INSUFFICIENT_BALANCE_MSG = "There is no enough balance for this operation in '%s'";
     public static final String INVALID_DATE_TIME_FORMAT_MSG =
             "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";

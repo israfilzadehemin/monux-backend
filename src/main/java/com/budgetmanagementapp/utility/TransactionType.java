@@ -9,6 +9,7 @@ public enum TransactionType {
     INCOME,
     OUTCOME,
     TRANSFER,
-    DEBT
+    DEBT_IN,
+    DEBT_OUT
 
 }

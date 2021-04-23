@@ -9,8 +9,10 @@ import static com.budgetmanagementapp.utility.MsgConstant.INVALID_REQUEST_PARAM_
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_MISMATCH_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_NOT_SUFFICIENT_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_TYPE_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
 
 import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
+import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.InvalidEmailException;
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
@@ -22,12 +24,14 @@ import com.budgetmanagementapp.model.CategoryRequestModel;
 import com.budgetmanagementapp.model.FeedbackRequestModel;
 import com.budgetmanagementapp.model.InOutRequestModel;
 import com.budgetmanagementapp.model.TagRequestModel;
+import com.budgetmanagementapp.model.TransferRequestModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
 import com.budgetmanagementapp.model.UpdateCategoryModel;
 import com.budgetmanagementapp.model.UpdateTagModel;
 import java.util.Arrays;
 import java.util.Objects;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -182,10 +186,9 @@ public class CustomValidator {
 
     public static void validateIncomeModel(InOutRequestModel requestBody) {
         if (Objects.isNull(requestBody.getAccountId()) || requestBody.getAccountId().isBlank()
-                || Objects.isNull(requestBody.getDescription()) || requestBody.getDescription().isBlank()
-                || Objects.isNull(requestBody.getAmount()) || Objects.isNull(requestBody.getCreationDateTime())
-                || requestBody.getCreationDateTime().isBlank() || Objects.isNull(requestBody.getCategoryId())
-                || Objects.isNull(requestBody.getTagIds())
+                || Objects.isNull(requestBody.getDescription()) || Objects.isNull(requestBody.getAmount())
+                || Objects.isNull(requestBody.getCreationDateTime()) || requestBody.getCreationDateTime().isBlank()
+                || Objects.isNull(requestBody.getCategoryId()) || Objects.isNull(requestBody.getTagIds())
         ) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }
@@ -197,6 +200,20 @@ public class CustomValidator {
             throw new TransactionTypeNotFoundException(String.format(TRANSACTION_TYPE_NOT_FOUND_MSG, value));
         }
 
+    }
+
+    public static void validateTransferModel(TransferRequestModel requestBody) {
+        if (Strings.isBlank(requestBody.getCreationDateTime())
+                || Objects.isNull(requestBody.getAmount())
+                || Objects.isNull(requestBody.getDescription())
+                || Strings.isBlank(requestBody.getAccountFromId())
+                || Strings.isBlank(requestBody.getAccountToId())) {
+            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
+        }
+
+        if (requestBody.getAccountFromId().equals(requestBody.getAccountToId())) {
+            throw new DuplicateAccountException(TRANSFER_TO_SELF_MSG);
+        }
     }
 }
 
