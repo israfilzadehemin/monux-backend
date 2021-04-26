@@ -1,7 +1,9 @@
 package com.budgetmanagementapp.model;
 
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,13 +20,14 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TransferResponseModel {
-
+public class TransactionResponseModel {
     String transactionId;
     LocalDateTime creationDateTime;
     BigDecimal amount;
     String description;
-    String accountFrom;
-    String accountTo;
     String transactionType;
+    String accountId;
+    String categoryId;
+    List<String> tagIds;
+    String oppositeAccountId;
 }

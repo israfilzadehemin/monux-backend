@@ -18,13 +18,11 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TransferResponseModel {
-
+public class DebtResponseModel {
     String transactionId;
     LocalDateTime creationDateTime;
     BigDecimal amount;
     String description;
-    String accountFrom;
-    String accountTo;
     String transactionType;
+    String accountId;
 }

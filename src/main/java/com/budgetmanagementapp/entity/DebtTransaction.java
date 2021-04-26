@@ -34,14 +34,14 @@ public class DebtTransaction {
 
 
     @Column(name = "creation_date")
-    private LocalDateTime creationDate;
+    private LocalDateTime creationDateTime;
 
 
     @Column(name = "amount")
     private BigDecimal amount;
 
-    @Column(name = "opposite_account")
-    private String oppositeAccount;
+    @Column(name = "description")
+    private String description;
 
     @Column(name = "transaction_type")
     private String transactionType;

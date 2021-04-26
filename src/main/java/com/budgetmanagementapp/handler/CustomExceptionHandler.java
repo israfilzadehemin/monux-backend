@@ -17,10 +17,12 @@ import com.budgetmanagementapp.exception.InvalidEmailException;
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.exception.InvalidOtpException;
 import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
+import com.budgetmanagementapp.exception.NoExistingTransactionException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
 import com.budgetmanagementapp.exception.TagNotFoundException;
+import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
@@ -77,8 +79,10 @@ public class CustomExceptionHandler {
                 || exception instanceof FeedbackNotFoundException
                 || exception instanceof CategoryTypeNotFoundException
                 || exception instanceof TransactionTypeNotFoundException
+                || exception instanceof TransactionNotFoundException
                 || exception instanceof CurrencyNotFoundException
                 || exception instanceof AccountNotFoundException
+                || exception instanceof NoExistingTransactionException
         ) {
             return handleException(exception, HttpStatus.NOT_FOUND);
         }

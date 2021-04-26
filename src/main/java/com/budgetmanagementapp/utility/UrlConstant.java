@@ -17,6 +17,7 @@ public class UrlConstant {
     public static final String CATEGORY_CREATE_CUSTOM_CATEGORY_URL = "/v1/category/create-custom-category";
     public static final String CATEGORY_UPDATE_CUSTOM_CATEGORY_URL = "/v1/category/update-custom-category";
     public static final String CATEGORY_GET_ALL_CATEGORIES_URL = "/v1/category/get-all-categories";
+    public static final String TRANSACTION_GET_ALL_TRANSACTIONS_URL = "/v1/transaction/get-all-transactions";
     public static final String CATEGORY_GET_CUSTOM_CATEGORIES_URL = "/v1/category/get-custom-categories";
     public static final String TAG_CREATE_CUSTOM_TAG_URL = "/v1/tag/create-custom-tag";
     public static final String TAG_UPDATE_CUSTOM_TAG_URL = "/v1/tag/update-custom-tag";
@@ -27,6 +28,15 @@ public class UrlConstant {
     public static final String FEEDBACK_GET_ALL_FEEDBACKS_URL = "/v1/feedback/get-all-feedbacks";
     public static final String FEEDBACK_GET_FEEDBACK_BY_ID_URL = "/v1/feedback/get-by-id";
     public static final String TRANSACTION_CREATE_INCOME_TRANSACTION_URL = "/v1/transaction/create-income-transaction";
+    public static final String TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL = "/v1/transaction/update-in-out-transaction";
+    public static final String TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL =
+            "/v1/transaction/update-transfer-transaction";
+    public static final String TRANSACTION_UPDATE_DEBT_TRANSACTION_URL =
+            "/v1/transaction/update-debt-transaction";
+    public static final String TRANSACTION_CREATE_DEBT_IN_TRANSACTION_URL =
+            "/v1/transaction/create-debt-in-transaction";
+    public static final String TRANSACTION_CREATE_DEBT_OUT_TRANSACTION_URL =
+            "/v1/transaction/create-debt-out-transaction";
     public static final String TRANSACTION_CREATE_TRANSFER_TRANSACTION_URL =
             "/v1/transaction/create-transfer-transaction";
     public static final String TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL =
