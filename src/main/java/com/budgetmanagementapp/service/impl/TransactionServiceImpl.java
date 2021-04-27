@@ -20,12 +20,8 @@ import static java.lang.String.format;
 
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.Category;
-import com.budgetmanagementapp.entity.CustomCategory;
-import com.budgetmanagementapp.entity.CustomTag;
-import com.budgetmanagementapp.entity.DebtTransaction;
-import com.budgetmanagementapp.entity.InOutTransaction;
 import com.budgetmanagementapp.entity.Tag;
-import com.budgetmanagementapp.entity.TransferTransaction;
+import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.AccountNotFoundException;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
@@ -45,12 +41,8 @@ import com.budgetmanagementapp.model.UpdateInOutRequestModel;
 import com.budgetmanagementapp.model.UpdateTransferRequestModel;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.CategoryRepository;
-import com.budgetmanagementapp.repository.CustomCategoryRepository;
-import com.budgetmanagementapp.repository.CustomTagRepository;
-import com.budgetmanagementapp.repository.DebtTransactionRepository;
-import com.budgetmanagementapp.repository.InOutTransactionRepository;
 import com.budgetmanagementapp.repository.TagRepository;
-import com.budgetmanagementapp.repository.TransferTransactionRepository;
+import com.budgetmanagementapp.repository.TransactionRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.utility.CategoryType;
@@ -81,7 +73,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final CustomCategoryRepository customCategoryRepo;
     private final TagRepository tagRepository;
     private final CustomTagRepository customTagRepo;
-    private final InOutTransactionRepository inOutRepo;
+    private final TransactionRepository inOutRepo;
     private final TransferTransactionRepository transferRepo;
     private final DebtTransactionRepository debtRepo;
 
@@ -101,14 +93,14 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         Optional<Category> category = categoryByIdAndType(requestBody, type);
-        Optional<CustomCategory> customCategory = customCategoryByIdAndType(requestBody, type, user);
+        Optional<Category> customCategory = customCategoryByIdAndType(requestBody, type, user);
 
         checkCategory(requestBody, category, customCategory);
 
         List<Tag> tags = tagsByIds(requestBody);
-        List<CustomTag> customTags = customTagsByIds(requestBody, user);
+        List<Tag> customTags = customTagsByIds(requestBody, user);
 
-        InOutTransaction transaction =
+        Transaction transaction =
                 buildTransaction(
                         requestBody, user, account, category, customCategory, tags, customTags, type);
 
@@ -188,7 +180,7 @@ public class TransactionServiceImpl implements TransactionService {
         CustomValidator.validateUpdateInOutModel(requestBody);
 
         User user = userByUsername(username);
-        InOutTransaction transaction = inOutTransactionById(requestBody.getTransactionId(), user);
+        Transaction transaction = inOutTransactionById(requestBody.getTransactionId(), user);
         Account account = accountById(requestBody.getAccountId(), user);
 
         if (transaction.getTransactionType().equals(TransactionType.OUTCOME.name())
@@ -200,27 +192,27 @@ public class TransactionServiceImpl implements TransactionService {
         Optional<Category> category =
                 categoryByIdAndType(requestBody, TransactionType.valueOf(transaction.getTransactionType()));
 
-        Optional<CustomCategory> customCategory =
+        Optional<Category> customCategory =
                 customCategoryByIdAndType(requestBody, TransactionType.valueOf(transaction.getTransactionType()), user);
 
         checkCategory(requestBody, category, customCategory);
 
         List<Tag> tags = tagsByIds(requestBody);
-        List<CustomTag> customTags = customTagsByIds(requestBody, user);
+        List<Tag> customTags = customTagsByIds(requestBody, user);
 
         Map<String, Account> newAccounts = new HashMap<>();
         Map<String, Account> oldAccounts = new HashMap<>();
         BigDecimal oldAmount = transaction.getAmount();
 
         if (transaction.getTransactionType().equals(TransactionType.OUTCOME.name())) {
-            oldAccounts.put(ACCOUNT_TO, transaction.getAccount());
+            oldAccounts.put(ACCOUNT_TO, transaction.getAccountFrom());
             newAccounts.put(ACCOUNT_FROM, account);
         } else {
-            oldAccounts.put(ACCOUNT_FROM, transaction.getAccount());
+            oldAccounts.put(ACCOUNT_FROM, transaction.getAccountFrom());
             newAccounts.put(ACCOUNT_TO, account);
         }
 
-        InOutTransaction updatedTransaction =
+        Transaction updatedTransaction =
                 updateTransactionValues(requestBody, transaction, account, category, customCategory, tags, customTags);
         updateBalance(oldAmount, oldAccounts);
         updateBalance(requestBody.getAmount(), newAccounts);
@@ -325,7 +317,7 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionResponseModel> getAllTransactionsByUser(String username) {
         User user = userByUsername(username);
 
-        List<InOutTransaction> inOutList = inOutRepo.allByUser(user);
+        List<Transaction> inOutList = inOutRepo.allByUser(user);
         List<TransferTransaction> transferList = transferRepo.allByUser(user);
         List<DebtTransaction> debtList = debtRepo.allByUser(user);
 
@@ -355,11 +347,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     }
 
-    private InOutTransaction buildTransaction(InOutRequestModel requestBody, User user,
-                                              Account account, Optional<Category> category,
-                                              Optional<CustomCategory> customCategory, List<Tag> tags,
-                                              List<CustomTag> customTags, TransactionType type) {
-        InOutTransaction transaction = InOutTransaction.builder()
+    private Transaction buildTransaction(InOutRequestModel requestBody, User user,
+                                         Account account, Optional<Category> category,
+                                         Optional<Category> customCategory, List<Tag> tags,
+                                         List<Tag> customTags, TransactionType type) {
+        Transaction transaction = Transaction.builder()
                 .inOutTransactionId(UUID.randomUUID().toString())
                 .creationDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getCreationDateTime()))
                 .amount(requestBody.getAmount())
@@ -367,12 +359,12 @@ public class TransactionServiceImpl implements TransactionService {
                 .transactionType(type.name())
                 .account(account)
                 .tags(tags)
-                .customTags(customTags)
+                .tags(customTags)
                 .user(user)
                 .build();
 
         category.ifPresent(transaction::setCategory);
-        customCategory.ifPresent(transaction::setCustomCategory);
+        customCategory.ifPresent(transaction::setCategory);
 
         inOutRepo.save(transaction);
         return transaction;
@@ -406,18 +398,18 @@ public class TransactionServiceImpl implements TransactionService {
                 .build());
     }
 
-    private InOutTransaction updateTransactionValues(UpdateInOutRequestModel requestBody, InOutTransaction transaction,
-                                                     Account account, Optional<Category> category,
-                                                     Optional<CustomCategory> customCategory,
-                                                     List<Tag> tags, List<CustomTag> customTags) {
-        transaction.setCreationDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getCreationDateTime()));
+    private Transaction updateTransactionValues(UpdateInOutRequestModel requestBody, Transaction transaction,
+                                                Account account, Optional<Category> category,
+                                                Optional<Category> customCategory,
+                                                List<Tag> tags, List<Tag> customTags) {
+        transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getCreationDateTime()));
         transaction.setAmount(requestBody.getAmount());
         transaction.setDescription(requestBody.getDescription());
-        transaction.setAccount(account);
+        transaction.setAccountFrom(account);
         transaction.setTags(tags);
-        transaction.setCustomTags(customTags);
+        transaction.setTags(customTags);
         category.ifPresent(transaction::setCategory);
-        customCategory.ifPresent(transaction::setCustomCategory);
+        customCategory.ifPresent(transaction::setCategory);
         return inOutRepo.save(transaction);
     }
 
@@ -442,21 +434,21 @@ public class TransactionServiceImpl implements TransactionService {
         return debtRepo.save(transaction);
     }
 
-    private InOutResponseModel buildResponseModel(InOutTransaction transaction) {
+    private InOutResponseModel buildResponseModel(Transaction transaction) {
         InOutResponseModel responseModel = InOutResponseModel.builder()
-                .transactionId(transaction.getInOutTransactionId())
-                .creationDateTime(transaction.getCreationDateTime())
+                .transactionId(transaction.getTransactionId())
+                .creationDateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
                 .description(transaction.getDescription())
                 .transactionType(transaction.getTransactionType())
-                .accountId(transaction.getAccount().getAccountId())
+                .accountId(transaction.getAccountFrom().getAccountId())
                 .tagIds(transaction.getTags()
                         .stream()
                         .map(Tag::getTagId)
                         .collect(Collectors.toList()))
-                .customTagIds(transaction.getCustomTags()
+                .customTagIds(transaction.getTags()
                         .stream()
-                        .map(CustomTag::getCustomTagId)
+                        .map(Tag::getTagId)
                         .collect(Collectors.toList()))
                 .build();
 
@@ -464,8 +456,8 @@ public class TransactionServiceImpl implements TransactionService {
             responseModel.setCategoryId(transaction.getCategory().getCategoryId());
         }
 
-        if (!Objects.isNull(transaction.getCustomCategory())) {
-            responseModel.setCategoryId(transaction.getCustomCategory().getCustomCategoryId());
+        if (!Objects.isNull(transaction.getCategory())) {
+            responseModel.setCategoryId(transaction.getCategory().getCustomCategoryId());
         }
 
         return responseModel;
@@ -494,23 +486,23 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
-    private TransactionResponseModel buildGenericResponseModel(InOutTransaction transaction) {
+    private TransactionResponseModel buildGenericResponseModel(Transaction transaction) {
         TransactionResponseModel model = TransactionResponseModel.builder()
-                .transactionId(transaction.getInOutTransactionId())
-                .creationDateTime(transaction.getCreationDateTime())
+                .transactionId(transaction.getTransactionId())
+                .creationDateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
                 .description(transaction.getDescription())
                 .transactionType(transaction.getTransactionType())
-                .accountId(transaction.getAccount().getAccountId())
+                .accountId(transaction.getAccountFrom().getAccountId())
                 .transactionType(transaction.getTransactionType())
                 .build();
 
         String categoryId = transaction.getCategory() == null
-                ? transaction.getCustomCategory().getCustomCategoryId()
+                ? transaction.getCategory().getCustomCategoryId()
                 : transaction.getCategory().getCategoryId();
 
         List<String> tags = transaction.getTags().stream().map(Tag::getTagId).collect(Collectors.toList());
-        transaction.getCustomTags().stream().map(CustomTag::getCustomTagId).forEach(tags::add);
+        transaction.getTags().stream().map(Tag::getTagId).forEach(tags::add);
 
         model.setCategoryId(categoryId);
         model.setTagIds(tags);
@@ -554,7 +546,7 @@ public class TransactionServiceImpl implements TransactionService {
                                 format(UNAUTHORIZED_ACCOUNT_MSG, user.getUsername(), accountId)));
     }
 
-    private InOutTransaction inOutTransactionById(String transactionId, User user) {
+    private Transaction inOutTransactionById(String transactionId, User user) {
         return inOutRepo.byIdAndUser(transactionId, user)
                 .orElseThrow(() ->
                         new TransactionNotFoundException(
@@ -580,9 +572,9 @@ public class TransactionServiceImpl implements TransactionService {
                 .byIdAndType(requestBody.getCategoryId(), CategoryType.valueOf(type.name()).name());
     }
 
-    private Optional<CustomCategory> customCategoryByIdAndType(InOutRequestModel requestBody,
-                                                               TransactionType type,
-                                                               User user) {
+    private Optional<Category> customCategoryByIdAndType(InOutRequestModel requestBody,
+                                                         TransactionType type,
+                                                         User user) {
         return customCategoryRepo
                 .byIdAndUserAndType(
                         requestBody.getCategoryId(),
@@ -598,7 +590,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .collect(Collectors.toList());
     }
 
-    private List<CustomTag> customTagsByIds(InOutRequestModel requestBody, User user) {
+    private List<Tag> customTagsByIds(InOutRequestModel requestBody, User user) {
         return requestBody.getTagIds()
                 .stream()
                 .filter(id -> customTagRepo.byIdAndUser(id, user).isPresent())
@@ -621,7 +613,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private void checkCategory(InOutRequestModel requestBody,
                                Optional<Category> category,
-                               Optional<CustomCategory> customCategory) {
+                               Optional<Category> customCategory) {
         if (category.isEmpty() && customCategory.isEmpty()) {
             throw new CategoryNotFoundException(format(INVALID_CATEGORY_ID_MSG, requestBody.getCategoryId()));
         }

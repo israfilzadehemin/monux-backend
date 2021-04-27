@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.repository;
 
-import com.budgetmanagementapp.entity.Note;
 import com.budgetmanagementapp.entity.Notification;
 import org.springframework.data.jpa.repository.JpaRepository;
 

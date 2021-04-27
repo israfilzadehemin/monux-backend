@@ -2,11 +2,11 @@ package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.TAG_CREATE_CUSTOM_TAG_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TAG_CREATE_TAG_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TAG_GET_ALL_TAGS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TAG_GET_CUSTOM_TAGS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TAG_GET_TAGS_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TAG_TOGGLE_VISIBILITY_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TAG_UPDATE_CUSTOM_TAG_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TAG_UPDATE_TAG_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.ResponseModel;
@@ -34,15 +34,15 @@ public class TagController {
 
     private static final String REQUEST_PARAM_TAG_ID = "tag-id";
 
-    @PostMapping(TAG_CREATE_CUSTOM_TAG_URL)
-    public ResponseEntity<?> createCustomTag(@RequestBody TagRequestModel requestBody,
-                                             Authentication auth) {
+    @PostMapping(TAG_CREATE_TAG_URL)
+    public ResponseEntity<?> createTag(@RequestBody TagRequestModel requestBody,
+                                       Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TAG_CREATE_CUSTOM_TAG_URL, requestBody));
+        log.info(format(REQUEST_MSG, TAG_CREATE_TAG_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(tagService.createCustomTag(requestBody,
+                        .body(tagService.createTag(requestBody,
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
                         .build());
     }
@@ -59,10 +59,10 @@ public class TagController {
                         .build());
     }
 
-    @GetMapping(TAG_GET_CUSTOM_TAGS_URL)
-    public ResponseEntity<?> getCustomTags(Authentication auth) {
+    @GetMapping(TAG_GET_TAGS_URL)
+    public ResponseEntity<?> getTagsOfUser(Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TAG_GET_CUSTOM_TAGS_URL, NO_BODY_MSG));
+        log.info(format(REQUEST_MSG, TAG_GET_TAGS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
@@ -71,11 +71,11 @@ public class TagController {
                         .build());
     }
 
-    @PostMapping(TAG_UPDATE_CUSTOM_TAG_URL)
-    public ResponseEntity<?> updateCustomTag(@RequestBody UpdateTagModel requestBody,
-                                             Authentication auth) {
+    @PostMapping(TAG_UPDATE_TAG_URL)
+    public ResponseEntity<?> updateTag(@RequestBody UpdateTagModel requestBody,
+                                       Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TAG_UPDATE_CUSTOM_TAG_URL, requestBody));
+        log.info(format(REQUEST_MSG, TAG_UPDATE_TAG_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)

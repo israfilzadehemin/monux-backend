@@ -19,5 +19,6 @@ import lombok.experimental.FieldDefaults;
 public class TagResponseModel {
     String tagId;
     String tagName;
+    String tagCategory;
     boolean visibility;
 }

@@ -20,9 +20,9 @@ public class MsgConstant {
     public static final String USER_BY_OTP_NOT_FOUND_MSG = "User is not found by OTP: %s";
     public static final String ACCOUNT_TYPE_NOT_FOUND_MSG = "Account type  %s is not found";
     public static final String ACCOUNT_CREATED_MSG = "User %s created an account: %s";
-    public static final String CUSTOM_CATEGORY_CREATED_MSG = "User %s created a custom category: %s";
+    public static final String CATEGORY_CREATED_MSG = "User %s created a category: %s";
     public static final String FEEDBACK_CREATED_MSG = "User %s created a feedback: %s";
-    public static final String CUSTOM_TAG_CREATED_MSG = "User %s created a custom tag: %s";
+    public static final String TAG_CREATED_MSG = "User %s created a tag: %s";
     public static final String IN_OUT_TRANSACTION_CREATED_MSG = "User %s created an in out transaction: %s";
     public static final String IN_OUT_TRANSACTION_UPDATED_MSG = "User %s updated an in out transaction: %s";
     public static final String DEBT_TRANSACTION_CREATED_MSG = "User %s created a debt transaction: %s";
@@ -34,8 +34,8 @@ public class MsgConstant {
     public static final String CATEGORY_UPDATED_MSG = "User '%s' updated a category: %s";
     public static final String TAG_UPDATED_MSG = "User '%s' updated a tag: %s";
     public static final String NO_ACCOUNT_MSG = "User '%s' does not have existing account";
-    public static final String CUSTOM_CATEGORY_NOT_FOUND_MSG = "User '%s' does not have any custom categories";
-    public static final String CUSTOM_TAG_NOT_FOUND_MSG = "User '%s' does not have any custom tags";
+    public static final String CATEGORY_NOT_FOUND_MSG = "User '%s' does not have any categories";
+    public static final String TAG_NOT_FOUND_MSG = "User '%s' does not have any tags";
     public static final String FEEDBACK_NOT_FOUND_MSG = "User '%s' does not have any feedbacks";
     public static final String CATEGORY_TYPE_NOT_FOUND_MSG = "Category type '%s' not found";
     public static final String TRANSACTION_TYPE_NOT_FOUND_MSG = "Transaction type '%s' not found";
@@ -49,7 +49,7 @@ public class MsgConstant {
     public static final String NO_BODY_MSG = "No body required";
     public static final String DUPLICATE_ACCOUNT_NAME_MSG = "User %s has existing account %s";
     public static final String DUPLICATE_CATEGORY_NAME_MSG = "User '%s' has existing category '%s'";
-    public static final String DUPLICATE_TAG_NAME_MSG = "User '%s' has existing category '%s'";
+    public static final String DUPLICATE_TAG_NAME_MSG = "User '%s' has existing tag '%s'";
     public static final String UNAUTHORIZED_ACCOUNT_MSG = "User '%s' does not own account '%s'";
     public static final String UNAUTHORIZED_CATEGORY_MSG = "User '%s' does not own category '%s'";
     public static final String UNAUTHORIZED_TAG_MSG = "User '%s' does not own tag '%s'";

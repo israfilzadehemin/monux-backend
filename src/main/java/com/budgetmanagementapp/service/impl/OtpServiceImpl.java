@@ -55,7 +55,7 @@ public class OtpServiceImpl implements OtpService {
                     .otpId(otp.getOtpId())
                     .username(user.getUsername())
                     .otpStatus(otp.getStatus())
-                    .otpCreationDateTime(otp.getCreationDateTime())
+                    .otpCreationDateTime(otp.getDateTime())
                     .build();
         } else {
             throw new InvalidOtpException(INVALID_OTP_MSG);
@@ -63,7 +63,7 @@ public class OtpServiceImpl implements OtpService {
     }
 
     private void checkOtpAvailability(Otp otp) {
-        if (otp.getCreationDateTime().isBefore(LocalDateTime.now().minusMinutes(2))
+        if (otp.getDateTime().isBefore(LocalDateTime.now().minusMinutes(2))
                 || !otp.getStatus().equals(STATUS_NEW)) {
             throw new ExpiredOtpException(EXPIRED_OTP_MSG);
         }

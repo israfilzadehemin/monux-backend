@@ -20,4 +20,5 @@ public class Constant {
     public static final String ROLE_USER = "ROLE_USER";
     public static final String ACCOUNT_FROM = "accountFrom";
     public static final String ACCOUNT_TO = "accountTo";
+    public static final String GENERAL_USERNAME = "generalUser";
 }

@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
         return UserResponseModel.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
-                .creationDateTime(user.getCreationDateTime())
+                .creationDateTime(user.getDateTime())
                 .status(user.getStatus())
                 .paymentStatus(user.getPaymentStatus())
                 .build();
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
         return UserResponseModel.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
-                .creationDateTime(user.getCreationDateTime())
+                .creationDateTime(user.getDateTime())
                 .status(user.getStatus())
                 .paymentStatus(user.getPaymentStatus())
                 .build();

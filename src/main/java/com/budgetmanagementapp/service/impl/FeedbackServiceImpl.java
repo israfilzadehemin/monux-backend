@@ -97,7 +97,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         return FeedbackResponseModel.builder()
                 .feedbackId(feedback.getFeedbackId())
                 .description(feedback.getDescription())
-                .creationDateTime(feedback.getCreationDateTime())
+                .creationDateTime(feedback.getDateTime())
                 .status(feedback.getStatus())
                 .build();
     }

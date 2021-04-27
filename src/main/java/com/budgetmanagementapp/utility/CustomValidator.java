@@ -28,7 +28,7 @@ import com.budgetmanagementapp.model.TagRequestModel;
 import com.budgetmanagementapp.model.TransferRequestModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
-import com.budgetmanagementapp.model.UpdateCategoryModel;
+import com.budgetmanagementapp.model.UpdateCategoryRequestModel;
 import com.budgetmanagementapp.model.UpdateDebtRequestModel;
 import com.budgetmanagementapp.model.UpdateInOutRequestModel;
 import com.budgetmanagementapp.model.UpdateTagModel;
@@ -137,26 +137,25 @@ public class CustomValidator {
         }
     }
 
-    public static void validateCategoryRequestModel(CategoryRequestModel requestModel) {
-        if (requestModel.getIcon() == null || requestModel.getIcon().isBlank()
-                || requestModel.getCategoryName() == null || requestModel.getCategoryName().isBlank()
-                || requestModel.getCategoryTypeName() == null || requestModel.getCategoryTypeName().isBlank()) {
+    public static void validateCategoryModel(CategoryRequestModel requestModel) {
+        if (Strings.isBlank(requestModel.getIcon())
+                || Strings.isBlank(requestModel.getCategoryName())
+                || Strings.isBlank(requestModel.getCategoryType())) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }
     }
 
-    public static void validateUpdateCategoryModel(UpdateCategoryModel requestModel) {
-        if (requestModel.getIcon() == null || requestModel.getIcon().isBlank()
-                || requestModel.getNewCategoryName() == null
-                || requestModel.getNewCategoryName().isBlank() || requestModel.getCategoryId() == null
-                || requestModel.getCategoryId().isBlank() || requestModel.getNewCategoryType() == null
-                || requestModel.getNewCategoryType().isBlank()) {
+    public static void validateUpdateCategoryModel(UpdateCategoryRequestModel requestModel) {
+        if (Strings.isBlank(requestModel.getIcon())
+                || Strings.isBlank(requestModel.getCategoryName())
+                || Strings.isBlank(requestModel.getCategoryId())
+                || Strings.isBlank(requestModel.getCategoryType())) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }
     }
 
     public static void validateTagRequestModel(TagRequestModel requestModel) {
-        if (requestModel.getTagName() == null || requestModel.getTagName().isBlank()) {
+        if (Strings.isBlank(requestModel.getTagName()) || Strings.isBlank(requestModel.getTagCategory())) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }
     }

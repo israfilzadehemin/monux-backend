@@ -6,9 +6,9 @@ import com.budgetmanagementapp.model.UpdateTagModel;
 import java.util.List;
 
 public interface TagService {
-    TagResponseModel createCustomTag(TagRequestModel requestBody, String username);
+    TagResponseModel createTag(TagRequestModel requestBody, String username);
 
-    List<TagResponseModel> getTagsByUser(String username, boolean includeDefaultTags);
+    List<TagResponseModel> getTagsByUser(String username, boolean includeCommonTags);
 
     TagResponseModel updateTag(UpdateTagModel requestBody, String username);
 

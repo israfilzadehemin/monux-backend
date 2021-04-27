@@ -1,20 +1,33 @@
 package com.budgetmanagementapp.repository;
 
 import com.budgetmanagementapp.entity.Category;
+import com.budgetmanagementapp.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-    default Optional<Category> byName(String name) {
-        return findByNameIgnoreCase(name);
+    default Optional<Category> byNameAndUser(String name, User user) {
+        return findByNameIgnoreCaseAndUser(name, user);
     }
 
-    default Optional<Category> byIdAndType(String categoryId, String categoryType) {
-        return findByCategoryIdAndType(categoryId, categoryType);
+    default Optional<Category> byIdAndUser(String categoryId, User user) {
+        return findByCategoryIdAndUser(categoryId, user);
     }
 
-    Optional<Category> findByCategoryIdAndType(String categoryId, String type);
+    default Optional<Category> allByUser(User user) {
+        return findAllByUser(user);
+    }
 
-    Optional<Category> findByNameIgnoreCase(String name);
+    default Optional<Category> allByUserOrGeneralUser(User user, User generalUser) {
+        return findAllByUserOrUser(user, generalUser);
+    }
+
+    Optional<Category> findByNameIgnoreCaseAndUser(String name, User user);
+
+    Optional<Category> findByCategoryIdAndUser(String categoryId, User user);
+
+    Optional<Category> findAllByUser(User user);
+
+    Optional<Category> findAllByUserOrUser(User user, User generalUser);
 }

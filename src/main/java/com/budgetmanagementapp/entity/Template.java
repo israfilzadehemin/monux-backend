@@ -24,18 +24,19 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class InOutTransaction {
+public class Template {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
-    @Column(name = "in_out_transaction_id")
-    private String inOutTransactionId;
+    @Column(name = "template_id")
+    private String templateId;
 
-    @Column(name = "creation_date_time")
-    private LocalDateTime creationDateTime;
+    @Column(name = "date_time")
+    private LocalDateTime dateTime;
 
     @Column(name = "amount")
     private BigDecimal amount;
@@ -48,54 +49,46 @@ public class InOutTransaction {
 
     @ManyToOne
     @JoinTable(
-            name = "rel_in_out_transaction_with_account",
+            name = "rel_template_with_account_from",
             joinColumns =
-                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
+                    {@JoinColumn(name = "template_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
-    private Account account;
+    private Account accountFrom;
 
     @ManyToOne
     @JoinTable(
-            name = "rel_in_out_transaction_with_category",
+            name = "rel_template_with_account_to",
             joinColumns =
-                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
+                    {@JoinColumn(name = "template_id", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "account_id", referencedColumnName = "id")})
+    private Account accountTo;
+
+
+    @ManyToOne
+    @JoinTable(
+            name = "rel_template_with_category",
+            joinColumns =
+                    {@JoinColumn(name = "template_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "category_id", referencedColumnName = "id")})
     private Category category;
 
-    @ManyToOne
-    @JoinTable(
-            name = "rel_in_out_transaction_with_custom_category",
-            joinColumns =
-                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
-            inverseJoinColumns =
-                    {@JoinColumn(name = "custom_category_id", referencedColumnName = "id")})
-    private CustomCategory customCategory;
-
     @ManyToMany()
     @JoinTable(
-            name = "rel_in_out_transaction_with_tag",
+            name = "rel_template_with_tag",
             joinColumns =
-                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
+                    {@JoinColumn(name = "template_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
     private List<Tag> tags;
 
-    @ManyToMany()
-    @JoinTable(
-            name = "rel_in_out_transaction_with_custom_tag",
-            joinColumns =
-                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
-            inverseJoinColumns =
-                    {@JoinColumn(name = "custom_tag_id", referencedColumnName = "id")})
-    private List<CustomTag> customTags;
-
     @ManyToOne()
     @JoinTable(
-            name = "rel_in_out_transaction_with_user",
+            name = "rel_template_with_user",
             joinColumns =
-                    {@JoinColumn(name = "in_out_transaction_id", referencedColumnName = "id")},
+                    {@JoinColumn(name = "template_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "user_id", referencedColumnName = "id")})
     private User user;

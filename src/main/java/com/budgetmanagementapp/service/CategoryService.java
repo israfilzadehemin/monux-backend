@@ -2,14 +2,14 @@ package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.model.CategoryRequestModel;
 import com.budgetmanagementapp.model.CategoryResponseModel;
-import com.budgetmanagementapp.model.UpdateCategoryModel;
+import com.budgetmanagementapp.model.UpdateCategoryRequestModel;
 import java.util.List;
 
 public interface CategoryService {
 
-    CategoryResponseModel createCustomCategory(CategoryRequestModel requestBody, String username);
+    CategoryResponseModel createCategory(CategoryRequestModel requestBody, String username);
 
-    List<CategoryResponseModel> getCategoriesByUser(String username, boolean includeDefaultCategories);
+    List<CategoryResponseModel> getCategoriesByUser(String username, boolean includeCommonCategories);
 
-    CategoryResponseModel updateCategory(UpdateCategoryModel requestBody, String username);
+    CategoryResponseModel updateCategory(UpdateCategoryRequestModel requestBody, String username);
 }

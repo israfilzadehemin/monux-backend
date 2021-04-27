@@ -6,6 +6,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +22,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class Notification {
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +43,13 @@ public class Notification {
 
     @Column(name = "enabled")
     private boolean enabled;
+
+    @ManyToOne
+    @JoinTable(
+            name = "rel_notification_with_user",
+            joinColumns =
+                    {@JoinColumn(name = "notification_id", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    private User user;
 }
