@@ -52,22 +52,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryResponseModel> getCategoriesByUser(String username, boolean includeCommonCategories) {
         User user = userByUsername(username);
-        User generalUser = userByUsername(GENERAL_USERNAME);
 
-        List<CategoryResponseModel> categories =
-                includeCommonCategories
-                        ? categoryRepo.allByUserOrGeneralUser(user, generalUser)
-                        .stream()
-                        .map(this::buildCategoryResponseModel)
-                        .collect(Collectors.toList())
-                        : categoryRepo.allByUser(user)
-                        .stream()
-                        .map(this::buildCategoryResponseModel)
-                        .collect(Collectors.toList());
-
-        if (categories.isEmpty()) {
-            throw new CategoryNotFoundException(format(CATEGORY_NOT_FOUND_MSG, username));
-        }
+        List<CategoryResponseModel> categories = categoriesByUser(includeCommonCategories, user);
 
         log.info(format(ALL_CATEGORIES_MSG, user.getUsername(), categories));
         return categories;
@@ -133,6 +119,20 @@ public class CategoryServiceImpl implements CategoryService {
         return userRepo
                 .findByUsernameAndStatus(username, STATUS_ACTIVE)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+    }
+
+    private List<CategoryResponseModel> categoriesByUser(boolean includeCommonCategories, User user) {
+        User generalUser = userByUsername(GENERAL_USERNAME);
+
+        return includeCommonCategories
+                ? categoryRepo.allByUserOrGeneralUser(user, generalUser)
+                .stream()
+                .map(this::buildCategoryResponseModel)
+                .collect(Collectors.toList())
+                : categoryRepo.allByUser(user)
+                .stream()
+                .map(this::buildCategoryResponseModel)
+                .collect(Collectors.toList());
     }
 
 

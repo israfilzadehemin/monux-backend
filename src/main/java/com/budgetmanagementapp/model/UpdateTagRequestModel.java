@@ -16,7 +16,6 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateTagModel {
+public class UpdateTagRequestModel extends TagRequestModel {
     String tagId;
-    String newTagName;
 }

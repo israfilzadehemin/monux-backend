@@ -31,7 +31,7 @@ import com.budgetmanagementapp.model.UpdateBalanceModel;
 import com.budgetmanagementapp.model.UpdateCategoryRequestModel;
 import com.budgetmanagementapp.model.UpdateDebtRequestModel;
 import com.budgetmanagementapp.model.UpdateInOutRequestModel;
-import com.budgetmanagementapp.model.UpdateTagModel;
+import com.budgetmanagementapp.model.UpdateTagRequestModel;
 import com.budgetmanagementapp.model.UpdateTransferRequestModel;
 import java.util.Arrays;
 import java.util.Objects;
@@ -160,7 +160,7 @@ public class CustomValidator {
         }
     }
 
-    public static void validateUpdateTagModel(UpdateTagModel requestBody) {
+    public static void validateUpdateTagModel(UpdateTagRequestModel requestBody) {
         if (requestBody.getTagId() == null || requestBody.getTagId().isBlank()
                 || requestBody.getNewTagName() == null || requestBody.getNewTagName().isBlank()
         ) {

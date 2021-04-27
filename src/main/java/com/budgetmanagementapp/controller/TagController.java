@@ -11,7 +11,7 @@ import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.TagRequestModel;
-import com.budgetmanagementapp.model.UpdateTagModel;
+import com.budgetmanagementapp.model.UpdateTagRequestModel;
 import com.budgetmanagementapp.service.TagService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -72,7 +72,7 @@ public class TagController {
     }
 
     @PostMapping(TAG_UPDATE_TAG_URL)
-    public ResponseEntity<?> updateTag(@RequestBody UpdateTagModel requestBody,
+    public ResponseEntity<?> updateTag(@RequestBody UpdateTagRequestModel requestBody,
                                        Authentication auth) {
 
         log.info(format(REQUEST_MSG, TAG_UPDATE_TAG_URL, requestBody));

@@ -24,7 +24,7 @@ public class MUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userService.findByUsername(username)
+        return userService.findAuthModelByUsername(username)
                 .map(MUserDetailsService::map)
                 .orElseThrow(() -> {
                     String message = String.format(USER_NOT_FOUND_MSG, username);

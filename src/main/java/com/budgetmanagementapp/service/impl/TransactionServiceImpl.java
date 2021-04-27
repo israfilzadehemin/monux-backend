@@ -70,12 +70,8 @@ public class TransactionServiceImpl implements TransactionService {
     private final UserRepository userRepo;
     private final AccountRepository accountRepo;
     private final CategoryRepository categoryRepo;
-    private final CustomCategoryRepository customCategoryRepo;
     private final TagRepository tagRepository;
-    private final CustomTagRepository customTagRepo;
     private final TransactionRepository inOutRepo;
-    private final TransferTransactionRepository transferRepo;
-    private final DebtTransactionRepository debtRepo;
 
     @Override
     @Transactional

@@ -13,6 +13,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.ROLE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USERNAME_NOT_UNIQUE_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_ADDED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
+import static java.lang.String.format;
 
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
@@ -56,13 +57,20 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder encoder;
 
     @Override
-    public Optional<UserAuthModel> findByUsername(String username) {
+    public Optional<UserAuthModel> findAuthModelByUsername(String username) {
         return userRepo.findByUsernameAndStatus(username, STATUS_ACTIVE).map(UserAuthModel::new);
     }
 
     @Override
     public Optional<UserAuthModel> findById(long id) {
         return userRepo.findByIdAndStatus(id, STATUS_ACTIVE).map(UserAuthModel::new);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepo
+                .findByUsernameAndStatus(username, STATUS_ACTIVE)
+                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
     }
 
     @Override
@@ -155,7 +163,7 @@ public class UserServiceImpl implements UserService {
         return User.builder()
                 .userId(UUID.randomUUID().toString())
                 .username(username)
-                .creationDateTime(LocalDateTime.now())
+                .dateTime(LocalDateTime.now())
                 .status(STATUS_PROCESSING)
                 .paymentStatus(STATUS_NOT_PAID)
                 .roles(Collections.singletonList(
@@ -170,7 +178,7 @@ public class UserServiceImpl implements UserService {
                 .otpId(UUID.randomUUID().toString())
                 .otp(otp)
                 .status(STATUS_NEW)
-                .creationDateTime(LocalDateTime.now())
+                .dateTime(LocalDateTime.now())
                 .user(user)
                 .build());
     }
