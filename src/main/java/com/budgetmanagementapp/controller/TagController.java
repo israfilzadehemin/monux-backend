@@ -35,8 +35,7 @@ public class TagController {
     private static final String REQUEST_PARAM_TAG_ID = "tag-id";
 
     @PostMapping(TAG_CREATE_TAG_URL)
-    public ResponseEntity<?> createTag(@RequestBody TagRequestModel requestBody,
-                                       Authentication auth) {
+    public ResponseEntity<?> createTag(@RequestBody TagRequestModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, TAG_CREATE_TAG_URL, requestBody));
         return ResponseEntity.ok(
@@ -72,8 +71,7 @@ public class TagController {
     }
 
     @PostMapping(TAG_UPDATE_TAG_URL)
-    public ResponseEntity<?> updateTag(@RequestBody UpdateTagRequestModel requestBody,
-                                       Authentication auth) {
+    public ResponseEntity<?> updateTag(@RequestBody UpdateTagRequestModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, TAG_UPDATE_TAG_URL, requestBody));
         return ResponseEntity.ok(

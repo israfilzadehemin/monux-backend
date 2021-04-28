@@ -78,7 +78,6 @@ public class TagServiceImpl implements TagService {
         return buildTagResponseModel(tag);
     }
 
-
     @Override
     public TagResponseModel toggleVisibility(String tagId, String username) {
         CustomValidator.validateTagId(tagId);
@@ -89,33 +88,6 @@ public class TagServiceImpl implements TagService {
         log.info(format(VISIBILITY_TOGGLED_MSG, username, buildTagResponseModel(tag)));
         return buildTagResponseModel(tag);
     }
-
-
-    private User userByUsername(String username) {
-        return userRepo
-                .findByUsernameAndStatus(username, STATUS_ACTIVE)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
-    }
-
-    private List<TagResponseModel> tagsByUser(boolean includeCommonTags, User user, User generalUser) {
-        List<TagResponseModel> tags =
-                includeCommonTags
-                        ? tagRepo.allByUserOrGeneralUser(user, generalUser)
-                        .stream()
-                        .map(this::buildTagResponseModel)
-                        .collect(Collectors.toList())
-                        : tagRepo.allByUser(user)
-                        .stream()
-                        .map(this::buildTagResponseModel)
-                        .collect(Collectors.toList());
-        return tags;
-    }
-
-    private Tag tagByIdAndUser(String tagId, String username) {
-        return tagRepo.byIdAndUser(tagId, userByUsername(username))
-                .orElseThrow(() -> new TagNotFoundException(format(UNAUTHORIZED_TAG_MSG, username, tagId)));
-    }
-
 
     private Tag buildTag(TagRequestModel requestBody, User user) {
         CustomValidator.validateCategoryType(requestBody.getTagCategory());
@@ -129,12 +101,6 @@ public class TagServiceImpl implements TagService {
                 .build());
     }
 
-    private void updateTagValues(UpdateTagRequestModel requestBody, Tag tag) {
-        tag.setName(requestBody.getTagName());
-        tag.setType(requestBody.getTagCategory());
-        tagRepo.save(tag);
-    }
-
     private TagResponseModel buildTagResponseModel(Tag tag) {
         return TagResponseModel.builder()
                 .tagId(tag.getTagId())
@@ -144,6 +110,40 @@ public class TagServiceImpl implements TagService {
                 .build();
     }
 
+    private User userByUsername(String username) {
+        return userRepo
+                .findByUsernameAndStatus(username, STATUS_ACTIVE)
+                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+    }
+
+    private List<TagResponseModel> tagsByUser(boolean includeCommonTags, User user, User generalUser) {
+        return includeCommonTags
+                ? tagRepo.allByUserOrGeneralUser(user, generalUser)
+                .stream()
+                .map(this::buildTagResponseModel)
+                .collect(Collectors.toList())
+                : tagRepo.allByUser(user)
+                .stream()
+                .map(this::buildTagResponseModel)
+                .collect(Collectors.toList());
+    }
+
+    private Tag tagByIdAndUser(String tagId, String username) {
+        return tagRepo.byIdAndUser(tagId, userByUsername(username))
+                .orElseThrow(() -> new TagNotFoundException(format(UNAUTHORIZED_TAG_MSG, username, tagId)));
+    }
+
+    private void updateTagValues(UpdateTagRequestModel requestBody, Tag tag) {
+        tag.setName(requestBody.getTagName());
+        tag.setType(requestBody.getTagCategory());
+        tagRepo.save(tag);
+    }
+
+    private void toggleTagVisibility(Tag tag) {
+        tag.setVisibility(!tag.isVisibility());
+        tagRepo.save(tag);
+    }
+
     private void checkDuplicate(String tagName, User user) {
         if (tagRepo.byNameAndUser(tagName, user).isPresent()
                 || tagRepo.byNameAndUser(tagName, userByUsername(GENERAL_USERNAME)).isPresent()) {
@@ -151,9 +151,5 @@ public class TagServiceImpl implements TagService {
         }
     }
 
-    private void toggleTagVisibility(Tag tag) {
-        tag.setVisibility(!tag.isVisibility());
-        tagRepo.save(tag);
-    }
 
 }

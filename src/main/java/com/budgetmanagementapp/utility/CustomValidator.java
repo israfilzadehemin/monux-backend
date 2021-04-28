@@ -41,11 +41,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CustomValidator {
 
-    public static void validateEmailFormat(String email) {
-        if (email == null) {
-            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
-        }
-
+    public static void validateUsernameFormat(String email) {
         if (!email.matches(
                 "^[\\w!#$%&'*+/=?`{|}~^-]+(?:\\.[\\w!#$%&'*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}")) {
             throw new InvalidEmailException(String.format(INVALID_EMAIL_MSG, email));
@@ -54,10 +50,6 @@ public class CustomValidator {
     }
 
     public static void validatePhoneNumberFormat(String phoneNumber) {
-        if (phoneNumber == null) {
-            throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
-        }
-
         if (!phoneNumber.startsWith("+") || phoneNumber.length() < 10) {
             throw new InvalidPhoneNumberException(String.format(INVALID_PHONE_NUMBER_MSG, phoneNumber));
         }
@@ -162,7 +154,7 @@ public class CustomValidator {
 
     public static void validateUpdateTagModel(UpdateTagRequestModel requestBody) {
         if (requestBody.getTagId() == null || requestBody.getTagId().isBlank()
-                || requestBody.getNewTagName() == null || requestBody.getNewTagName().isBlank()
+                || requestBody.getTagName() == null || requestBody.getTagName().isBlank()
         ) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
         }

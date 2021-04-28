@@ -4,8 +4,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_INITIAL_ACCOUNT_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_WITH_EMAIL_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_WITH_PHONE_NUMBER_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
 
 import com.budgetmanagementapp.model.AccountRequestModel;
 import com.budgetmanagementapp.model.ConfirmOtpRequestModel;
@@ -35,25 +34,14 @@ public class UserController {
     private final MailSenderService mailSenderService;
     private final OtpService otpService;
 
-    @PostMapping(USER_SIGNUP_WITH_EMAIL_URL)
+    @PostMapping(USER_SIGNUP_URL)
     public ResponseEntity<?> signupWithEmail(@RequestBody SignupRequestModel signupRequestModel)
             throws MessagingException {
-        log.info(String.format(REQUEST_MSG, USER_SIGNUP_WITH_EMAIL_URL, signupRequestModel));
+        log.info(String.format(REQUEST_MSG, USER_SIGNUP_URL, signupRequestModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(userService.signupWithEmail(signupRequestModel))
-                        .build()
-        );
-    }
-
-    @PostMapping(USER_SIGNUP_WITH_PHONE_NUMBER_URL)
-    public ResponseEntity<?> signupWithPhoneNumber(@RequestBody SignupRequestModel signupRequestModel) {
-        log.info(String.format(REQUEST_MSG, USER_SIGNUP_WITH_PHONE_NUMBER_URL, signupRequestModel));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(userService.signupWithPhoneNumber(signupRequestModel))
+                        .body(userService.signup(signupRequestModel))
                         .build()
         );
     }

@@ -75,92 +75,43 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseModel signupWithEmail(SignupRequestModel username) throws MessagingException {
-        CustomValidator.validateEmailFormat(username.getUsername());
+    public UserResponseModel signup(SignupRequestModel username) throws MessagingException {
+        if (username.getUsername().contains("@")) {
+            CustomValidator.validateUsernameFormat(username.getUsername());
+        } else {
+            CustomValidator.validatePhoneNumberFormat(username.getUsername());
+        }
+
         checkUsernameUniqueness(username.getUsername());
-
-        User user = userRepo.save(createUser(username.getUsername()));
-
+        User user = buildUser(username.getUsername());
         String otp = generateOtp();
-        otpRepo.save(createOtp(otp, user));
+        buildOtp(otp, user);
 
-        mailSenderService.sendOtp(
-                username.getUsername(),
-                OTP_CONFIRMATION_SUBJECT,
-                String.format(OTP_CONFIRMATION_BODY, otp));
+        if (username.getUsername().contains("@")) {
+            mailSenderService
+                    .sendOtp(username.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
+        } else {
+            smsSenderService
+                    .sendOtp(username.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
+        }
 
-        log.info(
-                String.format(USER_ADDED_MSG, username.getUsername()));
-
-        return UserResponseModel.builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .creationDateTime(user.getDateTime())
-                .status(user.getStatus())
-                .paymentStatus(user.getPaymentStatus())
-                .build();
-
+        log.info(format(USER_ADDED_MSG, username.getUsername()));
+        return buildUserResponseModel(user);
     }
-
-    @Override
-    @Transactional
-    public UserResponseModel signupWithPhoneNumber(SignupRequestModel username) {
-        CustomValidator.validatePhoneNumberFormat(username.getUsername());
-        checkUsernameUniqueness(username.getUsername());
-
-        User user = userRepo.save(createUser(username.getUsername()));
-
-        String otp = generateOtp();
-        otpRepo.save(createOtp(otp, user));
-
-        smsSenderService.sendOtp(
-                username.getUsername(),
-                OTP_CONFIRMATION_SUBJECT,
-                String.format(OTP_CONFIRMATION_BODY, otp));
-
-        log.info(
-                String.format(USER_ADDED_MSG, username.getUsername()));
-
-        return UserResponseModel.builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .creationDateTime(user.getDateTime())
-                .status(user.getStatus())
-                .paymentStatus(user.getPaymentStatus())
-                .build();
-    }
-
 
     @Override
     public CreatePasswordResponseModel createPassword(CreatePasswordRequestModel passwordModel) {
         CustomValidator.validatePassword(passwordModel.getPassword(), passwordModel.getConfirmPassword());
 
-        User user = userRepo.findByUsernameAndStatus(passwordModel.getUsername(), STATUS_CONFIRMED)
-                .orElseThrow(() ->
-                        new UserNotFoundException(
-                                String.format(USER_NOT_FOUND_MSG, passwordModel.getUsername())));
+        User user = userByUsernameAndStatus(passwordModel);
+        updatePasswordAndStatusValues(passwordModel.getPassword(), user);
 
-        user.setPassword(encoder.encode(passwordModel.getPassword()));
-        user.setStatus(STATUS_ACTIVE);
-        userRepo.save(user);
-
-        log.info(String.format(PASSWORD_CREATED_MSG, user.getUsername()));
-
-        return CreatePasswordResponseModel.builder()
-                .username(passwordModel.getUsername())
-                .password(passwordModel.getPassword())
-                .build();
+        log.info(format(PASSWORD_CREATED_MSG, user.getUsername()));
+        return buildPasswordResponseModel(passwordModel);
     }
 
-
-    private void checkUsernameUniqueness(String username) {
-        if (userRepo.findByUsername(username).isPresent()) {
-            throw new UsernameNotUniqueException(USERNAME_NOT_UNIQUE_MSG);
-        }
-    }
-
-    private User createUser(String username) {
-        return User.builder()
+    private User buildUser(String username) {
+        return userRepo.save(User.builder()
                 .userId(UUID.randomUUID().toString())
                 .username(username)
                 .dateTime(LocalDateTime.now())
@@ -168,19 +119,52 @@ public class UserServiceImpl implements UserService {
                 .paymentStatus(STATUS_NOT_PAID)
                 .roles(Collections.singletonList(
                         roleRepo.findByName(ROLE_USER)
-                                .orElseThrow(
-                                        () -> new UserRoleNotFoundException(ROLE_NOT_FOUND_MSG))))
-                .build();
+                                .orElseThrow(() -> new UserRoleNotFoundException(ROLE_NOT_FOUND_MSG))))
+                .build());
     }
 
-    private Otp createOtp(String otp, User user) {
-        return otpRepo.save(Otp.builder()
+    private void buildOtp(String otp, User user) {
+        otpRepo.save(Otp.builder()
                 .otpId(UUID.randomUUID().toString())
                 .otp(otp)
                 .status(STATUS_NEW)
                 .dateTime(LocalDateTime.now())
                 .user(user)
                 .build());
+    }
+
+    private UserResponseModel buildUserResponseModel(User user) {
+        return UserResponseModel.builder()
+                .userId(user.getUserId())
+                .username(user.getUsername())
+                .creationDateTime(user.getDateTime())
+                .status(user.getStatus())
+                .paymentStatus(user.getPaymentStatus())
+                .build();
+    }
+
+    private CreatePasswordResponseModel buildPasswordResponseModel(CreatePasswordRequestModel passwordModel) {
+        return CreatePasswordResponseModel.builder()
+                .username(passwordModel.getUsername())
+                .password(passwordModel.getPassword())
+                .build();
+    }
+
+    private User userByUsernameAndStatus(CreatePasswordRequestModel passwordModel) {
+        return userRepo.findByUsernameAndStatus(passwordModel.getUsername(), STATUS_CONFIRMED)
+                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, passwordModel.getUsername())));
+    }
+
+    private void updatePasswordAndStatusValues(String password, User user) {
+        user.setPassword(encoder.encode(password));
+        user.setStatus(STATUS_ACTIVE);
+        userRepo.save(user);
+    }
+
+    private void checkUsernameUniqueness(String username) {
+        if (userRepo.findByUsername(username).isPresent()) {
+            throw new UsernameNotUniqueException(USERNAME_NOT_UNIQUE_MSG);
+        }
     }
 
     private String generateOtp() {

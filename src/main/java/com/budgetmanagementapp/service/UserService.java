@@ -17,9 +17,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    UserResponseModel signupWithEmail(SignupRequestModel username) throws MessagingException;
-
-    UserResponseModel signupWithPhoneNumber(SignupRequestModel username);
+    UserResponseModel signup(SignupRequestModel username) throws MessagingException;
 
     CreatePasswordResponseModel createPassword(CreatePasswordRequestModel passwordRequestModel);
 }
