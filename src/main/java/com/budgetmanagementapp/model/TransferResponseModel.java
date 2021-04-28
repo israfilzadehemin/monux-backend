@@ -1,30 +1,23 @@
 package com.budgetmanagementapp.model;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TransferResponseModel {
-
-    String transactionId;
-    LocalDateTime creationDateTime;
-    BigDecimal amount;
-    String description;
-    String accountFrom;
-    String accountTo;
-    String transactionType;
+public class TransferResponseModel extends TransactionResponseModel {
+    String receiverAccountId;
+    String senderAccountId;
 }

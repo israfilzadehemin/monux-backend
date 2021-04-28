@@ -72,10 +72,10 @@ public class Account {
             inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
     private User user;
 
-    @OneToMany(mappedBy = "accountFrom")
+    @OneToMany(mappedBy = "senderAccount")
     private List<Transaction> transactionsOut;
 
-    @OneToMany(mappedBy = "accountTo")
+    @OneToMany(mappedBy = "receiverAccount")
     private List<Transaction> transactionsIn;
 
     @OneToMany(mappedBy = "accountFrom")

@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.GENERAL_USERNAME;
+import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
 import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
 import static com.budgetmanagementapp.utility.MsgConstant.ALL_TAGS_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_TAG_NAME_MSG;
@@ -54,7 +54,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public List<TagResponseModel> getTagsByUser(String username, boolean includeCommonTags) {
         User user = userByUsername(username);
-        User generalUser = userByUsername(GENERAL_USERNAME);
+        User generalUser = userByUsername(COMMON_USERNAME);
 
         List<TagResponseModel> tags = tagsByUser(includeCommonTags, user, generalUser);
 
@@ -146,7 +146,7 @@ public class TagServiceImpl implements TagService {
 
     private void checkDuplicate(String tagName, User user) {
         if (tagRepo.byNameAndUser(tagName, user).isPresent()
-                || tagRepo.byNameAndUser(tagName, userByUsername(GENERAL_USERNAME)).isPresent()) {
+                || tagRepo.byNameAndUser(tagName, userByUsername(COMMON_USERNAME)).isPresent()) {
             throw new DuplicateTagException(format(DUPLICATE_TAG_NAME_MSG, user.getUsername(), tagName));
         }
     }

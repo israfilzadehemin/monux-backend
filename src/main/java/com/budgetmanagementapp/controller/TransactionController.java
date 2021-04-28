@@ -16,9 +16,9 @@ import static java.lang.String.format;
 import com.budgetmanagementapp.model.DebtRequestModel;
 import com.budgetmanagementapp.model.InOutRequestModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.TransferRequestModel;
+import com.budgetmanagementapp.model.TransactionRequestModel;
 import com.budgetmanagementapp.model.UpdateDebtRequestModel;
-import com.budgetmanagementapp.model.UpdateInOutRequestModel;
+import com.budgetmanagementapp.model.UpdateTransactionRequestModel;
 import com.budgetmanagementapp.model.UpdateTransferRequestModel;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.utility.TransactionType;
@@ -48,7 +48,7 @@ public class TransactionController {
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
+                        .body(transactionService.createInOutTransaction(
                                 requestBody,
                                 TransactionType.INCOME,
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
@@ -57,7 +57,7 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL)
-    public ResponseEntity<?> createOutcomeTransaction(@RequestBody InOutRequestModel requestBody,
+    public ResponseEntity<?> createOutcomeTransaction(@RequestBody TransactionRequestModel requestBody,
                                                       Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL, requestBody));
@@ -65,9 +65,9 @@ public class TransactionController {
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
+                        .body(transactionService.createInOutTransaction(
                                 requestBody,
-                                TransactionType.OUTCOME,
+                                TransactionType.OUTGOING,
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
                         .build());
 
@@ -83,7 +83,7 @@ public class TransactionController {
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
+                        .body(transactionService.createInOutTransaction(
                                 requestBody,
                                 TransactionType.TRANSFER,
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
@@ -101,7 +101,7 @@ public class TransactionController {
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
+                        .body(transactionService.createTransferTransaction(
                                 requestBody,
                                 TransactionType.DEBT_IN,
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
@@ -119,7 +119,7 @@ public class TransactionController {
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
+                        .body(transactionService.createTransferTransaction(
                                 requestBody,
                                 TransactionType.DEBT_OUT,
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
@@ -141,7 +141,7 @@ public class TransactionController {
 
 
     @PostMapping(TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL)
-    public ResponseEntity<?> updateInOutTransaction(@RequestBody UpdateInOutRequestModel requestBody,
+    public ResponseEntity<?> updateInOutTransaction(@RequestBody UpdateTransactionRequestModel requestBody,
                                                     Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL, requestBody));

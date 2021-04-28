@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.GENERAL_USERNAME;
+import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
 import static com.budgetmanagementapp.utility.MsgConstant.ALL_CATEGORIES_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_UPDATED_MSG;
@@ -99,7 +99,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private void checkDuplicate(String categoryName, User user) {
         if (categoryRepo.byNameAndUser(categoryName, user).isPresent()
-                || categoryRepo.byNameAndUser(categoryName, userService.findByUsername(GENERAL_USERNAME)).isPresent()) {
+                || categoryRepo.byNameAndUser(categoryName, userService.findByUsername(COMMON_USERNAME)).isPresent()) {
             throw new DuplicateCategoryException(
                     format(DUPLICATE_CATEGORY_NAME_MSG, user.getUsername(), categoryName));
         }
@@ -112,7 +112,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private List<CategoryResponseModel> categoriesByUser(boolean includeCommonCategories, User user) {
-        User generalUser = userService.findByUsername(GENERAL_USERNAME);
+        User generalUser = userService.findByUsername(COMMON_USERNAME);
 
         return includeCommonCategories
                 ? categoryRepo.allByUserOrGeneralUser(user, generalUser)

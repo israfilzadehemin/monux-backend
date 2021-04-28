@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.model;
 
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,10 +14,11 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @SuperBuilder
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateInOutRequestModel extends InOutRequestModel {
-    String transactionId;
-
+public class TransactionRequestModel {
+    String dateTime;
+    BigDecimal amount;
+    String description;
 }

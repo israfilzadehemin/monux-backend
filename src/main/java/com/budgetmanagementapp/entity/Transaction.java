@@ -53,7 +53,7 @@ public class Transaction {
                     {@JoinColumn(name = "transaction_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
-    private Account accountFrom;
+    private Account senderAccount;
 
     @ManyToOne
     @JoinTable(
@@ -62,7 +62,7 @@ public class Transaction {
                     {@JoinColumn(name = "transaction_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
-    private Account accountTo;
+    private Account receiverAccount;
 
 
     @ManyToOne

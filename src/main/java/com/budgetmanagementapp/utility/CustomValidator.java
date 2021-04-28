@@ -10,6 +10,9 @@ import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_MISMATCH_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_NOT_SUFFICIENT_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_TYPE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
+import static com.budgetmanagementapp.utility.TransactionType.INCOME;
+import static com.budgetmanagementapp.utility.TransactionType.OUTGOING;
+import static com.budgetmanagementapp.utility.TransactionType.values;
 
 import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateAccountException;
@@ -23,15 +26,14 @@ import com.budgetmanagementapp.model.AccountRequestModel;
 import com.budgetmanagementapp.model.CategoryRequestModel;
 import com.budgetmanagementapp.model.DebtRequestModel;
 import com.budgetmanagementapp.model.FeedbackRequestModel;
-import com.budgetmanagementapp.model.InOutRequestModel;
 import com.budgetmanagementapp.model.TagRequestModel;
-import com.budgetmanagementapp.model.TransferRequestModel;
+import com.budgetmanagementapp.model.TransactionRequestModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
 import com.budgetmanagementapp.model.UpdateCategoryRequestModel;
 import com.budgetmanagementapp.model.UpdateDebtRequestModel;
-import com.budgetmanagementapp.model.UpdateInOutRequestModel;
 import com.budgetmanagementapp.model.UpdateTagRequestModel;
+import com.budgetmanagementapp.model.UpdateTransactionRequestModel;
 import com.budgetmanagementapp.model.UpdateTransferRequestModel;
 import java.util.Arrays;
 import java.util.Objects;
@@ -179,11 +181,12 @@ public class CustomValidator {
         }
     }
 
-    public static void validateIncomeModel(InOutRequestModel requestBody) {
-        if (Objects.isNull(requestBody.getAccountId()) || requestBody.getAccountId().isBlank()
-                || Objects.isNull(requestBody.getDescription()) || Objects.isNull(requestBody.getAmount())
-                || Objects.isNull(requestBody.getCreationDateTime()) || requestBody.getCreationDateTime().isBlank()
-                || Objects.isNull(requestBody.getCategoryId()) || requestBody.getCategoryId().isBlank()
+    public static void validateOutgoingModel(TransactionRequestModel requestBody) {
+        if (Strings.isBlank(requestBody.getDateTime())
+                || Objects.isNull(requestBody.getAmount())
+                || Objects.isNull(requestBody.getDescription())
+                || Strings.isBlank(requestBody.getSenderAccountId())
+                || Strings.isBlank(requestBody.getCategoryId())
                 || Objects.isNull(requestBody.getTagIds())
         ) {
             throw new InvalidModelException(INVALID_REQUEST_MODEL_MSG);
@@ -191,7 +194,7 @@ public class CustomValidator {
     }
 
     public static void validateTransactionType(String value) {
-        if ((int) Arrays.stream(TransactionType.values()).filter(type -> type.name().equals(value.toUpperCase()))
+        if ((int) Arrays.stream(values()).filter(type -> type.name().equals(value.toUpperCase()))
                 .count() == 0) {
             throw new TransactionTypeNotFoundException(String.format(TRANSACTION_TYPE_NOT_FOUND_MSG, value));
         }
@@ -221,9 +224,9 @@ public class CustomValidator {
         }
     }
 
-    public static void validateUpdateInOutModel(UpdateInOutRequestModel requestBody) {
+    public static void validateUpdateInOutModel(UpdateTransactionRequestModel requestBody) {
         if (Strings.isBlank(requestBody.getTransactionId())
-                || Strings.isBlank(requestBody.getCreationDateTime())
+                || Strings.isBlank(requestBody.getDateTime())
                 || Objects.isNull(requestBody.getAmount())
                 || Strings.isBlank(requestBody.getDescription())
                 || Strings.isBlank(requestBody.getAccountId())

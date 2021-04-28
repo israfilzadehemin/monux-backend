@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.model;
 
-import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,10 +13,10 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @Setter
 @ToString
-@SuperBuilder
 @NoArgsConstructor
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TransferRequestModel extends TransactionRequestModel {
-    String receiverAccountId;
-    String senderAccountId;
+public class UpdateTransactionRequestModel extends TransactionRequestModel {
+    String transactionId;
+
 }

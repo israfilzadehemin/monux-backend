@@ -12,12 +12,16 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
         return findByNameAndUser(tagName, user);
     }
 
-    default List<Tag> allByUserOrGeneralUser(User user, User generalUser) {
-        return findAllByUserOrUser(user, generalUser);
-    }
-
     default Optional<Tag> byIdAndUser(String tagId, User user) {
         return findByTagIdAndUser(tagId, user);
+    }
+
+    default Optional<Tag> byIdAndTypeAndUsers(String tagId, String type, List<User> users) {
+        return findByTagIdAndTypeAndUserIn(tagId, type, users);
+    }
+
+    default List<Tag> allByUserOrGeneralUser(User user, User generalUser) {
+        return findAllByUserOrUser(user, generalUser);
     }
 
     default List<Tag> allByUser(User user) {
@@ -27,6 +31,8 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     Optional<Tag> findByNameAndUser(String tagName, User user);
 
     Optional<Tag> findByTagIdAndUser(String tagId, User user);
+
+    Optional<Tag> findByTagIdAndTypeAndUserIn(String tagId, String type, List<User> users);
 
     List<Tag> findAllByUserOrUser(User user, User generalUser);
 

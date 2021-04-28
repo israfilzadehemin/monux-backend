@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum TransactionType {
     INCOME,
-    OUTCOME,
+    OUTGOING,
     TRANSFER,
     DEBT_IN,
     DEBT_OUT

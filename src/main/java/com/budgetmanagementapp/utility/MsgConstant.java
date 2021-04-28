@@ -23,7 +23,8 @@ public class MsgConstant {
     public static final String CATEGORY_CREATED_MSG = "User %s created a category: %s";
     public static final String FEEDBACK_CREATED_MSG = "User %s created a feedback: %s";
     public static final String TAG_CREATED_MSG = "User %s created a tag: %s";
-    public static final String IN_OUT_TRANSACTION_CREATED_MSG = "User %s created an in out transaction: %s";
+    public static final String INCOME_TRANSACTION_CREATED_MSG = "User %s created an income transaction: %s";
+    public static final String OUTGOING_TRANSACTION_CREATED_MSG = "User %s created an outgoing transaction: %s";
     public static final String IN_OUT_TRANSACTION_UPDATED_MSG = "User %s updated an in out transaction: %s";
     public static final String DEBT_TRANSACTION_CREATED_MSG = "User %s created a debt transaction: %s";
     public static final String DEBT_TRANSACTION_UPDATED_MSG = "User %s updated a debt transaction: %s";
@@ -65,6 +66,7 @@ public class MsgConstant {
     public static final String ALL_FEEDBACKS_MSG = "All feedbacks of %s: %s";
     public static final String FEEDBACK_BY_ID_MSG = "Feedback with ID '%s': %s";
     public static final String INVALID_CATEGORY_ID_MSG = "Category '%s' is not found";
+    public static final String INVALID_TRANSACTION_TYPE_MSG = "Transaction type '%s' is not valid";
     public static final String NO_EXISTING_TRANSACTION_MSG = "User '%s' does not have any transaction yet";
     public static final String TRANSFER_TO_SELF_MSG = "Sender and receiver accounts are the same";
     public static final String INSUFFICIENT_BALANCE_MSG = "There is no enough balance for this operation in '%s'";

@@ -11,23 +11,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InOutResponseModel {
-    String transactionId;
-    LocalDateTime creationDateTime;
-    BigDecimal amount;
-    String description;
-    String transactionType;
+public class InOutResponseModel extends TransactionResponseModel {
     String accountId;
     String categoryId;
-    String customCategoryId;
     List<String> tagIds;
-    List<String> customTagIds;
 }

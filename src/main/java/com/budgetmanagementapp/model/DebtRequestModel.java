@@ -17,9 +17,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DebtRequestModel {
-    String creationDateTime;
-    BigDecimal amount;
-    String description;
+public class DebtRequestModel extends TransactionRequestModel{
     String accountId;
 }
