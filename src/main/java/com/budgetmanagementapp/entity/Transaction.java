@@ -44,7 +44,7 @@ public class Transaction {
     private String description;
 
     @Column(name = "transaction_type")
-    private String transactionType;
+    private String type;
 
     @ManyToOne
     @JoinTable(

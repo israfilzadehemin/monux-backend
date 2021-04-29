@@ -10,8 +10,6 @@ import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_MISMATCH_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_NOT_SUFFICIENT_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_TYPE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.TransactionType.INCOME;
-import static com.budgetmanagementapp.utility.TransactionType.OUTGOING;
 import static com.budgetmanagementapp.utility.TransactionType.values;
 
 import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
@@ -32,8 +30,8 @@ import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
 import com.budgetmanagementapp.model.UpdateCategoryRequestModel;
 import com.budgetmanagementapp.model.UpdateDebtRequestModel;
+import com.budgetmanagementapp.model.UpdateInOutRequestModel;
 import com.budgetmanagementapp.model.UpdateTagRequestModel;
-import com.budgetmanagementapp.model.UpdateTransactionRequestModel;
 import com.budgetmanagementapp.model.UpdateTransferRequestModel;
 import java.util.Arrays;
 import java.util.Objects;
@@ -224,7 +222,7 @@ public class CustomValidator {
         }
     }
 
-    public static void validateUpdateInOutModel(UpdateTransactionRequestModel requestBody) {
+    public static void validateUpdateInOutModel(UpdateInOutRequestModel requestBody) {
         if (Strings.isBlank(requestBody.getTransactionId())
                 || Strings.isBlank(requestBody.getDateTime())
                 || Objects.isNull(requestBody.getAmount())

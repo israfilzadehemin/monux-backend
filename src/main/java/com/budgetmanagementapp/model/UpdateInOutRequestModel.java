@@ -16,7 +16,7 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateTransactionRequestModel extends TransactionRequestModel {
+public class UpdateInOutRequestModel extends InOutRequestModel {
     String transactionId;
 
 }
