@@ -12,9 +12,9 @@ import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateCategoryException;
-import com.budgetmanagementapp.model.CategoryRequestModel;
-import com.budgetmanagementapp.model.CategoryResponseModel;
-import com.budgetmanagementapp.model.UpdateCategoryRequestModel;
+import com.budgetmanagementapp.model.CategoryRqModel;
+import com.budgetmanagementapp.model.CategoryRsModel;
+import com.budgetmanagementapp.model.UpdateCategoryRqModel;
 import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.service.CategoryService;
 import com.budgetmanagementapp.service.UserService;
@@ -34,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepo;
 
     @Override
-    public CategoryResponseModel createCategory(CategoryRequestModel requestBody, String username) {
+    public CategoryRsModel createCategory(CategoryRqModel requestBody, String username) {
         CustomValidator.validateCategoryModel(requestBody);
 
         User user = userService.findByUsername(username);
@@ -46,17 +46,17 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<CategoryResponseModel> getCategoriesByUser(String username, boolean includeCommonCategories) {
+    public List<CategoryRsModel> getCategoriesByUser(String username, boolean includeCommonCategories) {
         User user = userService.findByUsername(username);
 
-        List<CategoryResponseModel> categories = categoriesByUser(includeCommonCategories, user);
+        List<CategoryRsModel> categories = categoriesByUser(includeCommonCategories, user);
 
         log.info(format(ALL_CATEGORIES_MSG, user.getUsername(), categories));
         return categories;
     }
 
     @Override
-    public CategoryResponseModel updateCategory(UpdateCategoryRequestModel requestBody, String username) {
+    public CategoryRsModel updateCategory(UpdateCategoryRqModel requestBody, String username) {
         CustomValidator.validateUpdateCategoryModel(requestBody);
 
         Category category = categoryByIdAndUser(requestBody.getCategoryId(), username);
@@ -67,7 +67,7 @@ public class CategoryServiceImpl implements CategoryService {
         return buildCategoryResponseModel(category);
     }
 
-    private Category buildCategory(CategoryRequestModel requestModel, User user) {
+    private Category buildCategory(CategoryRqModel requestModel, User user) {
         CustomValidator.validateCategoryType(requestModel.getCategoryType());
 
         return categoryRepo.save(Category.builder()
@@ -79,8 +79,8 @@ public class CategoryServiceImpl implements CategoryService {
                 .build());
     }
 
-    private CategoryResponseModel buildCategoryResponseModel(Category category) {
-        return CategoryResponseModel.builder()
+    private CategoryRsModel buildCategoryResponseModel(Category category) {
+        return CategoryRsModel.builder()
                 .categoryId(category.getCategoryId())
                 .icon(category.getIcon())
                 .categoryName(category.getName())
@@ -88,7 +88,7 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
     }
 
-    private void updateCategoryValues(UpdateCategoryRequestModel requestBody, Category category) {
+    private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
         CustomValidator.validateCategoryType(requestBody.getCategoryType());
 
         category.setIcon(requestBody.getIcon());
@@ -111,7 +111,7 @@ public class CategoryServiceImpl implements CategoryService {
                         () -> new CategoryNotFoundException(format(UNAUTHORIZED_CATEGORY_MSG, username, categoryId)));
     }
 
-    private List<CategoryResponseModel> categoriesByUser(boolean includeCommonCategories, User user) {
+    private List<CategoryRsModel> categoriesByUser(boolean includeCommonCategories, User user) {
         User generalUser = userService.findByUsername(COMMON_USERNAME);
 
         return includeCommonCategories

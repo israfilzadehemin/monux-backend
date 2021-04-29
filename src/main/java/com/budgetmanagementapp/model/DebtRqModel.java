@@ -1,5 +1,7 @@
 package com.budgetmanagementapp.model;
 
+import java.math.BigDecimal;
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,8 +18,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CategoryRequestModel {
-    String icon;
-    String categoryName;
-    String categoryType;
+public class DebtRqModel extends TransactionRequestModel{
+
+    @NotBlank
+    String accountId;
 }

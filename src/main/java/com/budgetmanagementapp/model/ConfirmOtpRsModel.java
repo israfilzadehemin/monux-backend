@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model;
 
-
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +17,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreatePasswordResponseModel {
+public class ConfirmOtpRsModel {
     String username;
-    String password;
+    String otpId;
+    String otpStatus;
+    LocalDateTime otpCreationDateTime;
 }

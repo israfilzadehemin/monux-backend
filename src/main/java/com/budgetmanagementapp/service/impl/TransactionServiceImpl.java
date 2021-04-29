@@ -10,7 +10,6 @@ import static com.budgetmanagementapp.utility.MsgConstant.INCOME_TRANSACTION_CRE
 import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_CATEGORY_ID_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.NO_EXISTING_TRANSACTION_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_ACCOUNT_MSG;
@@ -30,17 +29,16 @@ import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.AccountNotFoundException;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
-import com.budgetmanagementapp.exception.NoExistingTransactionException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
-import com.budgetmanagementapp.model.DebtRequestModel;
-import com.budgetmanagementapp.model.DebtResponseModel;
+import com.budgetmanagementapp.model.DebtRqModel;
+import com.budgetmanagementapp.model.DebtRsModel;
 import com.budgetmanagementapp.model.InOutRequestModel;
 import com.budgetmanagementapp.model.InOutResponseModel;
 import com.budgetmanagementapp.model.TransactionResponseModel;
 import com.budgetmanagementapp.model.TransferRequestModel;
 import com.budgetmanagementapp.model.TransferResponseModel;
-import com.budgetmanagementapp.model.UpdateDebtRequestModel;
+import com.budgetmanagementapp.model.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.UpdateInOutRequestModel;
 import com.budgetmanagementapp.model.UpdateTransferRequestModel;
 import com.budgetmanagementapp.repository.AccountRepository;
@@ -54,7 +52,6 @@ import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -103,6 +100,7 @@ public class TransactionServiceImpl implements TransactionService {
         return response;
     }
 
+    @Override
     @Transactional
     public TransferResponseModel createTransaction(TransferRequestModel requestBody,
                                                    TransactionType transactionType,
@@ -128,9 +126,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public DebtResponseModel createTransaction(DebtRequestModel requestBody,
-                                               TransactionType type,
-                                               String username) {
+    public DebtRsModel createTransaction(DebtRqModel requestBody,
+                                         TransactionType type,
+                                         String username) {
         User user = userService.findByUsername(username);
         Account account = accountByIdAndUser(requestBody.getAccountId(), user);
 
@@ -143,7 +141,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = buildTransaction(requestBody, type, user, account);
         updateBalance(requestBody.getAmount(), accounts);
 
-        DebtResponseModel response = buildDebtResponseModel(transaction);
+        DebtRsModel response = buildDebtResponseModel(transaction);
         log.info(format(DEBT_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -214,7 +212,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public DebtResponseModel updateTransaction(UpdateDebtRequestModel requestBody, String username) {
+    public DebtRsModel updateTransaction(UpdateDebtRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
         Account account = accountByIdAndUser(requestBody.getAccountId(), user);
         Transaction transaction = transactionByIdAndUser(requestBody.getTransactionId(), user);
@@ -237,43 +235,21 @@ public class TransactionServiceImpl implements TransactionService {
         updateBalance(oldAmount, oldAccounts);
         updateBalance(requestBody.getAmount(), newAccounts);
 
-        DebtResponseModel response = buildDebtResponseModel(updatedTransaction);
+        DebtRsModel response = buildDebtResponseModel(updatedTransaction);
         log.info(format(DEBT_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
 
     @Override
     public List<TransactionResponseModel> getAllTransactionsByUser(String username) {
-        User user = userByUsername(username);
+        List<TransactionResponseModel> response =
+                transactionRepo.allByUser(userService.findByUsername(username))
+                        .stream()
+                        .map(this::buildGenericResponseModel)
+                        .collect(Collectors.toList());
 
-        List<Transaction> inOutList = transactionRepo.allByUser(user);
-        List<TransferTransaction> transferList = transferRepo.allByUser(user);
-        List<DebtTransaction> debtList = debtRepo.allByUser(user);
-
-        List<TransactionResponseModel> transactions = new ArrayList<>();
-
-        inOutList
-                .stream()
-                .map(this::buildGenericResponseModel)
-                .forEach(transactions::add);
-
-        transferList
-                .stream()
-                .map(this::buildGenericResponseModel)
-                .forEach(transactions::add);
-
-        debtList
-                .stream()
-                .map(this::buildGenericResponseModel)
-                .forEach(transactions::add);
-
-        if (transactions.isEmpty()) {
-            throw new NoExistingTransactionException(format(NO_EXISTING_TRANSACTION_MSG, username));
-        }
-
-        log.info(String.format(ALL_TRANSACTIONS_MSG, user.getUsername(), transactions));
-        return transactions;
-
+        log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
+        return response;
     }
 
     private Transaction buildTransaction(InOutRequestModel requestBody, User user,
@@ -314,7 +290,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .build());
     }
 
-    private Transaction buildTransaction(DebtRequestModel requestBody, TransactionType type,
+    private Transaction buildTransaction(DebtRqModel requestBody, TransactionType type,
                                          User user,
                                          Account account) {
         Transaction transaction = transactionRepo.save(Transaction.builder()
@@ -365,7 +341,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepo.save(transaction);
     }
 
-    private Transaction updateTransactionValues(UpdateDebtRequestModel requestBody, Account account,
+    private Transaction updateTransactionValues(UpdateDebtRqModel requestBody, Account account,
                                                 Transaction transaction) {
         transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
         transaction.setAmount(requestBody.getAmount());
@@ -386,7 +362,11 @@ public class TransactionServiceImpl implements TransactionService {
                 .dateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
                 .description(transaction.getDescription())
-                .transactionType(transaction.getType())
+                .type(transaction.getType())
+                .senderAccountId(Optional.ofNullable(transaction.getSenderAccount().getAccountId()).orElse(""))
+                .receiverAccountId(Optional.ofNullable(transaction.getReceiverAccount().getAccountId()).orElse(""))
+                .categoryId(Optional.ofNullable(transaction.getCategory().getCategoryId()).orElse(""))
+                .tagIds(transaction.getTags().stream().map(Tag::getTagId).collect(Collectors.toList()))
                 .build();
     }
 
@@ -396,7 +376,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .dateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
                 .description(transaction.getDescription())
-                .transactionType(transaction.getType())
+                .type(transaction.getType())
                 .accountId(
                         transaction.getType().equals(INCOME.name())
                                 ? transaction.getReceiverAccount().getAccountId()
@@ -414,17 +394,17 @@ public class TransactionServiceImpl implements TransactionService {
                 .description(transaction.getDescription())
                 .senderAccountId(transaction.getSenderAccount().getAccountId())
                 .receiverAccountId(transaction.getReceiverAccount().getAccountId())
-                .transactionType(transaction.getType())
+                .type(transaction.getType())
                 .build();
     }
 
-    private DebtResponseModel buildDebtResponseModel(Transaction transaction) {
-        return DebtResponseModel.builder()
+    private DebtRsModel buildDebtResponseModel(Transaction transaction) {
+        return DebtRsModel.builder()
                 .transactionId(transaction.getTransactionId())
                 .dateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
                 .description(transaction.getDescription())
-                .transactionType(transaction.getType())
+                .type(transaction.getType())
                 .accountId(
                         transaction.getType().equals(DEBT_IN.name())
                                 ? transaction.getReceiverAccount().getAccountId()
@@ -526,7 +506,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private void checkBalanceToUpdateDebt(UpdateDebtRequestModel requestBody,
+    private void checkBalanceToUpdateDebt(UpdateDebtRqModel requestBody,
                                           Account account,
                                           Transaction transaction,
                                           BigDecimal oldAmount) {

@@ -14,8 +14,8 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.ExpiredOtpException;
 import com.budgetmanagementapp.exception.InvalidOtpException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
-import com.budgetmanagementapp.model.ConfirmOtpRequestModel;
-import com.budgetmanagementapp.model.ConfirmOtpResponseModel;
+import com.budgetmanagementapp.model.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.ConfirmOtpRsModel;
 import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.OtpService;
@@ -34,7 +34,7 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     @Transactional
-    public ConfirmOtpResponseModel confirmOtp(ConfirmOtpRequestModel otpRequestModel) {
+    public ConfirmOtpRsModel confirmOtp(ConfirmOtpRqModel otpRequestModel) {
         Otp otp = otpByValue(otpRequestModel);
         checkOtpAvailability(otp);
 
@@ -49,8 +49,8 @@ public class OtpServiceImpl implements OtpService {
         }
     }
 
-    private ConfirmOtpResponseModel buildOtpResponseModel(Otp otp, User user) {
-        return ConfirmOtpResponseModel.builder()
+    private ConfirmOtpRsModel buildOtpResponseModel(Otp otp, User user) {
+        return ConfirmOtpRsModel.builder()
                 .otpId(otp.getOtpId())
                 .username(user.getUsername())
                 .otpStatus(otp.getStatus())
@@ -58,7 +58,7 @@ public class OtpServiceImpl implements OtpService {
                 .build();
     }
 
-    private Otp otpByValue(ConfirmOtpRequestModel otpRequestModel) {
+    private Otp otpByValue(ConfirmOtpRqModel otpRequestModel) {
         return otpRepo.findByOtp(otpRequestModel.getOtp()).orElseThrow(() -> new InvalidOtpException(INVALID_OTP_MSG));
     }
 

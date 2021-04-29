@@ -1,15 +1,15 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.CategoryRequestModel;
-import com.budgetmanagementapp.model.CategoryResponseModel;
-import com.budgetmanagementapp.model.UpdateCategoryRequestModel;
+import com.budgetmanagementapp.model.CategoryRqModel;
+import com.budgetmanagementapp.model.CategoryRsModel;
+import com.budgetmanagementapp.model.UpdateCategoryRqModel;
 import java.util.List;
 
 public interface CategoryService {
 
-    CategoryResponseModel createCategory(CategoryRequestModel requestBody, String username);
+    CategoryRsModel createCategory(CategoryRqModel requestBody, String username);
 
-    List<CategoryResponseModel> getCategoriesByUser(String username, boolean includeCommonCategories);
+    List<CategoryRsModel> getCategoriesByUser(String username, boolean includeCommonCategories);
 
-    CategoryResponseModel updateCategory(UpdateCategoryRequestModel requestBody, String username);
+    CategoryRsModel updateCategory(UpdateCategoryRqModel requestBody, String username);
 }

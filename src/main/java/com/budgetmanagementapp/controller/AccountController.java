@@ -10,7 +10,7 @@ import static com.budgetmanagementapp.utility.UrlConstant.ACCOUNT_UPDATE_BALANCE
 import static com.budgetmanagementapp.utility.UrlConstant.ACCOUNT_UPDATE_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.AccountRequestModel;
+import com.budgetmanagementapp.model.AccountRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
@@ -37,14 +37,14 @@ public class AccountController {
 
 
     @PostMapping(ACCOUNT_CREATE_URL)
-    public ResponseEntity<?> createAccount(@RequestBody AccountRequestModel accountRequestModel, Authentication auth) {
-        accountRequestModel.setUsername(((UserDetails) auth.getPrincipal()).getUsername());
+    public ResponseEntity<?> createAccount(@RequestBody AccountRqModel accountRqModel, Authentication auth) {
+        accountRqModel.setUsername(((UserDetails) auth.getPrincipal()).getUsername());
 
-        log.info(format(REQUEST_MSG, ACCOUNT_CREATE_URL, accountRequestModel));
+        log.info(format(REQUEST_MSG, ACCOUNT_CREATE_URL, accountRqModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(accountService.createAccount(accountRequestModel, false))
+                        .body(accountService.createAccount(accountRqModel, false))
                         .build());
 
     }

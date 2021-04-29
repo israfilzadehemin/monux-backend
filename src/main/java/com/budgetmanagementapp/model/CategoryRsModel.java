@@ -2,20 +2,24 @@ package com.budgetmanagementapp.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateCategoryRequestModel extends CategoryRequestModel {
+public class CategoryRsModel {
+
     String categoryId;
+    String icon;
+    String categoryName;
+    String categoryType;
 }

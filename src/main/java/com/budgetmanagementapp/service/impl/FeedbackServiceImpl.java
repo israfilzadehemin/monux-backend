@@ -10,8 +10,8 @@ import static java.lang.String.format;
 import com.budgetmanagementapp.entity.Feedback;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.FeedbackNotFoundException;
-import com.budgetmanagementapp.model.FeedbackRequestModel;
-import com.budgetmanagementapp.model.FeedbackResponseModel;
+import com.budgetmanagementapp.model.FeedbackRqModel;
+import com.budgetmanagementapp.model.FeedbackRsModel;
 import com.budgetmanagementapp.repository.FeedbackRepository;
 import com.budgetmanagementapp.service.FeedbackService;
 import com.budgetmanagementapp.service.UserService;
@@ -32,7 +32,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     private final FeedbackRepository feedbackRepo;
 
     @Override
-    public FeedbackResponseModel createFeedback(FeedbackRequestModel requestBody, String username) {
+    public FeedbackRsModel createFeedback(FeedbackRqModel requestBody, String username) {
         CustomValidator.validateFeedbackModel(requestBody);
 
         User user = userService.findByUsername(username);
@@ -43,26 +43,26 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     @Override
-    public List<FeedbackResponseModel> getFeedbacksByUser(String username) {
+    public List<FeedbackRsModel> getFeedbacksByUser(String username) {
         User user = userService.findByUsername(username);
 
-        List<FeedbackResponseModel> feedbacks = feedbacksByUser(user);
+        List<FeedbackRsModel> feedbacks = feedbacksByUser(user);
 
         log.info(format(ALL_FEEDBACKS_MSG, user.getUsername(), feedbacks));
         return feedbacks;
     }
 
     @Override
-    public FeedbackResponseModel getFeedbackById(String feedbackId, String username) {
+    public FeedbackRsModel getFeedbackById(String feedbackId, String username) {
         CustomValidator.validateFeedbackId(feedbackId);
 
-        FeedbackResponseModel responseModel = buildFeedbackResponseModel(feedbackById(feedbackId, username));
+        FeedbackRsModel responseModel = buildFeedbackResponseModel(feedbackById(feedbackId, username));
 
         log.info(format(FEEDBACK_BY_ID_MSG, feedbackId, responseModel));
         return responseModel;
     }
 
-    private Feedback buildFeedback(FeedbackRequestModel requestBody, User user) {
+    private Feedback buildFeedback(FeedbackRqModel requestBody, User user) {
         return feedbackRepo.save(Feedback.builder()
                 .feedbackId(UUID.randomUUID().toString())
                 .description(requestBody.getDescription())
@@ -72,8 +72,8 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .build());
     }
 
-    private FeedbackResponseModel buildFeedbackResponseModel(Feedback feedback) {
-        return FeedbackResponseModel.builder()
+    private FeedbackRsModel buildFeedbackResponseModel(Feedback feedback) {
+        return FeedbackRsModel.builder()
                 .feedbackId(feedback.getFeedbackId())
                 .description(feedback.getDescription())
                 .creationDateTime(feedback.getDateTime())
@@ -81,7 +81,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .build();
     }
 
-    private List<FeedbackResponseModel> feedbacksByUser(User user) {
+    private List<FeedbackRsModel> feedbacksByUser(User user) {
         return feedbackRepo.allByUser(user)
                 .stream()
                 .map(this::buildFeedbackResponseModel)

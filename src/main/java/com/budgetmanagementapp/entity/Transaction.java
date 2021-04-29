@@ -64,7 +64,6 @@ public class Transaction {
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
     private Account receiverAccount;
 
-
     @ManyToOne
     @JoinTable(
             name = "rel_transaction_with_category",

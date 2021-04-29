@@ -8,9 +8,9 @@ import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_GET_CATEGORIE
 import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_UPDATE_CATEGORY_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.CategoryRequestModel;
+import com.budgetmanagementapp.model.CategoryRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.UpdateCategoryRequestModel;
+import com.budgetmanagementapp.model.UpdateCategoryRqModel;
 import com.budgetmanagementapp.service.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,7 +31,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping(CATEGORY_CREATE_CATEGORY_URL)
-    public ResponseEntity<?> createCategory(@RequestBody CategoryRequestModel requestBody,
+    public ResponseEntity<?> createCategory(@RequestBody CategoryRqModel requestBody,
                                             Authentication auth) {
 
         log.info(format(REQUEST_MSG, CATEGORY_CREATE_CATEGORY_URL, requestBody));
@@ -68,7 +68,7 @@ public class CategoryController {
     }
 
     @PostMapping(CATEGORY_UPDATE_CATEGORY_URL)
-    public ResponseEntity<?> updateCustomCategory(@RequestBody UpdateCategoryRequestModel requestBody,
+    public ResponseEntity<?> updateCustomCategory(@RequestBody UpdateCategoryRqModel requestBody,
                                                   Authentication auth) {
 
         log.info(format(REQUEST_MSG, CATEGORY_UPDATE_CATEGORY_URL, requestBody));

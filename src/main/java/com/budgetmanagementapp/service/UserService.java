@@ -1,8 +1,8 @@
 package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.CreatePasswordRequestModel;
-import com.budgetmanagementapp.model.CreatePasswordResponseModel;
+import com.budgetmanagementapp.model.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.CreatePasswordRsModel;
 import com.budgetmanagementapp.model.SignupRequestModel;
 import com.budgetmanagementapp.model.UserAuthModel;
 import com.budgetmanagementapp.model.UserResponseModel;
@@ -19,5 +19,5 @@ public interface UserService {
 
     UserResponseModel signup(SignupRequestModel username) throws MessagingException;
 
-    CreatePasswordResponseModel createPassword(CreatePasswordRequestModel passwordRequestModel);
+    CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordRequestModel);
 }

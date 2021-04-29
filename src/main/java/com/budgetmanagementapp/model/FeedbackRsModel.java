@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model;
 
-import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,13 +17,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AccountResponseModel {
-    String icon;
-    String accountId;
-    String accountName;
-    String accountTypeName;
-    String currency;
-    Boolean allowNegative;
-    BigDecimal balance;
-    Boolean showInSum;
+public class FeedbackRsModel {
+    String feedbackId;
+    String description;
+    LocalDateTime creationDateTime;
+    String status;
 }

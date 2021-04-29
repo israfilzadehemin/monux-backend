@@ -23,8 +23,8 @@ import com.budgetmanagementapp.exception.AccountTypeNotFoundException;
 import com.budgetmanagementapp.exception.CurrencyNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
-import com.budgetmanagementapp.model.AccountRequestModel;
-import com.budgetmanagementapp.model.AccountResponseModel;
+import com.budgetmanagementapp.model.AccountRqModel;
+import com.budgetmanagementapp.model.AccountRsModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
 import com.budgetmanagementapp.repository.AccountRepository;
@@ -50,18 +50,18 @@ public class AccountServiceImpl implements AccountService {
     private final CurrencyRepository currencyRepo;
 
     @Override
-    public AccountResponseModel createAccount(AccountRequestModel accountRequestModel, boolean isInitialAccount) {
-        CustomValidator.validateAccountModel(accountRequestModel, isInitialAccount);
+    public AccountRsModel createAccount(AccountRqModel accountRqModel, boolean isInitialAccount) {
+        CustomValidator.validateAccountModel(accountRqModel, isInitialAccount);
 
-        User user = userService.findByUsername(accountRequestModel.getUsername());
+        User user = userService.findByUsername(accountRqModel.getUsername());
         checkInitialAccountExistence(isInitialAccount, user);
-        checkDuplicateAccount(accountRequestModel.getAccountName(), user);
+        checkDuplicateAccount(accountRqModel.getAccountName(), user);
 
         Account account = buildAccount(
-                accountRequestModel,
+                accountRqModel,
                 user,
-                getAccountType(accountRequestModel.getAccountTypeName(), isInitialAccount),
-                getCurrency(accountRequestModel.getCurrency()),
+                getAccountType(accountRqModel.getAccountTypeName(), isInitialAccount),
+                getCurrency(accountRqModel.getCurrency()),
                 isInitialAccount
         );
 
@@ -70,7 +70,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponseModel updateAccount(UpdateAccountModel accountModel, String username) {
+    public AccountRsModel updateAccount(UpdateAccountModel accountModel, String username) {
         CustomValidator.validateUpdateAccountModel(accountModel);
 
         Account account = accountByIdAndUser(accountModel.getAccountId(), userService.findByUsername(username));
@@ -81,7 +81,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponseModel toggleAllowNegative(String accountId, String username) {
+    public AccountRsModel toggleAllowNegative(String accountId, String username) {
         CustomValidator.validateAccountId(accountId);
 
         Account account = accountByIdAndUser(accountId, userService.findByUsername(username));
@@ -93,7 +93,7 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public AccountResponseModel toggleShowInSum(String accountId, String username) {
+    public AccountRsModel toggleShowInSum(String accountId, String username) {
         CustomValidator.validateAccountId(accountId);
 
         Account account = accountByIdAndUser(accountId, userService.findByUsername(username));
@@ -106,10 +106,10 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<AccountResponseModel> getAllAccountsByUser(String username) {
+    public List<AccountRsModel> getAllAccountsByUser(String username) {
         User user = userService.findByUsername(username);
 
-        List<AccountResponseModel> accounts =
+        List<AccountRsModel> accounts =
                 accountRepo.allByUser(user)
                         .stream()
                         .map(this::buildAccountResponseModel)
@@ -120,7 +120,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponseModel updateBalance(UpdateBalanceModel balanceModel, String username) {
+    public AccountRsModel updateBalance(UpdateBalanceModel balanceModel, String username) {
         CustomValidator.validateUpdateBalanceModel(balanceModel);
 
         Account account = accountByIdAndUser(balanceModel.getAccountId(), userService.findByUsername(username));
@@ -130,24 +130,24 @@ public class AccountServiceImpl implements AccountService {
         return buildAccountResponseModel(account);
     }
 
-    private Account buildAccount(AccountRequestModel accountRequestModel, User user, AccountType accountType,
+    private Account buildAccount(AccountRqModel accountRqModel, User user, AccountType accountType,
                                  Currency currency, boolean isInitialAccount) {
         return accountRepo.save(Account.builder()
                 .accountId(UUID.randomUUID().toString())
-                .icon(accountRequestModel.getIcon())
-                .name(accountRequestModel.getAccountName())
+                .icon(accountRqModel.getIcon())
+                .name(accountRqModel.getAccountName())
                 .accountType(accountType)
                 .currency(currency)
-                .allowNegative(isInitialAccount || accountRequestModel.getAllowNegative())
-                .balance(accountRequestModel.getBalance())
+                .allowNegative(isInitialAccount || accountRqModel.getAllowNegative())
+                .balance(accountRqModel.getBalance())
                 .enabled(true)
-                .showInSum(isInitialAccount || accountRequestModel.getShowInSum())
+                .showInSum(isInitialAccount || accountRqModel.getShowInSum())
                 .user(user)
                 .build());
     }
 
-    private AccountResponseModel buildAccountResponseModel(Account account) {
-        return AccountResponseModel.builder()
+    private AccountRsModel buildAccountResponseModel(Account account) {
+        return AccountRsModel.builder()
                 .icon(account.getIcon())
                 .accountId(account.getAccountId())
                 .accountName(account.getName())

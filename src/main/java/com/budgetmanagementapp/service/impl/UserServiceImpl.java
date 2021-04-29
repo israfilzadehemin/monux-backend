@@ -20,8 +20,8 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
-import com.budgetmanagementapp.model.CreatePasswordRequestModel;
-import com.budgetmanagementapp.model.CreatePasswordResponseModel;
+import com.budgetmanagementapp.model.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.CreatePasswordRsModel;
 import com.budgetmanagementapp.model.SignupRequestModel;
 import com.budgetmanagementapp.model.UserAuthModel;
 import com.budgetmanagementapp.model.UserResponseModel;
@@ -100,7 +100,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CreatePasswordResponseModel createPassword(CreatePasswordRequestModel passwordModel) {
+    public CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordModel) {
         CustomValidator.validatePassword(passwordModel.getPassword(), passwordModel.getConfirmPassword());
 
         User user = userByUsernameAndStatus(passwordModel);
@@ -143,14 +143,14 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private CreatePasswordResponseModel buildPasswordResponseModel(CreatePasswordRequestModel passwordModel) {
-        return CreatePasswordResponseModel.builder()
+    private CreatePasswordRsModel buildPasswordResponseModel(CreatePasswordRqModel passwordModel) {
+        return CreatePasswordRsModel.builder()
                 .username(passwordModel.getUsername())
                 .password(passwordModel.getPassword())
                 .build();
     }
 
-    private User userByUsernameAndStatus(CreatePasswordRequestModel passwordModel) {
+    private User userByUsernameAndStatus(CreatePasswordRqModel passwordModel) {
         return userRepo.findByUsernameAndStatus(passwordModel.getUsername(), STATUS_CONFIRMED)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, passwordModel.getUsername())));
     }

@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.model;
 
+import java.math.BigDecimal;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,8 +17,13 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class CreatePasswordRequestModel {
+public class AccountRqModel {
     String username;
-    String password;
-    String confirmPassword;
+    String icon;
+    String accountName;
+    String accountTypeName;
+    String currency;
+    Boolean allowNegative;
+    BigDecimal balance;
+    Boolean showInSum;
 }

@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model;
 
-import java.math.BigDecimal;
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,14 +17,11 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AccountRequestModel {
+public class ConfirmOtpRqModel {
 
+    @NotBlank
     String username;
-    String icon;
-    String accountName;
-    String accountTypeName;
-    String currency;
-    Boolean allowNegative;
-    BigDecimal balance;
-    Boolean showInSum;
+
+    @NotBlank
+    String otp;
 }

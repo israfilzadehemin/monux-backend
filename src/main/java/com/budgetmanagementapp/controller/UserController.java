@@ -6,9 +6,9 @@ import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_U
 import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
 
-import com.budgetmanagementapp.model.AccountRequestModel;
-import com.budgetmanagementapp.model.ConfirmOtpRequestModel;
-import com.budgetmanagementapp.model.CreatePasswordRequestModel;
+import com.budgetmanagementapp.model.AccountRqModel;
+import com.budgetmanagementapp.model.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.CreatePasswordRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.SignupRequestModel;
 import com.budgetmanagementapp.service.AccountService;
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PostMapping(USER_OTP_CONFIRM_URL)
-    public ResponseEntity<?> confirmOtp(@RequestBody ConfirmOtpRequestModel otpRequestModel) {
+    public ResponseEntity<?> confirmOtp(@RequestBody ConfirmOtpRqModel otpRequestModel) {
         log.info(String.format(REQUEST_MSG, USER_OTP_CONFIRM_URL, otpRequestModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -58,7 +58,7 @@ public class UserController {
     }
 
     @PostMapping(USER_CREATE_PASSWORD_URL)
-    public ResponseEntity<?> createPassword(@RequestBody CreatePasswordRequestModel passwordRequestModel) {
+    public ResponseEntity<?> createPassword(@RequestBody CreatePasswordRqModel passwordRequestModel) {
         log.info(String.format(REQUEST_MSG, USER_CREATE_PASSWORD_URL, passwordRequestModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -69,12 +69,12 @@ public class UserController {
     }
 
     @PostMapping(USER_CREATE_INITIAL_ACCOUNT_URL)
-    public ResponseEntity<?> createInitialAccount(@RequestBody AccountRequestModel accountRequestModel) {
-        log.info(String.format(REQUEST_MSG, USER_CREATE_INITIAL_ACCOUNT_URL, accountRequestModel));
+    public ResponseEntity<?> createInitialAccount(@RequestBody AccountRqModel accountRqModel) {
+        log.info(String.format(REQUEST_MSG, USER_CREATE_INITIAL_ACCOUNT_URL, accountRqModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(accountService.createAccount(accountRequestModel, true))
+                        .body(accountService.createAccount(accountRqModel, true))
                         .build()
         );
     }

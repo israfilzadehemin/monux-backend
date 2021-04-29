@@ -1,9 +1,9 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.ConfirmOtpRequestModel;
-import com.budgetmanagementapp.model.ConfirmOtpResponseModel;
+import com.budgetmanagementapp.model.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.ConfirmOtpRsModel;
 
 public interface OtpService {
 
-    ConfirmOtpResponseModel confirmOtp(ConfirmOtpRequestModel otpRequestModel);
+    ConfirmOtpRsModel confirmOtp(ConfirmOtpRqModel otpRequestModel);
 }

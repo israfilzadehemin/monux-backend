@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.model;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateDebtRequestModel extends DebtRequestModel{
-    String transactionId;
+public class CategoryRqModel {
+
+    @NotBlank
+    String icon;
+
+    @NotBlank
+    String categoryName;
+
+    @NotBlank
+    String categoryType;
 }

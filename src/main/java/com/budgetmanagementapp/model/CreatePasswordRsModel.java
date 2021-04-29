@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.model;
 
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FeedbackRequestModel {
-    String description;
+public class CreatePasswordRsModel {
+    String username;
+    String password;
 }

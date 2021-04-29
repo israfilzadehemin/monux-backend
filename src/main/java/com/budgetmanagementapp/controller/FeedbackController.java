@@ -7,7 +7,7 @@ import static com.budgetmanagementapp.utility.UrlConstant.FEEDBACK_GET_ALL_FEEDB
 import static com.budgetmanagementapp.utility.UrlConstant.FEEDBACK_GET_FEEDBACK_BY_ID_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.FeedbackRequestModel;
+import com.budgetmanagementapp.model.FeedbackRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.service.FeedbackService;
 import lombok.AllArgsConstructor;
@@ -32,7 +32,7 @@ public class FeedbackController {
     private static final String REQUEST_PARAM_FEEDBACK_ID = "feedback-id";
 
     @PostMapping(FEEDBACK_CREATE_URL)
-    public ResponseEntity<?> createFeedback(@RequestBody FeedbackRequestModel requestBody, Authentication auth) {
+    public ResponseEntity<?> createFeedback(@RequestBody FeedbackRqModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, FEEDBACK_CREATE_URL, requestBody));
         return ResponseEntity.ok(

@@ -1,25 +1,21 @@
 package com.budgetmanagementapp.model;
 
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ConfirmOtpResponseModel {
-    String username;
-    String otpId;
-    String otpStatus;
-    LocalDateTime otpCreationDateTime;
+public class UpdateDebtRqModel extends DebtRqModel {
+    String transactionId;
 }

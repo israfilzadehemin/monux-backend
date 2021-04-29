@@ -13,11 +13,11 @@ import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.DebtRequestModel;
+import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.InOutRequestModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.TransactionRequestModel;
-import com.budgetmanagementapp.model.UpdateDebtRequestModel;
+import com.budgetmanagementapp.model.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.UpdateInOutRequestModel;
 import com.budgetmanagementapp.model.UpdateTransferRequestModel;
 import com.budgetmanagementapp.service.TransactionService;
@@ -93,7 +93,7 @@ public class TransactionController {
 
     @PostMapping(TRANSACTION_CREATE_DEBT_IN_TRANSACTION_URL)
     public ResponseEntity<?> createDebtInTransaction(
-            @RequestBody DebtRequestModel requestBody,
+            @RequestBody DebtRqModel requestBody,
             Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_IN_TRANSACTION_URL, requestBody));
@@ -111,7 +111,7 @@ public class TransactionController {
 
     @PostMapping(TRANSACTION_CREATE_DEBT_OUT_TRANSACTION_URL)
     public ResponseEntity<?> createDebtOutTransaction(
-            @RequestBody DebtRequestModel requestBody,
+            @RequestBody DebtRqModel requestBody,
             Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_OUT_TRANSACTION_URL, requestBody));
@@ -173,7 +173,7 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_UPDATE_DEBT_TRANSACTION_URL)
-    public ResponseEntity<?> updateDebtTransaction(@RequestBody UpdateDebtRequestModel requestBody,
+    public ResponseEntity<?> updateDebtTransaction(@RequestBody UpdateDebtRqModel requestBody,
                                                    Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_DEBT_TRANSACTION_URL, requestBody));

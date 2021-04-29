@@ -26,5 +26,9 @@ public class TransactionResponseModel {
     LocalDateTime dateTime;
     BigDecimal amount;
     String description;
-    String transactionType;
+    String type;
+    String senderAccountId;
+    String receiverAccountId;
+    String categoryId;
+    List<String> tagIds;
 }
