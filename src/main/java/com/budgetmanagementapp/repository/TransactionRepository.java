@@ -9,14 +9,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
     default Optional<Transaction> byIdAndUser(String transactionId, User user) {
-        return findByInOutTransactionIdAndUser(transactionId, user);
+        return findByTransactionIdAndUser(transactionId, user);
     }
 
     default List<Transaction> allByUser(User user) {
         return findAllByUser(user);
     }
 
-    Optional<Transaction> findByInOutTransactionIdAndUser(String transactionId, User user);
+    Optional<Transaction> findByTransactionIdAndUser(String transactionId, User user);
 
     List<Transaction> findAllByUser(User user);
 }
