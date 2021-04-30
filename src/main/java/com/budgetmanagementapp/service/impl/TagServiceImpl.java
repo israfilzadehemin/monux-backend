@@ -17,9 +17,9 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DuplicateTagException;
 import com.budgetmanagementapp.exception.TagNotFoundException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
-import com.budgetmanagementapp.model.TagRequestModel;
-import com.budgetmanagementapp.model.TagResponseModel;
-import com.budgetmanagementapp.model.UpdateTagRequestModel;
+import com.budgetmanagementapp.model.TagRqModel;
+import com.budgetmanagementapp.model.TagRsModel;
+import com.budgetmanagementapp.model.UpdateTagRqModel;
 import com.budgetmanagementapp.repository.TagRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.TagService;
@@ -39,9 +39,7 @@ public class TagServiceImpl implements TagService {
     private final TagRepository tagRepo;
 
     @Override
-    public TagResponseModel createTag(TagRequestModel requestBody, String username) {
-        CustomValidator.validateTagRequestModel(requestBody);
-
+    public TagRsModel createTag(TagRqModel requestBody, String username) {
         User user = userByUsername(username);
         checkDuplicate(requestBody.getTagName(), user);
         Tag tag = buildTag(requestBody, user);
@@ -52,11 +50,11 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    public List<TagResponseModel> getTagsByUser(String username, boolean includeCommonTags) {
+    public List<TagRsModel> getTagsByUser(String username, boolean includeCommonTags) {
         User user = userByUsername(username);
         User generalUser = userByUsername(COMMON_USERNAME);
 
-        List<TagResponseModel> tags = tagsByUser(includeCommonTags, user, generalUser);
+        List<TagRsModel> tags = tagsByUser(includeCommonTags, user, generalUser);
 
         if (tags.isEmpty()) {
             throw new TagNotFoundException(format(TAG_NOT_FOUND_MSG, username));
@@ -68,9 +66,7 @@ public class TagServiceImpl implements TagService {
 
 
     @Override
-    public TagResponseModel updateTag(UpdateTagRequestModel requestBody, String username) {
-        CustomValidator.validateUpdateTagModel(requestBody);
-
+    public TagRsModel updateTag(UpdateTagRqModel requestBody, String username) {
         Tag tag = tagByIdAndUser(requestBody.getTagId(), username);
         updateTagValues(requestBody, tag);
 
@@ -79,9 +75,7 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public TagResponseModel toggleVisibility(String tagId, String username) {
-        CustomValidator.validateTagId(tagId);
-
+    public TagRsModel toggleVisibility(String tagId, String username) {
         Tag tag = tagByIdAndUser(tagId, username);
         toggleTagVisibility(tag);
 
@@ -89,7 +83,7 @@ public class TagServiceImpl implements TagService {
         return buildTagResponseModel(tag);
     }
 
-    private Tag buildTag(TagRequestModel requestBody, User user) {
+    private Tag buildTag(TagRqModel requestBody, User user) {
         CustomValidator.validateCategoryType(requestBody.getTagCategory());
 
         return tagRepo.save(Tag.builder()
@@ -101,8 +95,8 @@ public class TagServiceImpl implements TagService {
                 .build());
     }
 
-    private TagResponseModel buildTagResponseModel(Tag tag) {
-        return TagResponseModel.builder()
+    private TagRsModel buildTagResponseModel(Tag tag) {
+        return TagRsModel.builder()
                 .tagId(tag.getTagId())
                 .tagName(tag.getName())
                 .tagCategory(tag.getType())
@@ -116,7 +110,7 @@ public class TagServiceImpl implements TagService {
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
     }
 
-    private List<TagResponseModel> tagsByUser(boolean includeCommonTags, User user, User generalUser) {
+    private List<TagRsModel> tagsByUser(boolean includeCommonTags, User user, User generalUser) {
         return includeCommonTags
                 ? tagRepo.allByUserOrGeneralUser(user, generalUser)
                 .stream()
@@ -133,7 +127,7 @@ public class TagServiceImpl implements TagService {
                 .orElseThrow(() -> new TagNotFoundException(format(UNAUTHORIZED_TAG_MSG, username, tagId)));
     }
 
-    private void updateTagValues(UpdateTagRequestModel requestBody, Tag tag) {
+    private void updateTagValues(UpdateTagRqModel requestBody, Tag tag) {
         tag.setName(requestBody.getTagName());
         tag.setType(requestBody.getTagCategory());
         tagRepo.save(tag);

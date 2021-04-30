@@ -1,16 +1,16 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.TagRequestModel;
-import com.budgetmanagementapp.model.TagResponseModel;
-import com.budgetmanagementapp.model.UpdateTagRequestModel;
+import com.budgetmanagementapp.model.TagRqModel;
+import com.budgetmanagementapp.model.TagRsModel;
+import com.budgetmanagementapp.model.UpdateTagRqModel;
 import java.util.List;
 
 public interface TagService {
-    TagResponseModel createTag(TagRequestModel requestBody, String username);
+    TagRsModel createTag(TagRqModel requestBody, String username);
 
-    List<TagResponseModel> getTagsByUser(String username, boolean includeCommonTags);
+    List<TagRsModel> getTagsByUser(String username, boolean includeCommonTags);
 
-    TagResponseModel updateTag(UpdateTagRequestModel requestBody, String username);
+    TagRsModel updateTag(UpdateTagRqModel requestBody, String username);
 
-    TagResponseModel toggleVisibility(String tagId, String username);
+    TagRsModel toggleVisibility(String tagId, String username);
 }

@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.model;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,6 +17,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateTransferRequestModel extends TransferRequestModel {
-    String transactionId;
+public class TransferRqModel extends TransactionRqModel {
+
+    @NotBlank
+    String receiverAccountId;
+
+    @NotBlank
+    String senderAccountId;
 }

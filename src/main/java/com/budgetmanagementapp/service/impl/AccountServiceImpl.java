@@ -71,8 +71,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel updateAccount(UpdateAccountModel accountModel, String username) {
-        CustomValidator.validateUpdateAccountModel(accountModel);
-
         Account account = accountByIdAndUser(accountModel.getAccountId(), userService.findByUsername(username));
         updateAccountValues(accountModel, account);
 
@@ -82,8 +80,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel toggleAllowNegative(String accountId, String username) {
-        CustomValidator.validateAccountId(accountId);
-
         Account account = accountByIdAndUser(accountId, userService.findByUsername(username));
         toggleAllowNegativeValue(account);
 
@@ -94,12 +90,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel toggleShowInSum(String accountId, String username) {
-        CustomValidator.validateAccountId(accountId);
-
         Account account = accountByIdAndUser(accountId, userService.findByUsername(username));
-
-        account.setShowInSum(!account.isShowInSum());
-        accountRepo.save(account);
+        toggleShowInSumValue(account);
 
         log.info(format(SHOW_IN_SUM_TOGGLED_MSG, username, buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
@@ -121,8 +113,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel updateBalance(UpdateBalanceModel balanceModel, String username) {
-        CustomValidator.validateUpdateBalanceModel(balanceModel);
-
         Account account = accountByIdAndUser(balanceModel.getAccountId(), userService.findByUsername(username));
         updateBalanceValue(balanceModel, account);
 
@@ -188,6 +178,11 @@ public class AccountServiceImpl implements AccountService {
 
     private void toggleAllowNegativeValue(Account account) {
         account.setAllowNegative(!account.isAllowNegative());
+        accountRepo.save(account);
+    }
+
+    private void toggleShowInSumValue(Account account) {
+        account.setShowInSum(!account.isShowInSum());
         accountRepo.save(account);
     }
 

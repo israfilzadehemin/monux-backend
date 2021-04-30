@@ -1,12 +1,10 @@
 package com.budgetmanagementapp.model;
 
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,14 +19,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TransactionResponseModel {
-    String transactionId;
-    LocalDateTime dateTime;
-    BigDecimal amount;
-    String description;
-    String type;
-    String senderAccountId;
-    String receiverAccountId;
+public class InOutRqModel extends TransactionRqModel {
+
+    @NotBlank
+    String accountId;
+
+    @NotBlank
     String categoryId;
+
+    @NotNull
     List<String> tagIds;
 }

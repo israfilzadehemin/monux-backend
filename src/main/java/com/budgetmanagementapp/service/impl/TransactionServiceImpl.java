@@ -33,14 +33,14 @@ import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.DebtRsModel;
-import com.budgetmanagementapp.model.InOutRequestModel;
-import com.budgetmanagementapp.model.InOutResponseModel;
-import com.budgetmanagementapp.model.TransactionResponseModel;
-import com.budgetmanagementapp.model.TransferRequestModel;
-import com.budgetmanagementapp.model.TransferResponseModel;
+import com.budgetmanagementapp.model.InOutRqModel;
+import com.budgetmanagementapp.model.InOutRsModel;
+import com.budgetmanagementapp.model.TransactionRsModel;
+import com.budgetmanagementapp.model.TransferRqModel;
+import com.budgetmanagementapp.model.TransferRsModel;
 import com.budgetmanagementapp.model.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.UpdateInOutRequestModel;
-import com.budgetmanagementapp.model.UpdateTransferRequestModel;
+import com.budgetmanagementapp.model.UpdateInOutRqModel;
+import com.budgetmanagementapp.model.UpdateTransferRqModel;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.repository.TagRepository;
@@ -49,7 +49,6 @@ import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CategoryType;
 import com.budgetmanagementapp.utility.CustomFormatter;
-import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -78,9 +77,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionResponseModel createTransaction(InOutRequestModel requestBody,
-                                                      TransactionType type,
-                                                      String username) {
+    public TransactionRsModel createTransaction(InOutRqModel requestBody,
+                                                TransactionType type,
+                                                String username) {
         User user = userService.findByUsername(username);
         Account account = accountByIdAndUser(requestBody.getAccountId(), user);
         Category category = categoryByIdAndTypeAndUser(requestBody.getCategoryId(), type, user);
@@ -95,16 +94,16 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = buildTransaction(requestBody, user, account, category, tags, type);
         updateBalance(requestBody.getAmount(), accounts);
 
-        InOutResponseModel response = buildInOutResponseModel(transaction);
+        InOutRsModel response = buildInOutResponseModel(transaction);
         log.info(format(INCOME_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
 
     @Override
     @Transactional
-    public TransferResponseModel createTransaction(TransferRequestModel requestBody,
-                                                   TransactionType transactionType,
-                                                   String username) {
+    public TransferRsModel createTransaction(TransferRqModel requestBody,
+                                             TransactionType transactionType,
+                                             String username) {
         User user = userService.findByUsername(username);
         Account senderAccount = accountByIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountByIdAndUser(requestBody.getReceiverAccountId(), user);
@@ -119,7 +118,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = buildTransaction(requestBody, user, senderAccount, receiverAccount);
         updateBalance(requestBody.getAmount(), accounts);
 
-        TransferResponseModel response = buildTransferResponseModel(transaction);
+        TransferRsModel response = buildTransferResponseModel(transaction);
         log.info(format(TRANSFER_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -148,7 +147,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public InOutResponseModel updateTransaction(UpdateInOutRequestModel requestBody, String username) {
+    public InOutRsModel updateTransaction(UpdateInOutRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
         Transaction transaction = transactionByIdAndUser(requestBody.getTransactionId(), user);
         Account account = accountByIdAndUser(requestBody.getAccountId(), user);
@@ -174,16 +173,14 @@ public class TransactionServiceImpl implements TransactionService {
         updateBalance(oldAmount, oldAccounts);
         updateBalance(requestBody.getAmount(), newAccounts);
 
-        InOutResponseModel response = buildInOutResponseModel(updatedTransaction);
+        InOutRsModel response = buildInOutResponseModel(updatedTransaction);
         log.info(format(IN_OUT_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
 
     @Override
     @Transactional
-    public TransferResponseModel updateTransaction(UpdateTransferRequestModel requestBody, String username) {
-        CustomValidator.validateUpdateTransferModel(requestBody);
-
+    public TransferRsModel updateTransaction(UpdateTransferRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
         Transaction transaction = transactionByIdAndUser(requestBody.getTransactionId(), user);
         Account senderAccount = accountByIdAndUser(requestBody.getSenderAccountId(), user);
@@ -205,7 +202,7 @@ public class TransactionServiceImpl implements TransactionService {
         updateBalance(oldAmount, oldAccounts);
         updateBalance(requestBody.getAmount(), newAccounts);
 
-        TransferResponseModel response = buildTransferResponseModel(updatedTransaction);
+        TransferRsModel response = buildTransferResponseModel(updatedTransaction);
         log.info(format(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -241,8 +238,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionResponseModel> getAllTransactionsByUser(String username) {
-        List<TransactionResponseModel> response =
+    public List<TransactionRsModel> getAllTransactionsByUser(String username) {
+        List<TransactionRsModel> response =
                 transactionRepo.allByUser(userService.findByUsername(username))
                         .stream()
                         .map(this::buildGenericResponseModel)
@@ -252,7 +249,7 @@ public class TransactionServiceImpl implements TransactionService {
         return response;
     }
 
-    private Transaction buildTransaction(InOutRequestModel requestBody, User user,
+    private Transaction buildTransaction(InOutRqModel requestBody, User user,
                                          Account account, Category category,
                                          List<Tag> tags, TransactionType type) {
         Transaction transaction = transactionRepo.save(Transaction.builder()
@@ -275,7 +272,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transaction;
     }
 
-    private Transaction buildTransaction(TransferRequestModel requestBody, User user,
+    private Transaction buildTransaction(TransferRqModel requestBody, User user,
                                          Account senderAccount,
                                          Account receiverAccount) {
         return transactionRepo.save(Transaction.builder()
@@ -311,7 +308,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transaction;
     }
 
-    private Transaction updateTransactionValues(UpdateInOutRequestModel requestBody, Transaction transaction,
+    private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,
                                                 Account account, Category category,
                                                 List<Tag> tags) {
         transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
@@ -329,7 +326,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepo.save(transaction);
     }
 
-    private Transaction updateTransactionValues(UpdateTransferRequestModel requestBody,
+    private Transaction updateTransactionValues(UpdateTransferRqModel requestBody,
                                                 Transaction transaction,
                                                 Account senderAccount,
                                                 Account receiverAccount) {
@@ -356,8 +353,8 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepo.save(transaction);
     }
 
-    private TransactionResponseModel buildGenericResponseModel(Transaction transaction) {
-        return TransactionResponseModel.builder()
+    private TransactionRsModel buildGenericResponseModel(Transaction transaction) {
+        return TransactionRsModel.builder()
                 .transactionId(transaction.getTransactionId())
                 .dateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
@@ -370,8 +367,8 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
-    private InOutResponseModel buildInOutResponseModel(Transaction transaction) {
-        return InOutResponseModel.builder()
+    private InOutRsModel buildInOutResponseModel(Transaction transaction) {
+        return InOutRsModel.builder()
                 .transactionId(transaction.getTransactionId())
                 .dateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
@@ -386,8 +383,8 @@ public class TransactionServiceImpl implements TransactionService {
                 .build();
     }
 
-    private TransferResponseModel buildTransferResponseModel(Transaction transaction) {
-        return TransferResponseModel.builder()
+    private TransferRsModel buildTransferResponseModel(Transaction transaction) {
+        return TransferRsModel.builder()
                 .transactionId(transaction.getTransactionId())
                 .dateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
@@ -471,7 +468,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private void checkBalanceToUpdateInOut(UpdateInOutRequestModel requestBody,
+    private void checkBalanceToUpdateInOut(UpdateInOutRqModel requestBody,
                                            Transaction transaction,
                                            Account account,
                                            BigDecimal oldAmount) {
@@ -483,7 +480,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private void checkBalanceToUpdateTransfer(UpdateTransferRequestModel requestBody,
+    private void checkBalanceToUpdateTransfer(UpdateTransferRqModel requestBody,
                                               Transaction transaction,
                                               Account senderAccount,
                                               BigDecimal oldAmount) {

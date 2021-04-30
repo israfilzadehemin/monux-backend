@@ -10,8 +10,8 @@ import static com.budgetmanagementapp.utility.UrlConstant.TAG_UPDATE_TAG_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.TagRequestModel;
-import com.budgetmanagementapp.model.UpdateTagRequestModel;
+import com.budgetmanagementapp.model.TagRqModel;
+import com.budgetmanagementapp.model.UpdateTagRqModel;
 import com.budgetmanagementapp.service.TagService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -35,7 +35,7 @@ public class TagController {
     private static final String REQUEST_PARAM_TAG_ID = "tag-id";
 
     @PostMapping(TAG_CREATE_TAG_URL)
-    public ResponseEntity<?> createTag(@RequestBody TagRequestModel requestBody, Authentication auth) {
+    public ResponseEntity<?> createTag(@RequestBody TagRqModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, TAG_CREATE_TAG_URL, requestBody));
         return ResponseEntity.ok(
@@ -71,7 +71,7 @@ public class TagController {
     }
 
     @PostMapping(TAG_UPDATE_TAG_URL)
-    public ResponseEntity<?> updateTag(@RequestBody UpdateTagRequestModel requestBody, Authentication auth) {
+    public ResponseEntity<?> updateTag(@RequestBody UpdateTagRqModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, TAG_UPDATE_TAG_URL, requestBody));
         return ResponseEntity.ok(

@@ -16,6 +16,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DebtRsModel extends TransactionResponseModel{
+public class DebtRsModel extends TransactionRsModel {
     String accountId;
 }

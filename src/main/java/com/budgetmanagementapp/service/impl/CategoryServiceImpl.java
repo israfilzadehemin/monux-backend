@@ -35,8 +35,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryRsModel createCategory(CategoryRqModel requestBody, String username) {
-        CustomValidator.validateCategoryModel(requestBody);
-
         User user = userService.findByUsername(username);
         checkDuplicate(requestBody.getCategoryName(), user);
         Category category = buildCategory(requestBody, user);
@@ -57,10 +55,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryRsModel updateCategory(UpdateCategoryRqModel requestBody, String username) {
-        CustomValidator.validateUpdateCategoryModel(requestBody);
-
         Category category = categoryByIdAndUser(requestBody.getCategoryId(), username);
-
         updateCategoryValues(requestBody, category);
 
         log.info(format(CATEGORY_UPDATED_MSG, username, buildCategoryResponseModel(category)));

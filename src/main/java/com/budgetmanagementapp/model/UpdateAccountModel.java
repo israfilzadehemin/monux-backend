@@ -1,5 +1,7 @@
 package com.budgetmanagementapp.model;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +19,16 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateAccountModel {
+
+    @NotNull
     String icon;
+
+    @NotBlank
     String accountId;
+
+    @NotBlank
     String newAccountName;
+
+    @NotBlank
     String accountTypeName;
 }

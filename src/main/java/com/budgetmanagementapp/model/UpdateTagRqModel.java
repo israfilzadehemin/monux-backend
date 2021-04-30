@@ -1,22 +1,24 @@
 package com.budgetmanagementapp.model;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
+@Builder
 @NoArgsConstructor
-@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateInOutRequestModel extends InOutRequestModel {
-    String transactionId;
+public class UpdateTagRqModel extends TagRqModel {
 
+    @NotBlank
+    String tagId;
 }

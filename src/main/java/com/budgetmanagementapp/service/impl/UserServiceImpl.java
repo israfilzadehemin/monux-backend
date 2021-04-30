@@ -22,9 +22,9 @@ import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
 import com.budgetmanagementapp.model.CreatePasswordRqModel;
 import com.budgetmanagementapp.model.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.SignupRequestModel;
+import com.budgetmanagementapp.model.SignupRqModel;
 import com.budgetmanagementapp.model.UserAuthModel;
-import com.budgetmanagementapp.model.UserResponseModel;
+import com.budgetmanagementapp.model.UserRsModel;
 import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.RoleRepository;
 import com.budgetmanagementapp.repository.UserRepository;
@@ -75,9 +75,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserResponseModel signup(SignupRequestModel username) throws MessagingException {
+    public UserRsModel signup(SignupRqModel username) throws MessagingException {
         if (username.getUsername().contains("@")) {
-            CustomValidator.validateUsernameFormat(username.getUsername());
+            CustomValidator.validateEmailFormat(username.getUsername());
         } else {
             CustomValidator.validatePhoneNumberFormat(username.getUsername());
         }
@@ -101,8 +101,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordModel) {
-        CustomValidator.validatePassword(passwordModel.getPassword(), passwordModel.getConfirmPassword());
-
         User user = userByUsernameAndStatus(passwordModel);
         updatePasswordAndStatusValues(passwordModel.getPassword(), user);
 
@@ -133,8 +131,8 @@ public class UserServiceImpl implements UserService {
                 .build());
     }
 
-    private UserResponseModel buildUserResponseModel(User user) {
-        return UserResponseModel.builder()
+    private UserRsModel buildUserResponseModel(User user) {
+        return UserRsModel.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
                 .creationDateTime(user.getDateTime())

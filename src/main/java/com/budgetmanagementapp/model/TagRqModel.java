@@ -1,32 +1,27 @@
 package com.budgetmanagementapp.model;
 
-import java.util.List;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @Getter
 @Setter
 @ToString
-@SuperBuilder
+@Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InOutRequestModel extends TransactionRequestModel {
+public class TagRqModel {
 
     @NotBlank
-    String accountId;
+    String tagName;
 
     @NotBlank
-    String categoryId;
-
-    @NotNull
-    List<String> tagIds;
+    String tagCategory;
 }

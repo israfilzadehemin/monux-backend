@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.model;
 
+import javax.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,9 +17,8 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TagResponseModel {
-    String tagId;
-    String tagName;
-    String tagCategory;
-    boolean visibility;
+public class SignupRqModel {
+
+    @NotBlank
+    String username;
 }

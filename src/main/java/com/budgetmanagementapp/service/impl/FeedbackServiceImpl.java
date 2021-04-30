@@ -15,7 +15,6 @@ import com.budgetmanagementapp.model.FeedbackRsModel;
 import com.budgetmanagementapp.repository.FeedbackRepository;
 import com.budgetmanagementapp.service.FeedbackService;
 import com.budgetmanagementapp.service.UserService;
-import com.budgetmanagementapp.utility.CustomValidator;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -33,8 +32,6 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public FeedbackRsModel createFeedback(FeedbackRqModel requestBody, String username) {
-        CustomValidator.validateFeedbackModel(requestBody);
-
         User user = userService.findByUsername(username);
         Feedback feedback = buildFeedback(requestBody, user);
 
@@ -54,12 +51,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public FeedbackRsModel getFeedbackById(String feedbackId, String username) {
-        CustomValidator.validateFeedbackId(feedbackId);
-
-        FeedbackRsModel responseModel = buildFeedbackResponseModel(feedbackById(feedbackId, username));
-
-        log.info(format(FEEDBACK_BY_ID_MSG, feedbackId, responseModel));
-        return responseModel;
+        FeedbackRsModel response = buildFeedbackResponseModel(feedbackById(feedbackId, username));
+        log.info(format(FEEDBACK_BY_ID_MSG, feedbackId, response));
+        return response;
     }
 
     private Feedback buildFeedback(FeedbackRqModel requestBody, User user) {

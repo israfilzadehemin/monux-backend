@@ -10,7 +10,7 @@ import com.budgetmanagementapp.model.AccountRqModel;
 import com.budgetmanagementapp.model.ConfirmOtpRqModel;
 import com.budgetmanagementapp.model.CreatePasswordRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.SignupRequestModel;
+import com.budgetmanagementapp.model.SignupRqModel;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
@@ -35,13 +35,13 @@ public class UserController {
     private final OtpService otpService;
 
     @PostMapping(USER_SIGNUP_URL)
-    public ResponseEntity<?> signupWithEmail(@RequestBody SignupRequestModel signupRequestModel)
+    public ResponseEntity<?> signupWithEmail(@RequestBody SignupRqModel signupRqModel)
             throws MessagingException {
-        log.info(String.format(REQUEST_MSG, USER_SIGNUP_URL, signupRequestModel));
+        log.info(String.format(REQUEST_MSG, USER_SIGNUP_URL, signupRqModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(userService.signup(signupRequestModel))
+                        .body(userService.signup(signupRqModel))
                         .build()
         );
     }

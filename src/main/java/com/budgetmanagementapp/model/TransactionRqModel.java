@@ -1,6 +1,8 @@
 package com.budgetmanagementapp.model;
 
-import java.util.List;
+import java.math.BigDecimal;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +19,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TransferRequestModel extends TransactionRequestModel {
-    String receiverAccountId;
-    String senderAccountId;
+public class TransactionRqModel {
+
+    @NotBlank
+    String dateTime;
+
+    @NotNull
+    BigDecimal amount;
+
+    @NotNull
+    String description;
 }

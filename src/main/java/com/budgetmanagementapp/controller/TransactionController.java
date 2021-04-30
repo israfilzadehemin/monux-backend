@@ -14,12 +14,12 @@ import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRA
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.DebtRqModel;
-import com.budgetmanagementapp.model.InOutRequestModel;
+import com.budgetmanagementapp.model.InOutRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.TransactionRequestModel;
+import com.budgetmanagementapp.model.TransactionRqModel;
 import com.budgetmanagementapp.model.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.UpdateInOutRequestModel;
-import com.budgetmanagementapp.model.UpdateTransferRequestModel;
+import com.budgetmanagementapp.model.UpdateInOutRqModel;
+import com.budgetmanagementapp.model.UpdateTransferRqModel;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.utility.TransactionType;
 import lombok.AllArgsConstructor;
@@ -41,7 +41,7 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping(TRANSACTION_CREATE_INCOME_TRANSACTION_URL)
-    public ResponseEntity<?> createIncomeTransaction(@RequestBody InOutRequestModel requestBody, Authentication auth) {
+    public ResponseEntity<?> createIncomeTransaction(@RequestBody InOutRqModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_INCOME_TRANSACTION_URL, requestBody));
 
@@ -57,7 +57,7 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL)
-    public ResponseEntity<?> createOutcomeTransaction(@RequestBody TransactionRequestModel requestBody,
+    public ResponseEntity<?> createOutcomeTransaction(@RequestBody TransactionRqModel requestBody,
                                                       Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL, requestBody));
@@ -141,7 +141,7 @@ public class TransactionController {
 
 
     @PostMapping(TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL)
-    public ResponseEntity<?> updateInOutTransaction(@RequestBody UpdateInOutRequestModel requestBody,
+    public ResponseEntity<?> updateInOutTransaction(@RequestBody UpdateInOutRqModel requestBody,
                                                     Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL, requestBody));
@@ -157,7 +157,7 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL)
-    public ResponseEntity<?> updateTransferTransaction(@RequestBody UpdateTransferRequestModel requestBody,
+    public ResponseEntity<?> updateTransferTransaction(@RequestBody UpdateTransferRqModel requestBody,
                                                        Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL, requestBody));
