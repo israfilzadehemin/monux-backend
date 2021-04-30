@@ -15,12 +15,15 @@ import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
 import com.budgetmanagementapp.model.UpdateBalanceModel;
 import com.budgetmanagementapp.service.AccountService;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,11 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Log4j2
+@Validated
 public class AccountController {
     private final AccountService accountService;
 
     private static final String REQUEST_PARAM_ACCOUNT_ID = "account-id";
-
 
     @PostMapping(ACCOUNT_CREATE_URL)
     public ResponseEntity<?> createAccount(@RequestBody AccountRqModel accountRqModel, Authentication auth) {
@@ -46,11 +49,10 @@ public class AccountController {
                         .status(HttpStatus.CREATED)
                         .body(accountService.createAccount(accountRqModel, false))
                         .build());
-
     }
 
     @PostMapping(ACCOUNT_UPDATE_URL)
-    public ResponseEntity<?> updateAccount(@RequestBody UpdateAccountModel accountModel, Authentication auth) {
+    public ResponseEntity<?> updateAccount(@RequestBody @Valid UpdateAccountModel accountModel, Authentication auth) {
 
         log.info(format(REQUEST_MSG, ACCOUNT_UPDATE_URL, accountModel));
         return ResponseEntity.ok(
@@ -62,7 +64,7 @@ public class AccountController {
     }
 
     @PostMapping(ACCOUNT_UPDATE_BALANCE_URL)
-    public ResponseEntity<?> updateBalance(@RequestBody UpdateBalanceModel balanceModel, Authentication auth) {
+    public ResponseEntity<?> updateBalance(@RequestBody @Valid UpdateBalanceModel balanceModel, Authentication auth) {
 
         log.info(format(REQUEST_MSG, ACCOUNT_UPDATE_BALANCE_URL, balanceModel));
         return ResponseEntity.ok(
@@ -85,8 +87,9 @@ public class AccountController {
     }
 
     @PostMapping(ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL)
-    public ResponseEntity<?> toggleAccountAllowNegative(@RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) String accountId,
-                                                        Authentication auth) {
+    public ResponseEntity<?> toggleAccountAllowNegative(
+            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) @NotBlank String accountId,
+            Authentication auth) {
 
         log.info(format(REQUEST_MSG, ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL, accountId));
         return ResponseEntity.ok(
@@ -98,8 +101,9 @@ public class AccountController {
     }
 
     @PostMapping(ACCOUNT_TOGGLE_SHOW_IN_SUM_URL)
-    public ResponseEntity<?> toggleShowInSum(@RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) String accountId,
-                                             Authentication auth) {
+    public ResponseEntity<?> toggleShowInSum(
+            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) @NotBlank String accountId,
+            Authentication auth) {
 
         log.info(format(REQUEST_MSG, ACCOUNT_TOGGLE_SHOW_IN_SUM_URL, accountId));
         return ResponseEntity.ok(

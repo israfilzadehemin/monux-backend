@@ -13,6 +13,7 @@ import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.TagRqModel;
 import com.budgetmanagementapp.model.UpdateTagRqModel;
 import com.budgetmanagementapp.service.TagService;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,7 @@ public class TagController {
     private static final String REQUEST_PARAM_TAG_ID = "tag-id";
 
     @PostMapping(TAG_CREATE_TAG_URL)
-    public ResponseEntity<?> createTag(@RequestBody TagRqModel requestBody, Authentication auth) {
+    public ResponseEntity<?> createTag(@RequestBody @Valid TagRqModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, TAG_CREATE_TAG_URL, requestBody));
         return ResponseEntity.ok(
@@ -71,7 +72,7 @@ public class TagController {
     }
 
     @PostMapping(TAG_UPDATE_TAG_URL)
-    public ResponseEntity<?> updateTag(@RequestBody UpdateTagRqModel requestBody, Authentication auth) {
+    public ResponseEntity<?> updateTag(@RequestBody @Valid UpdateTagRqModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, TAG_UPDATE_TAG_URL, requestBody));
         return ResponseEntity.ok(
@@ -83,8 +84,8 @@ public class TagController {
     }
 
     @PostMapping(TAG_TOGGLE_VISIBILITY_URL)
-    public ResponseEntity<?> toggleVisibility(@RequestParam(name = REQUEST_PARAM_TAG_ID) String tagId,
-                                              Authentication auth) {
+    public ResponseEntity<?> toggleVisibility(
+            @RequestParam(name = REQUEST_PARAM_TAG_ID) @Valid String tagId, Authentication auth) {
         log.info(format(REQUEST_MSG, TAG_TOGGLE_VISIBILITY_URL, tagId));
         return ResponseEntity.ok(
                 ResponseModel.builder()

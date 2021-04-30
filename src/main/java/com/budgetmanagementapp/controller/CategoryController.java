@@ -12,6 +12,7 @@ import com.budgetmanagementapp.model.CategoryRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.UpdateCategoryRqModel;
 import com.budgetmanagementapp.service.CategoryService;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping(CATEGORY_CREATE_CATEGORY_URL)
-    public ResponseEntity<?> createCategory(@RequestBody CategoryRqModel requestBody,
+    public ResponseEntity<?> createCategory(@RequestBody @Valid CategoryRqModel requestBody,
                                             Authentication auth) {
 
         log.info(format(REQUEST_MSG, CATEGORY_CREATE_CATEGORY_URL, requestBody));
@@ -68,7 +69,7 @@ public class CategoryController {
     }
 
     @PostMapping(CATEGORY_UPDATE_CATEGORY_URL)
-    public ResponseEntity<?> updateCustomCategory(@RequestBody UpdateCategoryRqModel requestBody,
+    public ResponseEntity<?> updateCustomCategory(@RequestBody @Valid UpdateCategoryRqModel requestBody,
                                                   Authentication auth) {
 
         log.info(format(REQUEST_MSG, CATEGORY_UPDATE_CATEGORY_URL, requestBody));

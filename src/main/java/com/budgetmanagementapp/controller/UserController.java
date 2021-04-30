@@ -16,6 +16,7 @@ import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.MailSenderService;
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -35,8 +36,9 @@ public class UserController {
     private final OtpService otpService;
 
     @PostMapping(USER_SIGNUP_URL)
-    public ResponseEntity<?> signupWithEmail(@RequestBody SignupRqModel signupRqModel)
+    public ResponseEntity<?> signupWithEmail(@RequestBody @Valid SignupRqModel signupRqModel)
             throws MessagingException {
+
         log.info(String.format(REQUEST_MSG, USER_SIGNUP_URL, signupRqModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -47,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping(USER_OTP_CONFIRM_URL)
-    public ResponseEntity<?> confirmOtp(@RequestBody ConfirmOtpRqModel otpRequestModel) {
+    public ResponseEntity<?> confirmOtp(@RequestBody @Valid ConfirmOtpRqModel otpRequestModel) {
         log.info(String.format(REQUEST_MSG, USER_OTP_CONFIRM_URL, otpRequestModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -58,7 +60,7 @@ public class UserController {
     }
 
     @PostMapping(USER_CREATE_PASSWORD_URL)
-    public ResponseEntity<?> createPassword(@RequestBody CreatePasswordRqModel passwordRequestModel) {
+    public ResponseEntity<?> createPassword(@RequestBody @Valid CreatePasswordRqModel passwordRequestModel) {
         log.info(String.format(REQUEST_MSG, USER_CREATE_PASSWORD_URL, passwordRequestModel));
         return ResponseEntity.ok(
                 ResponseModel.builder()

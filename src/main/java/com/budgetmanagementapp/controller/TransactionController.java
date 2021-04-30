@@ -16,12 +16,13 @@ import static java.lang.String.format;
 import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.InOutRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.TransactionRqModel;
+import com.budgetmanagementapp.model.TransferRqModel;
 import com.budgetmanagementapp.model.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.UpdateInOutRqModel;
 import com.budgetmanagementapp.model.UpdateTransferRqModel;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.utility.TransactionType;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -41,10 +42,10 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping(TRANSACTION_CREATE_INCOME_TRANSACTION_URL)
-    public ResponseEntity<?> createIncomeTransaction(@RequestBody InOutRqModel requestBody, Authentication auth) {
+    public ResponseEntity<?> createIncomeTransaction(@RequestBody @Valid InOutRqModel requestBody,
+                                                     Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_INCOME_TRANSACTION_URL, requestBody));
-
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
@@ -57,11 +58,10 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL)
-    public ResponseEntity<?> createOutcomeTransaction(@RequestBody TransactionRqModel requestBody,
+    public ResponseEntity<?> createOutcomeTransaction(@RequestBody @Valid InOutRqModel requestBody,
                                                       Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL, requestBody));
-
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
@@ -74,12 +74,10 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_CREATE_TRANSFER_TRANSACTION_URL)
-    public ResponseEntity<?> createTransferTransaction(
-            @RequestBody TransferRequestModel requestBody,
-            Authentication auth) {
+    public ResponseEntity<?> createTransferTransaction(@RequestBody @Valid TransferRqModel requestBody,
+                                                       Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_TRANSFER_TRANSACTION_URL, requestBody));
-
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
@@ -92,9 +90,8 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_CREATE_DEBT_IN_TRANSACTION_URL)
-    public ResponseEntity<?> createDebtInTransaction(
-            @RequestBody DebtRqModel requestBody,
-            Authentication auth) {
+    public ResponseEntity<?> createDebtInTransaction(@RequestBody @Valid DebtRqModel requestBody,
+                                                     Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_IN_TRANSACTION_URL, requestBody));
 
@@ -110,9 +107,8 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_CREATE_DEBT_OUT_TRANSACTION_URL)
-    public ResponseEntity<?> createDebtOutTransaction(
-            @RequestBody DebtRqModel requestBody,
-            Authentication auth) {
+    public ResponseEntity<?> createDebtOutTransaction(@RequestBody @Valid DebtRqModel requestBody,
+                                                      Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_OUT_TRANSACTION_URL, requestBody));
 
@@ -141,7 +137,7 @@ public class TransactionController {
 
 
     @PostMapping(TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL)
-    public ResponseEntity<?> updateInOutTransaction(@RequestBody UpdateInOutRqModel requestBody,
+    public ResponseEntity<?> updateInOutTransaction(@RequestBody @Valid UpdateInOutRqModel requestBody,
                                                     Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL, requestBody));
@@ -157,7 +153,7 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL)
-    public ResponseEntity<?> updateTransferTransaction(@RequestBody UpdateTransferRqModel requestBody,
+    public ResponseEntity<?> updateTransferTransaction(@RequestBody @Valid UpdateTransferRqModel requestBody,
                                                        Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL, requestBody));
@@ -173,7 +169,7 @@ public class TransactionController {
     }
 
     @PostMapping(TRANSACTION_UPDATE_DEBT_TRANSACTION_URL)
-    public ResponseEntity<?> updateDebtTransaction(@RequestBody UpdateDebtRqModel requestBody,
+    public ResponseEntity<?> updateDebtTransaction(@RequestBody @Valid UpdateDebtRqModel requestBody,
                                                    Authentication auth) {
 
         log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_DEBT_TRANSACTION_URL, requestBody));
