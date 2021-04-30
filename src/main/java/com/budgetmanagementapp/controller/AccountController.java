@@ -40,38 +40,38 @@ public class AccountController {
     private static final String REQUEST_PARAM_ACCOUNT_ID = "account-id";
 
     @PostMapping(ACCOUNT_CREATE_URL)
-    public ResponseEntity<?> createAccount(@RequestBody AccountRqModel accountRqModel, Authentication auth) {
-        accountRqModel.setUsername(((UserDetails) auth.getPrincipal()).getUsername());
+    public ResponseEntity<?> createAccount(@RequestBody AccountRqModel requestBody, Authentication auth) {
+        requestBody.setUsername(((UserDetails) auth.getPrincipal()).getUsername());
 
-        log.info(format(REQUEST_MSG, ACCOUNT_CREATE_URL, accountRqModel));
+        log.info(format(REQUEST_MSG, ACCOUNT_CREATE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(accountService.createAccount(accountRqModel, false))
+                        .body(accountService.createAccount(requestBody, false))
                         .build());
     }
 
     @PostMapping(ACCOUNT_UPDATE_URL)
-    public ResponseEntity<?> updateAccount(@RequestBody @Valid UpdateAccountModel accountModel, Authentication auth) {
+    public ResponseEntity<?> updateAccount(@RequestBody @Valid UpdateAccountModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, ACCOUNT_UPDATE_URL, accountModel));
+        log.info(format(REQUEST_MSG, ACCOUNT_UPDATE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
                         .body(accountService
-                                .updateAccount(accountModel, ((UserDetails) auth.getPrincipal()).getUsername()))
+                                .updateAccount(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()))
                         .build());
     }
 
     @PostMapping(ACCOUNT_UPDATE_BALANCE_URL)
-    public ResponseEntity<?> updateBalance(@RequestBody @Valid UpdateBalanceModel balanceModel, Authentication auth) {
+    public ResponseEntity<?> updateBalance(@RequestBody @Valid UpdateBalanceModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, ACCOUNT_UPDATE_BALANCE_URL, balanceModel));
+        log.info(format(REQUEST_MSG, ACCOUNT_UPDATE_BALANCE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
                         .body(accountService
-                                .updateBalance(balanceModel, ((UserDetails) auth.getPrincipal()).getUsername()))
+                                .updateBalance(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()))
                         .build());
     }
 

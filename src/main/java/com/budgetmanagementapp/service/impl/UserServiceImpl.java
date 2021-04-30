@@ -58,18 +58,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserAuthModel> findAuthModelByUsername(String username) {
-        return userRepo.findByUsernameAndStatus(username, STATUS_ACTIVE).map(UserAuthModel::new);
+        return userRepo.byUsernameAndStatus(username, STATUS_ACTIVE).map(UserAuthModel::new);
     }
 
     @Override
     public Optional<UserAuthModel> findById(long id) {
-        return userRepo.findByIdAndStatus(id, STATUS_ACTIVE).map(UserAuthModel::new);
+        return userRepo.byIdAndStatus(id, STATUS_ACTIVE).map(UserAuthModel::new);
     }
 
     @Override
     public User findByUsername(String username) {
         return userRepo
-                .findByUsernameAndStatus(username, STATUS_ACTIVE)
+                .byUsernameAndStatus(username, STATUS_ACTIVE)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
     }
 
@@ -100,12 +100,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordModel) {
-        User user = userByUsernameAndStatus(passwordModel);
-        updatePasswordAndStatusValues(passwordModel.getPassword(), user);
+    public CreatePasswordRsModel createPassword(CreatePasswordRqModel requestBody) {
+        User user = userByUsernameAndStatus(requestBody);
+        updatePasswordAndStatusValues(requestBody.getPassword(), user);
 
         log.info(format(PASSWORD_CREATED_MSG, user.getUsername()));
-        return buildPasswordResponseModel(passwordModel);
+        return buildPasswordResponseModel(requestBody);
     }
 
     private User buildUser(String username) {
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService {
                 .status(STATUS_PROCESSING)
                 .paymentStatus(STATUS_NOT_PAID)
                 .roles(Collections.singletonList(
-                        roleRepo.findByName(ROLE_USER)
+                        roleRepo.byName(ROLE_USER)
                                 .orElseThrow(() -> new UserRoleNotFoundException(ROLE_NOT_FOUND_MSG))))
                 .build());
     }
@@ -141,16 +141,16 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private CreatePasswordRsModel buildPasswordResponseModel(CreatePasswordRqModel passwordModel) {
+    private CreatePasswordRsModel buildPasswordResponseModel(CreatePasswordRqModel requestBody) {
         return CreatePasswordRsModel.builder()
-                .username(passwordModel.getUsername())
-                .password(passwordModel.getPassword())
+                .username(requestBody.getUsername())
+                .password(requestBody.getPassword())
                 .build();
     }
 
-    private User userByUsernameAndStatus(CreatePasswordRqModel passwordModel) {
-        return userRepo.findByUsernameAndStatus(passwordModel.getUsername(), STATUS_CONFIRMED)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, passwordModel.getUsername())));
+    private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
+        return userRepo.byUsernameAndStatus(requestBody.getUsername(), STATUS_CONFIRMED)
+                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
     }
 
     private void updatePasswordAndStatusValues(String password, User user) {
@@ -160,7 +160,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkUsernameUniqueness(String username) {
-        if (userRepo.findByUsername(username).isPresent()) {
+        if (userRepo.byUsername(username).isPresent()) {
             throw new UsernameNotUniqueException(USERNAME_NOT_UNIQUE_MSG);
         }
     }

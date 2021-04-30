@@ -10,6 +10,8 @@ import static com.budgetmanagementapp.utility.MsgConstant.BALANCE_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_ACCOUNT_NAME_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INITIAL_ACCOUNT_EXISTING_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.NEGATIVE_BALANCE_NOT_ALLOWED;
 import static com.budgetmanagementapp.utility.MsgConstant.SHOW_IN_SUM_TOGGLED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_ACCOUNT_MSG;
 import static java.lang.String.format;
@@ -23,6 +25,7 @@ import com.budgetmanagementapp.exception.AccountTypeNotFoundException;
 import com.budgetmanagementapp.exception.CurrencyNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
+import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.model.AccountRqModel;
 import com.budgetmanagementapp.model.AccountRsModel;
 import com.budgetmanagementapp.model.UpdateAccountModel;
@@ -33,6 +36,7 @@ import com.budgetmanagementapp.repository.CurrencyRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,18 +54,18 @@ public class AccountServiceImpl implements AccountService {
     private final CurrencyRepository currencyRepo;
 
     @Override
-    public AccountRsModel createAccount(AccountRqModel accountRqModel, boolean isInitialAccount) {
-        CustomValidator.validateAccountModel(accountRqModel, isInitialAccount);
+    public AccountRsModel createAccount(AccountRqModel requestBody, boolean isInitialAccount) {
+        CustomValidator.validateAccountModel(requestBody, isInitialAccount);
 
-        User user = userService.findByUsername(accountRqModel.getUsername());
+        User user = userService.findByUsername(requestBody.getUsername());
         checkInitialAccountExistence(isInitialAccount, user);
-        checkDuplicateAccount(accountRqModel.getAccountName(), user);
+        checkDuplicateAccount(requestBody.getAccountName(), user);
 
         Account account = buildAccount(
-                accountRqModel,
+                requestBody,
                 user,
-                getAccountType(accountRqModel.getAccountTypeName(), isInitialAccount),
-                getCurrency(accountRqModel.getCurrency()),
+                getAccountType(requestBody.getAccountTypeName(), isInitialAccount),
+                getCurrency(requestBody.getCurrency()),
                 isInitialAccount
         );
 
@@ -70,9 +74,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountRsModel updateAccount(UpdateAccountModel accountModel, String username) {
-        Account account = accountByIdAndUser(accountModel.getAccountId(), userService.findByUsername(username));
-        updateAccountValues(accountModel, account);
+    public AccountRsModel updateAccount(UpdateAccountModel requestBody, String username) {
+        Account account = accountByIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
+        updateAccountValues(requestBody, account);
 
         log.info(format(ACCOUNT_UPDATED_MSG, username, buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
@@ -81,12 +85,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountRsModel toggleAllowNegative(String accountId, String username) {
         Account account = accountByIdAndUser(accountId, userService.findByUsername(username));
+        checkNegativeBalance(account);
         toggleAllowNegativeValue(account);
 
         log.info(format(ALLOW_NEGATIVE_TOGGLED_MSG, username, buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
-
 
     @Override
     public AccountRsModel toggleShowInSum(String accountId, String username) {
@@ -112,26 +116,27 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountRsModel updateBalance(UpdateBalanceModel balanceModel, String username) {
-        Account account = accountByIdAndUser(balanceModel.getAccountId(), userService.findByUsername(username));
-        updateBalanceValue(balanceModel, account);
+    public AccountRsModel updateBalance(UpdateBalanceModel requestBody, String username) {
+        Account account = accountByIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
+        checkNegativeBalance(requestBody, account);
+        updateBalanceValue(requestBody, account);
 
         log.info(format(BALANCE_UPDATED_MSG, username, account.getName(), buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
     }
 
-    private Account buildAccount(AccountRqModel accountRqModel, User user, AccountType accountType,
+    private Account buildAccount(AccountRqModel requestBody, User user, AccountType accountType,
                                  Currency currency, boolean isInitialAccount) {
         return accountRepo.save(Account.builder()
                 .accountId(UUID.randomUUID().toString())
-                .icon(accountRqModel.getIcon())
-                .name(accountRqModel.getAccountName())
+                .icon(requestBody.getIcon())
+                .name(requestBody.getAccountName())
                 .accountType(accountType)
                 .currency(currency)
-                .allowNegative(isInitialAccount || accountRqModel.getAllowNegative())
-                .balance(accountRqModel.getBalance())
+                .allowNegative(isInitialAccount || requestBody.getAllowNegative())
+                .balance(requestBody.getBalance())
                 .enabled(true)
-                .showInSum(isInitialAccount || accountRqModel.getShowInSum())
+                .showInSum(isInitialAccount || requestBody.getShowInSum())
                 .user(user)
                 .build());
     }
@@ -158,21 +163,21 @@ public class AccountServiceImpl implements AccountService {
 
     private Currency getCurrency(String currency) {
         return currencyRepo
-                .findByName(currency)
+                .byName(currency)
                 .orElseThrow(() -> new CurrencyNotFoundException(format(CURRENCY_NOT_FOUND_MSG, currency)));
     }
 
     private AccountType getAccountType(String accountTypeName, boolean isInitialAccount) {
         return accountTypeRepo
-                .findByAccountTypeName(isInitialAccount ? CASH_ACCOUNT : accountTypeName)
+                .byName(isInitialAccount ? CASH_ACCOUNT : accountTypeName)
                 .orElseThrow(() ->
                         new AccountTypeNotFoundException(format(ACCOUNT_TYPE_NOT_FOUND_MSG, accountTypeName)));
     }
 
-    private void updateAccountValues(UpdateAccountModel accountModel, Account account) {
-        account.setIcon(accountModel.getIcon());
-        account.setName(accountModel.getNewAccountName());
-        account.setAccountType(getAccountType(accountModel.getAccountTypeName(), false));
+    private void updateAccountValues(UpdateAccountModel requestBody, Account account) {
+        account.setIcon(requestBody.getIcon());
+        account.setName(requestBody.getNewAccountName());
+        account.setAccountType(getAccountType(requestBody.getAccountTypeName(), false));
         accountRepo.save(account);
     }
 
@@ -186,8 +191,8 @@ public class AccountServiceImpl implements AccountService {
         accountRepo.save(account);
     }
 
-    private void updateBalanceValue(UpdateBalanceModel balanceModel, Account account) {
-        account.setBalance(balanceModel.getBalance());
+    private void updateBalanceValue(UpdateBalanceModel requestBody, Account account) {
+        account.setBalance(requestBody.getAmount());
         accountRepo.save(account);
     }
 
@@ -203,5 +208,16 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    private void checkNegativeBalance(Account account) {
+        if (account.getBalance().compareTo(BigDecimal.ZERO) < 0) {
+            throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getAccountId()));
+        }
+    }
+
+    private void checkNegativeBalance(UpdateBalanceModel requestBody, Account account) {
+        if (requestBody.getAmount().compareTo(BigDecimal.ZERO) < 0 && !account.isAllowNegative()) {
+            throw new NotEnoughBalanceException(format(NEGATIVE_BALANCE_NOT_ALLOWED, account.getAccountId()));
+        }
+    }
 }
 

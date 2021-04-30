@@ -106,7 +106,7 @@ public class TagServiceImpl implements TagService {
 
     private User userByUsername(String username) {
         return userRepo
-                .findByUsernameAndStatus(username, STATUS_ACTIVE)
+                .byUsernameAndStatus(username, STATUS_ACTIVE)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
     }
 

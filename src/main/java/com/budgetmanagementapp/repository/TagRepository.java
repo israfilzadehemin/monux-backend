@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
     default Optional<Tag> byNameAndUser(String tagName, User user) {
-        return findByNameAndUser(tagName, user);
+        return findByNameIgnoreCaseAndUser(tagName, user);
     }
 
     default Optional<Tag> byIdAndUser(String tagId, User user) {
@@ -28,7 +28,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
         return findAllByUser(user);
     }
 
-    Optional<Tag> findByNameAndUser(String tagName, User user);
+    Optional<Tag> findByNameIgnoreCaseAndUser(String tagName, User user);
 
     Optional<Tag> findByTagIdAndUser(String tagId, User user);
 

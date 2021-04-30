@@ -34,11 +34,11 @@ public class OtpServiceImpl implements OtpService {
 
     @Override
     @Transactional
-    public ConfirmOtpRsModel confirmOtp(ConfirmOtpRqModel otpRequestModel) {
-        Otp otp = otpByValue(otpRequestModel);
+    public ConfirmOtpRsModel confirmOtp(ConfirmOtpRqModel requestBody) {
+        Otp otp = otpByValue(requestBody);
         checkOtpAvailability(otp);
 
-        if (otp.getUser().getUsername().equals(otpRequestModel.getUsername())) {
+        if (otp.getUser().getUsername().equals(requestBody.getUsername())) {
             User user = userByOtp(otp);
             updateOtpAndUserValues(otp, user);
 
@@ -58,12 +58,12 @@ public class OtpServiceImpl implements OtpService {
                 .build();
     }
 
-    private Otp otpByValue(ConfirmOtpRqModel otpRequestModel) {
-        return otpRepo.findByOtp(otpRequestModel.getOtp()).orElseThrow(() -> new InvalidOtpException(INVALID_OTP_MSG));
+    private Otp otpByValue(ConfirmOtpRqModel requestBody) {
+        return otpRepo.findByOtp(requestBody.getOtp()).orElseThrow(() -> new InvalidOtpException(INVALID_OTP_MSG));
     }
 
     private User userByOtp(Otp otp) {
-        return userRepo.findByOtp(otp).orElseThrow(
+        return userRepo.byOtp(otp).orElseThrow(
                 () -> new UserNotFoundException(format(USER_BY_OTP_NOT_FOUND_MSG, otp.getOtp())));
     }
 

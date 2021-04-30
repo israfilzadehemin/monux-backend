@@ -10,6 +10,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.INCOME_TRANSACTION_CRE
 import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_CATEGORY_ID_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_ACCOUNT_MSG;
@@ -31,6 +32,7 @@ import com.budgetmanagementapp.exception.AccountNotFoundException;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
+import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.DebtRsModel;
 import com.budgetmanagementapp.model.InOutRqModel;
@@ -77,9 +79,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionRsModel createTransaction(InOutRqModel requestBody,
-                                                TransactionType type,
-                                                String username) {
+    public TransactionRsModel createTransaction(InOutRqModel requestBody, TransactionType type, String username) {
         User user = userService.findByUsername(username);
         Account account = accountByIdAndUser(requestBody.getAccountId(), user);
         Category category = categoryByIdAndTypeAndUser(requestBody.getCategoryId(), type, user);
@@ -108,6 +108,10 @@ public class TransactionServiceImpl implements TransactionService {
         Account senderAccount = accountByIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountByIdAndUser(requestBody.getReceiverAccountId(), user);
 
+        if (requestBody.getReceiverAccountId().equals(requestBody.getSenderAccountId())) {
+            throw new TransferToSelfException(TRANSFER_TO_SELF_MSG);
+        }
+
         checkBalanceToCreateTransaction(requestBody.getAmount(), transactionType, senderAccount);
 
         Map<String, Account> accounts = new HashMap<>() {{
@@ -125,9 +129,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public DebtRsModel createTransaction(DebtRqModel requestBody,
-                                         TransactionType type,
-                                         String username) {
+    public DebtRsModel createTransaction(DebtRqModel requestBody, TransactionType type, String username) {
         User user = userService.findByUsername(username);
         Account account = accountByIdAndUser(requestBody.getAccountId(), user);
 
@@ -287,7 +289,8 @@ public class TransactionServiceImpl implements TransactionService {
                 .build());
     }
 
-    private Transaction buildTransaction(DebtRqModel requestBody, TransactionType type,
+    private Transaction buildTransaction(DebtRqModel requestBody,
+                                         TransactionType type,
                                          User user,
                                          Account account) {
         Transaction transaction = transactionRepo.save(Transaction.builder()
@@ -338,7 +341,8 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepo.save(transaction);
     }
 
-    private Transaction updateTransactionValues(UpdateDebtRqModel requestBody, Account account,
+    private Transaction updateTransactionValues(UpdateDebtRqModel requestBody,
+                                                Account account,
                                                 Transaction transaction) {
         transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
         transaction.setAmount(requestBody.getAmount());

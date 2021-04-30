@@ -62,14 +62,14 @@ public class CategoryServiceImpl implements CategoryService {
         return buildCategoryResponseModel(category);
     }
 
-    private Category buildCategory(CategoryRqModel requestModel, User user) {
-        CustomValidator.validateCategoryType(requestModel.getCategoryType());
+    private Category buildCategory(CategoryRqModel requestBody, User user) {
+        CustomValidator.validateCategoryType(requestBody.getCategoryType());
 
         return categoryRepo.save(Category.builder()
                 .categoryId(UUID.randomUUID().toString())
-                .icon(requestModel.getIcon())
-                .name(requestModel.getCategoryName())
-                .type(requestModel.getCategoryType().toUpperCase())
+                .icon(requestBody.getIcon())
+                .name(requestBody.getCategoryName())
+                .type(requestBody.getCategoryType().toUpperCase())
                 .user(user)
                 .build());
     }

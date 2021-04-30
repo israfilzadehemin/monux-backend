@@ -36,47 +36,47 @@ public class UserController {
     private final OtpService otpService;
 
     @PostMapping(USER_SIGNUP_URL)
-    public ResponseEntity<?> signupWithEmail(@RequestBody @Valid SignupRqModel signupRqModel)
+    public ResponseEntity<?> signupWithEmail(@RequestBody @Valid SignupRqModel requestBody)
             throws MessagingException {
 
-        log.info(String.format(REQUEST_MSG, USER_SIGNUP_URL, signupRqModel));
+        log.info(String.format(REQUEST_MSG, USER_SIGNUP_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(userService.signup(signupRqModel))
+                        .body(userService.signup(requestBody))
                         .build()
         );
     }
 
     @PostMapping(USER_OTP_CONFIRM_URL)
-    public ResponseEntity<?> confirmOtp(@RequestBody @Valid ConfirmOtpRqModel otpRequestModel) {
-        log.info(String.format(REQUEST_MSG, USER_OTP_CONFIRM_URL, otpRequestModel));
+    public ResponseEntity<?> confirmOtp(@RequestBody @Valid ConfirmOtpRqModel requestBody) {
+        log.info(String.format(REQUEST_MSG, USER_OTP_CONFIRM_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(otpService.confirmOtp(otpRequestModel))
+                        .body(otpService.confirmOtp(requestBody))
                         .build()
         );
     }
 
     @PostMapping(USER_CREATE_PASSWORD_URL)
-    public ResponseEntity<?> createPassword(@RequestBody @Valid CreatePasswordRqModel passwordRequestModel) {
-        log.info(String.format(REQUEST_MSG, USER_CREATE_PASSWORD_URL, passwordRequestModel));
+    public ResponseEntity<?> createPassword(@RequestBody @Valid CreatePasswordRqModel requestBody) {
+        log.info(String.format(REQUEST_MSG, USER_CREATE_PASSWORD_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(userService.createPassword(passwordRequestModel))
+                        .body(userService.createPassword(requestBody))
                         .build()
         );
     }
 
     @PostMapping(USER_CREATE_INITIAL_ACCOUNT_URL)
-    public ResponseEntity<?> createInitialAccount(@RequestBody AccountRqModel accountRqModel) {
-        log.info(String.format(REQUEST_MSG, USER_CREATE_INITIAL_ACCOUNT_URL, accountRqModel));
+    public ResponseEntity<?> createInitialAccount(@RequestBody AccountRqModel requestBody) {
+        log.info(String.format(REQUEST_MSG, USER_CREATE_INITIAL_ACCOUNT_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(accountService.createAccount(accountRqModel, true))
+                        .body(accountService.createAccount(requestBody, true))
                         .build()
         );
     }

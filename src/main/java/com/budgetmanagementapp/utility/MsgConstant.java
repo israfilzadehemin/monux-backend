@@ -34,17 +34,12 @@ public class MsgConstant {
     public static final String BALANCE_UPDATED_MSG = "User '%s' updated balance of account %s: %s";
     public static final String CATEGORY_UPDATED_MSG = "User '%s' updated a category: %s";
     public static final String TAG_UPDATED_MSG = "User '%s' updated a tag: %s";
-    public static final String NO_ACCOUNT_MSG = "User '%s' does not have existing account";
-    public static final String CATEGORY_NOT_FOUND_MSG = "User '%s' does not have any categories";
     public static final String TAG_NOT_FOUND_MSG = "User '%s' does not have any tags";
-    public static final String FEEDBACK_NOT_FOUND_MSG = "User '%s' does not have any feedbacks";
     public static final String CATEGORY_TYPE_NOT_FOUND_MSG = "Category type '%s' not found";
     public static final String TRANSACTION_TYPE_NOT_FOUND_MSG = "Transaction type '%s' not found";
     public static final String CURRENCY_NOT_FOUND_MSG = "Currency '%s' is not found";
     public static final String ROLE_NOT_FOUND_MSG = "Role is not found in database";
     public static final String PASSWORD_CREATED_MSG = "Password has been created for %s";
-    public static final String PASSWORD_MISMATCH_MSG = "Password and confirm password must be the same";
-    public static final String PASSWORD_NOT_SUFFICIENT_MSG = "Password must be at least 5 symbols long";
     public static final String REQUEST_MSG = "%s request with body: %s";
     public static final String OTP_CONFIRMED_MSG = "User %s confirmed their OTP";
     public static final String NO_BODY_MSG = "No body required";
@@ -67,9 +62,9 @@ public class MsgConstant {
     public static final String FEEDBACK_BY_ID_MSG = "Feedback with ID '%s': %s";
     public static final String INVALID_CATEGORY_ID_MSG = "Category '%s' is not found";
     public static final String INVALID_TRANSACTION_TYPE_MSG = "Transaction type '%s' is not valid";
-    public static final String NO_EXISTING_TRANSACTION_MSG = "User '%s' does not have any transaction yet";
     public static final String TRANSFER_TO_SELF_MSG = "Sender and receiver accounts are the same";
     public static final String INSUFFICIENT_BALANCE_MSG = "There is no enough balance for this operation in '%s'";
+    public static final String NEGATIVE_BALANCE_NOT_ALLOWED = "Negative balance is not allwed for '%s'";
     public static final String INVALID_DATE_TIME_FORMAT_MSG =
             "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
 }

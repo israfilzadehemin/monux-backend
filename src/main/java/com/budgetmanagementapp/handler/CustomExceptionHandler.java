@@ -24,6 +24,7 @@ import com.budgetmanagementapp.exception.PasswordNotSufficientException;
 import com.budgetmanagementapp.exception.TagNotFoundException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
+import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
@@ -67,6 +68,7 @@ public class CustomExceptionHandler {
                 || exception instanceof DuplicateAccountException
                 || exception instanceof DuplicateCategoryException
                 || exception instanceof DuplicateTagException
+                || exception instanceof TransferToSelfException
                 || exception instanceof NotEnoughBalanceException
                 || exception instanceof InvalidPhoneNumberException) {
             return handleException(exception, HttpStatus.BAD_REQUEST);

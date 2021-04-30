@@ -13,7 +13,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     }
 
     default Optional<Account> byNameAndUser(String accountName, User user) {
-        return findByNameAndUser(accountName, user);
+        return findByNameIgnoreCaseAndUser(accountName, user);
     }
 
     default List<Account> allByUser(User user) {
@@ -22,7 +22,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findByAccountIdAndUser(String accountId, User user);
 
-    Optional<Account> findByNameAndUser(String name, User user);
+    Optional<Account> findByNameIgnoreCaseAndUser(String name, User user);
 
     List<Account> findAllByUser(User user);
 }
