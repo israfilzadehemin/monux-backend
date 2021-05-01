@@ -2,10 +2,10 @@ package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_CREATE_CATEGORY_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_CREATE_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_GET_ALL_CATEGORIES_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_GET_CATEGORIES_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_UPDATE_CATEGORY_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_UPDATE_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.CategoryRqModel;
@@ -31,11 +31,11 @@ public class CategoryController {
 
     private final CategoryService categoryService;
 
-    @PostMapping(CATEGORY_CREATE_CATEGORY_URL)
+    @PostMapping(CATEGORY_CREATE_URL)
     public ResponseEntity<?> createCategory(@RequestBody @Valid CategoryRqModel requestBody,
                                             Authentication auth) {
 
-        log.info(format(REQUEST_MSG, CATEGORY_CREATE_CATEGORY_URL, requestBody));
+        log.info(format(REQUEST_MSG, CATEGORY_CREATE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
@@ -68,11 +68,11 @@ public class CategoryController {
                         .build());
     }
 
-    @PostMapping(CATEGORY_UPDATE_CATEGORY_URL)
+    @PostMapping(CATEGORY_UPDATE_URL)
     public ResponseEntity<?> updateCustomCategory(@RequestBody @Valid UpdateCategoryRqModel requestBody,
                                                   Authentication auth) {
 
-        log.info(format(REQUEST_MSG, CATEGORY_UPDATE_CATEGORY_URL, requestBody));
+        log.info(format(REQUEST_MSG, CATEGORY_UPDATE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)

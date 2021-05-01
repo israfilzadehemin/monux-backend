@@ -1,6 +1,9 @@
 package com.budgetmanagementapp.model;
 
 
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,8 +29,16 @@ public class TransactionRsModel {
     BigDecimal amount;
     String description;
     String type;
+
+    @JsonInclude(NON_NULL)
     String senderAccountId;
+
+    @JsonInclude(NON_NULL)
     String receiverAccountId;
+
+    @JsonInclude(NON_NULL)
     String categoryId;
+
+    @JsonInclude(NON_NULL)
     List<String> tagIds;
 }

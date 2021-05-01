@@ -167,7 +167,7 @@ public class TransactionServiceImpl implements TransactionService {
             oldAccounts.put(RECEIVER_ACCOUNT, transaction.getSenderAccount());
             newAccounts.put(SENDER_ACCOUNT, account);
         } else {
-            oldAccounts.put(SENDER_ACCOUNT, transaction.getSenderAccount());
+            oldAccounts.put(SENDER_ACCOUNT, transaction.getReceiverAccount());
             newAccounts.put(RECEIVER_ACCOUNT, account);
         }
 
@@ -188,6 +188,10 @@ public class TransactionServiceImpl implements TransactionService {
         Account senderAccount = accountByIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountByIdAndUser(requestBody.getReceiverAccountId(), user);
         BigDecimal oldAmount = transaction.getAmount();
+
+        if (requestBody.getReceiverAccountId().equals(requestBody.getSenderAccountId())) {
+            throw new TransferToSelfException(TRANSFER_TO_SELF_MSG);
+        }
 
         checkBalanceToUpdateTransfer(requestBody, transaction, senderAccount, oldAmount);
 
@@ -254,7 +258,7 @@ public class TransactionServiceImpl implements TransactionService {
     private Transaction buildTransaction(InOutRqModel requestBody, User user,
                                          Account account, Category category,
                                          List<Tag> tags, TransactionType type) {
-        Transaction transaction = transactionRepo.save(Transaction.builder()
+        Transaction transaction = Transaction.builder()
                 .transactionId(UUID.randomUUID().toString())
                 .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
                 .amount(requestBody.getAmount())
@@ -263,15 +267,14 @@ public class TransactionServiceImpl implements TransactionService {
                 .category(category)
                 .tags(tags)
                 .user(user)
-                .build());
+                .build();
 
         if (type.equals(INCOME)) {
             transaction.setReceiverAccount(account);
         } else {
             transaction.setSenderAccount(account);
         }
-
-        return transaction;
+        return transactionRepo.save(transaction);
     }
 
     private Transaction buildTransaction(TransferRqModel requestBody, User user,
@@ -293,14 +296,14 @@ public class TransactionServiceImpl implements TransactionService {
                                          TransactionType type,
                                          User user,
                                          Account account) {
-        Transaction transaction = transactionRepo.save(Transaction.builder()
+        Transaction transaction = Transaction.builder()
                 .transactionId(UUID.randomUUID().toString())
                 .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
                 .amount(requestBody.getAmount())
                 .description(requestBody.getDescription())
                 .type(type.name())
                 .user(user)
-                .build());
+                .build();
 
         if (type.equals(DEBT_IN)) {
             transaction.setReceiverAccount(account);
@@ -308,7 +311,7 @@ public class TransactionServiceImpl implements TransactionService {
             transaction.setSenderAccount(account);
         }
 
-        return transaction;
+        return transactionRepo.save(transaction);
     }
 
     private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,
@@ -358,17 +361,28 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private TransactionRsModel buildGenericResponseModel(Transaction transaction) {
-        return TransactionRsModel.builder()
+        TransactionRsModel response = TransactionRsModel.builder()
                 .transactionId(transaction.getTransactionId())
                 .dateTime(transaction.getDateTime())
                 .amount(transaction.getAmount())
                 .description(transaction.getDescription())
                 .type(transaction.getType())
-                .senderAccountId(Optional.ofNullable(transaction.getSenderAccount().getAccountId()).orElse(""))
-                .receiverAccountId(Optional.ofNullable(transaction.getReceiverAccount().getAccountId()).orElse(""))
-                .categoryId(Optional.ofNullable(transaction.getCategory().getCategoryId()).orElse(""))
-                .tagIds(transaction.getTags().stream().map(Tag::getTagId).collect(Collectors.toList()))
                 .build();
+
+        if (!Objects.isNull(transaction.getSenderAccount())) {
+            response.setSenderAccountId(transaction.getSenderAccount().getAccountId());
+        }
+        if (!Objects.isNull(transaction.getReceiverAccount())) {
+            response.setReceiverAccountId(transaction.getReceiverAccount().getAccountId());
+        }
+        if (!Objects.isNull(transaction.getCategory())) {
+            response.setCategoryId(transaction.getCategory().getCategoryId());
+        }
+        if (!Objects.isNull(transaction.getTags())) {
+            response.setTagIds(transaction.getTags().stream().map(Tag::getTagId).collect(Collectors.toList()));
+        }
+
+        return response;
     }
 
     private InOutRsModel buildInOutResponseModel(Transaction transaction) {

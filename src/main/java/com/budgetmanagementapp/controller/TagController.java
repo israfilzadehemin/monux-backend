@@ -2,11 +2,11 @@ package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.TAG_CREATE_TAG_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TAG_CREATE_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TAG_GET_ALL_TAGS_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TAG_GET_TAGS_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TAG_TOGGLE_VISIBILITY_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TAG_UPDATE_TAG_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TAG_UPDATE_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.ResponseModel;
@@ -35,10 +35,10 @@ public class TagController {
 
     private static final String REQUEST_PARAM_TAG_ID = "tag-id";
 
-    @PostMapping(TAG_CREATE_TAG_URL)
+    @PostMapping(TAG_CREATE_URL)
     public ResponseEntity<?> createTag(@RequestBody @Valid TagRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TAG_CREATE_TAG_URL, requestBody));
+        log.info(format(REQUEST_MSG, TAG_CREATE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
@@ -71,10 +71,10 @@ public class TagController {
                         .build());
     }
 
-    @PostMapping(TAG_UPDATE_TAG_URL)
+    @PostMapping(TAG_UPDATE_URL)
     public ResponseEntity<?> updateTag(@RequestBody @Valid UpdateTagRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TAG_UPDATE_TAG_URL, requestBody));
+        log.info(format(REQUEST_MSG, TAG_UPDATE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
@@ -85,7 +85,7 @@ public class TagController {
 
     @PostMapping(TAG_TOGGLE_VISIBILITY_URL)
     public ResponseEntity<?> toggleVisibility(
-            @RequestParam(name = REQUEST_PARAM_TAG_ID) @Valid String tagId, Authentication auth) {
+            @RequestParam(name = REQUEST_PARAM_TAG_ID) String tagId, Authentication auth) {
         log.info(format(REQUEST_MSG, TAG_TOGGLE_VISIBILITY_URL, tagId));
         return ResponseEntity.ok(
                 ResponseModel.builder()

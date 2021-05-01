@@ -128,6 +128,7 @@ public class TagServiceImpl implements TagService {
     }
 
     private void updateTagValues(UpdateTagRqModel requestBody, Tag tag) {
+        CustomValidator.validateCategoryType(requestBody.getTagCategory());
         tag.setName(requestBody.getTagName());
         tag.setType(requestBody.getTagCategory());
         tagRepo.save(tag);

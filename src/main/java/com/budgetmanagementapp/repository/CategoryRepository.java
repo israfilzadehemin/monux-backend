@@ -16,11 +16,11 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
         return findByCategoryIdAndUser(categoryId, user);
     }
 
-    default Optional<Category> allByUser(User user) {
+    default List<Category> allByUser(User user) {
         return findAllByUser(user);
     }
 
-    default Optional<Category> allByUserOrGeneralUser(User user, User generalUser) {
+    default List<Category> allByUserOrGeneralUser(User user, User generalUser) {
         return findAllByUserOrUser(user, generalUser);
     }
 
@@ -32,9 +32,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     Optional<Category> findByCategoryIdAndUser(String categoryId, User user);
 
-    Optional<Category> findAllByUser(User user);
+    List<Category> findAllByUser(User user);
 
-    Optional<Category> findAllByUserOrUser(User user, User generalUser);
+    List<Category> findAllByUserOrUser(User user, User generalUser);
 
     Optional<Category> findByCategoryIdAndTypeAndUserIn(String categoryId, String type, List<User> users);
 }

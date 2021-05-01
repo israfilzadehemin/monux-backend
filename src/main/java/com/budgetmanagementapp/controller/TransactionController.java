@@ -2,15 +2,15 @@ package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_IN_TRANSACTION_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_OUT_TRANSACTION_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_INCOME_TRANSACTION_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_TRANSFER_TRANSACTION_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_IN_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_OUT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_INCOME_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_OUTGOING_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_TRANSFER_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_ALL_TRANSACTIONS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_DEBT_TRANSACTION_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_DEBT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_OUT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.DebtRqModel;
@@ -41,11 +41,11 @@ public class TransactionController {
 
     private final TransactionService transactionService;
 
-    @PostMapping(TRANSACTION_CREATE_INCOME_TRANSACTION_URL)
+    @PostMapping(TRANSACTION_CREATE_INCOME_URL)
     public ResponseEntity<?> createIncomeTransaction(@RequestBody @Valid InOutRqModel requestBody,
                                                      Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_INCOME_TRANSACTION_URL, requestBody));
+        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_INCOME_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
@@ -57,11 +57,11 @@ public class TransactionController {
 
     }
 
-    @PostMapping(TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL)
+    @PostMapping(TRANSACTION_CREATE_OUTGOING_URL)
     public ResponseEntity<?> createOutcomeTransaction(@RequestBody @Valid InOutRqModel requestBody,
                                                       Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_OUTCOME_TRANSACTION_URL, requestBody));
+        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_OUTGOING_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
@@ -73,11 +73,11 @@ public class TransactionController {
 
     }
 
-    @PostMapping(TRANSACTION_CREATE_TRANSFER_TRANSACTION_URL)
+    @PostMapping(TRANSACTION_CREATE_TRANSFER_URL)
     public ResponseEntity<?> createTransferTransaction(@RequestBody @Valid TransferRqModel requestBody,
                                                        Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_TRANSFER_TRANSACTION_URL, requestBody));
+        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_TRANSFER_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
@@ -89,11 +89,11 @@ public class TransactionController {
 
     }
 
-    @PostMapping(TRANSACTION_CREATE_DEBT_IN_TRANSACTION_URL)
+    @PostMapping(TRANSACTION_CREATE_DEBT_IN_URL)
     public ResponseEntity<?> createDebtInTransaction(@RequestBody @Valid DebtRqModel requestBody,
                                                      Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_IN_TRANSACTION_URL, requestBody));
+        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_IN_URL, requestBody));
 
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -106,11 +106,11 @@ public class TransactionController {
 
     }
 
-    @PostMapping(TRANSACTION_CREATE_DEBT_OUT_TRANSACTION_URL)
+    @PostMapping(TRANSACTION_CREATE_DEBT_OUT_URL)
     public ResponseEntity<?> createDebtOutTransaction(@RequestBody @Valid DebtRqModel requestBody,
                                                       Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_OUT_TRANSACTION_URL, requestBody));
+        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_OUT_URL, requestBody));
 
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -136,11 +136,11 @@ public class TransactionController {
     }
 
 
-    @PostMapping(TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL)
+    @PostMapping(TRANSACTION_UPDATE_IN_OUT_URL)
     public ResponseEntity<?> updateInOutTransaction(@RequestBody @Valid UpdateInOutRqModel requestBody,
                                                     Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_IN_OUT_TRANSACTION_URL, requestBody));
+        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_IN_OUT_URL, requestBody));
 
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -152,11 +152,11 @@ public class TransactionController {
 
     }
 
-    @PostMapping(TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL)
+    @PostMapping(TRANSACTION_UPDATE_TRANSFER_URL)
     public ResponseEntity<?> updateTransferTransaction(@RequestBody @Valid UpdateTransferRqModel requestBody,
                                                        Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_TRANSFER_TRANSACTION_URL, requestBody));
+        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_TRANSFER_URL, requestBody));
 
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -168,11 +168,11 @@ public class TransactionController {
 
     }
 
-    @PostMapping(TRANSACTION_UPDATE_DEBT_TRANSACTION_URL)
+    @PostMapping(TRANSACTION_UPDATE_DEBT_URL)
     public ResponseEntity<?> updateDebtTransaction(@RequestBody @Valid UpdateDebtRqModel requestBody,
                                                    Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_DEBT_TRANSACTION_URL, requestBody));
+        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_DEBT_URL, requestBody));
 
         return ResponseEntity.ok(
                 ResponseModel.builder()

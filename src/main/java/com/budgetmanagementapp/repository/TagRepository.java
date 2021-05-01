@@ -17,7 +17,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
     }
 
     default Optional<Tag> byIdAndTypeAndUsers(String tagId, String type, List<User> users) {
-        return findByTagIdAndTypeAndUserIn(tagId, type, users);
+        return findByTagIdAndTypeIgnoreCaseAndUserIn(tagId, type, users);
     }
 
     default List<Tag> allByUserOrGeneralUser(User user, User generalUser) {
@@ -32,7 +32,7 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     Optional<Tag> findByTagIdAndUser(String tagId, User user);
 
-    Optional<Tag> findByTagIdAndTypeAndUserIn(String tagId, String type, List<User> users);
+    Optional<Tag> findByTagIdAndTypeIgnoreCaseAndUserIn(String tagId, String type, List<User> users);
 
     List<Tag> findAllByUserOrUser(User user, User generalUser);
 

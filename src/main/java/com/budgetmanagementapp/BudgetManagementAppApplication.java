@@ -135,7 +135,7 @@ public class BudgetManagementAppApplication {
 
         User generalUser = User.builder()
                 .userId(UUID.randomUUID().toString())
-                .username("generalUser")
+                .username("commonUser")
                 .password(encoder.encode("emin123"))
                 .dateTime(LocalDateTime.now())
                 .status(STATUS_ACTIVE)
