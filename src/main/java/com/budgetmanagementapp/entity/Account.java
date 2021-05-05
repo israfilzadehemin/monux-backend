@@ -72,27 +72,16 @@ public class Account {
             inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
     private User user;
 
-    @OneToMany(mappedBy = "account")
-    private List<InOutTransaction> inOutTransactions;
+    @OneToMany(mappedBy = "senderAccount")
+    private List<Transaction> transactionsOut;
+
+    @OneToMany(mappedBy = "receiverAccount")
+    private List<Transaction> transactionsIn;
 
     @OneToMany(mappedBy = "accountFrom")
-    private List<TransferTransaction> decTransferTransactions;
+    private List<Template> templatesOut;
 
     @OneToMany(mappedBy = "accountTo")
-    private List<TransferTransaction> incTransferTransactions;
+    private List<Template> templatesIn;
 
-    @OneToMany(mappedBy = "account")
-    private List<DebtTransaction> debtTransactions;
-
-    @OneToMany(mappedBy = "account")
-    private List<InOutTemplate> inOutTemplates;
-
-    @OneToMany(mappedBy = "accountFrom")
-    private List<TransferTemplate> decTransferTemplates;
-
-    @OneToMany(mappedBy = "accountTo")
-    private List<TransferTemplate> incTransferTemplate;
-
-    @OneToMany(mappedBy = "account")
-    private List<DebtTemplate> debtTemplates;
 }

@@ -18,4 +18,7 @@ public class Constant {
     public static final String OTP_CONFIRMATION_SUBJECT = "Confirmation code for your account";
     public static final String OTP_CONFIRMATION_BODY = "Your confirmation code is: %s";
     public static final String ROLE_USER = "ROLE_USER";
+    public static final String SENDER_ACCOUNT = "senderAccount";
+    public static final String RECEIVER_ACCOUNT = "receiverAccount";
+    public static final String COMMON_USERNAME = "commonUser";
 }

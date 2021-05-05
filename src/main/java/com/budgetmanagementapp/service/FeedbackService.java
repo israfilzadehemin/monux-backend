@@ -1,14 +1,14 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.FeedbackRequestModel;
-import com.budgetmanagementapp.model.FeedbackResponseModel;
+import com.budgetmanagementapp.model.FeedbackRqModel;
+import com.budgetmanagementapp.model.FeedbackRsModel;
 import java.util.List;
 
 public interface FeedbackService {
-    FeedbackResponseModel createFeedback(FeedbackRequestModel requestBody, String username);
+    FeedbackRsModel createFeedback(FeedbackRqModel requestBody, String username);
 
-    List<FeedbackResponseModel> getFeedbacksByUser(String username);
+    List<FeedbackRsModel> getFeedbacksByUser(String username);
 
-    FeedbackResponseModel getFeedbackById(String feedbackId, String username);
+    FeedbackRsModel getFeedbackById(String feedbackId, String username);
 }
 

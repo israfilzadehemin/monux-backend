@@ -5,5 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CurrencyRepository extends JpaRepository<Currency, Long> {
-    Optional<Currency> findByName(String name);
+
+    default Optional<Currency> byName(String currencyName) {
+        return findByNameIgnoreCase(currencyName);
+    }
+
+    Optional<Currency> findByNameIgnoreCase(String name);
 }

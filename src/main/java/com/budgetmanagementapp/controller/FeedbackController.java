@@ -7,9 +7,11 @@ import static com.budgetmanagementapp.utility.UrlConstant.FEEDBACK_GET_ALL_FEEDB
 import static com.budgetmanagementapp.utility.UrlConstant.FEEDBACK_GET_FEEDBACK_BY_ID_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.FeedbackRequestModel;
+import com.budgetmanagementapp.model.FeedbackRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.service.FeedbackService;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -32,7 +34,7 @@ public class FeedbackController {
     private static final String REQUEST_PARAM_FEEDBACK_ID = "feedback-id";
 
     @PostMapping(FEEDBACK_CREATE_URL)
-    public ResponseEntity<?> createFeedback(@RequestBody FeedbackRequestModel requestBody, Authentication auth) {
+    public ResponseEntity<?> createFeedback(@RequestBody @Valid FeedbackRqModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, FEEDBACK_CREATE_URL, requestBody));
         return ResponseEntity.ok(
@@ -57,7 +59,7 @@ public class FeedbackController {
 
     @GetMapping(FEEDBACK_GET_FEEDBACK_BY_ID_URL)
     public ResponseEntity<?> getFeedbackById(
-            @RequestParam(name = REQUEST_PARAM_FEEDBACK_ID) String feedbackId, Authentication auth) {
+            @RequestParam(name = REQUEST_PARAM_FEEDBACK_ID) @NotBlank String feedbackId, Authentication auth) {
 
         log.info(format(REQUEST_MSG, FEEDBACK_GET_FEEDBACK_BY_ID_URL, NO_BODY_MSG));
         return ResponseEntity.ok(

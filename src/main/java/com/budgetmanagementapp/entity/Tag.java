@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
@@ -33,12 +35,24 @@ public class Tag {
     @Column(name = "tag_name")
     private String name;
 
+    @Column(name = "tag_type")
+    private String type;
+
     @Column(name = "tag_visibility")
     private boolean visibility;
 
     @ManyToMany(mappedBy = "tags")
-    private List<InOutTemplate> inOutTemplates;
+    private List<Template> templates;
 
     @ManyToMany(mappedBy = "tags")
-    private List<InOutTransaction> inOutTransactions;
+    private List<Transaction> transactions;
+
+    @ManyToOne
+    @JoinTable(
+            name = "rel_tag_with_user",
+            joinColumns =
+                    {@JoinColumn(name = "tag_id", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    private User user;
 }

@@ -41,8 +41,8 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "creation_date_time")
-    private LocalDateTime creationDateTime;
+    @Column(name = "date_time")
+    private LocalDateTime dateTime;
 
     @Column(name = "status")
     private String status;
@@ -57,37 +57,25 @@ public class User {
     private List<Account> accounts;
 
     @OneToMany(mappedBy = "user")
-    private List<InOutTransaction> inOutTransactions;
+    private List<Transaction> transactions;
 
     @OneToMany(mappedBy = "user")
-    private List<InOutTemplate> inOutTemplates;
-
-    @OneToMany(mappedBy = "user")
-    private List<TransferTransaction> transferTransactions;
-
-    @OneToMany(mappedBy = "user")
-    private List<TransferTemplate> transferTemplates;
-
-    @OneToMany(mappedBy = "user")
-    private List<DebtTransaction> debtTransactions;
-
-    @OneToMany(mappedBy = "user")
-    private List<DebtTemplate> debtTemplates;
+    private List<Template> templates;
 
     @OneToMany(mappedBy = "user")
     private List<Note> notes;
 
     @OneToMany(mappedBy = "user")
-    private List<CustomCategory> customCategories;
+    private List<Category> categories;
 
     @OneToMany(mappedBy = "user")
-    private List<CustomTag> customTags;
+    private List<Tag> tags;
 
     @OneToMany(mappedBy = "user")
     private List<Feedback> feedbacks;
 
     @OneToMany(mappedBy = "user")
-    private List<CustomNotification> customNotifications;
+    private List<Notification> notifications;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

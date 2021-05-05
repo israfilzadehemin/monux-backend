@@ -34,8 +34,8 @@ public class Feedback {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "creation_date_time")
-    private LocalDateTime creationDateTime;
+    @Column(name = "date_time")
+    private LocalDateTime dateTime;
 
     @Column(name = "status")
     private String status;

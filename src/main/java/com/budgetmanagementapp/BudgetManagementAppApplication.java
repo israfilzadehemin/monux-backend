@@ -2,13 +2,13 @@ package com.budgetmanagementapp;
 
 import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
 import static com.budgetmanagementapp.utility.Constant.STATUS_NOT_PAID;
+import static com.budgetmanagementapp.utility.Constant.STATUS_PAID;
 
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.Currency;
-import com.budgetmanagementapp.entity.CustomNotification;
-import com.budgetmanagementapp.entity.CustomTag;
+import com.budgetmanagementapp.entity.Notification;
 import com.budgetmanagementapp.entity.Role;
 import com.budgetmanagementapp.entity.Tag;
 import com.budgetmanagementapp.entity.User;
@@ -16,9 +16,7 @@ import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.repository.CurrencyRepository;
-import com.budgetmanagementapp.repository.CustomCategoryRepository;
-import com.budgetmanagementapp.repository.CustomNotificationRepository;
-import com.budgetmanagementapp.repository.CustomTagRepository;
+import com.budgetmanagementapp.repository.NotificationRepository;
 import com.budgetmanagementapp.repository.RoleRepository;
 import com.budgetmanagementapp.repository.TagRepository;
 import com.budgetmanagementapp.repository.UserRepository;
@@ -52,9 +50,8 @@ public class BudgetManagementAppApplication {
     @Bean
     CommandLineRunner createInitialData(
             AccountTypeRepository accountTypeRepo, CategoryRepository categoryRepo,
-            CurrencyRepository currencyRepo, CustomCategoryRepository customCategoryRepo,
-            CustomNotificationRepository customNotificationRepo, CustomTagRepository customTagRepo,
-            TagRepository tagRepo, RoleRepository roleRepo, AccountRepository accountRepo, UserRepository userRepo
+            CurrencyRepository currencyRepo, TagRepository tagRepo, RoleRepository roleRepo,
+            AccountRepository accountRepo, UserRepository userRepo, NotificationRepository notificationRepo
     ) {
 
         AccountType cashAccountType = AccountType.builder()
@@ -68,42 +65,6 @@ public class BudgetManagementAppApplication {
                 .name("AZN")
                 .build();
         currencyRepo.save(azn);
-
-        Category food = Category.builder()
-                .categoryId(UUID.randomUUID().toString())
-                .name("Food")
-                .type(CategoryType.OUTCOME)
-                .build();
-
-        Category clothes = Category.builder()
-                .categoryId(UUID.randomUUID().toString())
-                .name("Clothes")
-                .type(CategoryType.OUTCOME)
-                .build();
-
-        Category salary = Category.builder()
-                .categoryId(UUID.randomUUID().toString())
-                .name("Salary")
-                .type(CategoryType.INCOME)
-                .build();
-
-        categoryRepo.saveAll(Arrays.asList(food, clothes, salary));
-
-        CustomNotification netflixNotification = CustomNotification.builder()
-                .customNotificationId(UUID.randomUUID().toString())
-                .name("Netflix")
-                .enabled(true)
-                .frequency("1-1")
-                .time(LocalTime.of(18, 00))
-                .build();
-        customNotificationRepo.save(netflixNotification);
-
-        Tag coffeeTag = Tag.builder()
-                .tagId(UUID.randomUUID().toString())
-                .name("Coffee")
-                .visibility(true)
-                .build();
-        tagRepo.save(coffeeTag);
 
         Role adminRole = Role.builder()
                 .roleId(UUID.randomUUID().toString())
@@ -156,7 +117,7 @@ public class BudgetManagementAppApplication {
                 .userId(UUID.randomUUID().toString())
                 .username("heroesofbaku@gmail.com")
                 .password(encoder.encode("emin123"))
-                .creationDateTime(LocalDateTime.now())
+                .dateTime(LocalDateTime.now())
                 .status(STATUS_ACTIVE)
                 .paymentStatus(STATUS_NOT_PAID)
                 .accounts(Arrays.asList(cardAccount1, cardAccount2))
@@ -166,21 +127,71 @@ public class BudgetManagementAppApplication {
                 .userId(UUID.randomUUID().toString())
                 .username("israfilzadehemin@gmail.com")
                 .password(encoder.encode("emin123"))
-                .creationDateTime(LocalDateTime.now())
+                .dateTime(LocalDateTime.now())
                 .status(STATUS_ACTIVE)
                 .paymentStatus(STATUS_NOT_PAID)
                 .accounts(Collections.singletonList(cardAccount3))
                 .build();
-        userRepo.saveAll(Arrays.asList(user1, user2));
 
-        CustomTag newCustomTag = CustomTag.builder()
-                .customTagId(UUID.randomUUID().toString())
+        User generalUser = User.builder()
+                .userId(UUID.randomUUID().toString())
+                .username("commonUser")
+                .password(encoder.encode("emin123"))
+                .dateTime(LocalDateTime.now())
+                .status(STATUS_ACTIVE)
+                .paymentStatus(STATUS_PAID)
+                .build();
+
+        userRepo.saveAll(Arrays.asList(user1, user2, generalUser));
+
+        Category food = Category.builder()
+                .categoryId(UUID.randomUUID().toString())
+                .name("Food")
+                .type(CategoryType.OUTGOING.name())
+                .user(generalUser)
+                .build();
+
+        Category clothes = Category.builder()
+                .categoryId(UUID.randomUUID().toString())
+                .name("Clothes")
+                .type(CategoryType.OUTGOING.name())
+                .user(generalUser)
+                .build();
+
+        Category salary = Category.builder()
+                .categoryId(UUID.randomUUID().toString())
+                .name("Salary")
+                .type(CategoryType.INCOME.name())
+                .user(generalUser)
+                .build();
+
+        categoryRepo.saveAll(Arrays.asList(food, clothes, salary));
+
+        Tag coffeeTag = Tag.builder()
+                .tagId(UUID.randomUUID().toString())
+                .name("Coffee")
+                .visibility(true)
+                .user(generalUser)
+                .build();
+        tagRepo.save(coffeeTag);
+
+        Tag newTag = Tag.builder()
+                .tagId(UUID.randomUUID().toString())
                 .name("New custom tag")
                 .visibility(true)
                 .user(user2)
                 .build();
-        customTagRepo.save(newCustomTag);
+        tagRepo.save(newTag);
 
+        Notification netflixNotification = Notification.builder()
+                .notificationId(UUID.randomUUID().toString())
+                .name("Netflix")
+                .enabled(true)
+                .frequency("1-1")
+                .time(LocalTime.of(18, 00))
+                .user(user1)
+                .build();
+        notificationRepo.save(netflixNotification);
 
         return null;
 

@@ -1,12 +1,14 @@
 package com.budgetmanagementapp.entity;
 
-import com.budgetmanagementapp.utility.CategoryType;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,11 +39,21 @@ public class Category {
     private String name;
 
     @Column(name = "category_type")
-    private CategoryType type;
+    private String type;
 
     @OneToMany(mappedBy = "category")
-    private List<InOutTemplate> inOutTemplates;
+    private List<Transaction> transactions;
 
     @OneToMany(mappedBy = "category")
-    private List<InOutTransaction> inOutTransactions;
+    private List<Template> templates;
+
+    @ManyToOne()
+    @JoinTable(
+            name = "rel_category_with_user",
+            joinColumns =
+                    {@JoinColumn(name = "category_id", referencedColumnName = "id")},
+            inverseJoinColumns =
+                    {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    private User user;
+
 }

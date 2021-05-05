@@ -66,7 +66,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
         String username = ((UserDetails) authResult.getPrincipal()).getUsername();
 
-        UserAuthModel userAuthModel = userService.findByUsername(username).orElseThrow(() ->
+        UserAuthModel userAuthModel = userService.findAuthModelByUsername(username).orElseThrow(() ->
                 new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
 
         String token = jwtService

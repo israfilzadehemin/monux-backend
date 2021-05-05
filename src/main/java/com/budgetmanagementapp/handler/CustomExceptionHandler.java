@@ -17,9 +17,14 @@ import com.budgetmanagementapp.exception.InvalidEmailException;
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.exception.InvalidOtpException;
 import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
+import com.budgetmanagementapp.exception.NoExistingTransactionException;
+import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
 import com.budgetmanagementapp.exception.TagNotFoundException;
+import com.budgetmanagementapp.exception.TransactionNotFoundException;
+import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
+import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
@@ -33,6 +38,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -63,6 +69,9 @@ public class CustomExceptionHandler {
                 || exception instanceof DuplicateAccountException
                 || exception instanceof DuplicateCategoryException
                 || exception instanceof DuplicateTagException
+                || exception instanceof TransferToSelfException
+                || exception instanceof MethodArgumentNotValidException
+                || exception instanceof NotEnoughBalanceException
                 || exception instanceof InvalidPhoneNumberException) {
             return handleException(exception, HttpStatus.BAD_REQUEST);
 
@@ -73,8 +82,11 @@ public class CustomExceptionHandler {
                 || exception instanceof TagNotFoundException
                 || exception instanceof FeedbackNotFoundException
                 || exception instanceof CategoryTypeNotFoundException
+                || exception instanceof TransactionTypeNotFoundException
+                || exception instanceof TransactionNotFoundException
                 || exception instanceof CurrencyNotFoundException
                 || exception instanceof AccountNotFoundException
+                || exception instanceof NoExistingTransactionException
         ) {
             return handleException(exception, HttpStatus.NOT_FOUND);
         }

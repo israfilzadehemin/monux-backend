@@ -5,5 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface AccountTypeRepository extends JpaRepository<AccountType, Long> {
-    Optional<AccountType> findByAccountTypeName(String name);
+
+    default Optional<AccountType> byName(String accountTypeName) {
+        return findByAccountTypeNameIgnoreCase(accountTypeName);
+    }
+
+    Optional<AccountType> findByAccountTypeNameIgnoreCase(String name);
 }

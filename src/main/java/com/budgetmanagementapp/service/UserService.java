@@ -1,21 +1,23 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.CreatePasswordRequestModel;
-import com.budgetmanagementapp.model.CreatePasswordResponseModel;
-import com.budgetmanagementapp.model.SignupRequestModel;
+import com.budgetmanagementapp.entity.User;
+import com.budgetmanagementapp.model.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.CreatePasswordRsModel;
+import com.budgetmanagementapp.model.SignupRqModel;
 import com.budgetmanagementapp.model.UserAuthModel;
-import com.budgetmanagementapp.model.UserResponseModel;
+import com.budgetmanagementapp.model.UserRsModel;
 import java.util.Optional;
 import javax.mail.MessagingException;
 
-public interface UserService  {
+public interface UserService {
 
-    Optional<UserAuthModel> findByUsername(String username);
+    Optional<UserAuthModel> findAuthModelByUsername(String username);
+
     Optional<UserAuthModel> findById(long id);
 
-    UserResponseModel signupWithEmail(SignupRequestModel username) throws MessagingException;
+    User findByUsername(String username);
 
-    UserResponseModel signupWithPhoneNumber(SignupRequestModel username);
+    UserRsModel signup(SignupRqModel username) throws MessagingException;
 
-    CreatePasswordResponseModel createPassword(CreatePasswordRequestModel passwordRequestModel);
+    CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordRequestModel);
 }

@@ -1,6 +1,8 @@
 package com.budgetmanagementapp.model;
 
 import java.math.BigDecimal;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +20,10 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateBalanceModel {
+
+    @NotBlank
     String accountId;
-    BigDecimal balance;
+
+    @NotNull
+    BigDecimal amount;
 }

@@ -2,17 +2,18 @@ package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.TAG_CREATE_CUSTOM_TAG_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TAG_CREATE_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TAG_GET_ALL_TAGS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TAG_GET_CUSTOM_TAGS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TAG_GET_TAGS_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TAG_TOGGLE_VISIBILITY_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TAG_UPDATE_CUSTOM_TAG_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TAG_UPDATE_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.TagRequestModel;
-import com.budgetmanagementapp.model.UpdateTagModel;
+import com.budgetmanagementapp.model.TagRqModel;
+import com.budgetmanagementapp.model.UpdateTagRqModel;
 import com.budgetmanagementapp.service.TagService;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -34,15 +35,14 @@ public class TagController {
 
     private static final String REQUEST_PARAM_TAG_ID = "tag-id";
 
-    @PostMapping(TAG_CREATE_CUSTOM_TAG_URL)
-    public ResponseEntity<?> createCustomTag(@RequestBody TagRequestModel requestBody,
-                                             Authentication auth) {
+    @PostMapping(TAG_CREATE_URL)
+    public ResponseEntity<?> createTag(@RequestBody @Valid TagRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TAG_CREATE_CUSTOM_TAG_URL, requestBody));
+        log.info(format(REQUEST_MSG, TAG_CREATE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.CREATED)
-                        .body(tagService.createCustomTag(requestBody,
+                        .body(tagService.createTag(requestBody,
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
                         .build());
     }
@@ -59,10 +59,10 @@ public class TagController {
                         .build());
     }
 
-    @GetMapping(TAG_GET_CUSTOM_TAGS_URL)
-    public ResponseEntity<?> getCustomTags(Authentication auth) {
+    @GetMapping(TAG_GET_TAGS_URL)
+    public ResponseEntity<?> getTagsOfUser(Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TAG_GET_CUSTOM_TAGS_URL, NO_BODY_MSG));
+        log.info(format(REQUEST_MSG, TAG_GET_TAGS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
@@ -71,11 +71,10 @@ public class TagController {
                         .build());
     }
 
-    @PostMapping(TAG_UPDATE_CUSTOM_TAG_URL)
-    public ResponseEntity<?> updateCustomTag(@RequestBody UpdateTagModel requestBody,
-                                             Authentication auth) {
+    @PostMapping(TAG_UPDATE_URL)
+    public ResponseEntity<?> updateTag(@RequestBody @Valid UpdateTagRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TAG_UPDATE_CUSTOM_TAG_URL, requestBody));
+        log.info(format(REQUEST_MSG, TAG_UPDATE_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
@@ -85,8 +84,8 @@ public class TagController {
     }
 
     @PostMapping(TAG_TOGGLE_VISIBILITY_URL)
-    public ResponseEntity<?> toggleVisibility(@RequestParam(name = REQUEST_PARAM_TAG_ID) String tagId,
-                                              Authentication auth) {
+    public ResponseEntity<?> toggleVisibility(
+            @RequestParam(name = REQUEST_PARAM_TAG_ID) String tagId, Authentication auth) {
         log.info(format(REQUEST_MSG, TAG_TOGGLE_VISIBILITY_URL, tagId));
         return ResponseEntity.ok(
                 ResponseModel.builder()

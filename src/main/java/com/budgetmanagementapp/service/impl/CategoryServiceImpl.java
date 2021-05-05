@@ -1,33 +1,27 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
+import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
 import static com.budgetmanagementapp.utility.MsgConstant.ALL_CATEGORIES_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.CUSTOM_CATEGORY_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.CUSTOM_CATEGORY_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_CATEGORY_NAME_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_CATEGORY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
+import static java.lang.String.format;
 
 import com.budgetmanagementapp.entity.Category;
-import com.budgetmanagementapp.entity.CustomCategory;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateCategoryException;
-import com.budgetmanagementapp.exception.UserNotFoundException;
-import com.budgetmanagementapp.model.CategoryRequestModel;
-import com.budgetmanagementapp.model.CategoryResponseModel;
-import com.budgetmanagementapp.model.UpdateCategoryModel;
+import com.budgetmanagementapp.model.CategoryRqModel;
+import com.budgetmanagementapp.model.CategoryRsModel;
+import com.budgetmanagementapp.model.UpdateCategoryRqModel;
 import com.budgetmanagementapp.repository.CategoryRepository;
-import com.budgetmanagementapp.repository.CustomCategoryRepository;
-import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.CategoryService;
-import com.budgetmanagementapp.utility.CategoryType;
+import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -36,106 +30,52 @@ import org.springframework.stereotype.Service;
 @Log4j2
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    private final UserRepository userRepo;
-    private final CustomCategoryRepository customCategoryRepo;
+    private final UserService userService;
     private final CategoryRepository categoryRepo;
 
     @Override
-    public CategoryResponseModel createCustomCategory(CategoryRequestModel requestBody, String username) {
-        CustomValidator.validateCategoryRequestModel(requestBody);
+    public CategoryRsModel createCategory(CategoryRqModel requestBody, String username) {
+        User user = userService.findByUsername(username);
+        checkDuplicate(requestBody.getCategoryName(), user);
+        Category category = buildCategory(requestBody, user);
 
-        User user = findUserByUsername(username);
-
-        if (customCategoryRepo.byNameAndUser(requestBody.getCategoryName(), user).isPresent()
-                || categoryRepo.byName(requestBody.getCategoryName()).isPresent()) {
-            throw new DuplicateCategoryException(
-                    String.format(DUPLICATE_CATEGORY_NAME_MSG, username, requestBody.getCategoryName()));
-        }
-
-        CustomCategory customCategory = buildCustomCategory(requestBody, user);
-
-        log.info(String.format(CUSTOM_CATEGORY_CREATED_MSG,
-                user.getUsername(),
-                buildCustomCategoryResponseModel(customCategory)));
-
-        return buildCustomCategoryResponseModel(customCategory);
+        log.info(format(CATEGORY_CREATED_MSG, user.getUsername(), buildCategoryResponseModel(category)));
+        return buildCategoryResponseModel(category);
     }
 
     @Override
-    public List<CategoryResponseModel> getCategoriesByUser(String username, boolean includeDefaultCategories) {
-        User user = findUserByUsername(username);
+    public List<CategoryRsModel> getCategoriesByUser(String username, boolean includeCommonCategories) {
+        User user = userService.findByUsername(username);
 
-        List<CategoryResponseModel> categories = new ArrayList<>();
+        List<CategoryRsModel> categories = categoriesByUser(includeCommonCategories, user);
 
-        if (includeDefaultCategories) {
-            categoryRepo.findAll().stream()
-                    .map(this::buildCategoryResponseModel)
-                    .forEach(categories::add);
-        }
-
-        customCategoryRepo.allByUser(user).stream()
-                .map(this::buildCustomCategoryResponseModel)
-                .forEach(categories::add);
-
-        if (categories.isEmpty()) {
-            throw new CategoryNotFoundException(String.format(CUSTOM_CATEGORY_NOT_FOUND_MSG, username));
-        }
-
-        categories.sort(Comparator.comparing(CategoryResponseModel::getCategoryName));
-
-        log.info(String.format(ALL_CATEGORIES_MSG, user.getUsername(), categories));
+        log.info(format(ALL_CATEGORIES_MSG, user.getUsername(), categories));
         return categories;
     }
 
     @Override
-    public CategoryResponseModel updateCategory(UpdateCategoryModel requestBody, String username) {
-        CustomValidator.validateUpdateCategoryModel(requestBody);
-        CustomValidator.validateCategoryType(requestBody.getNewCategoryType());
+    public CategoryRsModel updateCategory(UpdateCategoryRqModel requestBody, String username) {
+        Category category = categoryByIdAndUser(requestBody.getCategoryId(), username);
+        updateCategoryValues(requestBody, category);
 
-        CustomCategory category =
-                customCategoryRepo.byIdAndUser(requestBody.getCategoryId(), findUserByUsername(username))
-                        .orElseThrow(
-                                () -> new CategoryNotFoundException(String.format(UNAUTHORIZED_CATEGORY_MSG, username,
-                                        requestBody.getCategoryId())));
-
-        category.setIcon(requestBody.getIcon());
-        category.setName(requestBody.getNewCategoryName());
-        category.setType(CategoryType.valueOf(requestBody.getNewCategoryType().toUpperCase()));
-        customCategoryRepo.save(category);
-
-        log.info(String.format(CATEGORY_UPDATED_MSG, username, buildCustomCategoryResponseModel(category)));
-        return buildCustomCategoryResponseModel(category);
+        log.info(format(CATEGORY_UPDATED_MSG, username, buildCategoryResponseModel(category)));
+        return buildCategoryResponseModel(category);
     }
 
-    private CustomCategory buildCustomCategory(CategoryRequestModel requestModel, User user) {
-        CustomValidator.validateCategoryType(requestModel.getCategoryTypeName());
+    private Category buildCategory(CategoryRqModel requestBody, User user) {
+        CustomValidator.validateCategoryType(requestBody.getCategoryType());
 
-        return customCategoryRepo.save(CustomCategory.builder()
-                .customCategoryId(UUID.randomUUID().toString())
-                .icon(requestModel.getIcon())
-                .name(requestModel.getCategoryName())
-                .type(CategoryType.valueOf(requestModel.getCategoryTypeName().toUpperCase()))
+        return categoryRepo.save(Category.builder()
+                .categoryId(UUID.randomUUID().toString())
+                .icon(requestBody.getIcon())
+                .name(requestBody.getCategoryName())
+                .type(requestBody.getCategoryType().toUpperCase())
                 .user(user)
                 .build());
     }
 
-    private User findUserByUsername(String username) {
-        return userRepo
-                .findByUsernameAndStatus(username, STATUS_ACTIVE)
-                .orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
-    }
-
-    private CategoryResponseModel buildCustomCategoryResponseModel(CustomCategory customCategory) {
-        return CategoryResponseModel.builder()
-                .categoryId(customCategory.getCustomCategoryId())
-                .icon(customCategory.getIcon())
-                .categoryName(customCategory.getName())
-                .categoryType(customCategory.getType())
-                .build();
-    }
-
-    private CategoryResponseModel buildCategoryResponseModel(Category category) {
-        return CategoryResponseModel.builder()
+    private CategoryRsModel buildCategoryResponseModel(Category category) {
+        return CategoryRsModel.builder()
                 .categoryId(category.getCategoryId())
                 .icon(category.getIcon())
                 .categoryName(category.getName())
@@ -143,5 +83,41 @@ public class CategoryServiceImpl implements CategoryService {
                 .build();
     }
 
+    private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
+        CustomValidator.validateCategoryType(requestBody.getCategoryType());
+
+        category.setIcon(requestBody.getIcon());
+        category.setName(requestBody.getCategoryName());
+        category.setType(requestBody.getCategoryType().toUpperCase());
+        categoryRepo.save(category);
+    }
+
+    private void checkDuplicate(String categoryName, User user) {
+        if (categoryRepo.byNameAndUser(categoryName, user).isPresent()
+                || categoryRepo.byNameAndUser(categoryName, userService.findByUsername(COMMON_USERNAME)).isPresent()) {
+            throw new DuplicateCategoryException(
+                    format(DUPLICATE_CATEGORY_NAME_MSG, user.getUsername(), categoryName));
+        }
+    }
+
+    private Category categoryByIdAndUser(String categoryId, String username) {
+        return categoryRepo.byIdAndUser(categoryId, userService.findByUsername(username))
+                .orElseThrow(
+                        () -> new CategoryNotFoundException(format(UNAUTHORIZED_CATEGORY_MSG, username, categoryId)));
+    }
+
+    private List<CategoryRsModel> categoriesByUser(boolean includeCommonCategories, User user) {
+        User generalUser = userService.findByUsername(COMMON_USERNAME);
+
+        return includeCommonCategories
+                ? categoryRepo.allByUserOrGeneralUser(user, generalUser)
+                .stream()
+                .map(this::buildCategoryResponseModel)
+                .collect(Collectors.toList())
+                : categoryRepo.allByUser(user)
+                .stream()
+                .map(this::buildCategoryResponseModel)
+                .collect(Collectors.toList());
+    }
 
 }
