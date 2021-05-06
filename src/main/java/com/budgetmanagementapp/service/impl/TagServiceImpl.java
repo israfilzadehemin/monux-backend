@@ -23,8 +23,11 @@ import com.budgetmanagementapp.model.UpdateTagRqModel;
 import com.budgetmanagementapp.repository.TagRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.TagService;
+import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -35,7 +38,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Log4j2
 public class TagServiceImpl implements TagService {
-    private final UserRepository userRepo;
+    private final UserService userService;
     private final TagRepository tagRepo;
 
     @Override
@@ -47,7 +50,6 @@ public class TagServiceImpl implements TagService {
         log.info(format(TAG_CREATED_MSG, user.getUsername(), buildTagResponseModel(tag)));
         return buildTagResponseModel(tag);
     }
-
 
     @Override
     public List<TagRsModel> getTagsByUser(String username, boolean includeCommonTags) {
@@ -64,10 +66,9 @@ public class TagServiceImpl implements TagService {
         return tags;
     }
 
-
     @Override
     public TagRsModel updateTag(UpdateTagRqModel requestBody, String username) {
-        Tag tag = tagByIdAndUser(requestBody.getTagId(), username);
+        Tag tag = byIdAndUser(requestBody.getTagId(), username);
         updateTagValues(requestBody, tag);
 
         log.info(format(TAG_UPDATED_MSG, username, buildTagResponseModel(tag)));
@@ -76,11 +77,20 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public TagRsModel toggleVisibility(String tagId, String username) {
-        Tag tag = tagByIdAndUser(tagId, username);
+        Tag tag = byIdAndUser(tagId, username);
         toggleTagVisibility(tag);
 
         log.info(format(VISIBILITY_TOGGLED_MSG, username, buildTagResponseModel(tag)));
         return buildTagResponseModel(tag);
+    }
+
+    @Override
+    public List<Tag> allByIdsAndTypeAndUser(List<String> tagIds, String type, User user) {
+        return tagIds
+                .stream()
+                .filter(id -> byIdAndTypeAndUser(id, type, user).isPresent())
+                .map(id -> byIdAndTypeAndUser(id, type, user).get())
+                .collect(Collectors.toList());
     }
 
     private Tag buildTag(TagRqModel requestBody, User user) {
@@ -105,9 +115,7 @@ public class TagServiceImpl implements TagService {
     }
 
     private User userByUsername(String username) {
-        return userRepo
-                .byUsernameAndStatus(username, STATUS_ACTIVE)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+        return userService.findByUsername(username);
     }
 
     private List<TagRsModel> tagsByUser(boolean includeCommonTags, User user, User generalUser) {
@@ -122,9 +130,16 @@ public class TagServiceImpl implements TagService {
                 .collect(Collectors.toList());
     }
 
-    private Tag tagByIdAndUser(String tagId, String username) {
+    private Tag byIdAndUser(String tagId, String username) {
         return tagRepo.byIdAndUser(tagId, userByUsername(username))
                 .orElseThrow(() -> new TagNotFoundException(format(UNAUTHORIZED_TAG_MSG, username, tagId)));
+    }
+
+    private Optional<Tag> byIdAndTypeAndUser(String tagId, String type, User user) {
+        return tagRepo.byIdAndTypeAndUsers(
+                tagId,
+                type,
+                Arrays.asList(user, userService.findByUsername(COMMON_USERNAME)));
     }
 
     private void updateTagValues(UpdateTagRqModel requestBody, Tag tag) {
@@ -145,6 +160,5 @@ public class TagServiceImpl implements TagService {
             throw new DuplicateTagException(format(DUPLICATE_TAG_NAME_MSG, user.getUsername(), tagName));
         }
     }
-
 
 }

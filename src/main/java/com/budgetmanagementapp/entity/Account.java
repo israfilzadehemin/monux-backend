@@ -78,10 +78,10 @@ public class Account {
     @OneToMany(mappedBy = "receiverAccount")
     private List<Transaction> transactionsIn;
 
-    @OneToMany(mappedBy = "accountFrom")
+    @OneToMany(mappedBy = "senderAccount")
     private List<Template> templatesOut;
 
-    @OneToMany(mappedBy = "accountTo")
+    @OneToMany(mappedBy = "receiverAccount")
     private List<Template> templatesIn;
 
 }

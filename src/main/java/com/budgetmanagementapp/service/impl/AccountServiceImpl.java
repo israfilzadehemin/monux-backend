@@ -1,6 +1,8 @@
 package com.budgetmanagementapp.service.impl;
 
 import static com.budgetmanagementapp.utility.Constant.CASH_ACCOUNT;
+import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
+import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
 import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_UPDATED_MSG;
@@ -38,6 +40,8 @@ import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -75,7 +79,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel updateAccount(UpdateAccountModel requestBody, String username) {
-        Account account = accountByIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
+        Account account = byIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
         updateAccountValues(requestBody, account);
 
         log.info(format(ACCOUNT_UPDATED_MSG, username, buildAccountResponseModel(account)));
@@ -84,7 +88,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel toggleAllowNegative(String accountId, String username) {
-        Account account = accountByIdAndUser(accountId, userService.findByUsername(username));
+        Account account = byIdAndUser(accountId, userService.findByUsername(username));
         checkNegativeBalance(account);
         toggleAllowNegativeValue(account);
 
@@ -94,7 +98,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel toggleShowInSum(String accountId, String username) {
-        Account account = accountByIdAndUser(accountId, userService.findByUsername(username));
+        Account account = byIdAndUser(accountId, userService.findByUsername(username));
         toggleShowInSumValue(account);
 
         log.info(format(SHOW_IN_SUM_TOGGLED_MSG, username, buildAccountResponseModel(account)));
@@ -117,12 +121,34 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel updateBalance(UpdateBalanceModel requestBody, String username) {
-        Account account = accountByIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
+        Account account = byIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
         checkNegativeBalance(requestBody, account);
         updateBalanceValue(requestBody, account);
 
         log.info(format(BALANCE_UPDATED_MSG, username, account.getName(), buildAccountResponseModel(account)));
         return buildAccountResponseModel(account);
+    }
+
+    @Override
+    public void updateBalance(BigDecimal amount, Map<String, Account> accounts) {
+
+        if (!Objects.isNull(accounts.get(SENDER_ACCOUNT))) {
+            accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount));
+            accountRepo.save(accounts.get(SENDER_ACCOUNT));
+        }
+
+        if (!Objects.isNull(accounts.get(RECEIVER_ACCOUNT))) {
+            accounts.get(RECEIVER_ACCOUNT).setBalance(accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount));
+            accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
+        }
+    }
+
+    @Override
+    public Account byIdAndUser(String accountId, User user) {
+        return accountRepo
+                .byIdAndUser(accountId, user)
+                .orElseThrow(() -> new AccountNotFoundException(
+                        format(UNAUTHORIZED_ACCOUNT_MSG, user.getUsername(), accountId)));
     }
 
     private Account buildAccount(AccountRqModel requestBody, User user, AccountType accountType,
@@ -154,12 +180,7 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 
-    private Account accountByIdAndUser(String accountId, User user) {
-        return accountRepo
-                .byIdAndUser(accountId, user)
-                .orElseThrow(() -> new AccountNotFoundException(
-                        format(UNAUTHORIZED_ACCOUNT_MSG, user.getUsername(), accountId)));
-    }
+
 
     private Currency getCurrency(String currency) {
         return currencyRepo

@@ -5,6 +5,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.ALL_CATEGORIES_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_CATEGORY_NAME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INVALID_CATEGORY_ID_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_CATEGORY_MSG;
 import static java.lang.String.format;
 
@@ -18,7 +19,10 @@ import com.budgetmanagementapp.model.UpdateCategoryRqModel;
 import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.service.CategoryService;
 import com.budgetmanagementapp.service.UserService;
+import com.budgetmanagementapp.utility.CategoryType;
 import com.budgetmanagementapp.utility.CustomValidator;
+import com.budgetmanagementapp.utility.TransactionType;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -61,6 +65,17 @@ public class CategoryServiceImpl implements CategoryService {
         log.info(format(CATEGORY_UPDATED_MSG, username, buildCategoryResponseModel(category)));
         return buildCategoryResponseModel(category);
     }
+
+    @Override
+    public Category byIdAndTypeAndUser(String categoryId, TransactionType type, User user) {
+        return categoryRepo
+                .byIdAndTypeAndUsers(
+                        categoryId,
+                        CategoryType.valueOf(type.name()).name(),
+                        Arrays.asList(user, userService.findByUsername(COMMON_USERNAME)))
+                .orElseThrow(() -> new CategoryNotFoundException(format(INVALID_CATEGORY_ID_MSG, categoryId)));
+    }
+
 
     private Category buildCategory(CategoryRqModel requestBody, User user) {
         CustomValidator.validateCategoryType(requestBody.getCategoryType());

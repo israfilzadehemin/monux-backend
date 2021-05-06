@@ -23,12 +23,14 @@ public class MsgConstant {
     public static final String CATEGORY_CREATED_MSG = "User %s created a category: %s";
     public static final String FEEDBACK_CREATED_MSG = "User %s created a feedback: %s";
     public static final String TAG_CREATED_MSG = "User %s created a tag: %s";
-    public static final String INCOME_TRANSACTION_CREATED_MSG = "User %s created an income transaction: %s";
-    public static final String OUTGOING_TRANSACTION_CREATED_MSG = "User %s created an outgoing transaction: %s";
-    public static final String IN_OUT_TRANSACTION_UPDATED_MSG = "User %s updated an in out transaction: %s";
+    public static final String IN_OUT_TRANSACTION_CREATED_MSG = "User %s created an IN-OUT transaction: %s";
+    public static final String IN_OUT_TEMPLATE_CREATED_MSG = "User %s created an IN-OUT template: %s";
+    public static final String IN_OUT_TRANSACTION_UPDATED_MSG = "User %s updated an IN-OUT transaction: %s";
     public static final String DEBT_TRANSACTION_CREATED_MSG = "User %s created a debt transaction: %s";
+    public static final String DEBT_TEMPLATE_CREATED_MSG = "User %s created a debt template: %s";
     public static final String DEBT_TRANSACTION_UPDATED_MSG = "User %s updated a debt transaction: %s";
     public static final String TRANSFER_TRANSACTION_CREATED_MSG = "User %s created a transfer transaction: %s";
+    public static final String TRANSFER_TEMPLATE_CREATED_MSG = "User %s created a transfer template: %s";
     public static final String TRANSFER_TRANSACTION_UPDATED_MSG = "User %s updated a transfer transaction: %s";
     public static final String ACCOUNT_UPDATED_MSG = "User %s updated an account: %s";
     public static final String BALANCE_UPDATED_MSG = "User '%s' updated balance of account %s: %s";

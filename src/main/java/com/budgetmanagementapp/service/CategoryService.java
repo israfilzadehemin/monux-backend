@@ -1,8 +1,11 @@
 package com.budgetmanagementapp.service;
 
+import com.budgetmanagementapp.entity.Category;
+import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.model.CategoryRqModel;
 import com.budgetmanagementapp.model.CategoryRsModel;
 import com.budgetmanagementapp.model.UpdateCategoryRqModel;
+import com.budgetmanagementapp.utility.TransactionType;
 import java.util.List;
 
 public interface CategoryService {
@@ -12,4 +15,6 @@ public interface CategoryService {
     List<CategoryRsModel> getCategoriesByUser(String username, boolean includeCommonCategories);
 
     CategoryRsModel updateCategory(UpdateCategoryRqModel requestBody, String username);
+
+    Category byIdAndTypeAndUser(String categoryId, TransactionType type, User user);
 }
