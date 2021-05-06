@@ -22,6 +22,7 @@ import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
 import com.budgetmanagementapp.exception.TagNotFoundException;
+import com.budgetmanagementapp.exception.TemplateNotFoundException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
@@ -84,6 +85,7 @@ public class CustomExceptionHandler {
                 || exception instanceof CategoryTypeNotFoundException
                 || exception instanceof TransactionTypeNotFoundException
                 || exception instanceof TransactionNotFoundException
+                || exception instanceof TemplateNotFoundException
                 || exception instanceof CurrencyNotFoundException
                 || exception instanceof AccountNotFoundException
                 || exception instanceof NoExistingTransactionException

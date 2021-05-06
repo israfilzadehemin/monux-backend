@@ -45,25 +45,25 @@ public class Template {
     private String description;
 
     @Column(name = "transaction_type")
-    private String transactionType;
+    private String type;
 
     @ManyToOne
     @JoinTable(
-            name = "rel_template_with_account_from",
+            name = "rel_template_with_sender_account",
             joinColumns =
                     {@JoinColumn(name = "template_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
-    private Account accountFrom;
+    private Account senderAccount;
 
     @ManyToOne
     @JoinTable(
-            name = "rel_template_with_account_to",
+            name = "rel_template_with_receiver_account",
             joinColumns =
                     {@JoinColumn(name = "template_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "account_id", referencedColumnName = "id")})
-    private Account accountTo;
+    private Account receiverAccount;
 
 
     @ManyToOne

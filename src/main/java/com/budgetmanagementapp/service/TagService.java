@@ -1,5 +1,7 @@
 package com.budgetmanagementapp.service;
 
+import com.budgetmanagementapp.entity.Tag;
+import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.model.TagRqModel;
 import com.budgetmanagementapp.model.TagRsModel;
 import com.budgetmanagementapp.model.UpdateTagRqModel;
@@ -13,4 +15,6 @@ public interface TagService {
     TagRsModel updateTag(UpdateTagRqModel requestBody, String username);
 
     TagRsModel toggleVisibility(String tagId, String username);
+
+    List<Tag> allByIdsAndTypeAndUser(List<String> tagIds, String type, User user);
 }
