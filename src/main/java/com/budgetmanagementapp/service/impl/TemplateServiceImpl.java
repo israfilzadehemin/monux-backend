@@ -1,22 +1,26 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_TEMPLATES_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TEMPLATE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TEMPLATE_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TEMPLATE_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TEMPLATE_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TEMPLATE_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TEMPLATE_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TEMPLATE_MSG;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
 import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
+import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.Tag;
 import com.budgetmanagementapp.entity.Template;
-import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
+import com.budgetmanagementapp.exception.TemplateNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.DebtRsModel;
@@ -37,6 +41,7 @@ import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
@@ -100,22 +105,62 @@ public class TemplateServiceImpl implements TemplateService {
 
     @Override
     public InOutRsModel updateTemplate(UpdateInOutRqModel requestBody, String username) {
-        return null;
+        User user = userService.findByUsername(username);
+        Template template = templateByIdAndUser(requestBody.getTransactionId(), user);
+        Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
+        Category category =
+                categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), valueOf(template.getType()), user);
+        List<Tag> tags = tagService.allByIdsAndTypeAndUser(requestBody.getTagIds(), template.getType(), user);
+
+        Template updatedTemplate = updateTemplateValues(requestBody, template, account, category, tags);
+
+        InOutRsModel response = buildInOutResponseModel(updatedTemplate);
+        log.info(format(IN_OUT_TEMPLATE_UPDATED_MSG, user.getUsername(), response));
+        return response;
     }
 
     @Override
     public TransferRsModel updateTemplate(UpdateTransferRqModel requestBody, String username) {
-        return null;
+        User user = userService.findByUsername(username);
+        Template templateByIdAndUser = templateByIdAndUser(requestBody.getTransactionId(), user);
+        Account senderAccount = accountService.byIdAndUser(requestBody.getSenderAccountId(), user);
+        Account receiverAccount = accountService.byIdAndUser(requestBody.getReceiverAccountId(), user);
+
+        if (requestBody.getReceiverAccountId().equals(requestBody.getSenderAccountId())) {
+            throw new TransferToSelfException(TRANSFER_TO_SELF_MSG);
+        }
+
+        Template updatedTemplate =
+                updateTemplateValues(requestBody, templateByIdAndUser, senderAccount, receiverAccount);
+
+        TransferRsModel response = buildTransferResponseModel(updatedTemplate);
+        log.info(format(TRANSFER_TEMPLATE_UPDATED_MSG, user.getUsername(), response));
+        return response;
     }
 
     @Override
     public DebtRsModel updateTemplate(UpdateDebtRqModel requestBody, String username) {
-        return null;
+        User user = userService.findByUsername(username);
+        Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
+        Template transaction = templateByIdAndUser(requestBody.getTransactionId(), user);
+
+        Template updatedTemplate = updateTemplateValues(requestBody, account, transaction);
+
+        DebtRsModel response = buildDebtResponseModel(updatedTemplate);
+        log.info(format(DEBT_TEMPLATE_UPDATED_MSG, user.getUsername(), response));
+        return response;
     }
 
     @Override
     public List<TransactionRsModel> getAllTemplatesByUser(String username) {
-        return null;
+        List<TransactionRsModel> response =
+                templateRepo.allByUser(userService.findByUsername(username))
+                        .stream()
+                        .map(this::buildGenericResponseModel)
+                        .collect(Collectors.toList());
+
+        log.info(String.format(ALL_TEMPLATES_MSG, username, response));
+        return response;
     }
 
     private Template buildTemplate(InOutRqModel requestBody, User user,
@@ -156,9 +201,9 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     private Template buildTemplate(DebtRqModel requestBody,
-                                         TransactionType type,
-                                         User user,
-                                         Account account) {
+                                   TransactionType type,
+                                   User user,
+                                   Account account) {
         Template template = Template.builder()
                 .templateId(UUID.randomUUID().toString())
                 .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
@@ -175,6 +220,77 @@ public class TemplateServiceImpl implements TemplateService {
         }
 
         return templateRepo.save(template);
+    }
+
+    private Template updateTemplateValues(UpdateInOutRqModel requestBody, Template template,
+                                          Account account, Category category,
+                                          List<Tag> tags) {
+        template.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
+        template.setAmount(requestBody.getAmount());
+        template.setDescription(requestBody.getDescription());
+        template.setCategory(category);
+        template.setTags(tags);
+
+        if (template.getType().equals(INCOME.name())) {
+            template.setReceiverAccount(account);
+        } else {
+            template.setSenderAccount(account);
+        }
+
+        return templateRepo.save(template);
+    }
+
+    private Template updateTemplateValues(UpdateTransferRqModel requestBody,
+                                          Template template,
+                                          Account senderAccount,
+                                          Account receiverAccount) {
+        template.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
+        template.setAmount(requestBody.getAmount());
+        template.setDescription(requestBody.getDescription());
+        template.setSenderAccount(senderAccount);
+        template.setReceiverAccount(receiverAccount);
+        return templateRepo.save(template);
+    }
+
+    private Template updateTemplateValues(UpdateDebtRqModel requestBody,
+                                          Account account,
+                                          Template template) {
+        template.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
+        template.setAmount(requestBody.getAmount());
+        template.setDescription(requestBody.getDescription());
+
+        if (template.getType().equals(DEBT_IN.name())) {
+            template.setReceiverAccount(account);
+        } else {
+            template.setSenderAccount(account);
+        }
+
+        return templateRepo.save(template);
+    }
+
+    private TransactionRsModel buildGenericResponseModel(Template template) {
+        TransactionRsModel response = TransactionRsModel.builder()
+                .transactionId(template.getTemplateId())
+                .dateTime(template.getDateTime())
+                .amount(template.getAmount())
+                .description(template.getDescription())
+                .type(template.getType())
+                .build();
+
+        if (!Objects.isNull(template.getSenderAccount())) {
+            response.setSenderAccountId(template.getSenderAccount().getAccountId());
+        }
+        if (!Objects.isNull(template.getReceiverAccount())) {
+            response.setReceiverAccountId(template.getReceiverAccount().getAccountId());
+        }
+        if (!Objects.isNull(template.getCategory())) {
+            response.setCategoryId(template.getCategory().getCategoryId());
+        }
+        if (!Objects.isNull(template.getTags())) {
+            response.setTagIds(template.getTags().stream().map(Tag::getTagId).collect(Collectors.toList()));
+        }
+
+        return response;
     }
 
 
@@ -218,6 +334,13 @@ public class TemplateServiceImpl implements TemplateService {
                                 ? ttemplate.getReceiverAccount().getAccountId()
                                 : ttemplate.getSenderAccount().getAccountId())
                 .build();
+    }
+
+    private Template templateByIdAndUser(String templateId, User user) {
+        return templateRepo.byIdAndUser(templateId, user)
+                .orElseThrow(() ->
+                        new TemplateNotFoundException(
+                                format(UNAUTHORIZED_TEMPLATE_MSG, user.getUsername(), templateId)));
     }
 
 }
