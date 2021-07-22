@@ -15,11 +15,8 @@ import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
 import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.entity.Account;
-import com.budgetmanagementapp.entity.Category;
-import com.budgetmanagementapp.entity.Tag;
-import com.budgetmanagementapp.entity.Template;
-import com.budgetmanagementapp.entity.User;
+import com.budgetmanagementapp.entity.*;
+import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.exception.TemplateNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.DebtRqModel;
@@ -35,7 +32,7 @@ import com.budgetmanagementapp.model.UpdateTransferRqModel;
 import com.budgetmanagementapp.repository.TemplateRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.CategoryService;
-import com.budgetmanagementapp.service.TagService;
+import com.budgetmanagementapp.service.LabelService;
 import com.budgetmanagementapp.service.TemplateService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomFormatter;
@@ -56,7 +53,7 @@ public class TemplateServiceImpl implements TemplateService {
     private final UserService userService;
     private final AccountService accountService;
     private final CategoryService categoryService;
-    private final TagService tagService;
+    private final LabelService labelService;
     private final TemplateRepository templateRepo;
 
 
@@ -65,9 +62,9 @@ public class TemplateServiceImpl implements TemplateService {
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
         Category category = categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), type, user);
-        List<Tag> tags = tagService.allByIdsAndTypeAndUser(requestBody.getTagIds(), type.name(), user);
+        List<Label> labels = labelService.allByIdsAndTypeAndUser(requestBody.getLabelIds(), type.name(), user);
 
-        Template template = buildTemplate(requestBody, user, account, category, tags, type);
+        Template template = buildTemplate(requestBody, user, account, category, labels, type);
 
         InOutRsModel response = buildInOutResponseModel(template);
         log.info(format(IN_OUT_TEMPLATE_CREATED_MSG, user.getUsername(), response));
@@ -110,9 +107,9 @@ public class TemplateServiceImpl implements TemplateService {
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
         Category category =
                 categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), valueOf(template.getType()), user);
-        List<Tag> tags = tagService.allByIdsAndTypeAndUser(requestBody.getTagIds(), template.getType(), user);
+        List<Label> labels = labelService.allByIdsAndTypeAndUser(requestBody.getLabelIds(), template.getType(), user);
 
-        Template updatedTemplate = updateTemplateValues(requestBody, template, account, category, tags);
+        Template updatedTemplate = updateTemplateValues(requestBody, template, account, category, labels);
 
         InOutRsModel response = buildInOutResponseModel(updatedTemplate);
         log.info(format(IN_OUT_TEMPLATE_UPDATED_MSG, user.getUsername(), response));
@@ -165,7 +162,7 @@ public class TemplateServiceImpl implements TemplateService {
 
     private Template buildTemplate(InOutRqModel requestBody, User user,
                                    Account account, Category category,
-                                   List<Tag> tags, TransactionType type) {
+                                   List<Label> labels, TransactionType type) {
         Template template = Template.builder()
                 .templateId(UUID.randomUUID().toString())
                 .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
@@ -173,7 +170,7 @@ public class TemplateServiceImpl implements TemplateService {
                 .description(requestBody.getDescription())
                 .type(type.name())
                 .category(category)
-                .tags(tags)
+                .labels(labels)
                 .user(user)
                 .build();
 
@@ -224,12 +221,12 @@ public class TemplateServiceImpl implements TemplateService {
 
     private Template updateTemplateValues(UpdateInOutRqModel requestBody, Template template,
                                           Account account, Category category,
-                                          List<Tag> tags) {
+                                          List<Label> labels) {
         template.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
         template.setAmount(requestBody.getAmount());
         template.setDescription(requestBody.getDescription());
         template.setCategory(category);
-        template.setTags(tags);
+        template.setLabels(labels);
 
         if (template.getType().equals(INCOME.name())) {
             template.setReceiverAccount(account);
@@ -286,8 +283,8 @@ public class TemplateServiceImpl implements TemplateService {
         if (!Objects.isNull(template.getCategory())) {
             response.setCategoryId(template.getCategory().getCategoryId());
         }
-        if (!Objects.isNull(template.getTags())) {
-            response.setTagIds(template.getTags().stream().map(Tag::getTagId).collect(Collectors.toList()));
+        if (!Objects.isNull(template.getLabels())) {
+            response.setLabelIds(template.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()));
         }
 
         return response;
@@ -306,7 +303,7 @@ public class TemplateServiceImpl implements TemplateService {
                                 ? template.getReceiverAccount().getAccountId()
                                 : template.getSenderAccount().getAccountId())
                 .categoryId(template.getCategory().getCategoryId())
-                .tagIds(template.getTags().stream().map(Tag::getTagId).collect(Collectors.toList()))
+                .labelIds(template.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()))
                 .build();
     }
 

@@ -17,8 +17,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateTagRqModel extends TagRqModel {
+public class UpdateLabelRqModel extends LabelRqModel {
 
     @NotBlank
-    String tagId;
+    String labelId;
 }

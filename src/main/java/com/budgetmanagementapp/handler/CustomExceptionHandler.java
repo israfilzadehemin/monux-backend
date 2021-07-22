@@ -8,7 +8,7 @@ import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
 import com.budgetmanagementapp.exception.CurrencyNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.DuplicateCategoryException;
-import com.budgetmanagementapp.exception.DuplicateTagException;
+import com.budgetmanagementapp.exception.DuplicateLabelException;
 import com.budgetmanagementapp.exception.ExpiredOtpException;
 import com.budgetmanagementapp.exception.FeedbackNotFoundException;
 import com.budgetmanagementapp.exception.GenericException;
@@ -21,7 +21,7 @@ import com.budgetmanagementapp.exception.NoExistingTransactionException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.PasswordNotSufficientException;
-import com.budgetmanagementapp.exception.TagNotFoundException;
+import com.budgetmanagementapp.exception.LabelNotFoundException;
 import com.budgetmanagementapp.exception.TemplateNotFoundException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
@@ -69,7 +69,7 @@ public class CustomExceptionHandler {
                 || exception instanceof InvalidEmailException
                 || exception instanceof DuplicateAccountException
                 || exception instanceof DuplicateCategoryException
-                || exception instanceof DuplicateTagException
+                || exception instanceof DuplicateLabelException
                 || exception instanceof TransferToSelfException
                 || exception instanceof MethodArgumentNotValidException
                 || exception instanceof NotEnoughBalanceException
@@ -80,7 +80,7 @@ public class CustomExceptionHandler {
                 || exception instanceof UserNotFoundException
                 || exception instanceof AccountTypeNotFoundException
                 || exception instanceof CategoryNotFoundException
-                || exception instanceof TagNotFoundException
+                || exception instanceof LabelNotFoundException
                 || exception instanceof FeedbackNotFoundException
                 || exception instanceof CategoryTypeNotFoundException
                 || exception instanceof TransactionTypeNotFoundException

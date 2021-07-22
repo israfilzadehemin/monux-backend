@@ -17,11 +17,11 @@ public class UrlConstant {
     public static final String CATEGORY_UPDATE_URL = "/v1/category/update-category";
     public static final String CATEGORY_GET_ALL_CATEGORIES_URL = "/v1/category/get-all-categories";
     public static final String CATEGORY_GET_CATEGORIES_URL = "/v1/category/get-categories";
-    public static final String TAG_CREATE_URL = "/v1/tag/create-tag";
-    public static final String TAG_UPDATE_URL = "/v1/tag/update-tag";
-    public static final String TAG_GET_ALL_TAGS_URL = "/v1/tag/get-all-tags";
-    public static final String TAG_GET_TAGS_URL = "/v1/tag/get-tags";
-    public static final String TAG_TOGGLE_VISIBILITY_URL = "/v1/tag/toggle-visibility";
+    public static final String LABEL_CREATE_URL = "/v1/label/create-label";
+    public static final String LABEL_UPDATE_URL = "/v1/label/update-label";
+    public static final String LABEL_GET_ALL_LABELS_URL = "/v1/label/get-all-labels";
+    public static final String LABEL_GET_LABELS_URL = "/v1/label/get-labels";
+    public static final String LABEL_TOGGLE_VISIBILITY_URL = "/v1/label/toggle-visibility";
     public static final String FEEDBACK_CREATE_URL = "/v1/feedback/create";
     public static final String FEEDBACK_GET_ALL_FEEDBACKS_URL = "/v1/feedback/get-all-feedbacks";
     public static final String FEEDBACK_GET_FEEDBACK_BY_ID_URL = "/v1/feedback/get-by-id";

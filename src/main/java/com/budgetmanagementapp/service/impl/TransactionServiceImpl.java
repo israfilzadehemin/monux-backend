@@ -20,11 +20,8 @@ import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
 import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.entity.Account;
-import com.budgetmanagementapp.entity.Category;
-import com.budgetmanagementapp.entity.Tag;
-import com.budgetmanagementapp.entity.Transaction;
-import com.budgetmanagementapp.entity.User;
+import com.budgetmanagementapp.entity.*;
+import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
@@ -41,7 +38,7 @@ import com.budgetmanagementapp.model.UpdateTransferRqModel;
 import com.budgetmanagementapp.repository.TransactionRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.CategoryService;
-import com.budgetmanagementapp.service.TagService;
+import com.budgetmanagementapp.service.LabelService;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomFormatter;
@@ -66,7 +63,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final UserService userService;
     private final AccountService accountService;
     private final CategoryService categoryService;
-    private final TagService tagService;
+    private final LabelService labelService;
     private final TransactionRepository transactionRepo;
 
     @Override
@@ -75,7 +72,7 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
         Category category = categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), type, user);
-        List<Tag> tags = tagService.allByIdsAndTypeAndUser(requestBody.getTagIds(), type.name(), user);
+        List<Label> labels = labelService.allByIdsAndTypeAndUser(requestBody.getLabelIds(), type.name(), user);
 
         checkBalanceToCreateTransaction(requestBody.getAmount(), type, account);
 
@@ -83,7 +80,7 @@ public class TransactionServiceImpl implements TransactionService {
                 ? Collections.singletonMap(SENDER_ACCOUNT, account)
                 : Collections.singletonMap(RECEIVER_ACCOUNT, account);
 
-        Transaction transaction = buildTransaction(requestBody, user, account, category, tags, type);
+        Transaction transaction = buildTransaction(requestBody, user, account, category, labels, type);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
         InOutRsModel response = buildInOutResponseModel(transaction);
@@ -147,7 +144,7 @@ public class TransactionServiceImpl implements TransactionService {
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
         Category category =
                 categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), valueOf(transaction.getType()), user);
-        List<Tag> tags = tagService.allByIdsAndTypeAndUser(requestBody.getTagIds(), transaction.getType(), user);
+        List<Label> labels = labelService.allByIdsAndTypeAndUser(requestBody.getLabelIds(), transaction.getType(), user);
         BigDecimal oldAmount = transaction.getAmount();
 
         checkBalanceToUpdateInOut(requestBody, transaction, account, oldAmount);
@@ -163,7 +160,7 @@ public class TransactionServiceImpl implements TransactionService {
             newAccounts.put(RECEIVER_ACCOUNT, account);
         }
 
-        Transaction updatedTransaction = updateTransactionValues(requestBody, transaction, account, category, tags);
+        Transaction updatedTransaction = updateTransactionValues(requestBody, transaction, account, category, labels);
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
@@ -249,7 +246,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private Transaction buildTransaction(InOutRqModel requestBody, User user,
                                          Account account, Category category,
-                                         List<Tag> tags, TransactionType type) {
+                                         List<Label> labels, TransactionType type) {
         Transaction transaction = Transaction.builder()
                 .transactionId(UUID.randomUUID().toString())
                 .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
@@ -257,7 +254,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .description(requestBody.getDescription())
                 .type(type.name())
                 .category(category)
-                .tags(tags)
+                .labels(labels)
                 .user(user)
                 .build();
 
@@ -308,12 +305,12 @@ public class TransactionServiceImpl implements TransactionService {
 
     private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,
                                                 Account account, Category category,
-                                                List<Tag> tags) {
+                                                List<Label> labels) {
         transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
         transaction.setAmount(requestBody.getAmount());
         transaction.setDescription(requestBody.getDescription());
         transaction.setCategory(category);
-        transaction.setTags(tags);
+        transaction.setLabels(labels);
 
         if (transaction.getType().equals(INCOME.name())) {
             transaction.setReceiverAccount(account);
@@ -370,8 +367,8 @@ public class TransactionServiceImpl implements TransactionService {
         if (!Objects.isNull(transaction.getCategory())) {
             response.setCategoryId(transaction.getCategory().getCategoryId());
         }
-        if (!Objects.isNull(transaction.getTags())) {
-            response.setTagIds(transaction.getTags().stream().map(Tag::getTagId).collect(Collectors.toList()));
+        if (!Objects.isNull(transaction.getLabels())) {
+            response.setLabelIds(transaction.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()));
         }
 
         return response;
@@ -389,7 +386,7 @@ public class TransactionServiceImpl implements TransactionService {
                                 ? transaction.getReceiverAccount().getAccountId()
                                 : transaction.getSenderAccount().getAccountId())
                 .categoryId(transaction.getCategory().getCategoryId())
-                .tagIds(transaction.getTags().stream().map(Tag::getTagId).collect(Collectors.toList()))
+                .labelIds(transaction.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()))
                 .build();
     }
 

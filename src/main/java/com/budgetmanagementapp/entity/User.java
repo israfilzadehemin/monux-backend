@@ -69,7 +69,7 @@ public class User {
     private List<Category> categories;
 
     @OneToMany(mappedBy = "user")
-    private List<Tag> tags;
+    private List<Label> labels;
 
     @OneToMany(mappedBy = "user")
     private List<Feedback> feedbacks;
