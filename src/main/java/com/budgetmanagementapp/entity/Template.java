@@ -77,12 +77,12 @@ public class Template {
 
     @ManyToMany()
     @JoinTable(
-            name = "rel_template_with_tag",
+            name = "rel_template_with_label",
             joinColumns =
                     {@JoinColumn(name = "template_id", referencedColumnName = "id")},
             inverseJoinColumns =
-                    {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
-    private List<Tag> tags;
+                    {@JoinColumn(name = "label_id", referencedColumnName = "id")})
+    private List<Label> labels;
 
     @ManyToOne()
     @JoinTable(

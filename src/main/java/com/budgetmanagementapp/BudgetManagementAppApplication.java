@@ -4,21 +4,15 @@ import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
 import static com.budgetmanagementapp.utility.Constant.STATUS_NOT_PAID;
 import static com.budgetmanagementapp.utility.Constant.STATUS_PAID;
 
-import com.budgetmanagementapp.entity.Account;
-import com.budgetmanagementapp.entity.AccountType;
-import com.budgetmanagementapp.entity.Category;
-import com.budgetmanagementapp.entity.Currency;
-import com.budgetmanagementapp.entity.Notification;
-import com.budgetmanagementapp.entity.Role;
-import com.budgetmanagementapp.entity.Tag;
-import com.budgetmanagementapp.entity.User;
+import com.budgetmanagementapp.entity.*;
+import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.repository.CurrencyRepository;
 import com.budgetmanagementapp.repository.NotificationRepository;
 import com.budgetmanagementapp.repository.RoleRepository;
-import com.budgetmanagementapp.repository.TagRepository;
+import com.budgetmanagementapp.repository.LabelRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.utility.CategoryType;
 import com.budgetmanagementapp.utility.UserRole;
@@ -50,7 +44,7 @@ public class BudgetManagementAppApplication {
     @Bean
     CommandLineRunner createInitialData(
             AccountTypeRepository accountTypeRepo, CategoryRepository categoryRepo,
-            CurrencyRepository currencyRepo, TagRepository tagRepo, RoleRepository roleRepo,
+            CurrencyRepository currencyRepo, LabelRepository labelRepo, RoleRepository roleRepo,
             AccountRepository accountRepo, UserRepository userRepo, NotificationRepository notificationRepo
     ) {
 
@@ -167,21 +161,21 @@ public class BudgetManagementAppApplication {
 
         categoryRepo.saveAll(Arrays.asList(food, clothes, salary));
 
-        Tag coffeeTag = Tag.builder()
-                .tagId(UUID.randomUUID().toString())
+        Label coffeeLabel = Label.builder()
+                .labelId(UUID.randomUUID().toString())
                 .name("Coffee")
                 .visibility(true)
                 .user(generalUser)
                 .build();
-        tagRepo.save(coffeeTag);
+        labelRepo.save(coffeeLabel);
 
-        Tag newTag = Tag.builder()
-                .tagId(UUID.randomUUID().toString())
-                .name("New custom tag")
+        Label newLabel = Label.builder()
+                .labelId(UUID.randomUUID().toString())
+                .name("New custom label")
                 .visibility(true)
                 .user(user2)
                 .build();
-        tagRepo.save(newTag);
+        labelRepo.save(newLabel);
 
         Notification netflixNotification = Notification.builder()
                 .notificationId(UUID.randomUUID().toString())

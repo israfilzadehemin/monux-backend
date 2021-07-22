@@ -20,5 +20,5 @@ import lombok.experimental.SuperBuilder;
 public class InOutRsModel extends TransactionRsModel {
     String accountId;
     String categoryId;
-    List<String> tagIds;
+    List<String> labelIds;
 }

@@ -28,5 +28,5 @@ public class InOutRqModel extends TransactionRqModel {
     String categoryId;
 
     @NotNull
-    List<String> tagIds;
+    List<String> labelIds;
 }

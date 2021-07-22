@@ -22,36 +22,36 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Tag {
+public class Label {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
-    @Column(name = "tag_id")
-    private String tagId;
+    @Column(name = "label_id")
+    private String labelId;
 
-    @Column(name = "tag_name")
+    @Column(name = "label_name")
     private String name;
 
-    @Column(name = "tag_type")
+    @Column(name = "label_type")
     private String type;
 
-    @Column(name = "tag_visibility")
+    @Column(name = "label_visibility")
     private boolean visibility;
 
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(mappedBy = "labels")
     private List<Template> templates;
 
-    @ManyToMany(mappedBy = "tags")
+    @ManyToMany(mappedBy = "labels")
     private List<Transaction> transactions;
 
     @ManyToOne
     @JoinTable(
-            name = "rel_tag_with_user",
+            name = "rel_label_with_user",
             joinColumns =
-                    {@JoinColumn(name = "tag_id", referencedColumnName = "id")},
+                    {@JoinColumn(name = "label_id", referencedColumnName = "id")},
             inverseJoinColumns =
                     {@JoinColumn(name = "user_id", referencedColumnName = "id")})
     private User user;

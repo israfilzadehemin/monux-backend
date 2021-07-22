@@ -22,7 +22,7 @@ public class MsgConstant {
     public static final String ACCOUNT_CREATED_MSG = "User %s created an account: %s";
     public static final String CATEGORY_CREATED_MSG = "User %s created a category: %s";
     public static final String FEEDBACK_CREATED_MSG = "User %s created a feedback: %s";
-    public static final String TAG_CREATED_MSG = "User %s created a tag: %s";
+    public static final String LABEL_CREATED_MSG = "User %s created a label: %s";
     public static final String IN_OUT_TRANSACTION_CREATED_MSG = "User %s created an IN-OUT transaction: %s";
     public static final String IN_OUT_TEMPLATE_CREATED_MSG = "User %s created an IN-OUT template: %s";
     public static final String IN_OUT_TRANSACTION_UPDATED_MSG = "User %s updated an IN-OUT transaction: %s";
@@ -38,8 +38,8 @@ public class MsgConstant {
     public static final String ACCOUNT_UPDATED_MSG = "User %s updated an account: %s";
     public static final String BALANCE_UPDATED_MSG = "User '%s' updated balance of account %s: %s";
     public static final String CATEGORY_UPDATED_MSG = "User '%s' updated a category: %s";
-    public static final String TAG_UPDATED_MSG = "User '%s' updated a tag: %s";
-    public static final String TAG_NOT_FOUND_MSG = "User '%s' does not have any tags";
+    public static final String LABEL_UPDATED_MSG = "User '%s' updated a label: %s";
+    public static final String LABEL_NOT_FOUND_MSG = "User '%s' does not have any labels";
     public static final String CATEGORY_TYPE_NOT_FOUND_MSG = "Category type '%s' not found";
     public static final String TRANSACTION_TYPE_NOT_FOUND_MSG = "Transaction type '%s' not found";
     public static final String CURRENCY_NOT_FOUND_MSG = "Currency '%s' is not found";
@@ -50,10 +50,10 @@ public class MsgConstant {
     public static final String NO_BODY_MSG = "No body required";
     public static final String DUPLICATE_ACCOUNT_NAME_MSG = "User %s has existing account %s";
     public static final String DUPLICATE_CATEGORY_NAME_MSG = "User '%s' has existing category '%s'";
-    public static final String DUPLICATE_TAG_NAME_MSG = "User '%s' has existing tag '%s'";
+    public static final String DUPLICATE_LABEL_NAME_MSG = "User '%s' has existing label '%s'";
     public static final String UNAUTHORIZED_ACCOUNT_MSG = "User '%s' does not own account '%s'";
     public static final String UNAUTHORIZED_CATEGORY_MSG = "User '%s' does not own category '%s'";
-    public static final String UNAUTHORIZED_TAG_MSG = "User '%s' does not own tag '%s'";
+    public static final String UNAUTHORIZED_LABEL_MSG = "User '%s' does not own label '%s'";
     public static final String UNAUTHORIZED_FEEDBACK_MSG = "User '%s' does not own feedback '%s'";
     public static final String UNAUTHORIZED_TRANSACTION_MSG = "User '%s' does not own transaction '%s'";
     public static final String UNAUTHORIZED_TEMPLATE_MSG = "User '%s' does not own template '%s'";
@@ -64,14 +64,14 @@ public class MsgConstant {
     public static final String ALL_CATEGORIES_MSG = "All categories of %s: %s";
     public static final String ALL_TRANSACTIONS_MSG = "All transactions of %s: %s";
     public static final String ALL_TEMPLATES_MSG = "All templates of %s: %s";
-    public static final String ALL_TAGS_MSG = "All tags of %s: %s";
+    public static final String ALL_LABELS_MSG = "All labels of %s: %s";
     public static final String ALL_FEEDBACKS_MSG = "All feedbacks of %s: %s";
     public static final String FEEDBACK_BY_ID_MSG = "Feedback with ID '%s': %s";
     public static final String INVALID_CATEGORY_ID_MSG = "Category '%s' is not found";
     public static final String INVALID_TRANSACTION_TYPE_MSG = "Transaction type '%s' is not valid";
     public static final String TRANSFER_TO_SELF_MSG = "Sender and receiver accounts are the same";
     public static final String INSUFFICIENT_BALANCE_MSG = "There is no enough balance for this operation in '%s'";
-    public static final String NEGATIVE_BALANCE_NOT_ALLOWED = "Negative balance is not allwed for '%s'";
+    public static final String NEGATIVE_BALANCE_NOT_ALLOWED = "Negative balance is not allowed for '%s'";
     public static final String INVALID_DATE_TIME_FORMAT_MSG =
             "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
 }

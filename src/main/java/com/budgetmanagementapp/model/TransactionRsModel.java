@@ -40,5 +40,5 @@ public class TransactionRsModel {
     String categoryId;
 
     @JsonInclude(NON_NULL)
-    List<String> tagIds;
+    List<String> labelIds;
 }
