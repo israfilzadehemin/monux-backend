@@ -11,6 +11,7 @@ import com.budgetmanagementapp.model.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.UpdateInOutRqModel;
 import com.budgetmanagementapp.model.UpdateTransferRqModel;
 import com.budgetmanagementapp.utility.TransactionType;
+
 import java.util.List;
 
 public interface TransactionService {
@@ -34,4 +35,6 @@ public interface TransactionService {
     DebtRsModel updateTransaction(UpdateDebtRqModel requestBody, String username);
 
     List<TransactionRsModel> getAllTransactionsByUser(String username);
+
+    List<TransactionRsModel> getLastTransactionsByUser(String username, int transactionCount, String sortField, String sortDir);
 }

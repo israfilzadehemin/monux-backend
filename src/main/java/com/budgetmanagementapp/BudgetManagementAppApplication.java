@@ -6,14 +6,7 @@ import static com.budgetmanagementapp.utility.Constant.STATUS_PAID;
 
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.entity.Label;
-import com.budgetmanagementapp.repository.AccountRepository;
-import com.budgetmanagementapp.repository.AccountTypeRepository;
-import com.budgetmanagementapp.repository.CategoryRepository;
-import com.budgetmanagementapp.repository.CurrencyRepository;
-import com.budgetmanagementapp.repository.NotificationRepository;
-import com.budgetmanagementapp.repository.RoleRepository;
-import com.budgetmanagementapp.repository.LabelRepository;
-import com.budgetmanagementapp.repository.UserRepository;
+import com.budgetmanagementapp.repository.*;
 import com.budgetmanagementapp.utility.CategoryType;
 import com.budgetmanagementapp.utility.UserRole;
 import java.math.BigDecimal;
@@ -45,7 +38,8 @@ public class BudgetManagementAppApplication {
     CommandLineRunner createInitialData(
             AccountTypeRepository accountTypeRepo, CategoryRepository categoryRepo,
             CurrencyRepository currencyRepo, LabelRepository labelRepo, RoleRepository roleRepo,
-            AccountRepository accountRepo, UserRepository userRepo, NotificationRepository notificationRepo
+            AccountRepository accountRepo, UserRepository userRepo, NotificationRepository notificationRepo,
+            TransactionRepository transactionRepo
     ) {
 
         AccountType cashAccountType = AccountType.builder()
@@ -187,6 +181,140 @@ public class BudgetManagementAppApplication {
                 .build();
         notificationRepo.save(netflixNotification);
 
+        Transaction transaction1 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2013, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction1);
+
+        Transaction transaction2 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction2")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2012, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction2);
+
+        Transaction transaction3 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction3")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2011, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction3);
+        Transaction transaction4 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction4")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2010, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction4);
+        Transaction transaction5 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction5")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2012, 10, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction5);
+        Transaction transaction6 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction6")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2009, 10, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction6);
+        Transaction transaction7 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction7")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2014, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction7);
+        Transaction transaction8 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction8")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2015, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction8);
+        Transaction transaction9 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction9")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2017, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction9);
+        Transaction transaction10 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction10")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2021, 11, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction10);
+        Transaction transaction11 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction11")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2023, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction11);
+        Transaction transaction12 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction12")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .dateTime(LocalDateTime.of(2016, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction12);
         return null;
 
     }
