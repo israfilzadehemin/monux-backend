@@ -36,5 +36,5 @@ public interface TransactionService {
 
     List<TransactionRsModel> getAllTransactionsByUser(String username);
 
-    List<TransactionRsModel> getLastTransactionsByUser(String username, int transactionCount, String sortField, String sortDir);
+    List<TransactionRsModel> getLastTransactionsByUser(String username, int pageCount, int size, String sortField, String sortDir);
 }

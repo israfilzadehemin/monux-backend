@@ -240,8 +240,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionRsModel> getLastTransactionsByUser(String username, int transactionCount, String sortField, String sortDir) {
-        Pageable pageable = paginationTool.service(transactionCount, sortField, sortDir);
+    public List<TransactionRsModel> getLastTransactionsByUser(String username, int pageCount, int size, String sortField, String sortDir) {
+        Pageable pageable = paginationTool.service(pageCount, size, sortField, sortDir);
 
         User user = userService.findByUsername(username);
         Page<Transaction> allPosts = transactionRepo.lastByUser(user, pageable);

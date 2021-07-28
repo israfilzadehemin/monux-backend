@@ -133,10 +133,12 @@ public class TransactionController {
 
     @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_URL)
     public ResponseEntity<?> getLastTransactions(Authentication auth,
-                             @PathVariable("transactionCount") Optional<Integer> transactionCount,
+                             @PathVariable("page-count") Optional<Integer> pageCount,
+                             @RequestParam(name = "transaction-count") Optional<Integer> transactionCount,
                                            Optional<String> sortFieldOp, Optional<String> sortDirOp) {
 
-        int currentPage = transactionCount.orElse(1);
+        int currentPage = pageCount.orElse(1);
+        int size = transactionCount.orElse(1);
         String sortField = sortFieldOp.orElse("dateTime");
         String sortDir = sortDirOp.orElse("desc");
 
@@ -146,7 +148,7 @@ public class TransactionController {
                         .status(HttpStatus.OK)
                         .body(transactionService.getLastTransactionsByUser(
                                 ((UserDetails) auth.getPrincipal()).getUsername(),
-                                currentPage,sortField, sortDir))
+                                currentPage, size, sortField, sortDir))
                         .build());
     }
 
