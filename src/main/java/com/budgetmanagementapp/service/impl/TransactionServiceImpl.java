@@ -260,6 +260,27 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
+    @Override
+    public List<TransactionRsModel> getLastTransactionsByUserAndAccount(String username, String accountId, int pageCount, int size, String sortField, String sortDir) {
+        Pageable pageable = paginationTool.service(pageCount, size, sortField, sortDir);
+
+        User user = userService.findByUsername(username);
+        Account account = accountService.byIdAndUser(accountId, user);
+        Page<Transaction> allPosts = transactionRepo.lastByUserAndSenderAccount(user, account, pageable);
+
+        if (allPosts.getTotalElements() == 0) {
+            throw new TransactionNotFoundException(TRANSACTION_TYPE_NOT_FOUND_MSG);
+        } else {
+            List<TransactionRsModel> response =
+                    transactionRepo.lastByUserAndSenderAccount(user, account, pageable)
+                            .stream()
+                            .map(this::buildGenericResponseModel)
+                            .collect(Collectors.toList());
+
+            log.info(format(LAST_TRANSACTIONS_MSG, username, response));
+            return response;
+        }
+    }
 
     private Transaction buildTransaction(InOutRqModel requestBody, User user,
                                          Account account, Category category,

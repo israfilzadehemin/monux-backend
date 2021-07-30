@@ -152,6 +152,29 @@ public class TransactionController {
                         .build());
     }
 
+    @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_ACCOUNT_URL)
+    public ResponseEntity<?> getLastTransactionsByAccount(Authentication auth,
+                             @PathVariable("page-count") Optional<Integer> pageCount,
+                             @RequestParam(name = "transaction-count") Optional<Integer> transactionCount,
+                             @RequestParam(name = "id") Optional<String> id,
+                                           Optional<String> sortFieldOp, Optional<String> sortDirOp) {
+
+        int currentPage = pageCount.orElse(1);
+        int size = transactionCount.orElse(1);
+        String accountId = id.orElseThrow();
+        String sortField = sortFieldOp.orElse("dateTime");
+        String sortDir = sortDirOp.orElse("desc");
+
+        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_ACCOUNT_URL, NO_BODY_MSG));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(transactionService.getLastTransactionsByUserAndAccount(
+                                ((UserDetails) auth.getPrincipal()).getUsername(), accountId,
+                                currentPage, size, sortField, sortDir))
+                        .build());
+    }
+
 
     @PostMapping(TRANSACTION_UPDATE_IN_OUT_URL)
     public ResponseEntity<?> updateInOutTransaction(@RequestBody @Valid UpdateInOutRqModel requestBody,

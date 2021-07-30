@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.repository;
 
+import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
 import java.util.List;
@@ -22,11 +23,17 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     default Page<Transaction> lastByUser(User user, Pageable pageable) {
         return findAllByUser(user, pageable);
     }
+
+    default Page<Transaction> lastByUserAndSenderAccount(User user, Account account, Pageable pageable) {
+        return findAllByUserAndSenderAccount(user, account, pageable);
+    }
     Optional<Transaction> findByTransactionIdAndUser(String transactionId, User user);
 
     List<Transaction> findAllByUser(User user);
 
     Page<Transaction> findAllByUser(User user, Pageable pageable);
+
+    Page<Transaction> findAllByUserAndSenderAccount(User user, Account account, Pageable pageable);
 
 
 

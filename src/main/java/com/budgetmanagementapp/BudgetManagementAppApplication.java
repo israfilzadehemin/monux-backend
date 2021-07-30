@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -76,6 +77,7 @@ public class BudgetManagementAppApplication {
                 .enabled(true)
                 .showInSum(true)
                 .build();
+        accountRepo.save(cardAccount1);
 
         Account cardAccount2 = Account.builder()
                 .accountId(UUID.randomUUID().toString())
@@ -87,6 +89,7 @@ public class BudgetManagementAppApplication {
                 .enabled(true)
                 .showInSum(true)
                 .build();
+        accountRepo.save(cardAccount2);
 
         Account cardAccount3 = Account.builder()
                 .accountId(UUID.randomUUID().toString())
@@ -98,8 +101,7 @@ public class BudgetManagementAppApplication {
                 .enabled(true)
                 .showInSum(true)
                 .build();
-
-        accountRepo.saveAll(Arrays.asList(cardAccount1, cardAccount2, cardAccount3));
+        accountRepo.save(cardAccount3);
 
         User user1 = User.builder()
                 .userId(UUID.randomUUID().toString())
@@ -108,8 +110,9 @@ public class BudgetManagementAppApplication {
                 .dateTime(LocalDateTime.now())
                 .status(STATUS_ACTIVE)
                 .paymentStatus(STATUS_NOT_PAID)
-                .accounts(Arrays.asList(cardAccount1, cardAccount2))
+                .accounts(Collections.singletonList(cardAccount1))
                 .build();
+
 
         User user2 = User.builder()
                 .userId(UUID.randomUUID().toString())
@@ -189,6 +192,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount1)
                 .dateTime(LocalDateTime.of(2013, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction1);
@@ -201,6 +205,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount2)
                 .dateTime(LocalDateTime.of(2012, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction2);
@@ -213,6 +218,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount3)
                 .dateTime(LocalDateTime.of(2011, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction3);
@@ -224,6 +230,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount1)
                 .dateTime(LocalDateTime.of(2010, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction4);
@@ -235,6 +242,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount2)
                 .dateTime(LocalDateTime.of(2012, 10, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction5);
@@ -246,6 +254,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount3)
                 .dateTime(LocalDateTime.of(2009, 10, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction6);
@@ -257,6 +266,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount1)
                 .dateTime(LocalDateTime.of(2014, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction7);
@@ -268,6 +278,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount2)
                 .dateTime(LocalDateTime.of(2015, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction8);
@@ -279,6 +290,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount3)
                 .dateTime(LocalDateTime.of(2017, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction9);
@@ -290,6 +302,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount1)
                 .dateTime(LocalDateTime.of(2021, 11, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction10);
@@ -301,6 +314,7 @@ public class BudgetManagementAppApplication {
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
                 .user(user1)
+                .senderAccount(cardAccount2)
                 .dateTime(LocalDateTime.of(2023, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction11);
@@ -311,7 +325,8 @@ public class BudgetManagementAppApplication {
                 .description("new transaction12")
                 .type(CategoryType.INCOME.name())
                 .amount(BigDecimal.ONE)
-                .user(user1)
+                .user(user2)
+                .senderAccount(cardAccount3)
                 .dateTime(LocalDateTime.of(2016, 5, 5, 5, 10))
                 .build();
         transactionRepo.save(transaction12);
