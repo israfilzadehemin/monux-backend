@@ -20,6 +20,13 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
         return findAllByUser(user);
     }
 
+    default List<Transaction> allByUserAndSenderAccount(User user, Account account) {
+        return findAllByUserAndSenderAccount(user, account);
+    }
+    default List<Transaction> allByUserAndReceiverAccount(User user, Account account) {
+        return findAllByUserAndReceiverAccount(user, account);
+    }
+
     default Page<Transaction> lastByUser(User user, Pageable pageable) {
         return findAllByUser(user, pageable);
     }
@@ -27,13 +34,23 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     default Page<Transaction> lastByUserAndSenderAccount(User user, Account account, Pageable pageable) {
         return findAllByUserAndSenderAccount(user, account, pageable);
     }
+
+    default Page<Transaction> lastByUserAndReceiverAccount(User user, Account account, Pageable pageable) {
+        return findAllByUserAndReceiverAccount(user, account, pageable);
+    }
     Optional<Transaction> findByTransactionIdAndUser(String transactionId, User user);
 
     List<Transaction> findAllByUser(User user);
 
+    List<Transaction> findAllByUserAndSenderAccount(User user, Account account);
+
+    List<Transaction> findAllByUserAndReceiverAccount(User user, Account account);
+
     Page<Transaction> findAllByUser(User user, Pageable pageable);
 
     Page<Transaction> findAllByUserAndSenderAccount(User user, Account account, Pageable pageable);
+
+    Page<Transaction> findAllByUserAndReceiverAccount(User user, Account account, Pageable pageable);
 
 
 

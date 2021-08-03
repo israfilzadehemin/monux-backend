@@ -36,12 +36,7 @@ import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.PaginationTool;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -240,18 +235,35 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public List<TransactionRsModel> getAllTransactionsByUserAndAccount(String username, String accountId) {
+        User user = userService.findByUsername(username);
+        Account account = accountService.byIdAndUser(accountId, user);
+
+        List<Transaction> allTransactions = new ArrayList<>();
+        allTransactions.addAll(transactionRepo.allByUserAndReceiverAccount(user, account));
+        allTransactions.addAll(transactionRepo.allByUserAndSenderAccount(user, account));
+        allTransactions.sort(Comparator.comparing(Transaction::getDateTime));
+
+        List<TransactionRsModel> response =
+                allTransactions.stream()
+                        .map(this::buildGenericResponseModel)
+                        .collect(Collectors.toList());
+
+        log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
+        return response;
+    }
+
+    @Override
     public List<TransactionRsModel> getLastTransactionsByUser(String username, int pageCount, int size, String sortField, String sortDir) {
         Pageable pageable = paginationTool.service(pageCount, size, sortField, sortDir);
 
         User user = userService.findByUsername(username);
-        Page<Transaction> allPosts = transactionRepo.lastByUser(user, pageable);
-
-        if (allPosts.getTotalElements() == 0) {
-            throw new TransactionNotFoundException(TRANSACTION_TYPE_NOT_FOUND_MSG);
+        Page<Transaction> allTransactions = transactionRepo.lastByUser(user, pageable);
+        if (allTransactions.getTotalElements() == 0) {
+            throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MSG);
         } else {
             List<TransactionRsModel> response =
-                    transactionRepo.lastByUser(user, pageable)
-                            .stream()
+                    allTransactions.stream()
                             .map(this::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
@@ -266,14 +278,20 @@ public class TransactionServiceImpl implements TransactionService {
 
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(accountId, user);
-        Page<Transaction> allPosts = transactionRepo.lastByUserAndSenderAccount(user, account, pageable);
+        Page<Transaction> transactionsBySenderAccount = transactionRepo.lastByUserAndSenderAccount(user, account, pageable);
+        Page<Transaction> transactionsByReceiverAccount = transactionRepo.lastByUserAndReceiverAccount(user, account, pageable);
 
-        if (allPosts.getTotalElements() == 0) {
-            throw new TransactionNotFoundException(TRANSACTION_TYPE_NOT_FOUND_MSG);
+        List<Transaction> allTransactions = new ArrayList<>();
+        allTransactions.addAll(transactionsBySenderAccount.toList());
+        allTransactions.addAll(transactionsByReceiverAccount.toList());
+        allTransactions.sort(Comparator.comparing(Transaction::getDateTime).reversed());
+
+        if (allTransactions.size() == 0) {
+            throw new TransactionNotFoundException(
+                    format(TRANSACTION_NOT_FOUND_MSG, user.getUsername()));
         } else {
             List<TransactionRsModel> response =
-                    transactionRepo.lastByUserAndSenderAccount(user, account, pageable)
-                            .stream()
+                    allTransactions.stream()
                             .map(this::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
