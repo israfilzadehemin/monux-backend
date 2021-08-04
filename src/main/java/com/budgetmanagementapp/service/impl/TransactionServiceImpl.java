@@ -243,34 +243,31 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionRsModel> getAllTransactionsByUser(String username) {
-        List<TransactionRsModel> response =
-                transactionRepo.allByUser(userService.findByUsername(username))
-                        .stream()
-                        .map(this::buildGenericResponseModel)
-                        .collect(Collectors.toList());
-
-        log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
-        return response;
-    }
-
-    @Override
     public List<TransactionRsModel> getAllTransactionsByUserAndAccount(String username, String accountId) {
         User user = userService.findByUsername(username);
-        Account account = accountService.byIdAndUser(accountId, user);
+        List<Transaction> transactions = new ArrayList<>();
 
-        List<Transaction> allTransactions = new ArrayList<>();
-        allTransactions.addAll(transactionRepo.allByUserAndReceiverAccount(user, account));
-        allTransactions.addAll(transactionRepo.allByUserAndSenderAccount(user, account));
-        allTransactions.sort(Comparator.comparing(Transaction::getDateTime));
+        if (accountId.equals("all")) {
+            transactions.addAll(transactionRepo.allByUser(user));
+        } else {
+            Account account = accountService.byIdAndUser(accountId, user);
+            transactions.addAll(transactionRepo.allByUserAndReceiverAccount(user, account));
+            transactions.addAll(transactionRepo.allByUserAndSenderAccount(user, account));
+        }
+        transactions.sort(Comparator.comparing(Transaction::getId).reversed());
 
-        List<TransactionRsModel> response =
-                allTransactions.stream()
-                        .map(this::buildGenericResponseModel)
-                        .collect(Collectors.toList());
+        if (transactions.isEmpty()) {
+            throw new TransactionNotFoundException(
+                    format(TRANSACTION_NOT_FOUND_MSG, user.getUsername()));
+        } else {
+            List<TransactionRsModel> response =
+                    transactions.stream()
+                            .map(this::buildGenericResponseModel)
+                            .collect(Collectors.toList());
 
-        log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
-        return response;
+            log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
+            return response;
+        }
     }
 
     @Override

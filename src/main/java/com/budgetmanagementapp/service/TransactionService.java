@@ -33,8 +33,6 @@ public interface TransactionService {
 
     DebtRsModel updateTransaction(UpdateDebtRqModel requestBody, String username);
 
-    List<TransactionRsModel> getAllTransactionsByUser(String username);
-
     List<TransactionRsModel> getAllTransactionsByUserAndAccount(String username, String accountId);
 
     List<TransactionRsModel> getLastTransactionsByUserAndAccount(String username, String accountId, int pageCount, int size, String sortField, String sortDir);
