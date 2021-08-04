@@ -2,7 +2,18 @@ package com.budgetmanagementapp.service.impl;
 
 import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -11,8 +22,11 @@ import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
 import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.entity.*;
+import com.budgetmanagementapp.entity.Account;
+import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.Label;
+import com.budgetmanagementapp.entity.Transaction;
+import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
@@ -36,12 +50,18 @@ import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.PaginationTool;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -254,44 +274,27 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public List<TransactionRsModel> getLastTransactionsByUser(String username, int pageCount, int size, String sortField, String sortDir) {
-        Pageable pageable = paginationTool.service(pageCount, size, sortField, sortDir);
-
-        User user = userService.findByUsername(username);
-        Page<Transaction> allTransactions = transactionRepo.lastByUser(user, pageable);
-        if (allTransactions.getTotalElements() == 0) {
-            throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MSG);
-        } else {
-            List<TransactionRsModel> response =
-                    allTransactions.stream()
-                            .map(this::buildGenericResponseModel)
-                            .collect(Collectors.toList());
-
-            log.info(format(LAST_TRANSACTIONS_MSG, username, response));
-            return response;
-        }
-    }
-
-    @Override
     public List<TransactionRsModel> getLastTransactionsByUserAndAccount(String username, String accountId, int pageCount, int size, String sortField, String sortDir) {
         Pageable pageable = paginationTool.service(pageCount, size, sortField, sortDir);
-
         User user = userService.findByUsername(username);
-        Account account = accountService.byIdAndUser(accountId, user);
-        Page<Transaction> transactionsBySenderAccount = transactionRepo.lastByUserAndSenderAccount(user, account, pageable);
-        Page<Transaction> transactionsByReceiverAccount = transactionRepo.lastByUserAndReceiverAccount(user, account, pageable);
+        List<Transaction> transactions = new ArrayList<>();
 
-        List<Transaction> allTransactions = new ArrayList<>();
-        allTransactions.addAll(transactionsBySenderAccount.toList());
-        allTransactions.addAll(transactionsByReceiverAccount.toList());
-        allTransactions.sort(Comparator.comparing(Transaction::getDateTime).reversed());
+        if (accountId.equals("all")) {
+            transactions.addAll(transactionRepo.lastByUser(user, pageable).toList());
+        } else {
+            Account account = accountService.byIdAndUser(accountId, user);
+            transactions.addAll(transactionRepo.lastByUserAndSenderAccount(user, account, pageable).toList());
+            transactions.addAll(transactionRepo.lastByUserAndReceiverAccount(user, account, pageable).toList());
+        }
 
-        if (allTransactions.size() == 0) {
+        transactions.sort(Comparator.comparing(Transaction::getId).reversed());
+
+        if (transactions.isEmpty()) {
             throw new TransactionNotFoundException(
                     format(TRANSACTION_NOT_FOUND_MSG, user.getUsername()));
         } else {
             List<TransactionRsModel> response =
-                    allTransactions.stream()
+                    transactions.stream()
                             .map(this::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
