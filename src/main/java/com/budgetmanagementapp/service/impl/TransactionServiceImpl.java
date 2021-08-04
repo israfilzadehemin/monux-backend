@@ -2,16 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -42,18 +33,16 @@ import com.budgetmanagementapp.service.LabelService;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomFormatter;
+import com.budgetmanagementapp.utility.PaginationTool;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -65,6 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final CategoryService categoryService;
     private final LabelService labelService;
     private final TransactionRepository transactionRepo;
+    private final PaginationTool<Transaction> paginationTool;
 
     @Override
     @Transactional
@@ -242,6 +232,72 @@ public class TransactionServiceImpl implements TransactionService {
 
         log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
         return response;
+    }
+
+    @Override
+    public List<TransactionRsModel> getAllTransactionsByUserAndAccount(String username, String accountId) {
+        User user = userService.findByUsername(username);
+        Account account = accountService.byIdAndUser(accountId, user);
+
+        List<Transaction> allTransactions = new ArrayList<>();
+        allTransactions.addAll(transactionRepo.allByUserAndReceiverAccount(user, account));
+        allTransactions.addAll(transactionRepo.allByUserAndSenderAccount(user, account));
+        allTransactions.sort(Comparator.comparing(Transaction::getDateTime));
+
+        List<TransactionRsModel> response =
+                allTransactions.stream()
+                        .map(this::buildGenericResponseModel)
+                        .collect(Collectors.toList());
+
+        log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
+        return response;
+    }
+
+    @Override
+    public List<TransactionRsModel> getLastTransactionsByUser(String username, int pageCount, int size, String sortField, String sortDir) {
+        Pageable pageable = paginationTool.service(pageCount, size, sortField, sortDir);
+
+        User user = userService.findByUsername(username);
+        Page<Transaction> allTransactions = transactionRepo.lastByUser(user, pageable);
+        if (allTransactions.getTotalElements() == 0) {
+            throw new TransactionNotFoundException(TRANSACTION_NOT_FOUND_MSG);
+        } else {
+            List<TransactionRsModel> response =
+                    allTransactions.stream()
+                            .map(this::buildGenericResponseModel)
+                            .collect(Collectors.toList());
+
+            log.info(format(LAST_TRANSACTIONS_MSG, username, response));
+            return response;
+        }
+    }
+
+    @Override
+    public List<TransactionRsModel> getLastTransactionsByUserAndAccount(String username, String accountId, int pageCount, int size, String sortField, String sortDir) {
+        Pageable pageable = paginationTool.service(pageCount, size, sortField, sortDir);
+
+        User user = userService.findByUsername(username);
+        Account account = accountService.byIdAndUser(accountId, user);
+        Page<Transaction> transactionsBySenderAccount = transactionRepo.lastByUserAndSenderAccount(user, account, pageable);
+        Page<Transaction> transactionsByReceiverAccount = transactionRepo.lastByUserAndReceiverAccount(user, account, pageable);
+
+        List<Transaction> allTransactions = new ArrayList<>();
+        allTransactions.addAll(transactionsBySenderAccount.toList());
+        allTransactions.addAll(transactionsByReceiverAccount.toList());
+        allTransactions.sort(Comparator.comparing(Transaction::getDateTime).reversed());
+
+        if (allTransactions.size() == 0) {
+            throw new TransactionNotFoundException(
+                    format(TRANSACTION_NOT_FOUND_MSG, user.getUsername()));
+        } else {
+            List<TransactionRsModel> response =
+                    allTransactions.stream()
+                            .map(this::buildGenericResponseModel)
+                            .collect(Collectors.toList());
+
+            log.info(format(LAST_TRANSACTIONS_MSG, username, response));
+            return response;
+        }
     }
 
     private Transaction buildTransaction(InOutRqModel requestBody, User user,

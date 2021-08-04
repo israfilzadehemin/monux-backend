@@ -1,16 +1,7 @@
 package com.budgetmanagementapp.controller;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_IN_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_OUT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_INCOME_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_OUTGOING_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_TRANSFER_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_ALL_TRANSACTIONS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_DEBT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_OUT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_URL;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.DebtRqModel;
@@ -29,10 +20,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -124,17 +114,47 @@ public class TransactionController {
     }
 
     @GetMapping(TRANSACTION_GET_ALL_TRANSACTIONS_URL)
-    public ResponseEntity<?> getAllTransactions(Authentication auth) {
+    public ResponseEntity<?> getAllTransactions(Authentication auth,
+                                                @RequestParam(name = "account-id") Optional<String> accountId) {
+        String id = accountId.orElse("all");
 
         log.info(format(REQUEST_MSG, TRANSACTION_GET_ALL_TRANSACTIONS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(transactionService.getAllTransactionsByUser(
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
+                        .body(accountId.isEmpty() ?
+                                transactionService.getAllTransactionsByUser(
+                                ((UserDetails) auth.getPrincipal()).getUsername()) :
+                                transactionService.getAllTransactionsByUserAndAccount(
+                                        ((UserDetails) auth.getPrincipal()).getUsername(), id))
                         .build());
     }
 
+    @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_URL)
+    public ResponseEntity<?> getLastTransactions(Authentication auth,
+                             @RequestParam(name = "transaction-count") Optional<Integer> transactionCount,
+                             @RequestParam(name = "account-id") Optional<String> accountId,
+                                           Optional<String> sortFieldOp, Optional<String> sortDirOp) {
+
+        int currentPage = 1;
+        int size = transactionCount.orElse(1);
+        String id = accountId.orElse("all");
+        String sortField = sortFieldOp.orElse("dateTime");
+        String sortDir = sortDirOp.orElse("desc");
+
+        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_URL, NO_BODY_MSG));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body((id.equals("all")) ?
+                                transactionService.getLastTransactionsByUser(
+                                        ((UserDetails) auth.getPrincipal()).getUsername(),
+                                        currentPage, size, sortField, sortDir) :
+                                transactionService.getLastTransactionsByUserAndAccount(
+                                ((UserDetails) auth.getPrincipal()).getUsername(), id,
+                                currentPage, size, sortField, sortDir))
+                        .build());
+    }
 
     @PostMapping(TRANSACTION_UPDATE_IN_OUT_URL)
     public ResponseEntity<?> updateInOutTransaction(@RequestBody @Valid UpdateInOutRqModel requestBody,

@@ -40,6 +40,7 @@ public class MsgConstant {
     public static final String CATEGORY_UPDATED_MSG = "User '%s' updated a category: %s";
     public static final String LABEL_UPDATED_MSG = "User '%s' updated a label: %s";
     public static final String LABEL_NOT_FOUND_MSG = "User '%s' does not have any labels";
+    public static final String TRANSACTION_NOT_FOUND_MSG = "User '%s' does not have any transactions";
     public static final String CATEGORY_TYPE_NOT_FOUND_MSG = "Category type '%s' not found";
     public static final String TRANSACTION_TYPE_NOT_FOUND_MSG = "Transaction type '%s' not found";
     public static final String CURRENCY_NOT_FOUND_MSG = "Currency '%s' is not found";
@@ -63,6 +64,7 @@ public class MsgConstant {
     public static final String ALL_ACCOUNTS_MSG = "All accounts of %s: %s";
     public static final String ALL_CATEGORIES_MSG = "All categories of %s: %s";
     public static final String ALL_TRANSACTIONS_MSG = "All transactions of %s: %s";
+    public static final String LAST_TRANSACTIONS_MSG = "Last transactions of %s: %s";
     public static final String ALL_TEMPLATES_MSG = "All templates of %s: %s";
     public static final String ALL_LABELS_MSG = "All labels of %s: %s";
     public static final String ALL_FEEDBACKS_MSG = "All feedbacks of %s: %s";

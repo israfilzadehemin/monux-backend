@@ -6,14 +6,7 @@ import static com.budgetmanagementapp.utility.Constant.STATUS_PAID;
 
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.entity.Label;
-import com.budgetmanagementapp.repository.AccountRepository;
-import com.budgetmanagementapp.repository.AccountTypeRepository;
-import com.budgetmanagementapp.repository.CategoryRepository;
-import com.budgetmanagementapp.repository.CurrencyRepository;
-import com.budgetmanagementapp.repository.NotificationRepository;
-import com.budgetmanagementapp.repository.RoleRepository;
-import com.budgetmanagementapp.repository.LabelRepository;
-import com.budgetmanagementapp.repository.UserRepository;
+import com.budgetmanagementapp.repository.*;
 import com.budgetmanagementapp.utility.CategoryType;
 import com.budgetmanagementapp.utility.UserRole;
 import java.math.BigDecimal;
@@ -21,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -45,7 +39,8 @@ public class BudgetManagementAppApplication {
     CommandLineRunner createInitialData(
             AccountTypeRepository accountTypeRepo, CategoryRepository categoryRepo,
             CurrencyRepository currencyRepo, LabelRepository labelRepo, RoleRepository roleRepo,
-            AccountRepository accountRepo, UserRepository userRepo, NotificationRepository notificationRepo
+            AccountRepository accountRepo, UserRepository userRepo, NotificationRepository notificationRepo,
+            TransactionRepository transactionRepo
     ) {
 
         AccountType cashAccountType = AccountType.builder()
@@ -82,6 +77,7 @@ public class BudgetManagementAppApplication {
                 .enabled(true)
                 .showInSum(true)
                 .build();
+        accountRepo.save(cardAccount1);
 
         Account cardAccount2 = Account.builder()
                 .accountId(UUID.randomUUID().toString())
@@ -93,6 +89,7 @@ public class BudgetManagementAppApplication {
                 .enabled(true)
                 .showInSum(true)
                 .build();
+        accountRepo.save(cardAccount2);
 
         Account cardAccount3 = Account.builder()
                 .accountId(UUID.randomUUID().toString())
@@ -104,8 +101,7 @@ public class BudgetManagementAppApplication {
                 .enabled(true)
                 .showInSum(true)
                 .build();
-
-        accountRepo.saveAll(Arrays.asList(cardAccount1, cardAccount2, cardAccount3));
+        accountRepo.save(cardAccount3);
 
         User user1 = User.builder()
                 .userId(UUID.randomUUID().toString())
@@ -114,8 +110,9 @@ public class BudgetManagementAppApplication {
                 .dateTime(LocalDateTime.now())
                 .status(STATUS_ACTIVE)
                 .paymentStatus(STATUS_NOT_PAID)
-                .accounts(Arrays.asList(cardAccount1, cardAccount2))
+                .accounts(Collections.singletonList(cardAccount1))
                 .build();
+
 
         User user2 = User.builder()
                 .userId(UUID.randomUUID().toString())
@@ -187,6 +184,18 @@ public class BudgetManagementAppApplication {
                 .build();
         notificationRepo.save(netflixNotification);
 
+        Transaction transaction1 = Transaction.builder()
+                .transactionId(UUID.randomUUID().toString())
+                .labels(Arrays.asList(coffeeLabel, newLabel))
+                .category(salary)
+                .description("new transaction")
+                .type(CategoryType.INCOME.name())
+                .amount(BigDecimal.ONE)
+                .user(user1)
+                .senderAccount(cardAccount1)
+                .dateTime(LocalDateTime.of(2013, 5, 5, 5, 10))
+                .build();
+        transactionRepo.save(transaction1);
         return null;
 
     }
