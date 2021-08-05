@@ -136,17 +136,14 @@ public class TransactionController {
     public ResponseEntity<?> getAllTransactions(Authentication auth,
                                                 @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID)
                                                         Optional<String> accountId) {
-        String id = accountId.orElse("all");
 
         log.info(format(REQUEST_MSG, TRANSACTION_GET_ALL_TRANSACTIONS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(accountId.isEmpty()
-                                ? transactionService.getAllTransactionsByUser(
-                                ((UserDetails) auth.getPrincipal()).getUsername())
-                                : transactionService.getAllTransactionsByUserAndAccount(
-                                ((UserDetails) auth.getPrincipal()).getUsername(), id))
+                        .body(transactionService.getAllTransactionsByUserAndAccount(
+                                ((UserDetails) auth.getPrincipal()).getUsername(),
+                                accountId.orElse(ACCOUNT_ALL)))
                         .build());
     }
 
