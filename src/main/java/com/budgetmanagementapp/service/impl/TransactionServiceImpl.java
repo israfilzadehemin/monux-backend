@@ -1,19 +1,7 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
-import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
+import static com.budgetmanagementapp.utility.Constant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -27,19 +15,8 @@ import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.NotEnoughBalanceException;
-import com.budgetmanagementapp.exception.TransactionNotFoundException;
-import com.budgetmanagementapp.exception.TransferToSelfException;
-import com.budgetmanagementapp.model.DebtRqModel;
-import com.budgetmanagementapp.model.DebtRsModel;
-import com.budgetmanagementapp.model.InOutRqModel;
-import com.budgetmanagementapp.model.InOutRsModel;
-import com.budgetmanagementapp.model.TransactionRsModel;
-import com.budgetmanagementapp.model.TransferRqModel;
-import com.budgetmanagementapp.model.TransferRsModel;
-import com.budgetmanagementapp.model.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.UpdateInOutRqModel;
-import com.budgetmanagementapp.model.UpdateTransferRqModel;
+import com.budgetmanagementapp.exception.*;
+import com.budgetmanagementapp.model.*;
 import com.budgetmanagementapp.repository.TransactionRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.CategoryService;
@@ -247,7 +224,7 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userService.findByUsername(username);
         List<Transaction> transactions = new ArrayList<>();
 
-        if (accountId.equals("all")) {
+        if (accountId.equals(ACCOUNT_ALL)) {
             transactions.addAll(transactionRepo.allByUser(user));
         } else {
             Account account = accountService.byIdAndUser(accountId, user);
@@ -276,7 +253,7 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userService.findByUsername(username);
         List<Transaction> transactions = new ArrayList<>();
 
-        if (accountId.equals("all")) {
+        if (accountId.equals(ACCOUNT_ALL)) {
             transactions.addAll(transactionRepo.lastByUser(user, pageable).toList());
         } else {
             Account account = accountService.byIdAndUser(accountId, user);
@@ -298,6 +275,47 @@ public class TransactionServiceImpl implements TransactionService {
             log.info(format(LAST_TRANSACTIONS_MSG, username, response));
             return response;
         }
+    }
+
+    @Transactional
+    @Override
+    public List<TransactionRsModel> deleteTransactionsById(String username, List<String> transactionIds) {
+        User user = userService.findByUsername(username);
+        List<Transaction> transactions = transactionRepo.deleteTransactionsById(user, transactionIds);
+
+        checkTransactionType(transactions);
+        log.info(format(DELETED_TRANSACTIONS_MSG, username, transactionIds));
+        return transactions.stream()
+                        .map(this::buildGenericResponseModel)
+                        .collect(Collectors.toList());
+    }
+
+    private void checkTransactionType(List<Transaction> transactions){
+        transactions.forEach(transaction -> {
+            Account senderAccount = transaction.getSenderAccount();
+            Account receiverAccount = transaction.getReceiverAccount();
+            BigDecimal amount = transaction.getAmount();
+
+            switch (TransactionType.valueOf(transaction.getType())){
+                case INCOME:
+                    receiverAccount.setBalance(receiverAccount.getBalance().subtract(amount));
+                    break;
+                case OUTGOING:
+                    senderAccount.setBalance(senderAccount.getBalance().add(amount));
+                    break;
+                case TRANSFER:
+                    senderAccount.setBalance(senderAccount.getBalance().add(amount));
+                    receiverAccount.setBalance(receiverAccount.getBalance().subtract(amount));
+                    break;
+                case DEBT_IN:
+                    receiverAccount.setBalance(receiverAccount.getBalance().subtract(amount));
+                    break;
+                case DEBT_OUT:
+                    senderAccount.setBalance(senderAccount.getBalance().add(amount));
+                    break;
+                default: throw new TransactionTypeNotFoundException(TRANSACTION_TYPE_NOT_FOUND_MSG);
+            }
+        });
     }
 
     private Transaction buildTransaction(InOutRqModel requestBody, User user,
