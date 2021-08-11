@@ -128,9 +128,9 @@ public class TransactionController {
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(transactionService.deleteTransactionsById(
+                        .body(transactionService.deleteTransactionById(
                                 ((UserDetails) auth.getPrincipal()).getUsername(),
-                                requestBody.getTransactionIds()))
+                                requestBody.getTransactionId()))
                         .build());
 
     }

@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.service;
 
+import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.model.*;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.util.List;
@@ -28,5 +29,5 @@ public interface TransactionService {
 
     List<TransactionRsModel> getLastTransactionsByUserAndAccount(String username, String accountId, int pageCount, int size, String sortField, String sortDir);
 
-    List<TransactionRsModel> deleteTransactionsById(String username, List<String> transactionIds);
+    List<TransactionRsModel> deleteTransactionById(String username, String transactionId);
 }

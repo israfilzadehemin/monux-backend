@@ -279,18 +279,18 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Transactional
     @Override
-    public List<TransactionRsModel> deleteTransactionsById(String username, List<String> transactionIds) {
+    public List<TransactionRsModel> deleteTransactionById(String username, String transactionId) {
         User user = userService.findByUsername(username);
-        List<Transaction> transactions = transactionRepo.deleteTransactionsById(user, transactionIds);
+        List<Transaction> transactions = transactionRepo.findAllByUser(user);
+        checkTransactionType(transactions, transactionId, user);
 
-        checkTransactionType(transactions);
-        log.info(format(DELETED_TRANSACTIONS_MSG, username, transactionIds));
+        log.info(format(DELETED_TRANSACTIONS_MSG, username, transactionId));
         return transactions.stream()
                         .map(this::buildGenericResponseModel)
                         .collect(Collectors.toList());
     }
 
-    private void checkTransactionType(List<Transaction> transactions){
+    private void checkTransactionType(List<Transaction> transactions, String transactionId, User user){
         transactions.forEach(transaction -> {
             Account senderAccount = transaction.getSenderAccount();
             Account receiverAccount = transaction.getReceiverAccount();
@@ -299,23 +299,40 @@ public class TransactionServiceImpl implements TransactionService {
             switch (TransactionType.valueOf(transaction.getType())){
                 case INCOME:
                     receiverAccount.setBalance(receiverAccount.getBalance().subtract(amount));
+                    if (checkNegativeBalance(receiverAccount, amount))
+                        transactionRepo.deleteTransactionById(user, transactionId);
                     break;
                 case OUTGOING:
+                    transactionRepo.deleteTransactionById(user, transactionId);
                     senderAccount.setBalance(senderAccount.getBalance().add(amount));
                     break;
                 case TRANSFER:
-                    senderAccount.setBalance(senderAccount.getBalance().add(amount));
                     receiverAccount.setBalance(receiverAccount.getBalance().subtract(amount));
+                    if (checkNegativeBalance(receiverAccount, amount)){
+                        transactionRepo.deleteTransactionById(user, transactionId);
+                        senderAccount.setBalance(senderAccount.getBalance().add(amount));
+                    }
                     break;
                 case DEBT_IN:
                     receiverAccount.setBalance(receiverAccount.getBalance().subtract(amount));
+                    if (checkNegativeBalance(receiverAccount, amount))
+                        transactionRepo.deleteTransactionById(user, transactionId);
                     break;
                 case DEBT_OUT:
+                    transactionRepo.deleteTransactionById(user, transactionId);
                     senderAccount.setBalance(senderAccount.getBalance().add(amount));
                     break;
                 default: throw new TransactionTypeNotFoundException(TRANSACTION_TYPE_NOT_FOUND_MSG);
             }
         });
+    }
+
+    private boolean checkNegativeBalance(Account account, BigDecimal amount) {
+        if (account.getBalance().compareTo(BigDecimal.ZERO) < 0) {
+            account.setBalance(account.getBalance().add(amount));
+            throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getAccountId()));
+        }
+        else return true;
     }
 
     private Transaction buildTransaction(InOutRqModel requestBody, User user,

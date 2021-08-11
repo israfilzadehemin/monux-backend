@@ -184,20 +184,7 @@ public class BudgetManagementAppApplication {
                 .build();
         notificationRepo.save(netflixNotification);
 
-        Transaction transaction1 = Transaction.builder()
-                .transactionId(UUID.randomUUID().toString())
-                .labels(Arrays.asList(coffeeLabel, newLabel))
-                .category(salary)
-                .description("new transaction")
-                .type(CategoryType.INCOME.name())
-                .amount(BigDecimal.ONE)
-                .user(user1)
-                .senderAccount(cardAccount1)
-                .dateTime(LocalDateTime.of(2013, 5, 5, 5, 10))
-                .build();
-        transactionRepo.save(transaction1);
         return null;
-
     }
 
 }

@@ -39,8 +39,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
         return findAllByUserAndReceiverAccount(user, account, pageable);
     }
 
-    default List<Transaction> deleteTransactionsById(User user, List<String> transactionIds) {
-        return deleteTransactionsByUserAndTransactionIdIn(user, transactionIds);
+    default void deleteTransactionById(User user, String transactionId) {
+        deleteTransactionByUserAndTransactionId(user, transactionId);
     }
     Optional<Transaction> findByTransactionIdAndUser(String transactionId, User user);
 
@@ -56,7 +56,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     Page<Transaction> findAllByUserAndReceiverAccount(User user, Account account, Pageable pageable);
 
-    List<Transaction> deleteTransactionsByUserAndTransactionIdIn(User user, List<String> transactionIds);
+    void deleteTransactionByUserAndTransactionId(User user, String transactionId);
 
 
 

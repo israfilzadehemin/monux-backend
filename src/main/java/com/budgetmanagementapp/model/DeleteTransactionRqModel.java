@@ -16,5 +16,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DeleteTransactionRqModel{
 
-    List<String> transactionIds;
+    String transactionId;
 }
