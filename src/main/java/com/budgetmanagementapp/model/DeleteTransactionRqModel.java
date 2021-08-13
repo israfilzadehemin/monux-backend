@@ -1,11 +1,14 @@
 package com.budgetmanagementapp.model;
 
-import lombok.*;
+import java.util.List;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-
-import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @AllArgsConstructor
 @Getter
@@ -16,5 +19,5 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DeleteTransactionRqModel{
 
-    String transactionId;
+    List<String> transactionIds;
 }

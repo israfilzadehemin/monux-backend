@@ -5,14 +5,29 @@ import static com.budgetmanagementapp.utility.Constant.SORT_BY_DATETIME;
 import static com.budgetmanagementapp.utility.Constant.SORT_DIR_DESC;
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_IN_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_OUT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_INCOME_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_OUTGOING_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_TRANSFER_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_DELETE_TRANSACTIONS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_ALL_TRANSACTIONS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_LAST_TRANSACTIONS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_DEBT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_OUT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.*;
+import com.budgetmanagementapp.model.DebtRqModel;
+import com.budgetmanagementapp.model.DeleteTransactionRqModel;
+import com.budgetmanagementapp.model.InOutRqModel;
+import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.TransferRqModel;
+import com.budgetmanagementapp.model.UpdateDebtRqModel;
+import com.budgetmanagementapp.model.UpdateInOutRqModel;
+import com.budgetmanagementapp.model.UpdateTransferRqModel;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.utility.TransactionType;
-
-import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -130,7 +145,7 @@ public class TransactionController {
                         .status(HttpStatus.OK)
                         .body(transactionService.deleteTransactionById(
                                 ((UserDetails) auth.getPrincipal()).getUsername(),
-                                requestBody.getTransactionId()))
+                                requestBody.getTransactionIds()))
                         .build());
 
     }
