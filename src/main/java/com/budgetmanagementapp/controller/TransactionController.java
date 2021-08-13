@@ -10,6 +10,7 @@ import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEB
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_INCOME_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_OUTGOING_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_TRANSFER_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_DELETE_TRANSACTIONS_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_ALL_TRANSACTIONS_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_LAST_TRANSACTIONS_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_DEBT_URL;
@@ -18,6 +19,7 @@ import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRA
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.DebtRqModel;
+import com.budgetmanagementapp.model.DeleteTransactionRqModel;
 import com.budgetmanagementapp.model.InOutRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.TransferRqModel;
@@ -128,6 +130,22 @@ public class TransactionController {
                                 requestBody,
                                 TransactionType.DEBT_OUT,
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
+                        .build());
+
+    }
+
+
+    @PostMapping(TRANSACTION_DELETE_TRANSACTIONS_URL)
+    public ResponseEntity<?> deleteTransactions(@RequestBody @Valid DeleteTransactionRqModel requestBody,
+                                                Authentication auth) {
+        log.info(format(REQUEST_MSG, TRANSACTION_DELETE_TRANSACTIONS_URL, requestBody));
+
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(transactionService.deleteTransactionById(
+                                ((UserDetails) auth.getPrincipal()).getUsername(),
+                                requestBody.getTransactionIds()))
                         .build());
 
     }

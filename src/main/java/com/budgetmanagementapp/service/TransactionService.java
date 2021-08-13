@@ -36,4 +36,6 @@ public interface TransactionService {
     List<TransactionRsModel> getAllTransactionsByUserAndAccount(String username, String accountId);
 
     List<TransactionRsModel> getLastTransactionsByUserAndAccount(String username, String accountId, int pageCount, int size, String sortField, String sortDir);
+
+    List<TransactionRsModel> deleteTransactionById(String username, List<String> transactionIds);
 }

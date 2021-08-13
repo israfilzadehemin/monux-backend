@@ -5,7 +5,6 @@ import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -38,6 +37,10 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     default Page<Transaction> lastByUserAndReceiverAccount(User user, Account account, Pageable pageable) {
         return findAllByUserAndReceiverAccount(user, account, pageable);
     }
+
+    default void deleteById(User user, String transactionId) {
+        deleteTransactionByUserAndTransactionId(user, transactionId);
+    }
     Optional<Transaction> findByTransactionIdAndUser(String transactionId, User user);
 
     List<Transaction> findAllByUser(User user);
@@ -51,6 +54,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     Page<Transaction> findAllByUserAndSenderAccount(User user, Account account, Pageable pageable);
 
     Page<Transaction> findAllByUserAndReceiverAccount(User user, Account account, Pageable pageable);
+
+    void deleteTransactionByUserAndTransactionId(User user, String transactionId);
 
 
 
