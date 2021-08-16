@@ -1,34 +1,8 @@
 package com.budgetmanagementapp.handler;
 
 
-import com.budgetmanagementapp.exception.AccountNotFoundException;
-import com.budgetmanagementapp.exception.AccountTypeNotFoundException;
-import com.budgetmanagementapp.exception.CategoryNotFoundException;
-import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
-import com.budgetmanagementapp.exception.CurrencyNotFoundException;
-import com.budgetmanagementapp.exception.DuplicateAccountException;
-import com.budgetmanagementapp.exception.DuplicateCategoryException;
-import com.budgetmanagementapp.exception.DuplicateLabelException;
-import com.budgetmanagementapp.exception.ExpiredOtpException;
-import com.budgetmanagementapp.exception.FeedbackNotFoundException;
-import com.budgetmanagementapp.exception.GenericException;
-import com.budgetmanagementapp.exception.InitialAccountExistingException;
-import com.budgetmanagementapp.exception.InvalidEmailException;
-import com.budgetmanagementapp.exception.InvalidModelException;
-import com.budgetmanagementapp.exception.InvalidOtpException;
-import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
-import com.budgetmanagementapp.exception.NoExistingTransactionException;
-import com.budgetmanagementapp.exception.NotEnoughBalanceException;
-import com.budgetmanagementapp.exception.PasswordMismatchException;
-import com.budgetmanagementapp.exception.PasswordNotSufficientException;
-import com.budgetmanagementapp.exception.LabelNotFoundException;
-import com.budgetmanagementapp.exception.TemplateNotFoundException;
-import com.budgetmanagementapp.exception.TransactionNotFoundException;
-import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
-import com.budgetmanagementapp.exception.TransferToSelfException;
-import com.budgetmanagementapp.exception.UserNotFoundException;
-import com.budgetmanagementapp.exception.UserRoleNotFoundException;
-import com.budgetmanagementapp.exception.UsernameNotUniqueException;
+import com.budgetmanagementapp.exception.*;
+import com.budgetmanagementapp.model.ErrorResponseModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -50,7 +24,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class CustomExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleException(Exception exception) {
+    public ResponseEntity<?> handleException(Exception exception, AppException appException) {
         if (exception instanceof InvalidModelException
                 || exception instanceof HttpMessageNotReadableException
                 || exception instanceof MissingServletRequestParameterException
@@ -74,7 +48,7 @@ public class CustomExceptionHandler {
                 || exception instanceof MethodArgumentNotValidException
                 || exception instanceof NotEnoughBalanceException
                 || exception instanceof InvalidPhoneNumberException) {
-            return handleException(exception, HttpStatus.BAD_REQUEST);
+            return handleException(appException, HttpStatus.BAD_REQUEST);
 
         } else if (exception instanceof UserRoleNotFoundException
                 || exception instanceof UserNotFoundException
@@ -90,18 +64,21 @@ public class CustomExceptionHandler {
                 || exception instanceof AccountNotFoundException
                 || exception instanceof NoExistingTransactionException
         ) {
-            return handleException(exception, HttpStatus.NOT_FOUND);
+            return handleException(appException, HttpStatus.NOT_FOUND);
         }
 
         throw new RuntimeException(String.valueOf(exception.getClass()));
     }
 
-    private ResponseEntity<?> handleException(Exception exception, HttpStatus status) {
+    private ResponseEntity<?> handleException(AppException exception, HttpStatus status) {
         log.error(exception.getMessage());
         return ResponseEntity.status(status)
                 .body(ResponseModel.builder()
                         .status(status)
-                        .body(exception.getMessage())
+                        .body(ErrorResponseModel.builder()
+                                .message(exception.getMessage())
+                                .code(exception.getCode())
+                                .build())
                         .build());
     }
 

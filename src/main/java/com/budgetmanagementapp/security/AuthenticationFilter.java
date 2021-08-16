@@ -10,6 +10,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_LOGIN_URL;
 
 import com.budgetmanagementapp.exception.InvalidModelException;
+import com.budgetmanagementapp.model.ErrorResponseModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.UserAuthModel;
 import com.budgetmanagementapp.model.UserLoginModel;
@@ -80,12 +81,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException {
-        generateResponse(response, HttpStatus.BAD_REQUEST, INVALID_CREDENTIALS_MSG);
+        generateResponse(response, HttpStatus.BAD_REQUEST, ErrorResponseModel.builder()
+                .code(1010)
+                .message(INVALID_CREDENTIALS_MSG)
+                .build() );
         logger.info(INVALID_CREDENTIALS_MSG);
     }
 
 
-    private void generateResponse(HttpServletResponse res, HttpStatus status, String body) throws IOException {
+    private void generateResponse(HttpServletResponse res, HttpStatus status, Object body) throws IOException {
         res.setStatus(status.value());
         res.setContentType(CONTENT_TYPE_JSON);
 
