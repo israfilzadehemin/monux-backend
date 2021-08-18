@@ -17,9 +17,8 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
             fallback: false
   jpa:
-    show-sql: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
 
 server:
   port: 8090

@@ -75,7 +75,8 @@ public class CustomValidator {
     }
 
     public static void validateTransactionType(String value) {
-        if ((int) Arrays.stream(values()).filter(type -> type.name().equals(value.toUpperCase()))
+        if ((int) Arrays.stream(values())
+                .filter(type -> type.name().equals(value.toUpperCase()))
                 .count() == 0) {
             throw new TransactionTypeNotFoundException(String.format(TRANSACTION_TYPE_NOT_FOUND_MSG, value));
         }

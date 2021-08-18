@@ -12,7 +12,6 @@ import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CRE
 import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_TYPE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
@@ -33,7 +32,6 @@ import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
-import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.DebtRsModel;
@@ -52,6 +50,7 @@ import com.budgetmanagementapp.service.LabelService;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomFormatter;
+import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.PaginationTool;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.math.BigDecimal;
@@ -312,52 +311,24 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionRsModel> deleteTransactionById(String username, List<String> transactionIds) {
         User user = userService.findByUsername(username);
 
-        List<TransactionRsModel> response = new ArrayList<>();
 
-        transactionIds.forEach(t -> {
-            Transaction transaction = transactionByIdAndUser(t, user);
+        List<TransactionRsModel> response = transactionsByUserAndIdList(user, transactionIds).stream().map(tr -> {
+            Map<String, Account> map = new HashMap<>();
 
-            switch (TransactionType.valueOf(transaction.getType())) {
-                case INCOME:
-                    accountService.updateBalance(
-                            transaction.getAmount(), singletonMap(SENDER_ACCOUNT, transaction.getReceiverAccount()));
-                    response.add(buildInOutResponseModel(transaction));
-                    break;
-
-                case OUTGOING:
-                    accountService.updateBalance(
-                            transaction.getAmount(), singletonMap(RECEIVER_ACCOUNT, transaction.getSenderAccount()));
-                    response.add(buildInOutResponseModel(transaction));
-                    break;
-
-                case TRANSFER:
-                    accountService.updateBalance(
-                            transaction.getAmount(), singletonMap(RECEIVER_ACCOUNT, transaction.getSenderAccount()));
-                    accountService.updateBalance(
-                            transaction.getAmount(), singletonMap(SENDER_ACCOUNT, transaction.getReceiverAccount()));
-                    response.add(buildTransferResponseModel(transaction));
-                    break;
-
-                case DEBT_IN:
-                    accountService.updateBalance(
-                            transaction.getAmount(), singletonMap(SENDER_ACCOUNT, transaction.getReceiverAccount()));
-                    response.add(buildDebtResponseModel(transaction));
-                    break;
-
-                case DEBT_OUT:
-                    accountService.updateBalance(
-                            transaction.getAmount(), singletonMap(RECEIVER_ACCOUNT, transaction.getSenderAccount()));
-                    response.add(buildDebtResponseModel(transaction));
-                    break;
-
-                default:
-                    throw new TransactionTypeNotFoundException(
-                            format(TRANSACTION_TYPE_NOT_FOUND_MSG, TransactionType.valueOf(transaction.getType())));
-
+            switch (getTransactionType(tr.getType())) {
+                case INCOME, DEBT_IN -> map.put(SENDER_ACCOUNT, tr.getReceiverAccount());
+                case OUTGOING, DEBT_OUT -> map.put(RECEIVER_ACCOUNT, tr.getSenderAccount());
+                case TRANSFER -> {
+                    map.put(SENDER_ACCOUNT, tr.getReceiverAccount());
+                    map.put(RECEIVER_ACCOUNT, tr.getSenderAccount());
+                }
             }
 
-            transactionRepo.deleteById(user, t);
-        });
+            accountService.updateBalance(tr.getAmount(), map);
+            transactionRepo.deleteById(user, tr.getTransactionId());
+            return buildGenericResponseModel(tr);
+
+        }).collect(Collectors.toList());
 
         log.info(format(DELETED_TRANSACTIONS_MSG, user.getUsername(), response));
         return response;
@@ -542,6 +513,19 @@ public class TransactionServiceImpl implements TransactionService {
                                 format(UNAUTHORIZED_TRANSACTION_MSG, user.getUsername(), transactionId)));
     }
 
+    private List<Transaction> transactionsByUserAndIdList(User user, List<String> transactionIds) {
+        List<Transaction> transactions = transactionRepo.allByUserAndIdList(user, transactionIds);
+        if (transactions.isEmpty()) {
+            throw new TransactionNotFoundException(
+                    format(UNAUTHORIZED_TRANSACTION_MSG, user.getUsername(), transactionIds));
+        }
+        return transactions;
+    }
+
+    private TransactionType getTransactionType(String type) {
+        CustomValidator.validateTransactionType(type);
+        return TransactionType.valueOf(type);
+    }
 
     private void checkBalanceToCreateTransaction(BigDecimal amount, TransactionType type, Account account) {
         if ((type.equals(DEBT_OUT) || type.equals(OUTGOING) || type.equals(TRANSFER))

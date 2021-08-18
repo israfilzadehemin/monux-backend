@@ -56,7 +56,7 @@ public class MsgConstant {
     public static final String UNAUTHORIZED_CATEGORY_MSG = "User '%s' does not own category '%s'";
     public static final String UNAUTHORIZED_LABEL_MSG = "User '%s' does not own label '%s'";
     public static final String UNAUTHORIZED_FEEDBACK_MSG = "User '%s' does not own feedback '%s'";
-    public static final String UNAUTHORIZED_TRANSACTION_MSG = "User '%s' does not own transaction '%s'";
+    public static final String UNAUTHORIZED_TRANSACTION_MSG = "User '%s' does not own any of transactions: '%s'";
     public static final String UNAUTHORIZED_TEMPLATE_MSG = "User '%s' does not own template '%s'";
     public static final String ALLOW_NEGATIVE_TOGGLED_MSG = "User '%s' changed 'Allow negative' property for: %s";
     public static final String SHOW_IN_SUM_TOGGLED_MSG = "User '%s' changed 'Show in sum' property for: %s";
