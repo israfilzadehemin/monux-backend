@@ -171,8 +171,8 @@ public class TemplateController {
     }
 
     @PostMapping(TEMPLATE_DELETE_TEMPLATES_URL)
-    public ResponseEntity<?> deleteTemplates(@RequestBody @Valid DeleteTemplateRqModel requestBody,
-                                             Authentication auth){
+    public ResponseEntity<?> deleteTemplateTransactions(@RequestBody @Valid DeleteTransactionRqModel requestBody,
+                                                        Authentication auth){
 
         log.info(format(REQUEST_MSG, TEMPLATE_DELETE_TEMPLATES_URL, requestBody));
 
@@ -181,7 +181,7 @@ public class TemplateController {
                 .status(HttpStatus.OK)
                 .body(templateService.deleteTemplateById(
                         ((UserDetails) auth.getPrincipal()).getUsername(),
-                        requestBody.getTemplateIds())
+                        requestBody.getTransactionIds())
         ).build());
     }
 

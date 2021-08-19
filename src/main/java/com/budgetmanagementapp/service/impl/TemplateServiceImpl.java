@@ -10,7 +10,6 @@ import static java.lang.String.format;
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.exception.TemplateNotFoundException;
-import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.DebtRsModel;
@@ -159,7 +158,7 @@ public class TemplateServiceImpl implements TemplateService {
     @Override
     public List<TransactionRsModel> deleteTemplateById(String username, List<String> templateIds) {
         User user = userService.findByUsername(username);
-        List<Template> deletedTemplates = templateRepo.deleteById(user, templateIds);
+        List<Template> deletedTemplates = templateRepo.deleteByIdList(user, templateIds);
 
         log.info(String.format(DELETED_TEMPLATES_MSG, username, deletedTemplates));
         return deletedTemplates.stream()
