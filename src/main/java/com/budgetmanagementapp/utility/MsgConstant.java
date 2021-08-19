@@ -67,6 +67,7 @@ public class MsgConstant {
     public static final String LAST_TRANSACTIONS_MSG = "Last transactions of %s: %s";
     public static final String DELETED_TRANSACTIONS_MSG = "Deleted transactions of %s: %s";
     public static final String ALL_TEMPLATES_MSG = "All templates of %s: %s";
+    public static final String DELETED_TEMPLATES_MSG = "Deleted templates of %s: %s";
     public static final String ALL_LABELS_MSG = "All labels of %s: %s";
     public static final String ALL_FEEDBACKS_MSG = "All feedbacks of %s: %s";
     public static final String FEEDBACK_BY_ID_MSG = "Feedback with ID '%s': %s";

@@ -34,4 +34,6 @@ public interface TemplateService {
     DebtRsModel updateTemplate(UpdateDebtRqModel requestBody, String username);
 
     List<TransactionRsModel> getAllTemplatesByUser(String username);
+
+    List<TransactionRsModel> deleteTemplateById(String username, List<String> templateIds);
 }

@@ -45,4 +45,5 @@ public class UrlConstant {
     public static final String TEMPLATE_UPDATE_TRANSFER_URL = "/v1/template/update-transfer-template";
     public static final String TEMPLATE_UPDATE_DEBT_URL = "/v1/template/update-debt-template";
     public static final String TEMPLATE_GET_ALL_TEMPLATES_URL = "/v1/template/get-all-templates";
+    public static final String TEMPLATE_DELETE_TEMPLATES_URL = "/v1/template/delete-templates";
 }

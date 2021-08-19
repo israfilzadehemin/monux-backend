@@ -16,7 +16,13 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
         return findAllByUser(user);
     }
 
+    default List<Template> deleteByIdList(User user, List<String> templateIds) {
+        return deleteTemplatesByUserAndTemplateIdIn(user, templateIds);
+    }
+
     Optional<Template> findByTemplateIdAndUser(String templateId, User user);
 
     List<Template> findAllByUser(User user);
+
+    List<Template> deleteTemplatesByUserAndTemplateIdIn(User user, List<String> templateIds);
 }
