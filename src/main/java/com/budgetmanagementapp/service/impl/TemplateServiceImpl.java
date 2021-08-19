@@ -1,14 +1,6 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_TEMPLATES_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TEMPLATE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TEMPLATE_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TEMPLATE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TEMPLATE_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TEMPLATE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TEMPLATE_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TEMPLATE_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
 import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
@@ -18,6 +10,7 @@ import static java.lang.String.format;
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.exception.TemplateNotFoundException;
+import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.DebtRsModel;
@@ -44,6 +37,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 @Log4j2
@@ -158,6 +153,18 @@ public class TemplateServiceImpl implements TemplateService {
 
         log.info(String.format(ALL_TEMPLATES_MSG, username, response));
         return response;
+    }
+
+    @Transactional
+    @Override
+    public List<TransactionRsModel> deleteTemplateById(String username, List<String> templateIds) {
+        User user = userService.findByUsername(username);
+        List<Template> deletedTemplates = templateRepo.deleteById(user, templateIds);
+
+        log.info(String.format(DELETED_TEMPLATES_MSG, username, deletedTemplates));
+        return deletedTemplates.stream()
+                .map(this::buildGenericResponseModel)
+                .collect(Collectors.toList());
     }
 
     private Template buildTemplate(InOutRqModel requestBody, User user,

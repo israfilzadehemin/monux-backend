@@ -2,24 +2,10 @@ package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_DEBT_IN_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_DEBT_OUT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_INCOME_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_OUTGOING_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_TRANSFER_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_GET_ALL_TEMPLATES_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_UPDATE_DEBT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_UPDATE_IN_OUT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_UPDATE_TRANSFER_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.DebtRqModel;
-import com.budgetmanagementapp.model.InOutRqModel;
-import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.TransferRqModel;
-import com.budgetmanagementapp.model.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.UpdateInOutRqModel;
-import com.budgetmanagementapp.model.UpdateTransferRqModel;
+import com.budgetmanagementapp.model.*;
 import com.budgetmanagementapp.service.TemplateService;
 import com.budgetmanagementapp.utility.TransactionType;
 import javax.validation.Valid;
@@ -182,6 +168,21 @@ public class TemplateController {
                                 ((UserDetails) auth.getPrincipal()).getUsername()))
                         .build());
 
+    }
+
+    @PostMapping(TEMPLATE_DELETE_TEMPLATES_URL)
+    public ResponseEntity<?> deleteTemplates(@RequestBody @Valid DeleteTemplateRqModel requestBody,
+                                             Authentication auth){
+
+        log.info(format(REQUEST_MSG, TEMPLATE_DELETE_TEMPLATES_URL, requestBody));
+
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                .status(HttpStatus.OK)
+                .body(templateService.deleteTemplateById(
+                        ((UserDetails) auth.getPrincipal()).getUsername(),
+                        requestBody.getTemplateIds())
+        ).build());
     }
 
 }
