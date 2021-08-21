@@ -108,7 +108,7 @@ public class UserServiceImpl implements UserService {
         updatePassword(requestBody.getPassword(), user);
 
         log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
-        return resetPasswordResponseModel(requestBody);
+        return buildResetPasswordResponseModel(username, requestBody);
     }
 
     private User buildUser(String username) {
@@ -151,8 +151,9 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
-    private ResetPasswordRsModel resetPasswordResponseModel(ResetPasswordRqModel requestBody) {
+    private ResetPasswordRsModel buildResetPasswordResponseModel(String username, ResetPasswordRqModel requestBody) {
         return ResetPasswordRsModel.builder()
+                .username(username)
                 .password(requestBody.getPassword())
                 .build();
     }

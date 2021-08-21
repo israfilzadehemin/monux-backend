@@ -12,5 +12,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResetPasswordRsModel {
+    String username;
     String password;
 }
