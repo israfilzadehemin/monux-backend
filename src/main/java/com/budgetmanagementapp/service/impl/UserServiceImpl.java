@@ -8,23 +8,16 @@ import static com.budgetmanagementapp.utility.Constant.STATUS_CONFIRMED;
 import static com.budgetmanagementapp.utility.Constant.STATUS_NEW;
 import static com.budgetmanagementapp.utility.Constant.STATUS_NOT_PAID;
 import static com.budgetmanagementapp.utility.Constant.STATUS_PROCESSING;
-import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ROLE_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USERNAME_NOT_UNIQUE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_ADDED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
+import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
-import com.budgetmanagementapp.model.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.SignupRqModel;
-import com.budgetmanagementapp.model.UserAuthModel;
-import com.budgetmanagementapp.model.UserRsModel;
+import com.budgetmanagementapp.model.*;
 import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.RoleRepository;
 import com.budgetmanagementapp.repository.UserRepository;
@@ -108,6 +101,16 @@ public class UserServiceImpl implements UserService {
         return buildPasswordResponseModel(requestBody);
     }
 
+    @Override
+    public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody) {
+        User user = findByUsername(username);
+        checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
+        updatePassword(requestBody.getPassword(), user);
+
+        log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
+        return resetPasswordResponseModel(requestBody);
+    }
+
     private User buildUser(String username) {
         return userRepo.save(User.builder()
                 .userId(UUID.randomUUID().toString())
@@ -148,6 +151,12 @@ public class UserServiceImpl implements UserService {
                 .build();
     }
 
+    private ResetPasswordRsModel resetPasswordResponseModel(ResetPasswordRqModel requestBody) {
+        return ResetPasswordRsModel.builder()
+                .password(requestBody.getPassword())
+                .build();
+    }
+
     private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
         return userRepo.byUsernameAndStatus(requestBody.getUsername(), STATUS_CONFIRMED)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
@@ -159,9 +168,20 @@ public class UserServiceImpl implements UserService {
         userRepo.save(user);
     }
 
+    private void updatePassword(String password, User user) {
+        user.setPassword(encoder.encode(password));
+        userRepo.save(user);
+    }
+
     private void checkUsernameUniqueness(String username) {
         if (userRepo.byUsername(username).isPresent()) {
             throw new UsernameNotUniqueException(USERNAME_NOT_UNIQUE_MSG);
+        }
+    }
+
+    private void checkPasswordEquality(String password, String confirmPassword) {
+        if (!password.equals(confirmPassword)) {
+            throw new PasswordMismatchException(PASSWORD_EQUALITY_MSG);
         }
     }
 
