@@ -46,6 +46,8 @@ public class MsgConstant {
     public static final String CURRENCY_NOT_FOUND_MSG = "Currency '%s' is not found";
     public static final String ROLE_NOT_FOUND_MSG = "Role is not found in database";
     public static final String PASSWORD_CREATED_MSG = "Password has been created for %s";
+    public static final String PASSWORD_UPDATED_MSG = "Password has been updated for %s";
+    public static final String PASSWORD_EQUALITY_MSG = "Password and confirm password is not same";
     public static final String REQUEST_MSG = "%s request with body: %s";
     public static final String OTP_CONFIRMED_MSG = "User %s confirmed their OTP";
     public static final String NO_BODY_MSG = "No body required";

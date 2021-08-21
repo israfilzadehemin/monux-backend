@@ -1,13 +1,6 @@
 package com.budgetmanagementapp.configuration;
 
 
-import static com.budgetmanagementapp.utility.UrlConstant.H2_CONSOLE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_INITIAL_ACCOUNT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_LOGIN_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
-
 import com.budgetmanagementapp.security.AuthenticationFilter;
 import com.budgetmanagementapp.security.AuthorizationFilter;
 import com.budgetmanagementapp.security.JwtService;
@@ -21,6 +14,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 
 @EnableWebSecurity
 @AllArgsConstructor
@@ -44,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, USER_SIGNUP_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_OTP_CONFIRM_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_CREATE_PASSWORD_URL).permitAll()
+                .antMatchers(HttpMethod.POST, USER_RESET_PASSWORD_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_CREATE_INITIAL_ACCOUNT_URL).permitAll()
                 .antMatchers(H2_CONSOLE_URL).permitAll()
                 .anyRequest().authenticated();
