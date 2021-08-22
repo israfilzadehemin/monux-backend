@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Log4j2
 @AllArgsConstructor
 public class SmsSenderService {
-    public void sendOtp(String username, String subject, String body) {
+    public void sendMessage(String username, String subject, String body) {
     }
 
 }

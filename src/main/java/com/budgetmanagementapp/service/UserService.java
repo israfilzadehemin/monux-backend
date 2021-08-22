@@ -18,5 +18,7 @@ public interface UserService {
 
     CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordRequestModel);
 
-    ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel passwordRequestModel);
+    ResetPasswordRsModel forgetPassword(String username, ResetPasswordRqModel requestBody) throws MessagingException;
+
+    ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody);
 }

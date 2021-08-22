@@ -1,14 +1,8 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.ROLE_USER;
-import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
-import static com.budgetmanagementapp.utility.Constant.STATUS_CONFIRMED;
-import static com.budgetmanagementapp.utility.Constant.STATUS_NEW;
-import static com.budgetmanagementapp.utility.Constant.STATUS_NOT_PAID;
-import static com.budgetmanagementapp.utility.Constant.STATUS_PROCESSING;
+import static com.budgetmanagementapp.utility.Constant.*;
 import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_FULL_RESET_PASSWORD_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.entity.Otp;
@@ -82,10 +76,10 @@ public class UserServiceImpl implements UserService {
 
         if (username.getUsername().contains("@")) {
             mailSenderService
-                    .sendOtp(username.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
+                    .sendEmail(username.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
         } else {
             smsSenderService
-                    .sendOtp(username.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
+                    .sendMessage(username.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
         }
 
         log.info(format(USER_ADDED_MSG, username.getUsername()));
@@ -102,12 +96,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody) {
+    public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody){
         User user = findByUsername(username);
         checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
         updatePassword(requestBody.getPassword(), user);
 
         log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
+        return buildResetPasswordResponseModel(username, requestBody);
+    }
+
+    @Override
+    public ResetPasswordRsModel forgetPassword(String username, ResetPasswordRqModel requestBody) throws MessagingException {
+        if (username.contains("@")) {
+            CustomValidator.validateEmailFormat(username);
+            mailSenderService
+                    .sendEmail(username, RESET_PASSWORD_SUBJECT, format(RESET_PASSWORD_BODY, USER_FULL_RESET_PASSWORD_URL));
+        } else {
+            CustomValidator.validatePhoneNumberFormat(username);
+            smsSenderService
+                    .sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY, USER_FULL_RESET_PASSWORD_URL));
+        }
+        log.info(format(PASSWORD_UPDATED_MSG, username));
         return buildResetPasswordResponseModel(username, requestBody);
     }
 

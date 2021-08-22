@@ -39,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, USER_SIGNUP_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_OTP_CONFIRM_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_CREATE_PASSWORD_URL).permitAll()
+                .antMatchers(HttpMethod.POST, USER_FORGET_PASSWORD_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_RESET_PASSWORD_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_CREATE_INITIAL_ACCOUNT_URL).permitAll()
                 .antMatchers(H2_CONSOLE_URL).permitAll()

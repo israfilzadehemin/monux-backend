@@ -14,12 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -65,15 +60,27 @@ public class UserController {
         );
     }
 
+    @PostMapping(USER_FORGET_PASSWORD_URL)
+    public ResponseEntity<?> forgetPassword(@RequestParam String username,
+                                            @RequestBody @Valid ResetPasswordRqModel requestBody) throws MessagingException {
+        log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(userService.forgetPassword(username, requestBody))
+                        .build()
+        );
+    }
+
     @PostMapping(USER_RESET_PASSWORD_URL)
     public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
-                                           Authentication auth) {
+                                           @RequestParam String username){
         log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
                         .body(userService.resetPassword(
-                                ((UserDetails) auth.getPrincipal()).getUsername(),
+                                username,
                                 requestBody))
                         .build()
         );
@@ -92,7 +99,7 @@ public class UserController {
 
     @GetMapping("/demo")
     public ResponseEntity<?> demo() throws MessagingException {
-        mailSenderService.sendOtp("israfilzadehemin@gmail.com", "Hey", "Hello");
+        mailSenderService.sendEmail("israfilzadehemin@gmail.com", "Hey", "Hello");
         return ResponseEntity.ok("Hey");
     }
 }

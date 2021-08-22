@@ -38,7 +38,7 @@ public class MailSenderService {
 
     }
 
-    public Map<String, String> sendOtp(String to, String subject, String body) throws MessagingException {
+    public Map<String, String> sendEmail(String to, String subject, String body) throws MessagingException {
         send(to, subject, body);
 
         Map<String, String> details = new HashMap<>();

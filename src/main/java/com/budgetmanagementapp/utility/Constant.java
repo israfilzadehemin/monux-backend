@@ -20,6 +20,8 @@ public class Constant {
     public static final String CASH_ACCOUNT = "Nəğd pul hesabı";
     public static final String OTP_CONFIRMATION_SUBJECT = "Confirmation code for your account";
     public static final String OTP_CONFIRMATION_BODY = "Your confirmation code is: %s";
+    public static final String RESET_PASSWORD_SUBJECT = "Reset password link for your account";
+    public static final String RESET_PASSWORD_BODY = "Your reset password link is: %s";
     public static final String ROLE_USER = "ROLE_USER";
     public static final String SENDER_ACCOUNT = "senderAccount";
     public static final String RECEIVER_ACCOUNT = "receiverAccount";
