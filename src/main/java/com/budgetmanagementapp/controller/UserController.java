@@ -1,20 +1,40 @@
 package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_INITIAL_ACCOUNT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_FORGET_PASSWORD_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_RESET_PASSWORD_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
 
-import com.budgetmanagementapp.model.*;
+import com.budgetmanagementapp.model.AccountRqModel;
+import com.budgetmanagementapp.model.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.ResetPasswordRqModel;
+import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.SignupRqModel;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.MailSenderService;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @AllArgsConstructor
@@ -62,7 +82,9 @@ public class UserController {
 
     @PostMapping(USER_FORGET_PASSWORD_URL)
     public ResponseEntity<?> forgetPassword(@RequestParam String username,
-                                            @RequestBody @Valid ResetPasswordRqModel requestBody) throws MessagingException {
+                                            @RequestBody @Valid ResetPasswordRqModel requestBody)
+            throws MessagingException, InvalidAlgorithmParameterException, NoSuchPaddingException,
+            IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
         log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
