@@ -6,14 +6,16 @@ public class UrlConstant {
     public static final String USER_SIGNUP_URL = "/v1/user/signup";
     public static final String USER_OTP_CONFIRM_URL = "/v1/user/confirm-otp";
     public static final String USER_CREATE_PASSWORD_URL = "/v1/user/create-password";
-    public static final String USER_RESET_PASSWORD_URL = "/v1/user/reset-password/{username}";
-    public static final String USER_FULL_RESET_PASSWORD_URL = "http://localhost:8090/v1/user/reset-password/";
+    public static final String USER_RESET_PASSWORD_URL = "/v1/user/reset-password";
+    public static final String USER_FULL_RESET_PASSWORD_URL = "http://localhost:8090/v1/user/reset-password?username=";
     public static final String USER_FORGET_PASSWORD_URL = "/v1/user/forget-password";
     public static final String USER_CREATE_INITIAL_ACCOUNT_URL = "/v1/user/create-initial-account";
     public static final String ACCOUNT_CREATE_URL = "/v1/account/create";
     public static final String ACCOUNT_UPDATE_URL = "/v1/account/update";
     public static final String ACCOUNT_UPDATE_BALANCE_URL = "/v1/account/update-balance";
     public static final String ACCOUNT_GET_ALL_ACCOUNTS_URL = "/v1/account/get-all-accounts";
+    public static final String ACCOUNT_GET_ALL_ACCOUNT_TYPES_URL = "/v1/account/get-all-account-types";
+    public static final String ACCOUNT_GET_ALL_CURRENCIES_URL = "/v1/account/get-all-currencies";
     public static final String ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL = "/v1/account/toggle-allow-negative";
     public static final String ACCOUNT_TOGGLE_SHOW_IN_SUM_URL = "/v1/account/toggle-show-in-sum";
     public static final String CATEGORY_CREATE_URL = "/v1/category/create-category";

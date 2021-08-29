@@ -46,11 +46,6 @@ import java.util.Collections;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -125,7 +120,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResetPasswordRsModel forgetPassword(String username, ResetPasswordRqModel requestBody) throws MessagingException {
         String encryptedUsername = EncryptionTool.encrypt(username);
-        System.err.println("enc " + encryptedUsername);
         if (username.contains("@")) {
             CustomValidator.validateEmailFormat(username);
             mailSenderService
@@ -147,7 +141,7 @@ public class UserServiceImpl implements UserService {
         updatePassword(requestBody.getPassword(), user);
 
         log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
-        return buildResetPasswordResponseModel(username, requestBody);
+        return buildResetPasswordResponseModel(user.getUsername(), requestBody);
     }
 
     private User buildUser(String username) {

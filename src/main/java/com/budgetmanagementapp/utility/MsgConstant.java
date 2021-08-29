@@ -64,6 +64,8 @@ public class MsgConstant {
     public static final String SHOW_IN_SUM_TOGGLED_MSG = "User '%s' changed 'Show in sum' property for: %s";
     public static final String VISIBILITY_TOGGLED_MSG = "User '%s' changed 'Visibility' property for: %s";
     public static final String ALL_ACCOUNTS_MSG = "All accounts of %s: %s";
+    public static final String ALL_ACCOUNT_TYPES_MSG = "All account types: %s";
+    public static final String ALL_CURRENCIES_MSG = "All currencies: %s";
     public static final String ALL_CATEGORIES_MSG = "All categories of %s: %s";
     public static final String ALL_TRANSACTIONS_MSG = "All transactions of %s: %s";
     public static final String LAST_TRANSACTIONS_MSG = "Last transactions of %s: %s";

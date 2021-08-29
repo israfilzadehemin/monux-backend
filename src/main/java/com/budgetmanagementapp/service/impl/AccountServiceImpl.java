@@ -3,19 +3,7 @@ package com.budgetmanagementapp.service.impl;
 import static com.budgetmanagementapp.utility.Constant.CASH_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ALLOW_NEGATIVE_TOGGLED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_ACCOUNTS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BALANCE_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_ACCOUNT_NAME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INITIAL_ACCOUNT_EXISTING_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.NEGATIVE_BALANCE_NOT_ALLOWED;
-import static com.budgetmanagementapp.utility.MsgConstant.SHOW_IN_SUM_TOGGLED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_ACCOUNT_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.entity.Account;
@@ -28,10 +16,7 @@ import com.budgetmanagementapp.exception.CurrencyNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
-import com.budgetmanagementapp.model.AccountRqModel;
-import com.budgetmanagementapp.model.AccountRsModel;
-import com.budgetmanagementapp.model.UpdateAccountModel;
-import com.budgetmanagementapp.model.UpdateBalanceModel;
+import com.budgetmanagementapp.model.*;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CurrencyRepository;
@@ -144,6 +129,26 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public List<AccountTypeRsModel> getAllAccountTypes() {
+        List<AccountTypeRsModel> response = accountTypeRepo.findAll().stream()
+                .map(this::buildAccountTypeResponseModel)
+                .collect(Collectors.toList());
+
+        log.info(String.format(ALL_ACCOUNT_TYPES_MSG, response));
+        return response;
+    }
+
+    @Override
+    public List<CurrencyRsModel> getAllCurrencies() {
+        List<CurrencyRsModel> response = currencyRepo.findAll().stream()
+                .map(this::buildCurrencyResponseModel)
+                .collect(Collectors.toList());
+
+        log.info(String.format(ALL_CURRENCIES_MSG, response));
+        return response;
+    }
+
+    @Override
     public Account byIdAndUser(String accountId, User user) {
         return accountRepo
                 .byIdAndUser(accountId, user)
@@ -180,7 +185,19 @@ public class AccountServiceImpl implements AccountService {
                 .build();
     }
 
+    private AccountTypeRsModel buildAccountTypeResponseModel(AccountType accountType) {
+        return AccountTypeRsModel.builder()
+                .accountTypeId(accountType.getAccountTypeId())
+                .accountTypeName(accountType.getAccountTypeName())
+                .build();
+    }
 
+    private CurrencyRsModel buildCurrencyResponseModel(Currency currency) {
+        return CurrencyRsModel.builder()
+                .currencyId(currency.getCurrencyId())
+                .currencyName(currency.getName())
+                .build();
+    }
 
     private Currency getCurrency(String currency) {
         return currencyRepo
