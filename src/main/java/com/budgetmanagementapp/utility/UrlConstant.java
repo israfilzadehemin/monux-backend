@@ -6,7 +6,7 @@ public class UrlConstant {
     public static final String USER_SIGNUP_URL = "/v1/user/signup";
     public static final String USER_OTP_CONFIRM_URL = "/v1/user/confirm-otp";
     public static final String USER_CREATE_PASSWORD_URL = "/v1/user/create-password";
-    public static final String USER_RESET_PASSWORD_URL = "/v1/user/reset-password";
+    public static final String USER_RESET_PASSWORD_URL = "/v1/user/reset-password/{username}";
     public static final String USER_FULL_RESET_PASSWORD_URL = "http://localhost:8090/v1/user/reset-password/";
     public static final String USER_FORGET_PASSWORD_URL = "/v1/user/forget-password";
     public static final String USER_CREATE_INITIAL_ACCOUNT_URL = "/v1/user/create-initial-account";

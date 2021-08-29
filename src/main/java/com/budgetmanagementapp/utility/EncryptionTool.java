@@ -12,15 +12,26 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import com.budgetmanagementapp.exception.ResetPasswordException;
 import org.springframework.stereotype.Component;
+
+import static com.budgetmanagementapp.utility.MsgConstant.INVALID_RESET_PASSWORD_MSG;
 
 @Component
 public class EncryptionTool {
 
-    public static SecretKey generateKey(int n) throws NoSuchAlgorithmException {
-        KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
-        keyGenerator.init(n);
-        return keyGenerator.generateKey();
+    private final static String algorithm = Constant.ENCRYPT_ALGORITHM;
+    private static final SecretKey key = generateKey(256);
+    private static final IvParameterSpec iv = generateIv();
+
+    public static SecretKey generateKey(int n){
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(Constant.SECRET_KEY);
+            keyGenerator.init(n);
+            return keyGenerator.generateKey();
+        } catch (NoSuchAlgorithmException e){
+            throw new ResetPasswordException(INVALID_RESET_PASSWORD_MSG);
+        }
     }
 
     public static IvParameterSpec generateIv() {
@@ -29,27 +40,31 @@ public class EncryptionTool {
         return new IvParameterSpec(iv);
     }
 
-    public static String encrypt(String algorithm, String input, SecretKey key,
-                                 IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
-
-        Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.ENCRYPT_MODE, key, iv);
-        byte[] cipherText = cipher.doFinal(input.getBytes());
-        return Base64.getEncoder()
-                .encodeToString(cipherText);
+    public static String encrypt(String input){
+        try{
+            Cipher cipher = Cipher.getInstance(algorithm);
+            cipher.init(Cipher.ENCRYPT_MODE, key, iv);
+            byte[] cipherText = cipher.doFinal(input.getBytes());
+            return Base64.getEncoder()
+                    .encodeToString(cipherText);
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException |
+                InvalidAlgorithmParameterException | InvalidKeyException |
+                BadPaddingException | IllegalBlockSizeException e){
+            throw new ResetPasswordException(INVALID_RESET_PASSWORD_MSG);
+        }
     }
 
-    public static String decrypt(String algorithm, String cipherText, SecretKey key,
-                                 IvParameterSpec iv) throws NoSuchPaddingException, NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException, InvalidKeyException,
-            BadPaddingException, IllegalBlockSizeException {
-
-        Cipher cipher = Cipher.getInstance(algorithm);
-        cipher.init(Cipher.DECRYPT_MODE, key, iv);
-        byte[] plainText = cipher.doFinal(Base64.getDecoder()
-                .decode(cipherText));
-        return new String(plainText);
+    public static String decrypt(String cipherText){
+        try {
+            Cipher cipher = Cipher.getInstance(algorithm);
+            cipher.init(Cipher.DECRYPT_MODE, key, iv);
+            byte[] plainText = cipher.doFinal(Base64.getDecoder()
+                    .decode(cipherText));
+            return new String(plainText);
+        } catch (NoSuchPaddingException | NoSuchAlgorithmException |
+                InvalidAlgorithmParameterException | InvalidKeyException |
+                BadPaddingException | IllegalBlockSizeException e){
+            throw new ResetPasswordException(INVALID_RESET_PASSWORD_MSG);
+        }
     }
 }

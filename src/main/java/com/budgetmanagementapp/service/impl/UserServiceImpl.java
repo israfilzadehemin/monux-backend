@@ -41,9 +41,6 @@ import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.EncryptionTool;
 import com.budgetmanagementapp.utility.MailSenderService;
 import com.budgetmanagementapp.utility.SmsSenderService;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
@@ -126,35 +123,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody){
-        User user = findByUsername(username);
-        checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
-        updatePassword(requestBody.getPassword(), user);
-
-        log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
-        return buildResetPasswordResponseModel(username, requestBody);
-    }
-
-    @Override
-    public ResetPasswordRsModel forgetPassword(String username, ResetPasswordRqModel requestBody)
-            throws MessagingException, NoSuchAlgorithmException, InvalidAlgorithmParameterException,
-            NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, InvalidKeyException {
-        SecretKey resetKey = EncryptionTool.generateKey(256);
-        IvParameterSpec iv = EncryptionTool.generateIv();
-        String encryptedUsername = EncryptionTool.encrypt("AES/CBC/PKCS5Padding", username, resetKey, iv);
-        String decryptedUsername = EncryptionTool.decrypt("AES/CBC/PKCS5Padding", encryptedUsername, resetKey, iv);
-        System.err.println(decryptedUsername);
+    public ResetPasswordRsModel forgetPassword(String username, ResetPasswordRqModel requestBody) throws MessagingException {
+        String encryptedUsername = EncryptionTool.encrypt(username);
+        System.err.println("enc " + encryptedUsername);
         if (username.contains("@")) {
             CustomValidator.validateEmailFormat(username);
             mailSenderService
-                    .sendEmail(username, RESET_PASSWORD_SUBJECT, format(RESET_PASSWORD_BODY, USER_FULL_RESET_PASSWORD_URL+encryptedUsername));
+                    .sendEmail(username, RESET_PASSWORD_SUBJECT, format(RESET_PASSWORD_BODY,
+                            USER_FULL_RESET_PASSWORD_URL+encryptedUsername));
         } else {
             CustomValidator.validatePhoneNumberFormat(username);
             smsSenderService
                     .sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY,
                             USER_FULL_RESET_PASSWORD_URL+encryptedUsername));
         }
-        log.info(format(PASSWORD_UPDATED_MSG, username));
+        return buildResetPasswordResponseModel(username, requestBody);
+    }
+
+    @Override
+    public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody) {
+        User user = findByUsername(EncryptionTool.decrypt(username));
+        checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
+        updatePassword(requestBody.getPassword(), user);
+
+        log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
         return buildResetPasswordResponseModel(username, requestBody);
     }
 

@@ -78,6 +78,6 @@ public class MsgConstant {
     public static final String TRANSFER_TO_SELF_MSG = "Sender and receiver accounts are the same";
     public static final String INSUFFICIENT_BALANCE_MSG = "There is no enough balance for this operation in '%s'";
     public static final String NEGATIVE_BALANCE_NOT_ALLOWED = "Negative balance is not allowed for '%s'";
-    public static final String INVALID_DATE_TIME_FORMAT_MSG =
-            "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
+    public static final String INVALID_DATE_TIME_FORMAT_MSG = "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
+    public static final String INVALID_RESET_PASSWORD_MSG = "Reset password exception";
 }

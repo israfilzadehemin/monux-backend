@@ -26,4 +26,7 @@ public class Constant {
     public static final String SENDER_ACCOUNT = "senderAccount";
     public static final String RECEIVER_ACCOUNT = "receiverAccount";
     public static final String COMMON_USERNAME = "commonUser";
+
+    public static final String ENCRYPT_ALGORITHM = "AES/CBC/PKCS5Padding";
+    public static final String SECRET_KEY = "AES";
 }
