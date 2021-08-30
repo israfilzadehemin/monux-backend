@@ -1,9 +1,19 @@
 package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_INITIAL_ACCOUNT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_FORGET_PASSWORD_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_RESET_PASSWORD_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
 
-import com.budgetmanagementapp.model.*;
+import com.budgetmanagementapp.model.AccountRqModel;
+import com.budgetmanagementapp.model.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.ResetPasswordRqModel;
+import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.SignupRqModel;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
@@ -14,12 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -65,16 +70,26 @@ public class UserController {
         );
     }
 
-    @PostMapping(USER_RESET_PASSWORD_URL)
-    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
-                                           Authentication auth) {
+    @PostMapping(USER_FORGET_PASSWORD_URL)
+    public ResponseEntity<?> forgetPassword(@RequestParam String username,
+                                            @RequestBody @Valid ResetPasswordRqModel requestBody) throws MessagingException {
         log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(userService.resetPassword(
-                                ((UserDetails) auth.getPrincipal()).getUsername(),
-                                requestBody))
+                        .body(userService.forgetPassword(username, requestBody))
+                        .build()
+        );
+    }
+
+    @PostMapping(USER_RESET_PASSWORD_URL)
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
+                                           @RequestParam String username) {
+        log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(userService.resetPassword(username, requestBody))
                         .build()
         );
     }
@@ -92,7 +107,7 @@ public class UserController {
 
     @GetMapping("/demo")
     public ResponseEntity<?> demo() throws MessagingException {
-        mailSenderService.sendOtp("israfilzadehemin@gmail.com", "Hey", "Hello");
+        mailSenderService.sendEmail("israfilzadehemin@gmail.com", "Hey", "Hello");
         return ResponseEntity.ok("Hey");
     }
 }

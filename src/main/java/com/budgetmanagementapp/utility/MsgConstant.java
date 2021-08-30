@@ -64,6 +64,8 @@ public class MsgConstant {
     public static final String SHOW_IN_SUM_TOGGLED_MSG = "User '%s' changed 'Show in sum' property for: %s";
     public static final String VISIBILITY_TOGGLED_MSG = "User '%s' changed 'Visibility' property for: %s";
     public static final String ALL_ACCOUNTS_MSG = "All accounts of %s: %s";
+    public static final String ALL_ACCOUNT_TYPES_MSG = "All account types: %s";
+    public static final String ALL_CURRENCIES_MSG = "All currencies: %s";
     public static final String ALL_CATEGORIES_MSG = "All categories of %s: %s";
     public static final String ALL_TRANSACTIONS_MSG = "All transactions of %s: %s";
     public static final String LAST_TRANSACTIONS_MSG = "Last transactions of %s: %s";
@@ -78,6 +80,6 @@ public class MsgConstant {
     public static final String TRANSFER_TO_SELF_MSG = "Sender and receiver accounts are the same";
     public static final String INSUFFICIENT_BALANCE_MSG = "There is no enough balance for this operation in '%s'";
     public static final String NEGATIVE_BALANCE_NOT_ALLOWED = "Negative balance is not allowed for '%s'";
-    public static final String INVALID_DATE_TIME_FORMAT_MSG =
-            "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
+    public static final String INVALID_DATE_TIME_FORMAT_MSG = "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
+    public static final String INVALID_RESET_PASSWORD_MSG = "Reset password exception";
 }

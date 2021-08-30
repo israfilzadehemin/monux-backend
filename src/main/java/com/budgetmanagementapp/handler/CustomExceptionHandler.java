@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class, AppException.class})
     public ResponseEntity<?> handleException(Exception exception, AppException appException) {
         if (exception instanceof InvalidModelException
                 || exception instanceof HttpMessageNotReadableException
@@ -47,7 +47,8 @@ public class CustomExceptionHandler {
                 || exception instanceof TransferToSelfException
                 || exception instanceof MethodArgumentNotValidException
                 || exception instanceof NotEnoughBalanceException
-                || exception instanceof InvalidPhoneNumberException) {
+                || exception instanceof InvalidPhoneNumberException
+                || exception instanceof ResetPasswordException) {
             return handleException(appException, HttpStatus.BAD_REQUEST);
 
         } else if (exception instanceof UserRoleNotFoundException

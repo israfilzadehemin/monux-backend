@@ -2,10 +2,8 @@ package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.AccountRqModel;
-import com.budgetmanagementapp.model.AccountRsModel;
-import com.budgetmanagementapp.model.UpdateAccountModel;
-import com.budgetmanagementapp.model.UpdateBalanceModel;
+import com.budgetmanagementapp.model.*;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -26,4 +24,8 @@ public interface AccountService {
     Account byIdAndUser(String accountId, User user);
 
     void updateBalance(BigDecimal amount, Map<String, Account> accounts);
+
+    List<AccountTypeRsModel> getAllAccountTypes();
+
+    List<CurrencyRsModel> getAllCurrencies();
 }

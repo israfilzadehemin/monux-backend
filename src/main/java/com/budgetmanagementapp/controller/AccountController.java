@@ -2,12 +2,7 @@ package com.budgetmanagementapp.controller;
 
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.ACCOUNT_CREATE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.ACCOUNT_GET_ALL_ACCOUNTS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.ACCOUNT_TOGGLE_SHOW_IN_SUM_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.ACCOUNT_UPDATE_BALANCE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.ACCOUNT_UPDATE_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.AccountRqModel;
@@ -83,6 +78,28 @@ public class AccountController {
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
                         .body(accountService.getAllAccountsByUser(((UserDetails) auth.getPrincipal()).getUsername()))
+                        .build());
+    }
+
+    @GetMapping(ACCOUNT_GET_ALL_ACCOUNT_TYPES_URL)
+    public ResponseEntity<?> getAllAccountTypes() {
+
+        log.info(format(REQUEST_MSG, ACCOUNT_GET_ALL_ACCOUNT_TYPES_URL, NO_BODY_MSG));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(accountService.getAllAccountTypes())
+                        .build());
+    }
+
+    @GetMapping(ACCOUNT_GET_ALL_CURRENCIES_URL)
+    public ResponseEntity<?> getAllCurrencies() {
+
+        log.info(format(REQUEST_MSG, ACCOUNT_GET_ALL_CURRENCIES_URL, NO_BODY_MSG));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(accountService.getAllCurrencies())
                         .build());
     }
 
