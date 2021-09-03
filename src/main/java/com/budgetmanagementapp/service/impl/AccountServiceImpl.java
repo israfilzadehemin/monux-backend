@@ -64,7 +64,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel updateAccount(UpdateAccountModel requestBody, String username) {
-        Account account = byIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
+        User user = userService.findByUsername(username);
+        Account account = byIdAndUser(requestBody.getAccountId(), user);
+        checkDuplicateAccount(requestBody.getNewAccountName(), user);
         updateAccountValues(requestBody, account);
 
         log.info(format(ACCOUNT_UPDATED_MSG, username, buildAccountResponseModel(account)));
