@@ -84,27 +84,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserRsModel signup(SignupRqModel username) throws MessagingException {
-        if (username.getUsername().contains("@")) {
-            CustomValidator.validateEmailFormat(username.getUsername());
+    public UserRsModel signup(SignupRqModel signupRqModel) throws MessagingException {
+        if (signupRqModel.getUsername().contains("@")) {
+            CustomValidator.validateEmailFormat(signupRqModel.getUsername());
         } else {
-            CustomValidator.validatePhoneNumberFormat(username.getUsername());
+            CustomValidator.validatePhoneNumberFormat(signupRqModel.getUsername());
         }
 
-        checkUsernameUniqueness(username.getUsername());
-        User user = buildUser(username.getUsername());
+        checkUsernameUniqueness(signupRqModel.getUsername());
+        User user = buildUser(signupRqModel.getUsername(), signupRqModel.getFullName());
         String otp = generateOtp();
         buildOtp(otp, user);
 
-        if (username.getUsername().contains("@")) {
+        if (signupRqModel.getUsername().contains("@")) {
             mailSenderService
-                    .sendEmail(username.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
+                    .sendEmail(signupRqModel.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
         } else {
             smsSenderService
-                    .sendMessage(username.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
+                    .sendMessage(signupRqModel.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
         }
 
-        log.info(format(USER_ADDED_MSG, username.getUsername()));
+        log.info(format(USER_ADDED_MSG, signupRqModel.getUsername()));
         return buildUserResponseModel(user);
     }
 
@@ -144,10 +144,11 @@ public class UserServiceImpl implements UserService {
         return buildResetPasswordResponseModel(user.getUsername(), requestBody);
     }
 
-    private User buildUser(String username) {
+    private User buildUser(String username, String fullName) {
         return userRepo.save(User.builder()
                 .userId(UUID.randomUUID().toString())
                 .username(username)
+                .fullName(fullName)
                 .dateTime(LocalDateTime.now())
                 .status(STATUS_PROCESSING)
                 .paymentStatus(STATUS_NOT_PAID)
@@ -171,6 +172,7 @@ public class UserServiceImpl implements UserService {
         return UserRsModel.builder()
                 .userId(user.getUserId())
                 .username(user.getUsername())
+                .fullName(user.getFullName())
                 .creationDateTime(user.getDateTime())
                 .status(user.getStatus())
                 .paymentStatus(user.getPaymentStatus())

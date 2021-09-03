@@ -21,4 +21,7 @@ public class SignupRqModel {
 
     @NotBlank
     String username;
+
+    @NotBlank
+    String fullName;
 }

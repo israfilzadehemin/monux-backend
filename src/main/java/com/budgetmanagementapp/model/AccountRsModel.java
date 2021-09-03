@@ -18,7 +18,6 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountRsModel {
-    String icon;
     String accountId;
     String accountName;
     String accountTypeName;

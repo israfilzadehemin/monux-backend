@@ -64,7 +64,9 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountRsModel updateAccount(UpdateAccountModel requestBody, String username) {
-        Account account = byIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
+        User user = userService.findByUsername(username);
+        Account account = byIdAndUser(requestBody.getAccountId(), user);
+        checkDuplicateAccount(requestBody.getNewAccountName(), user);
         updateAccountValues(requestBody, account);
 
         log.info(format(ACCOUNT_UPDATED_MSG, username, buildAccountResponseModel(account)));
@@ -160,7 +162,6 @@ public class AccountServiceImpl implements AccountService {
                                  Currency currency, boolean isInitialAccount) {
         return accountRepo.save(Account.builder()
                 .accountId(UUID.randomUUID().toString())
-                .icon(requestBody.getIcon())
                 .name(requestBody.getAccountName())
                 .accountType(accountType)
                 .currency(currency)
@@ -174,7 +175,6 @@ public class AccountServiceImpl implements AccountService {
 
     private AccountRsModel buildAccountResponseModel(Account account) {
         return AccountRsModel.builder()
-                .icon(account.getIcon())
                 .accountId(account.getAccountId())
                 .accountName(account.getName())
                 .accountTypeName(account.getAccountType().getAccountTypeName())
@@ -213,7 +213,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private void updateAccountValues(UpdateAccountModel requestBody, Account account) {
-        account.setIcon(requestBody.getIcon());
         account.setName(requestBody.getNewAccountName());
         account.setAccountType(getAccountType(requestBody.getAccountTypeName(), false));
         accountRepo.save(account);

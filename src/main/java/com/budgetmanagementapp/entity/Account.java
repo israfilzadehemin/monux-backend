@@ -33,9 +33,6 @@ public class Account {
     @Column(name = "account_id")
     private String accountId;
 
-    @Column(name = "account_icon")
-    private String icon;
-
     @Column(name = "account_name")
     private String name;
 

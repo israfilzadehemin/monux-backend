@@ -23,19 +23,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class CustomExceptionHandler {
 
-    @ExceptionHandler({Exception.class, AppException.class})
-    public ResponseEntity<?> handleException(Exception exception, AppException appException) {
+    @ExceptionHandler(AppException.class)
+    public ResponseEntity<?> handleException(AppException exception) {
         if (exception instanceof InvalidModelException
-                || exception instanceof HttpMessageNotReadableException
-                || exception instanceof MissingServletRequestParameterException
-                || exception instanceof HttpRequestMethodNotSupportedException
                 || exception instanceof InvalidOtpException
                 || exception instanceof ExpiredOtpException
                 || exception instanceof GenericException
-                || exception instanceof MalformedJwtException
-                || exception instanceof SignatureException
-                || exception instanceof ExpiredJwtException
-                || exception instanceof UnsupportedJwtException
                 || exception instanceof UsernameNotUniqueException
                 || exception instanceof PasswordMismatchException
                 || exception instanceof InitialAccountExistingException
@@ -45,11 +38,10 @@ public class CustomExceptionHandler {
                 || exception instanceof DuplicateCategoryException
                 || exception instanceof DuplicateLabelException
                 || exception instanceof TransferToSelfException
-                || exception instanceof MethodArgumentNotValidException
                 || exception instanceof NotEnoughBalanceException
                 || exception instanceof InvalidPhoneNumberException
                 || exception instanceof ResetPasswordException) {
-            return handleException(appException, HttpStatus.BAD_REQUEST);
+            return handleException(exception, HttpStatus.BAD_REQUEST);
 
         } else if (exception instanceof UserRoleNotFoundException
                 || exception instanceof UserNotFoundException
@@ -65,9 +57,30 @@ public class CustomExceptionHandler {
                 || exception instanceof AccountNotFoundException
                 || exception instanceof NoExistingTransactionException
         ) {
-            return handleException(appException, HttpStatus.NOT_FOUND);
+            return handleException(exception, HttpStatus.NOT_FOUND);
         }
 
+        throw new RuntimeException(String.valueOf(exception.getClass()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleException(Exception exception) {
+        if (exception instanceof HttpMessageNotReadableException)
+            return handleException(exception, 7000);
+        else if(exception instanceof MissingServletRequestParameterException)
+            return handleException(exception, 7001);
+        else if(exception instanceof HttpRequestMethodNotSupportedException)
+            return handleException(exception, 7002);
+        else if(exception instanceof MalformedJwtException)
+            return handleException(exception, 7003);
+        else if(exception instanceof SignatureException)
+            return handleException(exception, 7004);
+        else if(exception instanceof ExpiredJwtException)
+            return handleException(exception, 7005);
+        else if(exception instanceof UnsupportedJwtException)
+            return handleException(exception, 7006);
+        else if(exception instanceof MethodArgumentNotValidException)
+            return handleException(exception, 7007);
         throw new RuntimeException(String.valueOf(exception.getClass()));
     }
 
@@ -79,6 +92,18 @@ public class CustomExceptionHandler {
                         .body(ErrorResponseModel.builder()
                                 .message(exception.getMessage())
                                 .code(exception.getCode())
+                                .build())
+                        .build());
+    }
+
+    private ResponseEntity<?> handleException(Exception exception, int code) {
+        log.error(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ResponseModel.builder()
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(ErrorResponseModel.builder()
+                                .message(exception.getMessage())
+                                .code(code)
                                 .build())
                         .build());
     }

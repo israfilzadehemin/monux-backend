@@ -53,8 +53,7 @@ public class CustomValidator {
                 throw new InvalidModelException(INVALID_INITIAL_ACCOUNT_MODEL_MSG);
             }
         } else {
-            if (Strings.isBlank(requestModel.getIcon())
-                    || Strings.isBlank(requestModel.getAccountName())
+            if (Strings.isBlank(requestModel.getAccountName())
                     || Strings.isBlank(requestModel.getAccountTypeName())
                     || Strings.isBlank(requestModel.getCurrency())
                     || Objects.isNull(requestModel.getBalance())
