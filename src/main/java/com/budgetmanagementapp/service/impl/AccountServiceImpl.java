@@ -160,7 +160,6 @@ public class AccountServiceImpl implements AccountService {
                                  Currency currency, boolean isInitialAccount) {
         return accountRepo.save(Account.builder()
                 .accountId(UUID.randomUUID().toString())
-                .icon(requestBody.getIcon())
                 .name(requestBody.getAccountName())
                 .accountType(accountType)
                 .currency(currency)
@@ -174,7 +173,6 @@ public class AccountServiceImpl implements AccountService {
 
     private AccountRsModel buildAccountResponseModel(Account account) {
         return AccountRsModel.builder()
-                .icon(account.getIcon())
                 .accountId(account.getAccountId())
                 .accountName(account.getName())
                 .accountTypeName(account.getAccountType().getAccountTypeName())
@@ -213,7 +211,6 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private void updateAccountValues(UpdateAccountModel requestBody, Account account) {
-        account.setIcon(requestBody.getIcon());
         account.setName(requestBody.getNewAccountName());
         account.setAccountType(getAccountType(requestBody.getAccountTypeName(), false));
         accountRepo.save(account);

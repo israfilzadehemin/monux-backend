@@ -20,9 +20,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateAccountModel {
 
-    @NotNull
-    String icon;
-
     @NotBlank
     String accountId;
 

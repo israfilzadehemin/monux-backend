@@ -19,7 +19,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    UserRsModel signup(SignupRqModel username) throws MessagingException;
+    UserRsModel signup(SignupRqModel signupRqModel) throws MessagingException;
 
     CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordRequestModel);
 

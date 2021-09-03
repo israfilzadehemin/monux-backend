@@ -20,6 +20,7 @@ import lombok.experimental.FieldDefaults;
 public class UserRsModel {
     String userId;
     String username;
+    String fullName;
     LocalDateTime creationDateTime;
     String status;
     String paymentStatus;

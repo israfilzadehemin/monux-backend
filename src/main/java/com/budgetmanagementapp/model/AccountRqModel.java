@@ -19,7 +19,6 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AccountRqModel {
     String username;
-    String icon;
     String accountName;
     String accountTypeName;
     String currency;
