@@ -25,7 +25,6 @@ import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -81,13 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
     private Category buildCategory(CategoryRqModel requestBody, User user) {
         CustomValidator.validateCategoryType(requestBody.getCategoryType());
 
-        return categoryRepo.save(Category.builder()
-                .categoryId(UUID.randomUUID().toString())
-                .icon(requestBody.getIcon())
-                .name(requestBody.getCategoryName())
-                .type(requestBody.getCategoryType().toUpperCase())
-                .user(user)
-                .build());
+        return categoryRepo.save(CategoryMapper.INSTANCE.buildCategory(requestBody, user));
     }
 
     private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
