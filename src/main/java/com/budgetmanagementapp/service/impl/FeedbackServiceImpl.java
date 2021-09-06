@@ -10,6 +10,7 @@ import static java.lang.String.format;
 import com.budgetmanagementapp.entity.Feedback;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.FeedbackNotFoundException;
+import com.budgetmanagementapp.mapper.FeedbackMapper;
 import com.budgetmanagementapp.model.FeedbackRqModel;
 import com.budgetmanagementapp.model.FeedbackRsModel;
 import com.budgetmanagementapp.repository.FeedbackRepository;
@@ -35,8 +36,8 @@ public class FeedbackServiceImpl implements FeedbackService {
         User user = userService.findByUsername(username);
         Feedback feedback = buildFeedback(requestBody, user);
 
-        log.info(format(FEEDBACK_CREATED_MSG, user.getUsername(), buildFeedbackResponseModel(feedback)));
-        return buildFeedbackResponseModel(feedback);
+        log.info(format(FEEDBACK_CREATED_MSG, user.getUsername(), FeedbackMapper.INSTANCE.buildFeedbackResponseModel(feedback)));
+        return FeedbackMapper.INSTANCE.buildFeedbackResponseModel(feedback);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     @Override
     public FeedbackRsModel getFeedbackById(String feedbackId, String username) {
-        FeedbackRsModel response = buildFeedbackResponseModel(feedbackById(feedbackId, username));
+        FeedbackRsModel response = FeedbackMapper.INSTANCE.buildFeedbackResponseModel(feedbackById(feedbackId, username));
         log.info(format(FEEDBACK_BY_ID_MSG, feedbackId, response));
         return response;
     }
@@ -66,19 +67,10 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .build());
     }
 
-    private FeedbackRsModel buildFeedbackResponseModel(Feedback feedback) {
-        return FeedbackRsModel.builder()
-                .feedbackId(feedback.getFeedbackId())
-                .description(feedback.getDescription())
-                .creationDateTime(feedback.getDateTime())
-                .status(feedback.getStatus())
-                .build();
-    }
-
     private List<FeedbackRsModel> feedbacksByUser(User user) {
         return feedbackRepo.allByUser(user)
                 .stream()
-                .map(this::buildFeedbackResponseModel)
+                .map(FeedbackMapper.INSTANCE::buildFeedbackResponseModel)
                 .collect(Collectors.toList());
     }
 

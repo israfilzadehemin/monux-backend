@@ -8,6 +8,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import java.util.Date;
 import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Service;
 @PropertySource("classpath:jwt.properties")
 @Service
 @Log4j2
+@NoArgsConstructor
+@AllArgsConstructor
 public class JwtService {
 
     @Value("${jwt.secret}")

@@ -26,6 +26,7 @@ import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
+import com.budgetmanagementapp.mapper.UserMapper;
 import com.budgetmanagementapp.model.CreatePasswordRqModel;
 import com.budgetmanagementapp.model.CreatePasswordRsModel;
 import com.budgetmanagementapp.model.ResetPasswordRqModel;
@@ -105,16 +106,16 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info(format(USER_ADDED_MSG, signupRqModel.getUsername()));
-        return buildUserResponseModel(user);
+        return UserMapper.INSTANCE.buildUserResponseModel(user);
     }
 
     @Override
     public CreatePasswordRsModel createPassword(CreatePasswordRqModel requestBody) {
-        User user = userByUsernameAndStatus(requestBody);
+        User user = findByUsername(requestBody.getUsername());
         updatePasswordAndStatusValues(requestBody.getPassword(), user);
 
         log.info(format(PASSWORD_CREATED_MSG, user.getUsername()));
-        return buildPasswordResponseModel(requestBody);
+        return UserMapper.INSTANCE.buildPasswordResponseModel(requestBody);
     }
 
     @Override
@@ -131,7 +132,7 @@ public class UserServiceImpl implements UserService {
                     .sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY,
                             USER_FULL_RESET_PASSWORD_URL+encryptedUsername));
         }
-        return buildResetPasswordResponseModel(username, requestBody);
+        return UserMapper.INSTANCE.buildResetPasswordResponseModel(username, requestBody);
     }
 
     @Override
@@ -141,7 +142,7 @@ public class UserServiceImpl implements UserService {
         updatePassword(requestBody.getPassword(), user);
 
         log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
-        return buildResetPasswordResponseModel(user.getUsername(), requestBody);
+        return UserMapper.INSTANCE.buildResetPasswordResponseModel(user.getUsername(), requestBody);
     }
 
     private User buildUser(String username, String fullName) {
@@ -166,36 +167,6 @@ public class UserServiceImpl implements UserService {
                 .dateTime(LocalDateTime.now())
                 .user(user)
                 .build());
-    }
-
-    private UserRsModel buildUserResponseModel(User user) {
-        return UserRsModel.builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .fullName(user.getFullName())
-                .creationDateTime(user.getDateTime())
-                .status(user.getStatus())
-                .paymentStatus(user.getPaymentStatus())
-                .build();
-    }
-
-    private CreatePasswordRsModel buildPasswordResponseModel(CreatePasswordRqModel requestBody) {
-        return CreatePasswordRsModel.builder()
-                .username(requestBody.getUsername())
-                .password(requestBody.getPassword())
-                .build();
-    }
-
-    private ResetPasswordRsModel buildResetPasswordResponseModel(String username, ResetPasswordRqModel requestBody) {
-        return ResetPasswordRsModel.builder()
-                .username(username)
-                .password(requestBody.getPassword())
-                .build();
-    }
-
-    private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
-        return userRepo.byUsernameAndStatus(requestBody.getUsername(), STATUS_CONFIRMED)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
     }
 
     private void updatePasswordAndStatusValues(String password, User user) {

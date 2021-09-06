@@ -11,6 +11,7 @@ import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.exception.TemplateNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
+import com.budgetmanagementapp.mapper.TemplateMapper;
 import com.budgetmanagementapp.model.DebtRqModel;
 import com.budgetmanagementapp.model.DebtRsModel;
 import com.budgetmanagementapp.model.InOutRqModel;
@@ -147,7 +148,7 @@ public class TemplateServiceImpl implements TemplateService {
         List<TransactionRsModel> response =
                 templateRepo.allByUser(userService.findByUsername(username))
                         .stream()
-                        .map(this::buildGenericResponseModel)
+                        .map(TemplateMapper.INSTANCE::buildGenericResponseModel)
                         .collect(Collectors.toList());
 
         log.info(String.format(ALL_TEMPLATES_MSG, username, response));

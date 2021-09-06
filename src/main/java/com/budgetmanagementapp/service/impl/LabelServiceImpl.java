@@ -14,6 +14,7 @@ import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DuplicateLabelException;
 import com.budgetmanagementapp.exception.LabelNotFoundException;
+import com.budgetmanagementapp.mapper.LabelMapper;
 import com.budgetmanagementapp.model.LabelRqModel;
 import com.budgetmanagementapp.model.LabelRsModel;
 import com.budgetmanagementapp.model.UpdateLabelRqModel;
@@ -43,8 +44,8 @@ public class LabelServiceImpl implements LabelService {
         checkDuplicate(requestBody.getLabelName(), user);
         Label label = buildLabel(requestBody, user);
 
-        log.info(format(LABEL_CREATED_MSG, user.getUsername(), buildLabelResponseModel(label)));
-        return buildLabelResponseModel(label);
+        log.info(format(LABEL_CREATED_MSG, user.getUsername(), LabelMapper.INSTANCE.buildLabelResponseModel(label)));
+        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
     }
 
     @Override
@@ -67,8 +68,8 @@ public class LabelServiceImpl implements LabelService {
         Label label = byIdAndUser(requestBody.getLabelId(), username);
         updateLabelValues(requestBody, label);
 
-        log.info(format(LABEL_UPDATED_MSG, username, buildLabelResponseModel(label)));
-        return buildLabelResponseModel(label);
+        log.info(format(LABEL_UPDATED_MSG, username, LabelMapper.INSTANCE.buildLabelResponseModel(label)));
+        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
     }
 
     @Override
@@ -76,8 +77,8 @@ public class LabelServiceImpl implements LabelService {
         Label label = byIdAndUser(labelId, username);
         toggleLabelVisibility(label);
 
-        log.info(format(VISIBILITY_TOGGLED_MSG, username, buildLabelResponseModel(label)));
-        return buildLabelResponseModel(label);
+        log.info(format(VISIBILITY_TOGGLED_MSG, username, LabelMapper.INSTANCE.buildLabelResponseModel(label)));
+        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
     }
 
     @Override
@@ -101,15 +102,6 @@ public class LabelServiceImpl implements LabelService {
                 .build());
     }
 
-    private LabelRsModel buildLabelResponseModel(Label label) {
-        return LabelRsModel.builder()
-                .labelId(label.getLabelId())
-                .labelName(label.getName())
-                .labelCategory(label.getType())
-                .visibility(label.isVisibility())
-                .build();
-    }
-
     private User userByUsername(String username) {
         return userService.findByUsername(username);
     }
@@ -118,11 +110,11 @@ public class LabelServiceImpl implements LabelService {
         return includeCommonLabels
                 ? labelRepo.allByUserOrGeneralUser(user, generalUser)
                 .stream()
-                .map(this::buildLabelResponseModel)
+                .map(LabelMapper.INSTANCE::buildLabelResponseModel)
                 .collect(Collectors.toList())
                 : labelRepo.allByUser(user)
                 .stream()
-                .map(this::buildLabelResponseModel)
+                .map(LabelMapper.INSTANCE::buildLabelResponseModel)
                 .collect(Collectors.toList());
     }
 

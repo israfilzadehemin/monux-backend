@@ -16,6 +16,7 @@ import com.budgetmanagementapp.exception.CurrencyNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
+import com.budgetmanagementapp.mapper.AccountMapper;
 import com.budgetmanagementapp.model.*;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
@@ -23,12 +24,14 @@ import com.budgetmanagementapp.repository.CurrencyRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -58,8 +61,8 @@ public class AccountServiceImpl implements AccountService {
                 isInitialAccount
         );
 
-        log.info(format(ACCOUNT_CREATED_MSG, user.getUsername(), buildAccountResponseModel(account)));
-        return buildAccountResponseModel(account);
+        log.info(format(ACCOUNT_CREATED_MSG, user.getUsername(), AccountMapper.INSTANCE.buildAccountResponseModel(account)));
+        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -69,8 +72,8 @@ public class AccountServiceImpl implements AccountService {
         checkDuplicateAccount(requestBody.getNewAccountName(), user);
         updateAccountValues(requestBody, account);
 
-        log.info(format(ACCOUNT_UPDATED_MSG, username, buildAccountResponseModel(account)));
-        return buildAccountResponseModel(account);
+        log.info(format(ACCOUNT_UPDATED_MSG, username, AccountMapper.INSTANCE.buildAccountResponseModel(account)));
+        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -79,8 +82,8 @@ public class AccountServiceImpl implements AccountService {
         checkNegativeBalance(account);
         toggleAllowNegativeValue(account);
 
-        log.info(format(ALLOW_NEGATIVE_TOGGLED_MSG, username, buildAccountResponseModel(account)));
-        return buildAccountResponseModel(account);
+        log.info(format(ALLOW_NEGATIVE_TOGGLED_MSG, username, AccountMapper.INSTANCE.buildAccountResponseModel(account)));
+        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -88,8 +91,8 @@ public class AccountServiceImpl implements AccountService {
         Account account = byIdAndUser(accountId, userService.findByUsername(username));
         toggleShowInSumValue(account);
 
-        log.info(format(SHOW_IN_SUM_TOGGLED_MSG, username, buildAccountResponseModel(account)));
-        return buildAccountResponseModel(account);
+        log.info(format(SHOW_IN_SUM_TOGGLED_MSG, username, AccountMapper.INSTANCE.buildAccountResponseModel(account)));
+        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -99,7 +102,7 @@ public class AccountServiceImpl implements AccountService {
         List<AccountRsModel> accounts =
                 accountRepo.allByUser(user)
                         .stream()
-                        .map(this::buildAccountResponseModel)
+                        .map(AccountMapper.INSTANCE::buildAccountResponseModel)
                         .collect(Collectors.toList());
 
         log.info(format(ALL_ACCOUNTS_MSG, user.getUsername(), accounts));
@@ -112,8 +115,8 @@ public class AccountServiceImpl implements AccountService {
         checkNegativeBalance(requestBody, account);
         updateBalanceValue(requestBody, account);
 
-        log.info(format(BALANCE_UPDATED_MSG, username, account.getName(), buildAccountResponseModel(account)));
-        return buildAccountResponseModel(account);
+        log.info(format(BALANCE_UPDATED_MSG, username, account.getName(), AccountMapper.INSTANCE.buildAccountResponseModel(account)));
+        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -133,7 +136,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<AccountTypeRsModel> getAllAccountTypes() {
         List<AccountTypeRsModel> response = accountTypeRepo.findAll().stream()
-                .map(this::buildAccountTypeResponseModel)
+                .map(AccountMapper.INSTANCE::buildAccountTypeResponseModel)
                 .collect(Collectors.toList());
 
         log.info(String.format(ALL_ACCOUNT_TYPES_MSG, response));
@@ -143,7 +146,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public List<CurrencyRsModel> getAllCurrencies() {
         List<CurrencyRsModel> response = currencyRepo.findAll().stream()
-                .map(this::buildCurrencyResponseModel)
+                .map(AccountMapper.INSTANCE::buildCurrencyResponseModel)
                 .collect(Collectors.toList());
 
         log.info(String.format(ALL_CURRENCIES_MSG, response));
@@ -171,32 +174,6 @@ public class AccountServiceImpl implements AccountService {
                 .showInSum(isInitialAccount || requestBody.getShowInSum())
                 .user(user)
                 .build());
-    }
-
-    private AccountRsModel buildAccountResponseModel(Account account) {
-        return AccountRsModel.builder()
-                .accountId(account.getAccountId())
-                .accountName(account.getName())
-                .accountTypeName(account.getAccountType().getAccountTypeName())
-                .currency(account.getCurrency().getName())
-                .allowNegative(account.isAllowNegative())
-                .balance(account.getBalance())
-                .showInSum(account.isShowInSum())
-                .build();
-    }
-
-    private AccountTypeRsModel buildAccountTypeResponseModel(AccountType accountType) {
-        return AccountTypeRsModel.builder()
-                .accountTypeId(accountType.getAccountTypeId())
-                .accountTypeName(accountType.getAccountTypeName())
-                .build();
-    }
-
-    private CurrencyRsModel buildCurrencyResponseModel(Currency currency) {
-        return CurrencyRsModel.builder()
-                .currencyId(currency.getCurrencyId())
-                .currencyName(currency.getName())
-                .build();
     }
 
     private Currency getCurrency(String currency) {

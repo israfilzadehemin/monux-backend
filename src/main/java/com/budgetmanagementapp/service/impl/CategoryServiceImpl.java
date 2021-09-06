@@ -13,6 +13,7 @@ import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateCategoryException;
+import com.budgetmanagementapp.mapper.CategoryMapper;
 import com.budgetmanagementapp.model.CategoryRqModel;
 import com.budgetmanagementapp.model.CategoryRsModel;
 import com.budgetmanagementapp.model.UpdateCategoryRqModel;
@@ -43,8 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
         checkDuplicate(requestBody.getCategoryName(), user);
         Category category = buildCategory(requestBody, user);
 
-        log.info(format(CATEGORY_CREATED_MSG, user.getUsername(), buildCategoryResponseModel(category)));
-        return buildCategoryResponseModel(category);
+        log.info(format(CATEGORY_CREATED_MSG, user.getUsername(), CategoryMapper.INSTANCE.buildCategoryResponseModel(category)));
+        return CategoryMapper.INSTANCE.buildCategoryResponseModel(category);
     }
 
     @Override
@@ -62,8 +63,8 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryByIdAndUser(requestBody.getCategoryId(), username);
         updateCategoryValues(requestBody, category);
 
-        log.info(format(CATEGORY_UPDATED_MSG, username, buildCategoryResponseModel(category)));
-        return buildCategoryResponseModel(category);
+        log.info(format(CATEGORY_UPDATED_MSG, username, CategoryMapper.INSTANCE.buildCategoryResponseModel(category)));
+        return CategoryMapper.INSTANCE.buildCategoryResponseModel(category);
     }
 
     @Override
@@ -87,15 +88,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .type(requestBody.getCategoryType().toUpperCase())
                 .user(user)
                 .build());
-    }
-
-    private CategoryRsModel buildCategoryResponseModel(Category category) {
-        return CategoryRsModel.builder()
-                .categoryId(category.getCategoryId())
-                .icon(category.getIcon())
-                .categoryName(category.getName())
-                .categoryType(category.getType())
-                .build();
     }
 
     private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
@@ -127,11 +119,11 @@ public class CategoryServiceImpl implements CategoryService {
         return includeCommonCategories
                 ? categoryRepo.allByUserOrGeneralUser(user, generalUser)
                 .stream()
-                .map(this::buildCategoryResponseModel)
+                .map(CategoryMapper.INSTANCE::buildCategoryResponseModel)
                 .collect(Collectors.toList())
                 : categoryRepo.allByUser(user)
                 .stream()
-                .map(this::buildCategoryResponseModel)
+                .map(CategoryMapper.INSTANCE::buildCategoryResponseModel)
                 .collect(Collectors.toList());
     }
 
