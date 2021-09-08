@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.mapper;
 
 import com.budgetmanagementapp.entity.Category;
-import com.budgetmanagementapp.model.CategoryRsModel;
+import com.budgetmanagementapp.model.category.CategoryRsModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

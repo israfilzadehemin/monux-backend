@@ -8,9 +8,9 @@ import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_GET_CATEGORIE
 import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_UPDATE_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.CategoryRqModel;
+import com.budgetmanagementapp.model.category.CategoryRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.UpdateCategoryRqModel;
+import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
 import com.budgetmanagementapp.service.CategoryService;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;

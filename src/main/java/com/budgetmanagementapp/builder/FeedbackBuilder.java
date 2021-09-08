@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.builder;
 
 import com.budgetmanagementapp.entity.*;
-import com.budgetmanagementapp.model.FeedbackRqModel;
+import com.budgetmanagementapp.model.feedback.FeedbackRqModel;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;

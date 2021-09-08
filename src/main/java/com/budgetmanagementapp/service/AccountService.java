@@ -2,7 +2,7 @@ package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.*;
+import com.budgetmanagementapp.model.account.*;
 
 import java.math.BigDecimal;
 import java.util.List;

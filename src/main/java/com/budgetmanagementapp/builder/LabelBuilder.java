@@ -2,7 +2,7 @@ package com.budgetmanagementapp.builder;
 
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.LabelRqModel;
+import com.budgetmanagementapp.model.label.LabelRqModel;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

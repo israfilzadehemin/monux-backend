@@ -5,10 +5,10 @@ import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.AccountRqModel;
+import com.budgetmanagementapp.model.account.AccountRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.UpdateAccountModel;
-import com.budgetmanagementapp.model.UpdateBalanceModel;
+import com.budgetmanagementapp.model.account.UpdateAccountModel;
+import com.budgetmanagementapp.model.account.UpdateBalanceModel;
 import com.budgetmanagementapp.service.AccountService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;

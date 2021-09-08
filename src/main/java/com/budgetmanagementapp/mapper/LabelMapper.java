@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.mapper;
 
 import com.budgetmanagementapp.entity.Label;
-import com.budgetmanagementapp.model.LabelRsModel;
+import com.budgetmanagementapp.model.label.LabelRsModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

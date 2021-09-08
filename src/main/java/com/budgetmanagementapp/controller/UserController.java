@@ -8,12 +8,12 @@ import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_RESET_PASSWORD_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
 
-import com.budgetmanagementapp.model.AccountRqModel;
-import com.budgetmanagementapp.model.ConfirmOtpRqModel;
-import com.budgetmanagementapp.model.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.ResetPasswordRqModel;
+import com.budgetmanagementapp.model.account.AccountRqModel;
+import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.SignupRqModel;
+import com.budgetmanagementapp.model.user.SignupRqModel;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;

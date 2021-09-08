@@ -13,7 +13,7 @@ import com.budgetmanagementapp.exception.InvalidEmailException;
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
 import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
-import com.budgetmanagementapp.model.AccountRqModel;
+import com.budgetmanagementapp.model.account.AccountRqModel;
 import java.util.Arrays;
 import java.util.Objects;
 import org.apache.logging.log4j.util.Strings;

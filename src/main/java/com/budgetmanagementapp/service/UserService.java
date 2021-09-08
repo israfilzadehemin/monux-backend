@@ -1,13 +1,13 @@
 package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.ResetPasswordRqModel;
-import com.budgetmanagementapp.model.ResetPasswordRsModel;
-import com.budgetmanagementapp.model.SignupRqModel;
-import com.budgetmanagementapp.model.UserAuthModel;
-import com.budgetmanagementapp.model.UserRsModel;
+import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
+import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
+import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
+import com.budgetmanagementapp.model.user.SignupRqModel;
+import com.budgetmanagementapp.model.user.UserAuthModel;
+import com.budgetmanagementapp.model.user.UserRsModel;
 import java.util.Optional;
 import javax.mail.MessagingException;
 

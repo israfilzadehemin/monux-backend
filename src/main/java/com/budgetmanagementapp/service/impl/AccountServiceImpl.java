@@ -18,7 +18,7 @@ import com.budgetmanagementapp.exception.DuplicateAccountException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.mapper.AccountMapper;
-import com.budgetmanagementapp.model.*;
+import com.budgetmanagementapp.model.account.*;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CurrencyRepository;
@@ -30,7 +30,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;

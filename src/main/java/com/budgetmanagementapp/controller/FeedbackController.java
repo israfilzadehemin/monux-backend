@@ -7,7 +7,7 @@ import static com.budgetmanagementapp.utility.UrlConstant.FEEDBACK_GET_ALL_FEEDB
 import static com.budgetmanagementapp.utility.UrlConstant.FEEDBACK_GET_FEEDBACK_BY_ID_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.FeedbackRqModel;
+import com.budgetmanagementapp.model.feedback.FeedbackRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.service.FeedbackService;
 import javax.validation.Valid;

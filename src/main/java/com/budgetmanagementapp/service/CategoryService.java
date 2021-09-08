@@ -2,9 +2,9 @@ package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.CategoryRqModel;
-import com.budgetmanagementapp.model.CategoryRsModel;
-import com.budgetmanagementapp.model.UpdateCategoryRqModel;
+import com.budgetmanagementapp.model.category.CategoryRqModel;
+import com.budgetmanagementapp.model.category.CategoryRsModel;
+import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.util.List;
 

@@ -4,7 +4,7 @@ import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.AccountRqModel;
+import com.budgetmanagementapp.model.account.AccountRqModel;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;

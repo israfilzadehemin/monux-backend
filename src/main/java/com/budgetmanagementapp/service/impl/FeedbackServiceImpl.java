@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.STATUS_OPEN;
 import static com.budgetmanagementapp.utility.MsgConstant.ALL_FEEDBACKS_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.FEEDBACK_BY_ID_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.FEEDBACK_CREATED_MSG;
@@ -12,14 +11,13 @@ import com.budgetmanagementapp.entity.Feedback;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.FeedbackNotFoundException;
 import com.budgetmanagementapp.mapper.FeedbackMapper;
-import com.budgetmanagementapp.model.FeedbackRqModel;
-import com.budgetmanagementapp.model.FeedbackRsModel;
+import com.budgetmanagementapp.model.feedback.FeedbackRqModel;
+import com.budgetmanagementapp.model.feedback.FeedbackRsModel;
 import com.budgetmanagementapp.repository.FeedbackRepository;
 import com.budgetmanagementapp.service.FeedbackService;
 import com.budgetmanagementapp.service.UserService;
-import java.time.LocalDateTime;
+
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;

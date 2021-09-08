@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.mapper;
 
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.*;
+import com.budgetmanagementapp.model.user.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

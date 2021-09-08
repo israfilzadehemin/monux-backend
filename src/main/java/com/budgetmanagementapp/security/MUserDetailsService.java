@@ -2,7 +2,7 @@ package com.budgetmanagementapp.security;
 
 import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
 
-import com.budgetmanagementapp.model.UserAuthModel;
+import com.budgetmanagementapp.model.user.UserAuthModel;
 import com.budgetmanagementapp.service.UserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;

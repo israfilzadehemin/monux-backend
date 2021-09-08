@@ -1,12 +1,9 @@
 package com.budgetmanagementapp.mapper;
 
-import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.Feedback;
-import com.budgetmanagementapp.model.CategoryRsModel;
-import com.budgetmanagementapp.model.FeedbackRsModel;
+import com.budgetmanagementapp.model.feedback.FeedbackRsModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")

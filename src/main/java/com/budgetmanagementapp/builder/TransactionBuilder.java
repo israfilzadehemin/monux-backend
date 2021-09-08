@@ -1,9 +1,9 @@
 package com.budgetmanagementapp.builder;
 
 import com.budgetmanagementapp.entity.*;
-import com.budgetmanagementapp.model.DebtRqModel;
-import com.budgetmanagementapp.model.InOutRqModel;
-import com.budgetmanagementapp.model.TransferRqModel;
+import com.budgetmanagementapp.model.account.DebtRqModel;
+import com.budgetmanagementapp.model.account.InOutRqModel;
+import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.TransactionType;
 import org.springframework.stereotype.Component;

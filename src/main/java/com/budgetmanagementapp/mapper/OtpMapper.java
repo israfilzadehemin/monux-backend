@@ -2,7 +2,7 @@ package com.budgetmanagementapp.mapper;
 
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.*;
+import com.budgetmanagementapp.model.user.ConfirmOtpRsModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;

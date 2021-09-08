@@ -3,9 +3,9 @@ package com.budgetmanagementapp.mapper;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Currency;
-import com.budgetmanagementapp.model.AccountRsModel;
-import com.budgetmanagementapp.model.AccountTypeRsModel;
-import com.budgetmanagementapp.model.CurrencyRsModel;
+import com.budgetmanagementapp.model.account.AccountRsModel;
+import com.budgetmanagementapp.model.account.AccountTypeRsModel;
+import com.budgetmanagementapp.model.account.CurrencyRsModel;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

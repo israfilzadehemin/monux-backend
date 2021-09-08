@@ -2,9 +2,9 @@ package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.LabelRqModel;
-import com.budgetmanagementapp.model.LabelRsModel;
-import com.budgetmanagementapp.model.UpdateLabelRqModel;
+import com.budgetmanagementapp.model.label.LabelRqModel;
+import com.budgetmanagementapp.model.label.LabelRsModel;
+import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
 import java.util.List;
 
 public interface LabelService {
