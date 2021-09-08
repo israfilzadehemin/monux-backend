@@ -13,8 +13,8 @@ public interface CategoryMapper {
     CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
     @Mappings({
-            @Mapping(source = "name", target = "categoryName"),
-            @Mapping(source = "type", target = "categoryType"),
+            @Mapping(source = "category.name", target = "categoryName"),
+            @Mapping(source = "category.type", target = "categoryType"),
     })
     CategoryRsModel buildCategoryResponseModel(Category category);
 }

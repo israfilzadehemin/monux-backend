@@ -11,7 +11,7 @@ public interface UserMapper {
 
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    @Mapping(source = "dateTime", target = "creationDateTime")
+    @Mapping(source = "user.dateTime", target = "creationDateTime")
     UserRsModel buildUserResponseModel(User user);
 
     CreatePasswordRsModel buildPasswordResponseModel(CreatePasswordRqModel requestBody);

@@ -13,8 +13,8 @@ public interface LabelMapper {
     LabelMapper INSTANCE = Mappers.getMapper(LabelMapper.class);
 
     @Mappings({
-            @Mapping(source = "name", target = "labelName"),
-            @Mapping(source = "type", target = "labelCategory")
+            @Mapping(source = "label.name", target = "labelName"),
+            @Mapping(source = "label.type", target = "labelCategory")
     })
     LabelRsModel buildLabelResponseModel(Label label);
 }

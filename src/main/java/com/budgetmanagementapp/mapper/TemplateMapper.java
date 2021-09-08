@@ -10,6 +10,6 @@ public interface TemplateMapper {
 
     TemplateMapper INSTANCE = Mappers.getMapper(TemplateMapper.class);
 
-    @Mapping(source = "templateId", target = "transactionId")
+    @Mapping(source = "template.templateId", target = "transactionId")
     TransactionRsModel buildGenericResponseModel(Template template);
 }

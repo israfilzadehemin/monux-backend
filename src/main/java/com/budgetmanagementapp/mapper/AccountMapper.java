@@ -16,7 +16,7 @@ public interface AccountMapper {
 
     @Mappings({
             @Mapping(source = "name", target = "accountName"),
-            @Mapping(target = "currency", expression = "java(account.getCurrency().getName())")
+            @Mapping(target = "currency", source = "account.currency.name")
     })
     AccountRsModel buildAccountResponseModel(Account account);
 

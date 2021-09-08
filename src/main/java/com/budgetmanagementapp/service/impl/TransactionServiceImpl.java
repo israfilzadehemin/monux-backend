@@ -351,7 +351,8 @@ public class TransactionServiceImpl implements TransactionService {
     private Transaction buildTransaction(TransferRqModel requestBody, User user,
                                          Account senderAccount,
                                          Account receiverAccount) {
-        return transactionRepo.save(transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount));
+        return transactionRepo.save(
+                transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount));
     }
 
     private Transaction buildTransaction(DebtRqModel requestBody,

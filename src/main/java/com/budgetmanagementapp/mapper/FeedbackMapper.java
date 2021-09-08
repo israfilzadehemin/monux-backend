@@ -11,6 +11,6 @@ public interface FeedbackMapper {
 
     FeedbackMapper INSTANCE = Mappers.getMapper(FeedbackMapper.class);
 
-    @Mapping(source = "dateTime", target = "creationDateTime")
+    @Mapping(source = "feedback.dateTime", target = "creationDateTime")
     FeedbackRsModel buildFeedbackResponseModel(Feedback feedback);
 }
