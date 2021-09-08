@@ -7,6 +7,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.FEEDBACK_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_FEEDBACK_MSG;
 import static java.lang.String.format;
 
+import com.budgetmanagementapp.builder.FeedbackBuilder;
 import com.budgetmanagementapp.entity.Feedback;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.FeedbackNotFoundException;
@@ -30,6 +31,7 @@ import org.springframework.stereotype.Service;
 public class FeedbackServiceImpl implements FeedbackService {
     private final UserService userService;
     private final FeedbackRepository feedbackRepo;
+    private final FeedbackBuilder feedbackBuilder;
 
     @Override
     public FeedbackRsModel createFeedback(FeedbackRqModel requestBody, String username) {
@@ -58,13 +60,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     }
 
     private Feedback buildFeedback(FeedbackRqModel requestBody, User user) {
-        return feedbackRepo.save(Feedback.builder()
-                .feedbackId(UUID.randomUUID().toString())
-                .description(requestBody.getDescription())
-                .dateTime(LocalDateTime.now())
-                .status(STATUS_OPEN)
-                .user(user)
-                .build());
+        return feedbackRepo.save(feedbackBuilder.buildFeedback(requestBody, user));
     }
 
     private List<FeedbackRsModel> feedbacksByUser(User user) {

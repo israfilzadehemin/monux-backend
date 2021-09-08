@@ -6,9 +6,7 @@ import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.model.AccountRsModel;
 import com.budgetmanagementapp.model.AccountTypeRsModel;
 import com.budgetmanagementapp.model.CurrencyRsModel;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
@@ -18,10 +16,14 @@ public interface AccountMapper {
 
     @Mappings({
             @Mapping(source = "name", target = "accountName"),
-            @Mapping(target = "accountTypeName", expression = "java(account.getAccountType().getAccountTypeName())"),
             @Mapping(target = "currency", expression = "java(account.getCurrency().getName())")
     })
     AccountRsModel buildAccountResponseModel(Account account);
+
+    @AfterMapping
+    default void addExtraFields(@MappingTarget AccountRsModel accountRsModel, Account account) {
+        accountRsModel.setAccountTypeName(account.getAccountType().getAccountTypeName());
+    }
 
     AccountTypeRsModel buildAccountTypeResponseModel(AccountType accountType);
 

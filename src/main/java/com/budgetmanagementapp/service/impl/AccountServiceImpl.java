@@ -6,6 +6,7 @@ import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static java.lang.String.format;
 
+import com.budgetmanagementapp.builder.AccountBuilder;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Currency;
@@ -44,6 +45,7 @@ public class AccountServiceImpl implements AccountService {
     private final UserService userService;
     private final AccountTypeRepository accountTypeRepo;
     private final CurrencyRepository currencyRepo;
+    private final AccountBuilder accountBuilder;
 
     @Override
     public AccountRsModel createAccount(AccountRqModel requestBody, boolean isInitialAccount) {
@@ -163,17 +165,7 @@ public class AccountServiceImpl implements AccountService {
 
     private Account buildAccount(AccountRqModel requestBody, User user, AccountType accountType,
                                  Currency currency, boolean isInitialAccount) {
-        return accountRepo.save(Account.builder()
-                .accountId(UUID.randomUUID().toString())
-                .name(requestBody.getAccountName())
-                .accountType(accountType)
-                .currency(currency)
-                .allowNegative(isInitialAccount || requestBody.getAllowNegative())
-                .balance(requestBody.getBalance())
-                .enabled(true)
-                .showInSum(isInitialAccount || requestBody.getShowInSum())
-                .user(user)
-                .build());
+        return accountRepo.save(accountBuilder.buildAccount(requestBody, user, accountType, currency, isInitialAccount));
     }
 
     private Currency getCurrency(String currency) {

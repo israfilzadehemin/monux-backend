@@ -10,6 +10,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_LABEL_MSG
 import static com.budgetmanagementapp.utility.MsgConstant.VISIBILITY_TOGGLED_MSG;
 import static java.lang.String.format;
 
+import com.budgetmanagementapp.builder.LabelBuilder;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DuplicateLabelException;
@@ -37,6 +38,7 @@ import org.springframework.stereotype.Service;
 public class LabelServiceImpl implements LabelService {
     private final UserService userService;
     private final LabelRepository labelRepo;
+    private final LabelBuilder labelBuilder;
 
     @Override
     public LabelRsModel createLabel(LabelRqModel requestBody, String username) {
@@ -93,13 +95,7 @@ public class LabelServiceImpl implements LabelService {
     private Label buildLabel(LabelRqModel requestBody, User user) {
         CustomValidator.validateCategoryType(requestBody.getLabelCategory());
 
-        return labelRepo.save(Label.builder()
-                .labelId(UUID.randomUUID().toString())
-                .name(requestBody.getLabelName())
-                .type(requestBody.getLabelCategory())
-                .visibility(true)
-                .user(user)
-                .build());
+        return labelRepo.save(labelBuilder.buildLabel(requestBody, user));
     }
 
     private User userByUsername(String username) {

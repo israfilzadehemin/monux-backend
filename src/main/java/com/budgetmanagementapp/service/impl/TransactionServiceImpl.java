@@ -25,6 +25,7 @@ import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 import static java.util.Collections.singletonMap;
 
+import com.budgetmanagementapp.builder.TransactionBuilder;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.Label;
@@ -78,6 +79,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final LabelService labelService;
     private final TransactionRepository transactionRepo;
     private final PaginationTool<Transaction> paginationTool;
+    private final TransactionBuilder transactionBuilder;
 
     @Override
     @Transactional
@@ -337,16 +339,7 @@ public class TransactionServiceImpl implements TransactionService {
     private Transaction buildTransaction(InOutRqModel requestBody, User user,
                                          Account account, Category category,
                                          List<Label> labels, TransactionType type) {
-        Transaction transaction = Transaction.builder()
-                .transactionId(UUID.randomUUID().toString())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .type(type.name())
-                .category(category)
-                .labels(labels)
-                .user(user)
-                .build();
+        Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, category, labels, type);
 
         if (type.equals(INCOME)) {
             transaction.setReceiverAccount(account);
@@ -359,30 +352,14 @@ public class TransactionServiceImpl implements TransactionService {
     private Transaction buildTransaction(TransferRqModel requestBody, User user,
                                          Account senderAccount,
                                          Account receiverAccount) {
-        return transactionRepo.save(Transaction.builder()
-                .transactionId(UUID.randomUUID().toString())
-                .type(TRANSFER.name())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .senderAccount(senderAccount)
-                .receiverAccount(receiverAccount)
-                .user(user)
-                .build());
+        return transactionRepo.save(transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount));
     }
 
     private Transaction buildTransaction(DebtRqModel requestBody,
                                          TransactionType type,
                                          User user,
                                          Account account) {
-        Transaction transaction = Transaction.builder()
-                .transactionId(UUID.randomUUID().toString())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .type(type.name())
-                .user(user)
-                .build();
+        Transaction transaction = transactionBuilder.buildTransaction(requestBody, type, user);
 
         if (type.equals(DEBT_IN)) {
             transaction.setReceiverAccount(account);

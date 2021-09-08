@@ -7,6 +7,7 @@ import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
 import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 
+import com.budgetmanagementapp.builder.TemplateBuilder;
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.exception.TemplateNotFoundException;
@@ -50,6 +51,7 @@ public class TemplateServiceImpl implements TemplateService {
     private final CategoryService categoryService;
     private final LabelService labelService;
     private final TemplateRepository templateRepo;
+    private final TemplateBuilder templateBuilder;
 
 
     @Override
@@ -170,16 +172,7 @@ public class TemplateServiceImpl implements TemplateService {
     private Template buildTemplate(InOutRqModel requestBody, User user,
                                    Account account, Category category,
                                    List<Label> labels, TransactionType type) {
-        Template template = Template.builder()
-                .templateId(UUID.randomUUID().toString())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .type(type.name())
-                .category(category)
-                .labels(labels)
-                .user(user)
-                .build();
+        Template template = templateBuilder.buildTemplate(requestBody, user, category, labels, type);
 
         if (type.equals(INCOME)) {
             template.setReceiverAccount(account);
@@ -192,30 +185,15 @@ public class TemplateServiceImpl implements TemplateService {
     private Template buildTemplate(TransferRqModel requestBody, User user,
                                    Account senderAccount,
                                    Account receiverAccount) {
-        return templateRepo.save(Template.builder()
-                .templateId(UUID.randomUUID().toString())
-                .type(TRANSFER.name())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .senderAccount(senderAccount)
-                .receiverAccount(receiverAccount)
-                .user(user)
-                .build());
+        Template template = templateBuilder.buildTemplate(requestBody, user, senderAccount, receiverAccount);
+        return templateRepo.save(template);
     }
 
     private Template buildTemplate(DebtRqModel requestBody,
                                    TransactionType type,
                                    User user,
                                    Account account) {
-        Template template = Template.builder()
-                .templateId(UUID.randomUUID().toString())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .type(type.name())
-                .user(user)
-                .build();
+        Template template = templateBuilder.buildTemplate(requestBody, type, user);
 
         if (type.equals(DEBT_IN)) {
             template.setReceiverAccount(account);
@@ -273,13 +251,7 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     private TransactionRsModel buildGenericResponseModel(Template template) {
-        TransactionRsModel response = TransactionRsModel.builder()
-                .transactionId(template.getTemplateId())
-                .dateTime(template.getDateTime())
-                .amount(template.getAmount())
-                .description(template.getDescription())
-                .type(template.getType())
-                .build();
+        TransactionRsModel response = TemplateMapper.INSTANCE.buildGenericResponseModel(template);
 
         if (!Objects.isNull(template.getSenderAccount())) {
             response.setSenderAccountId(template.getSenderAccount().getAccountId());

@@ -9,6 +9,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.INVALID_CATEGORY_ID_MS
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_CATEGORY_MSG;
 import static java.lang.String.format;
 
+import com.budgetmanagementapp.builder.CategoryBuilder;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
@@ -25,6 +26,7 @@ import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,6 +38,7 @@ import org.springframework.stereotype.Service;
 public class CategoryServiceImpl implements CategoryService {
     private final UserService userService;
     private final CategoryRepository categoryRepo;
+    private final CategoryBuilder categoryBuilder;
 
     @Override
     public CategoryRsModel createCategory(CategoryRqModel requestBody, String username) {
@@ -80,9 +83,8 @@ public class CategoryServiceImpl implements CategoryService {
     private Category buildCategory(CategoryRqModel requestBody, User user) {
         CustomValidator.validateCategoryType(requestBody.getCategoryType());
 
-        return categoryRepo.save(CategoryMapper.INSTANCE.buildCategory(requestBody, user));
+        return categoryRepo.save(categoryBuilder.buildCategory(requestBody, user));
     }
-
     private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
         CustomValidator.validateCategoryType(requestBody.getCategoryType());
 

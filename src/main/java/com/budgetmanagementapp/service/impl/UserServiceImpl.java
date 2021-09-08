@@ -20,6 +20,7 @@ import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_FULL_RESET_PASSWORD_URL;
 import static java.lang.String.format;
 
+import com.budgetmanagementapp.builder.UserBuilder;
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
@@ -60,11 +61,10 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
-    private final RoleRepository roleRepo;
     private final MailSenderService mailSenderService;
     private final SmsSenderService smsSenderService;
-    private final OtpRepository otpRepo;
     private final BCryptPasswordEncoder encoder;
+    private final UserBuilder userBuilder;
 
     @Override
     public Optional<UserAuthModel> findAuthModelByUsername(String username) {
@@ -146,27 +146,11 @@ public class UserServiceImpl implements UserService {
     }
 
     private User buildUser(String username, String fullName) {
-        return userRepo.save(User.builder()
-                .userId(UUID.randomUUID().toString())
-                .username(username)
-                .fullName(fullName)
-                .dateTime(LocalDateTime.now())
-                .status(STATUS_PROCESSING)
-                .paymentStatus(STATUS_NOT_PAID)
-                .roles(Collections.singletonList(
-                        roleRepo.byName(ROLE_USER)
-                                .orElseThrow(() -> new UserRoleNotFoundException(ROLE_NOT_FOUND_MSG))))
-                .build());
+        return userBuilder.buildUser(username, fullName);
     }
 
     private void buildOtp(String otp, User user) {
-        otpRepo.save(Otp.builder()
-                .otpId(UUID.randomUUID().toString())
-                .otp(otp)
-                .status(STATUS_NEW)
-                .dateTime(LocalDateTime.now())
-                .user(user)
-                .build());
+        userBuilder.buildOtp(otp, user);
     }
 
     private void updatePasswordAndStatusValues(String password, User user) {
