@@ -34,6 +34,7 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
+import com.budgetmanagementapp.mapper.TransactionMapper;
 import com.budgetmanagementapp.model.account.DebtRqModel;
 import com.budgetmanagementapp.model.account.DebtRsModel;
 import com.budgetmanagementapp.model.account.InOutRqModel;
@@ -97,7 +98,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, account, category, labels, type);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
-        InOutRsModel response = buildInOutResponseModel(transaction);
+        InOutRsModel response = TransactionMapper.INSTANCE.buildInOutResponseModel(transaction);
         log.info(format(IN_OUT_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -125,7 +126,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
-        TransferRsModel response = buildTransferResponseModel(transaction);
+        TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(transaction);
         log.info(format(TRANSFER_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -145,7 +146,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionBuilder.buildTransaction(requestBody, type, account, user);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
-        DebtRsModel response = buildDebtResponseModel(transaction);
+        DebtRsModel response = TransactionMapper.INSTANCE.buildDebtResponseModel(transaction);
         log.info(format(DEBT_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -179,7 +180,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
-        InOutRsModel response = buildInOutResponseModel(updatedTransaction);
+        InOutRsModel response = TransactionMapper.INSTANCE.buildInOutResponseModel(updatedTransaction);
         log.info(format(IN_OUT_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -212,7 +213,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
-        TransferRsModel response = buildTransferResponseModel(updatedTransaction);
+        TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(updatedTransaction);
         log.info(format(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -242,7 +243,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
-        DebtRsModel response = buildDebtResponseModel(updatedTransaction);
+        DebtRsModel response = TransactionMapper.INSTANCE.buildDebtResponseModel(updatedTransaction);
         log.info(format(DEBT_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -379,48 +380,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         return transactionRepo.save(transaction);
-    }
-
-    private InOutRsModel buildInOutResponseModel(Transaction transaction) {
-        return InOutRsModel.builder()
-                .transactionId(transaction.getTransactionId())
-                .dateTime(transaction.getDateTime())
-                .amount(transaction.getAmount())
-                .description(transaction.getDescription())
-                .type(transaction.getType())
-                .accountId(
-                        transaction.getType().equals(INCOME.name())
-                                ? transaction.getReceiverAccount().getAccountId()
-                                : transaction.getSenderAccount().getAccountId())
-                .categoryId(transaction.getCategory().getCategoryId())
-                .labelIds(transaction.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()))
-                .build();
-    }
-
-    private TransferRsModel buildTransferResponseModel(Transaction transaction) {
-        return TransferRsModel.builder()
-                .transactionId(transaction.getTransactionId())
-                .dateTime(transaction.getDateTime())
-                .amount(transaction.getAmount())
-                .description(transaction.getDescription())
-                .senderAccountId(transaction.getSenderAccount().getAccountId())
-                .receiverAccountId(transaction.getReceiverAccount().getAccountId())
-                .type(transaction.getType())
-                .build();
-    }
-
-    private DebtRsModel buildDebtResponseModel(Transaction transaction) {
-        return DebtRsModel.builder()
-                .transactionId(transaction.getTransactionId())
-                .dateTime(transaction.getDateTime())
-                .amount(transaction.getAmount())
-                .description(transaction.getDescription())
-                .type(transaction.getType())
-                .accountId(
-                        transaction.getType().equals(DEBT_IN.name())
-                                ? transaction.getReceiverAccount().getAccountId()
-                                : transaction.getSenderAccount().getAccountId())
-                .build();
     }
 
     private Transaction transactionByIdAndUser(String transactionId, User user) {

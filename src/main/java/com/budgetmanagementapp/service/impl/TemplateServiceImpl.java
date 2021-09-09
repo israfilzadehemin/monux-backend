@@ -61,7 +61,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         Template template = templateBuilder.buildTemplate(requestBody, user, category, labels, type, account);
 
-        InOutRsModel response = buildInOutResponseModel(template);
+        InOutRsModel response = TemplateMapper.INSTANCE.buildInOutResponseModel(template);
         log.info(format(IN_OUT_TEMPLATE_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -78,7 +78,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         Template template = templateBuilder.buildTemplate(requestBody, user, senderAccount, receiverAccount);
 
-        TransferRsModel response = buildTransferResponseModel(template);
+        TransferRsModel response = TemplateMapper.INSTANCE.buildTransferResponseModel(template);
         log.info(format(TRANSFER_TEMPLATE_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -90,7 +90,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         Template template = templateBuilder.buildTemplate(requestBody, type, user, account);
 
-        DebtRsModel response = buildDebtResponseModel(template);
+        DebtRsModel response = TemplateMapper.INSTANCE.buildDebtResponseModel(template);
         log.info(format(DEBT_TEMPLATE_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -106,7 +106,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         Template updatedTemplate = updateTemplateValues(requestBody, template, account, category, labels);
 
-        InOutRsModel response = buildInOutResponseModel(updatedTemplate);
+        InOutRsModel response = TemplateMapper.INSTANCE.buildInOutResponseModel(updatedTemplate);
         log.info(format(IN_OUT_TEMPLATE_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -125,7 +125,7 @@ public class TemplateServiceImpl implements TemplateService {
         Template updatedTemplate =
                 updateTemplateValues(requestBody, templateByIdAndUser, senderAccount, receiverAccount);
 
-        TransferRsModel response = buildTransferResponseModel(updatedTemplate);
+        TransferRsModel response = TemplateMapper.INSTANCE.buildTransferResponseModel(updatedTemplate);
         log.info(format(TRANSFER_TEMPLATE_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -138,7 +138,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         Template updatedTemplate = updateTemplateValues(requestBody, account, transaction);
 
-        DebtRsModel response = buildDebtResponseModel(updatedTemplate);
+        DebtRsModel response = TemplateMapper.INSTANCE.buildDebtResponseModel(updatedTemplate);
         log.info(format(DEBT_TEMPLATE_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -211,48 +211,6 @@ public class TemplateServiceImpl implements TemplateService {
         }
 
         return templateRepo.save(template);
-    }
-
-    private InOutRsModel buildInOutResponseModel(Template template) {
-        return InOutRsModel.builder()
-                .transactionId(template.getTemplateId())
-                .dateTime(template.getDateTime())
-                .amount(template.getAmount())
-                .description(template.getDescription())
-                .type(template.getType())
-                .accountId(
-                        template.getType().equals(INCOME.name())
-                                ? template.getReceiverAccount().getAccountId()
-                                : template.getSenderAccount().getAccountId())
-                .categoryId(template.getCategory().getCategoryId())
-                .labelIds(template.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()))
-                .build();
-    }
-
-    private TransferRsModel buildTransferResponseModel(Template template) {
-        return TransferRsModel.builder()
-                .transactionId(template.getTemplateId())
-                .dateTime(template.getDateTime())
-                .amount(template.getAmount())
-                .description(template.getDescription())
-                .senderAccountId(template.getSenderAccount().getAccountId())
-                .receiverAccountId(template.getReceiverAccount().getAccountId())
-                .type(template.getType())
-                .build();
-    }
-
-    private DebtRsModel buildDebtResponseModel(Template ttemplate) {
-        return DebtRsModel.builder()
-                .transactionId(ttemplate.getTemplateId())
-                .dateTime(ttemplate.getDateTime())
-                .amount(ttemplate.getAmount())
-                .description(ttemplate.getDescription())
-                .type(ttemplate.getType())
-                .accountId(
-                        ttemplate.getType().equals(DEBT_IN.name())
-                                ? ttemplate.getReceiverAccount().getAccountId()
-                                : ttemplate.getSenderAccount().getAccountId())
-                .build();
     }
 
     private Template templateByIdAndUser(String templateId, User user) {
