@@ -54,13 +54,11 @@ public class AccountServiceImpl implements AccountService {
         checkInitialAccountExistence(isInitialAccount, user);
         checkDuplicateAccount(requestBody.getAccountName(), user);
 
-        Account account = buildAccount(
-                requestBody,
+        Account account = accountBuilder.buildAccount(requestBody,
                 user,
                 getAccountType(requestBody.getAccountTypeName(), isInitialAccount),
                 getCurrency(requestBody.getCurrency()),
-                isInitialAccount
-        );
+                isInitialAccount);
 
         log.info(format(ACCOUNT_CREATED_MSG, user.getUsername(), AccountMapper.INSTANCE.buildAccountResponseModel(account)));
         return AccountMapper.INSTANCE.buildAccountResponseModel(account);
@@ -162,11 +160,6 @@ public class AccountServiceImpl implements AccountService {
                         format(UNAUTHORIZED_ACCOUNT_MSG, user.getUsername(), accountId)));
     }
 
-    private Account buildAccount(AccountRqModel requestBody, User user, AccountType accountType,
-                                 Currency currency, boolean isInitialAccount) {
-        return accountRepo.save(accountBuilder.buildAccount(requestBody, user, accountType, currency, isInitialAccount));
-    }
-
     private Currency getCurrency(String currency) {
         return currencyRepo
                 .byName(currency)
@@ -197,7 +190,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private void updateBalanceValue(UpdateBalanceModel requestBody, Account account) {
-        account.setBalance(requestBody.getAmount());
+        account.setBalance(requestBody.getBalance());
         accountRepo.save(account);
     }
 
@@ -220,7 +213,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private void checkNegativeBalance(UpdateBalanceModel requestBody, Account account) {
-        if (requestBody.getAmount().compareTo(BigDecimal.ZERO) < 0 && !account.isAllowNegative()) {
+        if (requestBody.getBalance().compareTo(BigDecimal.ZERO) < 0 && !account.isAllowNegative()) {
             throw new NotEnoughBalanceException(format(NEGATIVE_BALANCE_NOT_ALLOWED, account.getAccountId()));
         }
     }

@@ -25,5 +25,5 @@ public class UpdateBalanceModel {
     String accountId;
 
     @NotNull
-    BigDecimal amount;
+    BigDecimal balance;
 }

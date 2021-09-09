@@ -81,9 +81,9 @@ public class UserServiceImpl implements UserService {
         }
 
         checkUsernameUniqueness(signupRqModel.getUsername());
-        User user = buildUser(signupRqModel.getUsername(), signupRqModel.getFullName());
+        User user = userBuilder.buildUser(signupRqModel.getUsername(), signupRqModel.getFullName());
         String otp = generateOtp();
-        buildOtp(otp, user);
+        userBuilder.buildOtp(otp, user);
 
         if (signupRqModel.getUsername().contains("@")) {
             mailSenderService
@@ -131,14 +131,6 @@ public class UserServiceImpl implements UserService {
 
         log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
         return UserMapper.INSTANCE.buildResetPasswordResponseModel(user.getUsername(), requestBody);
-    }
-
-    private User buildUser(String username, String fullName) {
-        return userBuilder.buildUser(username, fullName);
-    }
-
-    private void buildOtp(String otp, User user) {
-        userBuilder.buildOtp(otp, user);
     }
 
     private void updatePasswordAndStatusValues(String password, User user) {

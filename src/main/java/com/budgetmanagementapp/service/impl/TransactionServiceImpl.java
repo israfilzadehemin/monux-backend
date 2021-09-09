@@ -94,7 +94,7 @@ public class TransactionServiceImpl implements TransactionService {
                 ? singletonMap(SENDER_ACCOUNT, account)
                 : singletonMap(RECEIVER_ACCOUNT, account);
 
-        Transaction transaction = buildTransaction(requestBody, user, account, category, labels, type);
+        Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, account, category, labels, type);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
         InOutRsModel response = buildInOutResponseModel(transaction);
@@ -122,7 +122,7 @@ public class TransactionServiceImpl implements TransactionService {
             put(RECEIVER_ACCOUNT, receiverAccount);
         }};
 
-        Transaction transaction = buildTransaction(requestBody, user, senderAccount, receiverAccount);
+        Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
         TransferRsModel response = buildTransferResponseModel(transaction);
@@ -142,7 +142,7 @@ public class TransactionServiceImpl implements TransactionService {
                 ? singletonMap(SENDER_ACCOUNT, account)
                 : singletonMap(RECEIVER_ACCOUNT, account);
 
-        Transaction transaction = buildTransaction(requestBody, type, user, account);
+        Transaction transaction = transactionBuilder.buildTransaction(requestBody, type, account, user);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
         DebtRsModel response = buildDebtResponseModel(transaction);
@@ -333,41 +333,6 @@ public class TransactionServiceImpl implements TransactionService {
 
         log.info(format(DELETED_TRANSACTIONS_MSG, user.getUsername(), response));
         return response;
-    }
-
-    private Transaction buildTransaction(InOutRqModel requestBody, User user,
-                                         Account account, Category category,
-                                         List<Label> labels, TransactionType type) {
-        Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, category, labels, type);
-
-        if (type.equals(INCOME)) {
-            transaction.setReceiverAccount(account);
-        } else {
-            transaction.setSenderAccount(account);
-        }
-        return transactionRepo.save(transaction);
-    }
-
-    private Transaction buildTransaction(TransferRqModel requestBody, User user,
-                                         Account senderAccount,
-                                         Account receiverAccount) {
-        return transactionRepo.save(
-                transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount));
-    }
-
-    private Transaction buildTransaction(DebtRqModel requestBody,
-                                         TransactionType type,
-                                         User user,
-                                         Account account) {
-        Transaction transaction = transactionBuilder.buildTransaction(requestBody, type, user);
-
-        if (type.equals(DEBT_IN)) {
-            transaction.setReceiverAccount(account);
-        } else {
-            transaction.setSenderAccount(account);
-        }
-
-        return transactionRepo.save(transaction);
     }
 
     private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,

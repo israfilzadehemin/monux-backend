@@ -34,7 +34,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public FeedbackRsModel createFeedback(FeedbackRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
-        Feedback feedback = buildFeedback(requestBody, user);
+        Feedback feedback = feedbackBuilder.buildFeedback(requestBody, user);
 
         log.info(format(FEEDBACK_CREATED_MSG, user.getUsername(), FeedbackMapper.INSTANCE.buildFeedbackResponseModel(feedback)));
         return FeedbackMapper.INSTANCE.buildFeedbackResponseModel(feedback);
@@ -55,10 +55,6 @@ public class FeedbackServiceImpl implements FeedbackService {
         FeedbackRsModel response = FeedbackMapper.INSTANCE.buildFeedbackResponseModel(feedbackById(feedbackId, username));
         log.info(format(FEEDBACK_BY_ID_MSG, feedbackId, response));
         return response;
-    }
-
-    private Feedback buildFeedback(FeedbackRqModel requestBody, User user) {
-        return feedbackRepo.save(feedbackBuilder.buildFeedback(requestBody, user));
     }
 
     private List<FeedbackRsModel> feedbacksByUser(User user) {

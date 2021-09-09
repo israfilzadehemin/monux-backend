@@ -43,7 +43,7 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryRsModel createCategory(CategoryRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
         checkDuplicate(requestBody.getCategoryName(), user);
-        Category category = buildCategory(requestBody, user);
+        Category category = categoryBuilder.buildCategory(requestBody, user);
 
         log.info(format(CATEGORY_CREATED_MSG, user.getUsername(), CategoryMapper.INSTANCE.buildCategoryResponseModel(category)));
         return CategoryMapper.INSTANCE.buildCategoryResponseModel(category);
@@ -78,12 +78,6 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow(() -> new CategoryNotFoundException(format(INVALID_CATEGORY_ID_MSG, categoryId)));
     }
 
-
-    private Category buildCategory(CategoryRqModel requestBody, User user) {
-        CustomValidator.validateCategoryType(requestBody.getCategoryType());
-
-        return categoryRepo.save(categoryBuilder.buildCategory(requestBody, user));
-    }
     private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
         CustomValidator.validateCategoryType(requestBody.getCategoryType());
 

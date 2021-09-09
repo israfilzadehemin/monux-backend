@@ -43,7 +43,7 @@ public class LabelServiceImpl implements LabelService {
     public LabelRsModel createLabel(LabelRqModel requestBody, String username) {
         User user = userByUsername(username);
         checkDuplicate(requestBody.getLabelName(), user);
-        Label label = buildLabel(requestBody, user);
+        Label label = labelBuilder.buildLabel(requestBody, user);
 
         log.info(format(LABEL_CREATED_MSG, user.getUsername(), LabelMapper.INSTANCE.buildLabelResponseModel(label)));
         return LabelMapper.INSTANCE.buildLabelResponseModel(label);
@@ -89,12 +89,6 @@ public class LabelServiceImpl implements LabelService {
                 .filter(id -> byIdAndTypeAndUser(id, type, user).isPresent())
                 .map(id -> byIdAndTypeAndUser(id, type, user).get())
                 .collect(Collectors.toList());
-    }
-
-    private Label buildLabel(LabelRqModel requestBody, User user) {
-        CustomValidator.validateCategoryType(requestBody.getLabelCategory());
-
-        return labelRepo.save(labelBuilder.buildLabel(requestBody, user));
     }
 
     private User userByUsername(String username) {

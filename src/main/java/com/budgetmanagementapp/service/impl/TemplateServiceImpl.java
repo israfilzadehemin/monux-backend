@@ -59,7 +59,7 @@ public class TemplateServiceImpl implements TemplateService {
         Category category = categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), type, user);
         List<Label> labels = labelService.allByIdsAndTypeAndUser(requestBody.getLabelIds(), type.name(), user);
 
-        Template template = buildTemplate(requestBody, user, account, category, labels, type);
+        Template template = templateBuilder.buildTemplate(requestBody, user, category, labels, type, account);
 
         InOutRsModel response = buildInOutResponseModel(template);
         log.info(format(IN_OUT_TEMPLATE_CREATED_MSG, user.getUsername(), response));
@@ -76,7 +76,7 @@ public class TemplateServiceImpl implements TemplateService {
             throw new TransferToSelfException(TRANSFER_TO_SELF_MSG);
         }
 
-        Template template = buildTemplate(requestBody, user, senderAccount, receiverAccount);
+        Template template = templateBuilder.buildTemplate(requestBody, user, senderAccount, receiverAccount);
 
         TransferRsModel response = buildTransferResponseModel(template);
         log.info(format(TRANSFER_TEMPLATE_CREATED_MSG, user.getUsername(), response));
@@ -88,7 +88,7 @@ public class TemplateServiceImpl implements TemplateService {
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
 
-        Template template = buildTemplate(requestBody, type, user, account);
+        Template template = templateBuilder.buildTemplate(requestBody, type, user, account);
 
         DebtRsModel response = buildDebtResponseModel(template);
         log.info(format(DEBT_TEMPLATE_CREATED_MSG, user.getUsername(), response));
@@ -165,41 +165,6 @@ public class TemplateServiceImpl implements TemplateService {
         return deletedTemplates.stream()
                 .map(this::buildGenericResponseModel)
                 .collect(Collectors.toList());
-    }
-
-    private Template buildTemplate(InOutRqModel requestBody, User user,
-                                   Account account, Category category,
-                                   List<Label> labels, TransactionType type) {
-        Template template = templateBuilder.buildTemplate(requestBody, user, category, labels, type);
-
-        if (type.equals(INCOME)) {
-            template.setReceiverAccount(account);
-        } else {
-            template.setSenderAccount(account);
-        }
-        return templateRepo.save(template);
-    }
-
-    private Template buildTemplate(TransferRqModel requestBody, User user,
-                                   Account senderAccount,
-                                   Account receiverAccount) {
-        Template template = templateBuilder.buildTemplate(requestBody, user, senderAccount, receiverAccount);
-        return templateRepo.save(template);
-    }
-
-    private Template buildTemplate(DebtRqModel requestBody,
-                                   TransactionType type,
-                                   User user,
-                                   Account account) {
-        Template template = templateBuilder.buildTemplate(requestBody, type, user);
-
-        if (type.equals(DEBT_IN)) {
-            template.setReceiverAccount(account);
-        } else {
-            template.setSenderAccount(account);
-        }
-
-        return templateRepo.save(template);
     }
 
     private Template updateTemplateValues(UpdateInOutRqModel requestBody, Template template,

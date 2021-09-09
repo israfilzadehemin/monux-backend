@@ -15,15 +15,11 @@ public interface AccountMapper {
     AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);
 
     @Mappings({
-            @Mapping(source = "name", target = "accountName"),
+            @Mapping(target = "accountName", source = "name"),
+            @Mapping(target = "accountTypeName", source = "account.accountType.accountTypeName"),
             @Mapping(target = "currency", source = "account.currency.name")
     })
     AccountRsModel buildAccountResponseModel(Account account);
-
-    @AfterMapping
-    default void addExtraFields(@MappingTarget AccountRsModel accountRsModel, Account account) {
-        accountRsModel.setAccountTypeName(account.getAccountType().getAccountTypeName());
-    }
 
     AccountTypeRsModel buildAccountTypeResponseModel(AccountType accountType);
 
