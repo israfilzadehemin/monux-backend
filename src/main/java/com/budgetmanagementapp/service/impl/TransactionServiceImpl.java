@@ -267,7 +267,7 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
-                            .map(this::buildGenericResponseModel)
+                            .map(transactionBuilder::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
             log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
@@ -299,7 +299,7 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
-                            .map(this::buildGenericResponseModel)
+                            .map(transactionBuilder::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
             log.info(format(LAST_TRANSACTIONS_MSG, username, response));
@@ -327,7 +327,7 @@ public class TransactionServiceImpl implements TransactionService {
 
             accountService.updateBalance(tr.getAmount(), map);
             transactionRepo.deleteById(user, tr.getTransactionId());
-            return buildGenericResponseModel(tr);
+            return transactionBuilder.buildGenericResponseModel(tr);
 
         }).collect(Collectors.toList());
 
@@ -379,31 +379,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         return transactionRepo.save(transaction);
-    }
-
-    private TransactionRsModel buildGenericResponseModel(Transaction transaction) {
-        TransactionRsModel response = TransactionRsModel.builder()
-                .transactionId(transaction.getTransactionId())
-                .dateTime(transaction.getDateTime())
-                .amount(transaction.getAmount())
-                .description(transaction.getDescription())
-                .type(transaction.getType())
-                .build();
-
-        if (!Objects.isNull(transaction.getSenderAccount())) {
-            response.setSenderAccountId(transaction.getSenderAccount().getAccountId());
-        }
-        if (!Objects.isNull(transaction.getReceiverAccount())) {
-            response.setReceiverAccountId(transaction.getReceiverAccount().getAccountId());
-        }
-        if (!Objects.isNull(transaction.getCategory())) {
-            response.setCategoryId(transaction.getCategory().getCategoryId());
-        }
-        if (!Objects.isNull(transaction.getLabels())) {
-            response.setLabelIds(transaction.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()));
-        }
-
-        return response;
     }
 
     private InOutRsModel buildInOutResponseModel(Transaction transaction) {

@@ -163,7 +163,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         log.info(String.format(DELETED_TEMPLATES_MSG, username, deletedTemplates));
         return deletedTemplates.stream()
-                .map(this::buildGenericResponseModel)
+                .map(templateBuilder::buildGenericResponseModel)
                 .collect(Collectors.toList());
     }
 
@@ -212,26 +212,6 @@ public class TemplateServiceImpl implements TemplateService {
 
         return templateRepo.save(template);
     }
-
-    private TransactionRsModel buildGenericResponseModel(Template template) {
-        TransactionRsModel response = TemplateMapper.INSTANCE.buildGenericResponseModel(template);
-
-        if (!Objects.isNull(template.getSenderAccount())) {
-            response.setSenderAccountId(template.getSenderAccount().getAccountId());
-        }
-        if (!Objects.isNull(template.getReceiverAccount())) {
-            response.setReceiverAccountId(template.getReceiverAccount().getAccountId());
-        }
-        if (!Objects.isNull(template.getCategory())) {
-            response.setCategoryId(template.getCategory().getCategoryId());
-        }
-        if (!Objects.isNull(template.getLabels())) {
-            response.setLabelIds(template.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()));
-        }
-
-        return response;
-    }
-
 
     private InOutRsModel buildInOutResponseModel(Template template) {
         return InOutRsModel.builder()

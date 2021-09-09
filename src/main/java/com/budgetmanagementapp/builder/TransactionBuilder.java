@@ -1,8 +1,10 @@
 package com.budgetmanagementapp.builder;
 
 import com.budgetmanagementapp.entity.*;
+import com.budgetmanagementapp.mapper.TransactionMapper;
 import com.budgetmanagementapp.model.account.DebtRqModel;
 import com.budgetmanagementapp.model.account.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.TransactionRsModel;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.repository.TransactionRepository;
 import com.budgetmanagementapp.utility.CustomFormatter;
@@ -11,7 +13,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.budgetmanagementapp.utility.TransactionType.*;
 
@@ -80,4 +84,24 @@ public class TransactionBuilder {
         transactionRepo.save(transaction);
         return transaction;
     }
+
+    public TransactionRsModel buildGenericResponseModel(Transaction transaction) {
+        TransactionRsModel response = TransactionMapper.INSTANCE.buildGenericResponseModel(transaction);
+
+        if (!Objects.isNull(transaction.getSenderAccount())) {
+            response.setSenderAccountId(transaction.getSenderAccount().getAccountId());
+        }
+        if (!Objects.isNull(transaction.getReceiverAccount())) {
+            response.setReceiverAccountId(transaction.getReceiverAccount().getAccountId());
+        }
+        if (!Objects.isNull(transaction.getCategory())) {
+            response.setCategoryId(transaction.getCategory().getCategoryId());
+        }
+        if (!Objects.isNull(transaction.getLabels())) {
+            response.setLabelIds(transaction.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()));
+        }
+        return response;
+    }
+
+
 }
