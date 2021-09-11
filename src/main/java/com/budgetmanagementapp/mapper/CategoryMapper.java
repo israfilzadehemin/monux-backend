@@ -8,13 +8,13 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface CategoryMapper {
+public abstract class CategoryMapper {
 
-    CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
+    public static CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
     @Mappings({
             @Mapping(source = "category.name", target = "categoryName"),
             @Mapping(source = "category.type", target = "categoryType"),
     })
-    CategoryRsModel buildCategoryResponseModel(Category category);
+    public abstract CategoryRsModel buildCategoryResponseModel(Category category);
 }

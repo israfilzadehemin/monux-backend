@@ -7,10 +7,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface FeedbackMapper {
+public abstract class FeedbackMapper {
 
-    FeedbackMapper INSTANCE = Mappers.getMapper(FeedbackMapper.class);
+    public static FeedbackMapper INSTANCE = Mappers.getMapper(FeedbackMapper.class);
 
     @Mapping(source = "feedback.dateTime", target = "creationDateTime")
-    FeedbackRsModel buildFeedbackResponseModel(Feedback feedback);
+    public abstract FeedbackRsModel buildFeedbackResponseModel(Feedback feedback);
 }

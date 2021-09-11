@@ -7,16 +7,16 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface UserMapper {
+public abstract class UserMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    public static UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(source = "user.dateTime", target = "creationDateTime")
-    UserRsModel buildUserResponseModel(User user);
+    public abstract UserRsModel buildUserResponseModel(User user);
 
-    CreatePasswordRsModel buildPasswordResponseModel(CreatePasswordRqModel requestBody);
+    public abstract CreatePasswordRsModel buildPasswordResponseModel(CreatePasswordRqModel requestBody);
 
-    ResetPasswordRsModel buildResetPasswordResponseModel(String username, ResetPasswordRqModel requestBody);
+    public abstract ResetPasswordRsModel buildResetPasswordResponseModel(String username, ResetPasswordRqModel requestBody);
 
 
 }

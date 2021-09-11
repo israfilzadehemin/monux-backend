@@ -1,10 +1,6 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_BODY;
-import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
+import static com.budgetmanagementapp.utility.Constant.*;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_EQUALITY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_UPDATED_MSG;
@@ -99,9 +95,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CreatePasswordRsModel createPassword(CreatePasswordRqModel requestBody) {
-        User user = findByUsername(requestBody.getUsername());
+        User user = userByUsernameAndStatus(requestBody);
         updatePasswordAndStatusValues(requestBody.getPassword(), user);
-
         log.info(format(PASSWORD_CREATED_MSG, user.getUsername()));
         return UserMapper.INSTANCE.buildPasswordResponseModel(requestBody);
     }
@@ -131,6 +126,11 @@ public class UserServiceImpl implements UserService {
 
         log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
         return UserMapper.INSTANCE.buildResetPasswordResponseModel(user.getUsername(), requestBody);
+    }
+
+    private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
+        return userRepo.byUsernameAndStatus(requestBody.getUsername(), STATUS_CONFIRMED)
+                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
     }
 
     private void updatePasswordAndStatusValues(String password, User user) {

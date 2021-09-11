@@ -15,23 +15,24 @@ import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
 
 @Mapper(componentModel = "spring")
-public interface TransactionMapper {
+public abstract class TransactionMapper {
 
-    TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
+    public static TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
 
-    TransactionRsModel buildGenericResponseModel(Transaction transaction);
+    public abstract TransactionRsModel buildGenericResponseModel(Transaction transaction);
 
     @Mapping(source = "transaction.category.categoryId", target = "categoryId")
-    InOutRsModel buildInOutResponseModel(Transaction transaction);
+    public abstract InOutRsModel buildInOutResponseModel(Transaction transaction);
 
     @AfterMapping
-    default void mapAccountIdAndLabelId(@MappingTarget InOutRsModel inOutRsModel, Transaction transaction) {
-        inOutRsModel.setAccountId(
+    void mapAccountIdAndLabelId(@MappingTarget InOutRsModel.InOutRsModelBuilder<?, ?> inOutRsModel, Transaction transaction) {
+
+        inOutRsModel.accountId(
                 transaction.getType().equals(INCOME.name())
                         ? transaction.getReceiverAccount().getAccountId()
                         : transaction.getSenderAccount().getAccountId());
 
-        inOutRsModel.setLabelIds(
+        inOutRsModel.labelIds(
                 transaction.getLabels().stream()
                         .map(Label::getLabelId).collect(Collectors.toList())
         );
@@ -41,15 +42,15 @@ public interface TransactionMapper {
             @Mapping(source = "transaction.senderAccount.accountId", target = "senderAccountId"),
             @Mapping(source = "transaction.receiverAccount.accountId", target = "receiverAccountId"),
     })
-    TransferRsModel buildTransferResponseModel(Transaction transaction);
+    public abstract TransferRsModel buildTransferResponseModel(Transaction transaction);
 
 
     @Mapping(source = "transaction.category.categoryId", target = "categoryId")
-    DebtRsModel buildDebtResponseModel(Transaction transaction);
+    public abstract DebtRsModel buildDebtResponseModel(Transaction transaction);
 
     @AfterMapping
-    default void mapAccountId(@MappingTarget DebtRsModel debtRsModel, Transaction transaction) {
-        debtRsModel.setAccountId(
+    void mapAccountId(@MappingTarget DebtRsModel.DebtRsModelBuilder<?, ?> debtRsModel, Transaction transaction) {
+        debtRsModel.accountId(
                 transaction.getType().equals(DEBT_IN.name())
                         ? transaction.getReceiverAccount().getAccountId()
                         : transaction.getSenderAccount().getAccountId());

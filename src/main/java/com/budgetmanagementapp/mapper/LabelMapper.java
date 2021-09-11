@@ -8,13 +8,13 @@ import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public interface LabelMapper {
+public abstract class LabelMapper {
 
-    LabelMapper INSTANCE = Mappers.getMapper(LabelMapper.class);
+    public static LabelMapper INSTANCE = Mappers.getMapper(LabelMapper.class);
 
     @Mappings({
             @Mapping(source = "label.name", target = "labelName"),
             @Mapping(source = "label.type", target = "labelCategory")
     })
-    LabelRsModel buildLabelResponseModel(Label label);
+    public abstract LabelRsModel buildLabelResponseModel(Label label);
 }
