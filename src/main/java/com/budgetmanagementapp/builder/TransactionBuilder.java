@@ -2,8 +2,8 @@ package com.budgetmanagementapp.builder;
 
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.mapper.TransactionMapper;
-import com.budgetmanagementapp.model.account.DebtRqModel;
-import com.budgetmanagementapp.model.account.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
 import com.budgetmanagementapp.model.transaction.TransactionRsModel;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.repository.TransactionRepository;

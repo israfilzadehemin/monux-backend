@@ -6,8 +6,8 @@ import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.*;
-import com.budgetmanagementapp.model.account.DebtRqModel;
-import com.budgetmanagementapp.model.account.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
 import com.budgetmanagementapp.model.transaction.DeleteTransactionRqModel;

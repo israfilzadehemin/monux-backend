@@ -18,9 +18,9 @@ import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.account.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
 import com.budgetmanagementapp.model.transaction.DeleteTransactionRqModel;
-import com.budgetmanagementapp.model.account.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;

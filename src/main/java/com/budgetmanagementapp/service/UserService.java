@@ -23,7 +23,7 @@ public interface UserService {
 
     CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordRequestModel);
 
-    ResetPasswordRsModel forgetPassword(String username, ResetPasswordRqModel requestBody) throws MessagingException;
+    UserRsModel forgetPassword(String username) throws MessagingException;
 
-    ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody);
+    ResetPasswordRsModel resetPassword(ResetPasswordRqModel requestBody);
 }

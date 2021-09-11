@@ -71,25 +71,23 @@ public class UserController {
     }
 
     @PostMapping(USER_FORGET_PASSWORD_URL)
-    public ResponseEntity<?> forgetPassword(@RequestParam String username,
-                                            @RequestBody @Valid ResetPasswordRqModel requestBody) throws MessagingException {
-        log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
+    public ResponseEntity<?> forgetPassword(@RequestParam String username) throws MessagingException {
+        log.info(USER_RESET_PASSWORD_URL);
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(userService.forgetPassword(username, requestBody))
+                        .body(userService.forgetPassword(username))
                         .build()
         );
     }
 
     @PostMapping(USER_RESET_PASSWORD_URL)
-    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
-                                           @RequestParam String username) {
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody) {
         log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(userService.resetPassword(username, requestBody))
+                        .body(userService.resetPassword(requestBody))
                         .build()
         );
     }

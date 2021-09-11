@@ -1,9 +1,9 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.account.DebtRqModel;
-import com.budgetmanagementapp.model.account.DebtRsModel;
-import com.budgetmanagementapp.model.account.InOutRqModel;
-import com.budgetmanagementapp.model.account.InOutRsModel;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRsModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRsModel;
 import com.budgetmanagementapp.model.transaction.TransactionRsModel;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.transfer.TransferRsModel;

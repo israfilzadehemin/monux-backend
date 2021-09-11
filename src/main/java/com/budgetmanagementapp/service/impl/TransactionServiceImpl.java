@@ -35,10 +35,10 @@ import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.mapper.TransactionMapper;
-import com.budgetmanagementapp.model.account.DebtRqModel;
-import com.budgetmanagementapp.model.account.DebtRsModel;
-import com.budgetmanagementapp.model.account.InOutRqModel;
-import com.budgetmanagementapp.model.account.InOutRsModel;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRsModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRsModel;
 import com.budgetmanagementapp.model.transaction.TransactionRsModel;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.transfer.TransferRsModel;
@@ -61,7 +61,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -292,7 +291,7 @@ public class TransactionServiceImpl implements TransactionService {
             transactions.addAll(transactionRepo.lastByUserAndReceiverAccount(user, account, pageable).toList());
         }
 
-        transactions.sort(Comparator.comparing(Transaction::getId).reversed());
+        transactions.sort(Comparator.comparing(Transaction::getDateTime).reversed());
 
         if (transactions.isEmpty()) {
             throw new TransactionNotFoundException(

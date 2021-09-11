@@ -1,6 +1,4 @@
-package com.budgetmanagementapp.model.account;
-
-import java.util.List;
+package com.budgetmanagementapp.model.transaction;
 
 import com.budgetmanagementapp.model.transaction.TransactionRsModel;
 import lombok.AccessLevel;
@@ -19,8 +17,6 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class InOutRsModel extends TransactionRsModel {
+public class DebtRsModel extends TransactionRsModel {
     String accountId;
-    String categoryId;
-    List<String> labelIds;
 }

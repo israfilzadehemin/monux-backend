@@ -2,7 +2,7 @@ package com.budgetmanagementapp.model.account;
 
 import javax.validation.constraints.NotBlank;
 
-import com.budgetmanagementapp.model.account.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

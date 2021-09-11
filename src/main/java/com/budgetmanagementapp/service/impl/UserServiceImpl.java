@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResetPasswordRsModel forgetPassword(String username, ResetPasswordRqModel requestBody) throws MessagingException {
+    public UserRsModel forgetPassword(String username) throws MessagingException {
         String encryptedUsername = EncryptionTool.encrypt(username);
         if (username.contains("@")) {
             CustomValidator.validateEmailFormat(username);
@@ -115,12 +115,12 @@ public class UserServiceImpl implements UserService {
                     .sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY,
                             USER_FULL_RESET_PASSWORD_URL+encryptedUsername));
         }
-        return UserMapper.INSTANCE.buildResetPasswordResponseModel(username, requestBody);
+        return UserMapper.INSTANCE.buildUserResponseModel(findByUsername(username));
     }
 
     @Override
-    public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody) {
-        User user = findByUsername(EncryptionTool.decrypt(username));
+    public ResetPasswordRsModel resetPassword(ResetPasswordRqModel requestBody) {
+        User user = findByUsername(EncryptionTool.decrypt(requestBody.getUsername()));
         checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
         updatePassword(requestBody.getPassword(), user);
 

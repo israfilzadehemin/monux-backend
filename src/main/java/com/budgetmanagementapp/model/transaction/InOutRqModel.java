@@ -1,6 +1,10 @@
-package com.budgetmanagementapp.model.account;
+package com.budgetmanagementapp.model.transaction;
 
-import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import java.util.List;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
+import com.budgetmanagementapp.model.transaction.TransactionRqModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,6 +21,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class DebtRsModel extends TransactionRsModel {
+public class InOutRqModel extends TransactionRqModel {
+
+    @NotBlank
     String accountId;
+
+    @NotBlank
+    String categoryId;
+
+    @NotNull
+    List<String> labelIds;
 }
