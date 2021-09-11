@@ -1,51 +1,37 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_BODY;
-import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.ROLE_USER;
-import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
-import static com.budgetmanagementapp.utility.Constant.STATUS_CONFIRMED;
-import static com.budgetmanagementapp.utility.Constant.STATUS_NEW;
-import static com.budgetmanagementapp.utility.Constant.STATUS_NOT_PAID;
-import static com.budgetmanagementapp.utility.Constant.STATUS_PROCESSING;
+import static com.budgetmanagementapp.utility.Constant.*;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_EQUALITY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ROLE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USERNAME_NOT_UNIQUE_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_ADDED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_FULL_RESET_PASSWORD_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.entity.Otp;
+import com.budgetmanagementapp.builder.UserBuilder;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
-import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
-import com.budgetmanagementapp.model.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.ResetPasswordRqModel;
-import com.budgetmanagementapp.model.ResetPasswordRsModel;
-import com.budgetmanagementapp.model.SignupRqModel;
-import com.budgetmanagementapp.model.UserAuthModel;
-import com.budgetmanagementapp.model.UserRsModel;
-import com.budgetmanagementapp.repository.OtpRepository;
-import com.budgetmanagementapp.repository.RoleRepository;
+import com.budgetmanagementapp.mapper.UserMapper;
+import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
+import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
+import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
+import com.budgetmanagementapp.model.user.SignupRqModel;
+import com.budgetmanagementapp.model.user.UserAuthModel;
+import com.budgetmanagementapp.model.user.UserRsModel;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.EncryptionTool;
 import com.budgetmanagementapp.utility.MailSenderService;
 import com.budgetmanagementapp.utility.SmsSenderService;
-import java.time.LocalDateTime;
-import java.util.Collections;
+
 import java.util.Optional;
 import java.util.Random;
-import java.util.UUID;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -59,11 +45,10 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
-    private final RoleRepository roleRepo;
     private final MailSenderService mailSenderService;
     private final SmsSenderService smsSenderService;
-    private final OtpRepository otpRepo;
     private final BCryptPasswordEncoder encoder;
+    private final UserBuilder userBuilder;
 
     @Override
     public Optional<UserAuthModel> findAuthModelByUsername(String username) {
@@ -92,9 +77,9 @@ public class UserServiceImpl implements UserService {
         }
 
         checkUsernameUniqueness(signupRqModel.getUsername());
-        User user = buildUser(signupRqModel.getUsername(), signupRqModel.getFullName());
+        User user = userBuilder.buildUser(signupRqModel.getUsername(), signupRqModel.getFullName());
         String otp = generateOtp();
-        buildOtp(otp, user);
+        userBuilder.buildOtp(otp, user);
 
         if (signupRqModel.getUsername().contains("@")) {
             mailSenderService
@@ -105,20 +90,19 @@ public class UserServiceImpl implements UserService {
         }
 
         log.info(format(USER_ADDED_MSG, signupRqModel.getUsername()));
-        return buildUserResponseModel(user);
+        return UserMapper.INSTANCE.buildUserResponseModel(user);
     }
 
     @Override
     public CreatePasswordRsModel createPassword(CreatePasswordRqModel requestBody) {
         User user = userByUsernameAndStatus(requestBody);
         updatePasswordAndStatusValues(requestBody.getPassword(), user);
-
         log.info(format(PASSWORD_CREATED_MSG, user.getUsername()));
-        return buildPasswordResponseModel(requestBody);
+        return UserMapper.INSTANCE.buildPasswordResponseModel(requestBody);
     }
 
     @Override
-    public ResetPasswordRsModel forgetPassword(String username, ResetPasswordRqModel requestBody) throws MessagingException {
+    public UserRsModel forgetPassword(String username) throws MessagingException {
         String encryptedUsername = EncryptionTool.encrypt(username);
         if (username.contains("@")) {
             CustomValidator.validateEmailFormat(username);
@@ -131,66 +115,17 @@ public class UserServiceImpl implements UserService {
                     .sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY,
                             USER_FULL_RESET_PASSWORD_URL+encryptedUsername));
         }
-        return buildResetPasswordResponseModel(username, requestBody);
+        return UserMapper.INSTANCE.buildUserResponseModel(findByUsername(username));
     }
 
     @Override
-    public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody) {
-        User user = findByUsername(EncryptionTool.decrypt(username));
+    public ResetPasswordRsModel resetPassword(ResetPasswordRqModel requestBody) {
+        User user = findByUsername(EncryptionTool.decrypt(requestBody.getUsername()));
         checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
         updatePassword(requestBody.getPassword(), user);
 
         log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
-        return buildResetPasswordResponseModel(user.getUsername(), requestBody);
-    }
-
-    private User buildUser(String username, String fullName) {
-        return userRepo.save(User.builder()
-                .userId(UUID.randomUUID().toString())
-                .username(username)
-                .fullName(fullName)
-                .dateTime(LocalDateTime.now())
-                .status(STATUS_PROCESSING)
-                .paymentStatus(STATUS_NOT_PAID)
-                .roles(Collections.singletonList(
-                        roleRepo.byName(ROLE_USER)
-                                .orElseThrow(() -> new UserRoleNotFoundException(ROLE_NOT_FOUND_MSG))))
-                .build());
-    }
-
-    private void buildOtp(String otp, User user) {
-        otpRepo.save(Otp.builder()
-                .otpId(UUID.randomUUID().toString())
-                .otp(otp)
-                .status(STATUS_NEW)
-                .dateTime(LocalDateTime.now())
-                .user(user)
-                .build());
-    }
-
-    private UserRsModel buildUserResponseModel(User user) {
-        return UserRsModel.builder()
-                .userId(user.getUserId())
-                .username(user.getUsername())
-                .fullName(user.getFullName())
-                .creationDateTime(user.getDateTime())
-                .status(user.getStatus())
-                .paymentStatus(user.getPaymentStatus())
-                .build();
-    }
-
-    private CreatePasswordRsModel buildPasswordResponseModel(CreatePasswordRqModel requestBody) {
-        return CreatePasswordRsModel.builder()
-                .username(requestBody.getUsername())
-                .password(requestBody.getPassword())
-                .build();
-    }
-
-    private ResetPasswordRsModel buildResetPasswordResponseModel(String username, ResetPasswordRqModel requestBody) {
-        return ResetPasswordRsModel.builder()
-                .username(username)
-                .password(requestBody.getPassword())
-                .build();
+        return UserMapper.INSTANCE.buildResetPasswordResponseModel(user.getUsername(), requestBody);
     }
 
     private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {

@@ -10,13 +10,15 @@ import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_LABEL_MSG
 import static com.budgetmanagementapp.utility.MsgConstant.VISIBILITY_TOGGLED_MSG;
 import static java.lang.String.format;
 
+import com.budgetmanagementapp.builder.LabelBuilder;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DuplicateLabelException;
 import com.budgetmanagementapp.exception.LabelNotFoundException;
-import com.budgetmanagementapp.model.LabelRqModel;
-import com.budgetmanagementapp.model.LabelRsModel;
-import com.budgetmanagementapp.model.UpdateLabelRqModel;
+import com.budgetmanagementapp.mapper.LabelMapper;
+import com.budgetmanagementapp.model.label.LabelRqModel;
+import com.budgetmanagementapp.model.label.LabelRsModel;
+import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
 import com.budgetmanagementapp.repository.LabelRepository;
 import com.budgetmanagementapp.service.LabelService;
 import com.budgetmanagementapp.service.UserService;
@@ -24,7 +26,6 @@ import com.budgetmanagementapp.utility.CustomValidator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,15 +37,16 @@ import org.springframework.stereotype.Service;
 public class LabelServiceImpl implements LabelService {
     private final UserService userService;
     private final LabelRepository labelRepo;
+    private final LabelBuilder labelBuilder;
 
     @Override
     public LabelRsModel createLabel(LabelRqModel requestBody, String username) {
         User user = userByUsername(username);
         checkDuplicate(requestBody.getLabelName(), user);
-        Label label = buildLabel(requestBody, user);
+        Label label = labelBuilder.buildLabel(requestBody, user);
 
-        log.info(format(LABEL_CREATED_MSG, user.getUsername(), buildLabelResponseModel(label)));
-        return buildLabelResponseModel(label);
+        log.info(format(LABEL_CREATED_MSG, user.getUsername(), LabelMapper.INSTANCE.buildLabelResponseModel(label)));
+        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
     }
 
     @Override
@@ -67,8 +69,8 @@ public class LabelServiceImpl implements LabelService {
         Label label = byIdAndUser(requestBody.getLabelId(), username);
         updateLabelValues(requestBody, label);
 
-        log.info(format(LABEL_UPDATED_MSG, username, buildLabelResponseModel(label)));
-        return buildLabelResponseModel(label);
+        log.info(format(LABEL_UPDATED_MSG, username, LabelMapper.INSTANCE.buildLabelResponseModel(label)));
+        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
     }
 
     @Override
@@ -76,8 +78,8 @@ public class LabelServiceImpl implements LabelService {
         Label label = byIdAndUser(labelId, username);
         toggleLabelVisibility(label);
 
-        log.info(format(VISIBILITY_TOGGLED_MSG, username, buildLabelResponseModel(label)));
-        return buildLabelResponseModel(label);
+        log.info(format(VISIBILITY_TOGGLED_MSG, username, LabelMapper.INSTANCE.buildLabelResponseModel(label)));
+        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
     }
 
     @Override
@@ -89,27 +91,6 @@ public class LabelServiceImpl implements LabelService {
                 .collect(Collectors.toList());
     }
 
-    private Label buildLabel(LabelRqModel requestBody, User user) {
-        CustomValidator.validateCategoryType(requestBody.getLabelCategory());
-
-        return labelRepo.save(Label.builder()
-                .labelId(UUID.randomUUID().toString())
-                .name(requestBody.getLabelName())
-                .type(requestBody.getLabelCategory())
-                .visibility(true)
-                .user(user)
-                .build());
-    }
-
-    private LabelRsModel buildLabelResponseModel(Label label) {
-        return LabelRsModel.builder()
-                .labelId(label.getLabelId())
-                .labelName(label.getName())
-                .labelCategory(label.getType())
-                .visibility(label.isVisibility())
-                .build();
-    }
-
     private User userByUsername(String username) {
         return userService.findByUsername(username);
     }
@@ -118,11 +99,11 @@ public class LabelServiceImpl implements LabelService {
         return includeCommonLabels
                 ? labelRepo.allByUserOrGeneralUser(user, generalUser)
                 .stream()
-                .map(this::buildLabelResponseModel)
+                .map(LabelMapper.INSTANCE::buildLabelResponseModel)
                 .collect(Collectors.toList())
                 : labelRepo.allByUser(user)
                 .stream()
-                .map(this::buildLabelResponseModel)
+                .map(LabelMapper.INSTANCE::buildLabelResponseModel)
                 .collect(Collectors.toList());
     }
 

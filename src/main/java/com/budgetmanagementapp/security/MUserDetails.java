@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.security;
 
-import com.budgetmanagementapp.model.RoleAuthModel;
+import com.budgetmanagementapp.model.user.RoleAuthModel;
 import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;

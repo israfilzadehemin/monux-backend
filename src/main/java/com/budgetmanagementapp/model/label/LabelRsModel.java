@@ -1,0 +1,24 @@
+package com.budgetmanagementapp.model.label;
+
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.FieldDefaults;
+
+@AllArgsConstructor
+@Getter
+@Setter
+@ToString
+@Builder
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class LabelRsModel {
+    String labelId;
+    String labelName;
+    String labelCategory;
+    boolean visibility;
+}

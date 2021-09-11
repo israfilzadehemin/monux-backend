@@ -14,8 +14,9 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.ExpiredOtpException;
 import com.budgetmanagementapp.exception.InvalidOtpException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
-import com.budgetmanagementapp.model.ConfirmOtpRqModel;
-import com.budgetmanagementapp.model.ConfirmOtpRsModel;
+import com.budgetmanagementapp.mapper.OtpMapper;
+import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.user.ConfirmOtpRsModel;
 import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.OtpService;
@@ -43,19 +44,10 @@ public class OtpServiceImpl implements OtpService {
             updateOtpAndUserValues(otp, user);
 
             log.info(format(OTP_CONFIRMED_MSG, otp.getUser().getUsername()));
-            return buildOtpResponseModel(otp, user);
+            return OtpMapper.INSTANCE.buildOtpResponseModel(otp, user);
         } else {
             throw new InvalidOtpException(INVALID_OTP_MSG);
         }
-    }
-
-    private ConfirmOtpRsModel buildOtpResponseModel(Otp otp, User user) {
-        return ConfirmOtpRsModel.builder()
-                .otpId(otp.getOtpId())
-                .username(user.getUsername())
-                .otpStatus(otp.getStatus())
-                .otpCreationDateTime(otp.getDateTime())
-                .build();
     }
 
     private Otp otpByValue(ConfirmOtpRqModel requestBody) {

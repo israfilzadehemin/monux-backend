@@ -10,8 +10,8 @@ import static com.budgetmanagementapp.utility.UrlConstant.LABEL_UPDATE_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.LabelRqModel;
-import com.budgetmanagementapp.model.UpdateLabelRqModel;
+import com.budgetmanagementapp.model.label.LabelRqModel;
+import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
 import com.budgetmanagementapp.service.LabelService;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;

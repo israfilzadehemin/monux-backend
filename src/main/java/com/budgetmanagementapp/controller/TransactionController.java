@@ -18,14 +18,14 @@ import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_
 import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.DebtRqModel;
-import com.budgetmanagementapp.model.DeleteTransactionRqModel;
-import com.budgetmanagementapp.model.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.DeleteTransactionRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.TransferRqModel;
-import com.budgetmanagementapp.model.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.UpdateInOutRqModel;
-import com.budgetmanagementapp.model.UpdateTransferRqModel;
+import com.budgetmanagementapp.model.transfer.TransferRqModel;
+import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
+import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
+import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.util.Optional;

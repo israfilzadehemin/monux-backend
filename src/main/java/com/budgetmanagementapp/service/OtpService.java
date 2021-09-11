@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.ConfirmOtpRqModel;
-import com.budgetmanagementapp.model.ConfirmOtpRsModel;
+import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.user.ConfirmOtpRsModel;
 
 public interface OtpService {
 

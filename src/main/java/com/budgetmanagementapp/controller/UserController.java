@@ -8,12 +8,12 @@ import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_RESET_PASSWORD_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
 
-import com.budgetmanagementapp.model.AccountRqModel;
-import com.budgetmanagementapp.model.ConfirmOtpRqModel;
-import com.budgetmanagementapp.model.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.ResetPasswordRqModel;
+import com.budgetmanagementapp.model.account.AccountRqModel;
+import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
+import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.SignupRqModel;
+import com.budgetmanagementapp.model.user.SignupRqModel;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
@@ -71,25 +71,23 @@ public class UserController {
     }
 
     @PostMapping(USER_FORGET_PASSWORD_URL)
-    public ResponseEntity<?> forgetPassword(@RequestParam String username,
-                                            @RequestBody @Valid ResetPasswordRqModel requestBody) throws MessagingException {
-        log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
+    public ResponseEntity<?> forgetPassword(@RequestParam String username) throws MessagingException {
+        log.info(USER_RESET_PASSWORD_URL);
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(userService.forgetPassword(username, requestBody))
+                        .body(userService.forgetPassword(username))
                         .build()
         );
     }
 
     @PostMapping(USER_RESET_PASSWORD_URL)
-    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
-                                           @RequestParam String username) {
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody) {
         log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(userService.resetPassword(username, requestBody))
+                        .body(userService.resetPassword(requestBody))
                         .build()
         );
     }

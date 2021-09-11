@@ -9,13 +9,15 @@ import static com.budgetmanagementapp.utility.MsgConstant.INVALID_CATEGORY_ID_MS
 import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_CATEGORY_MSG;
 import static java.lang.String.format;
 
+import com.budgetmanagementapp.builder.CategoryBuilder;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateCategoryException;
-import com.budgetmanagementapp.model.CategoryRqModel;
-import com.budgetmanagementapp.model.CategoryRsModel;
-import com.budgetmanagementapp.model.UpdateCategoryRqModel;
+import com.budgetmanagementapp.mapper.CategoryMapper;
+import com.budgetmanagementapp.model.category.CategoryRqModel;
+import com.budgetmanagementapp.model.category.CategoryRsModel;
+import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
 import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.service.CategoryService;
 import com.budgetmanagementapp.service.UserService;
@@ -24,7 +26,6 @@ import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.TransactionType;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,15 +37,16 @@ import org.springframework.stereotype.Service;
 public class CategoryServiceImpl implements CategoryService {
     private final UserService userService;
     private final CategoryRepository categoryRepo;
+    private final CategoryBuilder categoryBuilder;
 
     @Override
     public CategoryRsModel createCategory(CategoryRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
         checkDuplicate(requestBody.getCategoryName(), user);
-        Category category = buildCategory(requestBody, user);
+        Category category = categoryBuilder.buildCategory(requestBody, user);
 
-        log.info(format(CATEGORY_CREATED_MSG, user.getUsername(), buildCategoryResponseModel(category)));
-        return buildCategoryResponseModel(category);
+        log.info(format(CATEGORY_CREATED_MSG, user.getUsername(), CategoryMapper.INSTANCE.buildCategoryResponseModel(category)));
+        return CategoryMapper.INSTANCE.buildCategoryResponseModel(category);
     }
 
     @Override
@@ -62,8 +64,8 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryByIdAndUser(requestBody.getCategoryId(), username);
         updateCategoryValues(requestBody, category);
 
-        log.info(format(CATEGORY_UPDATED_MSG, username, buildCategoryResponseModel(category)));
-        return buildCategoryResponseModel(category);
+        log.info(format(CATEGORY_UPDATED_MSG, username, CategoryMapper.INSTANCE.buildCategoryResponseModel(category)));
+        return CategoryMapper.INSTANCE.buildCategoryResponseModel(category);
     }
 
     @Override
@@ -74,28 +76,6 @@ public class CategoryServiceImpl implements CategoryService {
                         CategoryType.valueOf(type.name()).name(),
                         Arrays.asList(user, userService.findByUsername(COMMON_USERNAME)))
                 .orElseThrow(() -> new CategoryNotFoundException(format(INVALID_CATEGORY_ID_MSG, categoryId)));
-    }
-
-
-    private Category buildCategory(CategoryRqModel requestBody, User user) {
-        CustomValidator.validateCategoryType(requestBody.getCategoryType());
-
-        return categoryRepo.save(Category.builder()
-                .categoryId(UUID.randomUUID().toString())
-                .icon(requestBody.getIcon())
-                .name(requestBody.getCategoryName())
-                .type(requestBody.getCategoryType().toUpperCase())
-                .user(user)
-                .build());
-    }
-
-    private CategoryRsModel buildCategoryResponseModel(Category category) {
-        return CategoryRsModel.builder()
-                .categoryId(category.getCategoryId())
-                .icon(category.getIcon())
-                .categoryName(category.getName())
-                .categoryType(category.getType())
-                .build();
     }
 
     private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
@@ -127,11 +107,11 @@ public class CategoryServiceImpl implements CategoryService {
         return includeCommonCategories
                 ? categoryRepo.allByUserOrGeneralUser(user, generalUser)
                 .stream()
-                .map(this::buildCategoryResponseModel)
+                .map(CategoryMapper.INSTANCE::buildCategoryResponseModel)
                 .collect(Collectors.toList())
                 : categoryRepo.allByUser(user)
                 .stream()
-                .map(this::buildCategoryResponseModel)
+                .map(CategoryMapper.INSTANCE::buildCategoryResponseModel)
                 .collect(Collectors.toList());
     }
 

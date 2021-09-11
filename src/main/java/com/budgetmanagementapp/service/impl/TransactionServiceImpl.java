@@ -25,6 +25,7 @@ import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 import static java.util.Collections.singletonMap;
 
+import com.budgetmanagementapp.builder.TransactionBuilder;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.Label;
@@ -33,16 +34,17 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
-import com.budgetmanagementapp.model.DebtRqModel;
-import com.budgetmanagementapp.model.DebtRsModel;
-import com.budgetmanagementapp.model.InOutRqModel;
-import com.budgetmanagementapp.model.InOutRsModel;
-import com.budgetmanagementapp.model.TransactionRsModel;
-import com.budgetmanagementapp.model.TransferRqModel;
-import com.budgetmanagementapp.model.TransferRsModel;
-import com.budgetmanagementapp.model.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.UpdateInOutRqModel;
-import com.budgetmanagementapp.model.UpdateTransferRqModel;
+import com.budgetmanagementapp.mapper.TransactionMapper;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRsModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRsModel;
+import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import com.budgetmanagementapp.model.transfer.TransferRqModel;
+import com.budgetmanagementapp.model.transfer.TransferRsModel;
+import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
+import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
+import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.repository.TransactionRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.CategoryService;
@@ -59,8 +61,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -78,6 +78,7 @@ public class TransactionServiceImpl implements TransactionService {
     private final LabelService labelService;
     private final TransactionRepository transactionRepo;
     private final PaginationTool<Transaction> paginationTool;
+    private final TransactionBuilder transactionBuilder;
 
     @Override
     @Transactional
@@ -93,10 +94,10 @@ public class TransactionServiceImpl implements TransactionService {
                 ? singletonMap(SENDER_ACCOUNT, account)
                 : singletonMap(RECEIVER_ACCOUNT, account);
 
-        Transaction transaction = buildTransaction(requestBody, user, account, category, labels, type);
+        Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, account, category, labels, type);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
-        InOutRsModel response = buildInOutResponseModel(transaction);
+        InOutRsModel response = TransactionMapper.INSTANCE.buildInOutResponseModel(transaction);
         log.info(format(IN_OUT_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -121,10 +122,10 @@ public class TransactionServiceImpl implements TransactionService {
             put(RECEIVER_ACCOUNT, receiverAccount);
         }};
 
-        Transaction transaction = buildTransaction(requestBody, user, senderAccount, receiverAccount);
+        Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
-        TransferRsModel response = buildTransferResponseModel(transaction);
+        TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(transaction);
         log.info(format(TRANSFER_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -141,10 +142,10 @@ public class TransactionServiceImpl implements TransactionService {
                 ? singletonMap(SENDER_ACCOUNT, account)
                 : singletonMap(RECEIVER_ACCOUNT, account);
 
-        Transaction transaction = buildTransaction(requestBody, type, user, account);
+        Transaction transaction = transactionBuilder.buildTransaction(requestBody, type, account, user);
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
-        DebtRsModel response = buildDebtResponseModel(transaction);
+        DebtRsModel response = TransactionMapper.INSTANCE.buildDebtResponseModel(transaction);
         log.info(format(DEBT_TRANSACTION_CREATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -178,7 +179,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
-        InOutRsModel response = buildInOutResponseModel(updatedTransaction);
+        InOutRsModel response = TransactionMapper.INSTANCE.buildInOutResponseModel(updatedTransaction);
         log.info(format(IN_OUT_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -211,7 +212,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
-        TransferRsModel response = buildTransferResponseModel(updatedTransaction);
+        TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(updatedTransaction);
         log.info(format(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -241,7 +242,7 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
-        DebtRsModel response = buildDebtResponseModel(updatedTransaction);
+        DebtRsModel response = TransactionMapper.INSTANCE.buildDebtResponseModel(updatedTransaction);
         log.info(format(DEBT_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
         return response;
     }
@@ -266,7 +267,7 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
-                            .map(this::buildGenericResponseModel)
+                            .map(transactionBuilder::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
             log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
@@ -290,7 +291,7 @@ public class TransactionServiceImpl implements TransactionService {
             transactions.addAll(transactionRepo.lastByUserAndReceiverAccount(user, account, pageable).toList());
         }
 
-        transactions.sort(Comparator.comparing(Transaction::getId).reversed());
+        transactions.sort(Comparator.comparing(Transaction::getDateTime).reversed());
 
         if (transactions.isEmpty()) {
             throw new TransactionNotFoundException(
@@ -298,7 +299,7 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
-                            .map(this::buildGenericResponseModel)
+                            .map(transactionBuilder::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
             log.info(format(LAST_TRANSACTIONS_MSG, username, response));
@@ -326,71 +327,12 @@ public class TransactionServiceImpl implements TransactionService {
 
             accountService.updateBalance(tr.getAmount(), map);
             transactionRepo.deleteById(user, tr.getTransactionId());
-            return buildGenericResponseModel(tr);
+            return transactionBuilder.buildGenericResponseModel(tr);
 
         }).collect(Collectors.toList());
 
         log.info(format(DELETED_TRANSACTIONS_MSG, user.getUsername(), response));
         return response;
-    }
-
-    private Transaction buildTransaction(InOutRqModel requestBody, User user,
-                                         Account account, Category category,
-                                         List<Label> labels, TransactionType type) {
-        Transaction transaction = Transaction.builder()
-                .transactionId(UUID.randomUUID().toString())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .type(type.name())
-                .category(category)
-                .labels(labels)
-                .user(user)
-                .build();
-
-        if (type.equals(INCOME)) {
-            transaction.setReceiverAccount(account);
-        } else {
-            transaction.setSenderAccount(account);
-        }
-        return transactionRepo.save(transaction);
-    }
-
-    private Transaction buildTransaction(TransferRqModel requestBody, User user,
-                                         Account senderAccount,
-                                         Account receiverAccount) {
-        return transactionRepo.save(Transaction.builder()
-                .transactionId(UUID.randomUUID().toString())
-                .type(TRANSFER.name())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .senderAccount(senderAccount)
-                .receiverAccount(receiverAccount)
-                .user(user)
-                .build());
-    }
-
-    private Transaction buildTransaction(DebtRqModel requestBody,
-                                         TransactionType type,
-                                         User user,
-                                         Account account) {
-        Transaction transaction = Transaction.builder()
-                .transactionId(UUID.randomUUID().toString())
-                .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
-                .amount(requestBody.getAmount())
-                .description(requestBody.getDescription())
-                .type(type.name())
-                .user(user)
-                .build();
-
-        if (type.equals(DEBT_IN)) {
-            transaction.setReceiverAccount(account);
-        } else {
-            transaction.setSenderAccount(account);
-        }
-
-        return transactionRepo.save(transaction);
     }
 
     private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,
@@ -437,73 +379,6 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         return transactionRepo.save(transaction);
-    }
-
-    private TransactionRsModel buildGenericResponseModel(Transaction transaction) {
-        TransactionRsModel response = TransactionRsModel.builder()
-                .transactionId(transaction.getTransactionId())
-                .dateTime(transaction.getDateTime())
-                .amount(transaction.getAmount())
-                .description(transaction.getDescription())
-                .type(transaction.getType())
-                .build();
-
-        if (!Objects.isNull(transaction.getSenderAccount())) {
-            response.setSenderAccountId(transaction.getSenderAccount().getAccountId());
-        }
-        if (!Objects.isNull(transaction.getReceiverAccount())) {
-            response.setReceiverAccountId(transaction.getReceiverAccount().getAccountId());
-        }
-        if (!Objects.isNull(transaction.getCategory())) {
-            response.setCategoryId(transaction.getCategory().getCategoryId());
-        }
-        if (!Objects.isNull(transaction.getLabels())) {
-            response.setLabelIds(transaction.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()));
-        }
-
-        return response;
-    }
-
-    private InOutRsModel buildInOutResponseModel(Transaction transaction) {
-        return InOutRsModel.builder()
-                .transactionId(transaction.getTransactionId())
-                .dateTime(transaction.getDateTime())
-                .amount(transaction.getAmount())
-                .description(transaction.getDescription())
-                .type(transaction.getType())
-                .accountId(
-                        transaction.getType().equals(INCOME.name())
-                                ? transaction.getReceiverAccount().getAccountId()
-                                : transaction.getSenderAccount().getAccountId())
-                .categoryId(transaction.getCategory().getCategoryId())
-                .labelIds(transaction.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()))
-                .build();
-    }
-
-    private TransferRsModel buildTransferResponseModel(Transaction transaction) {
-        return TransferRsModel.builder()
-                .transactionId(transaction.getTransactionId())
-                .dateTime(transaction.getDateTime())
-                .amount(transaction.getAmount())
-                .description(transaction.getDescription())
-                .senderAccountId(transaction.getSenderAccount().getAccountId())
-                .receiverAccountId(transaction.getReceiverAccount().getAccountId())
-                .type(transaction.getType())
-                .build();
-    }
-
-    private DebtRsModel buildDebtResponseModel(Transaction transaction) {
-        return DebtRsModel.builder()
-                .transactionId(transaction.getTransactionId())
-                .dateTime(transaction.getDateTime())
-                .amount(transaction.getAmount())
-                .description(transaction.getDescription())
-                .type(transaction.getType())
-                .accountId(
-                        transaction.getType().equals(DEBT_IN.name())
-                                ? transaction.getReceiverAccount().getAccountId()
-                                : transaction.getSenderAccount().getAccountId())
-                .build();
     }
 
     private Transaction transactionByIdAndUser(String transactionId, User user) {
