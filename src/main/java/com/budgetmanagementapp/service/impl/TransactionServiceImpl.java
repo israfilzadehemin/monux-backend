@@ -94,7 +94,8 @@ public class TransactionServiceImpl implements TransactionService {
                 ? singletonMap(SENDER_ACCOUNT, account)
                 : singletonMap(RECEIVER_ACCOUNT, account);
 
-        Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, account, category, labels, type);
+        Transaction transaction = transactionRepo.save(
+                transactionBuilder.buildTransaction(requestBody, user, account, category, labels, type));
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
         InOutRsModel response = TransactionMapper.INSTANCE.buildInOutResponseModel(transaction);
@@ -122,7 +123,8 @@ public class TransactionServiceImpl implements TransactionService {
             put(RECEIVER_ACCOUNT, receiverAccount);
         }};
 
-        Transaction transaction = transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount);
+        Transaction transaction = transactionRepo.save(
+                transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount));
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
         TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(transaction);
@@ -142,7 +144,8 @@ public class TransactionServiceImpl implements TransactionService {
                 ? singletonMap(SENDER_ACCOUNT, account)
                 : singletonMap(RECEIVER_ACCOUNT, account);
 
-        Transaction transaction = transactionBuilder.buildTransaction(requestBody, type, account, user);
+        Transaction transaction = transactionRepo.save(
+                transactionBuilder.buildTransaction(requestBody, type, account, user));
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
         DebtRsModel response = TransactionMapper.INSTANCE.buildDebtResponseModel(transaction);

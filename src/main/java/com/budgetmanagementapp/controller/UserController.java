@@ -82,12 +82,13 @@ public class UserController {
     }
 
     @PostMapping(USER_RESET_PASSWORD_URL)
-    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody) {
+    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
+                                           @RequestParam String username) {
         log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
-                        .body(userService.resetPassword(requestBody))
+                        .body(userService.resetPassword(username, requestBody))
                         .build()
         );
     }

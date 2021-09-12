@@ -54,11 +54,12 @@ public class AccountServiceImpl implements AccountService {
         checkInitialAccountExistence(isInitialAccount, user);
         checkDuplicateAccount(requestBody.getAccountName(), user);
 
-        Account account = accountBuilder.buildAccount(requestBody,
+        Account account = accountRepo.save(
+                accountBuilder.buildAccount(requestBody,
                 user,
                 getAccountType(requestBody.getAccountTypeName(), isInitialAccount),
                 getCurrency(requestBody.getCurrency()),
-                isInitialAccount);
+                isInitialAccount));
 
         log.info(format(ACCOUNT_CREATED_MSG, user.getUsername(), AccountMapper.INSTANCE.buildAccountResponseModel(account)));
         return AccountMapper.INSTANCE.buildAccountResponseModel(account);

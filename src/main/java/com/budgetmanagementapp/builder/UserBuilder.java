@@ -3,9 +3,7 @@ package com.budgetmanagementapp.builder;
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
-import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.RoleRepository;
-import com.budgetmanagementapp.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -20,12 +18,10 @@ import static com.budgetmanagementapp.utility.MsgConstant.ROLE_NOT_FOUND_MSG;
 @AllArgsConstructor
 @Component
 public class UserBuilder {
-    private final UserRepository userRepo;
     private final RoleRepository roleRepo;
-    private final OtpRepository otpRepo;
 
     public User buildUser(String username, String fullName) {
-        return userRepo.save(User.builder()
+        return User.builder()
                 .userId(UUID.randomUUID().toString())
                 .username(username)
                 .fullName(fullName)
@@ -35,16 +31,16 @@ public class UserBuilder {
                 .roles(Collections.singletonList(
                         roleRepo.byName(ROLE_USER)
                                 .orElseThrow(() -> new UserRoleNotFoundException(ROLE_NOT_FOUND_MSG))))
-                .build());
+                .build();
     }
 
-    public void buildOtp(String otp, User user) {
-        otpRepo.save(Otp.builder()
+    public Otp buildOtp(String otp, User user) {
+        return Otp.builder()
                 .otpId(UUID.randomUUID().toString())
                 .otp(otp)
                 .status(STATUS_NEW)
                 .dateTime(LocalDateTime.now())
                 .user(user)
-                .build());
+                .build();
     }
 }

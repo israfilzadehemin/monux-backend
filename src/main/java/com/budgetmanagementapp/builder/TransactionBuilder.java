@@ -6,7 +6,6 @@ import com.budgetmanagementapp.model.transaction.DebtRqModel;
 import com.budgetmanagementapp.model.transaction.InOutRqModel;
 import com.budgetmanagementapp.model.transaction.TransactionRsModel;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
-import com.budgetmanagementapp.repository.TransactionRepository;
 import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.TransactionType;
 import lombok.AllArgsConstructor;
@@ -22,8 +21,6 @@ import static com.budgetmanagementapp.utility.TransactionType.*;
 @AllArgsConstructor
 @Component
 public class TransactionBuilder {
-
-    private final TransactionRepository transactionRepo;
 
     public Transaction buildTransaction(InOutRqModel requestBody, User user, Account account,
                                         Category category, List<Label> labels, TransactionType type) {
@@ -43,14 +40,13 @@ public class TransactionBuilder {
         } else {
             transaction.setSenderAccount(account);
         }
-        transactionRepo.save(transaction);
         return transaction;
     }
 
     public Transaction buildTransaction(TransferRqModel requestBody, User user,
                                         Account senderAccount,
                                         Account receiverAccount) {
-        Transaction transaction = Transaction.builder()
+        return Transaction.builder()
                 .transactionId(UUID.randomUUID().toString())
                 .type(TRANSFER.name())
                 .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
@@ -60,8 +56,6 @@ public class TransactionBuilder {
                 .receiverAccount(receiverAccount)
                 .user(user)
                 .build();
-        transactionRepo.save(transaction);
-        return transaction;
     }
 
     public Transaction buildTransaction(DebtRqModel requestBody,
@@ -81,7 +75,6 @@ public class TransactionBuilder {
         } else {
             transaction.setSenderAccount(account);
         }
-        transactionRepo.save(transaction);
         return transaction;
     }
 

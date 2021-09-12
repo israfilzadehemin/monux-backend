@@ -16,9 +16,6 @@ import javax.validation.constraints.Size;
 public class ResetPasswordRqModel {
 
     @NotBlank
-    String username;
-
-    @NotBlank
     @Size(min = 5)
     String password;
 
