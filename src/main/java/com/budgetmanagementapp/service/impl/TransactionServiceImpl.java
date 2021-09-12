@@ -270,7 +270,7 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
-                            .map(transactionBuilder::buildGenericResponseModel)
+                            .map(TransactionMapper.INSTANCE::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
             log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
@@ -302,7 +302,7 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
-                            .map(transactionBuilder::buildGenericResponseModel)
+                            .map(TransactionMapper.INSTANCE::buildGenericResponseModel)
                             .collect(Collectors.toList());
 
             log.info(format(LAST_TRANSACTIONS_MSG, username, response));
@@ -330,7 +330,7 @@ public class TransactionServiceImpl implements TransactionService {
 
             accountService.updateBalance(tr.getAmount(), map);
             transactionRepo.deleteById(user, tr.getTransactionId());
-            return transactionBuilder.buildGenericResponseModel(tr);
+            return TransactionMapper.INSTANCE.buildGenericResponseModel(tr);
 
         }).collect(Collectors.toList());
 

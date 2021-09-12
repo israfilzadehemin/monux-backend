@@ -150,7 +150,7 @@ public class TemplateServiceImpl implements TemplateService {
         List<TransactionRsModel> response =
                 templateRepo.allByUser(userService.findByUsername(username))
                         .stream()
-                        .map(templateBuilder::buildGenericResponseModel)
+                        .map(TemplateMapper.INSTANCE::buildGenericResponseModel)
                         .collect(Collectors.toList());
 
         log.info(String.format(ALL_TEMPLATES_MSG, username, response));
@@ -165,7 +165,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         log.info(String.format(DELETED_TEMPLATES_MSG, username, deletedTemplates));
         return deletedTemplates.stream()
-                .map(templateBuilder::buildGenericResponseModel)
+                .map(TemplateMapper.INSTANCE::buildGenericResponseModel)
                 .collect(Collectors.toList());
     }
 
