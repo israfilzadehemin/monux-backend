@@ -43,7 +43,8 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryRsModel createCategory(CategoryRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
         checkDuplicate(requestBody.getCategoryName(), user);
-        Category category = categoryBuilder.buildCategory(requestBody, user);
+        Category category = categoryRepo.save(
+                categoryBuilder.buildCategory(requestBody, user));
 
         log.info(format(CATEGORY_CREATED_MSG, user.getUsername(), CategoryMapper.INSTANCE.buildCategoryResponseModel(category)));
         return CategoryMapper.INSTANCE.buildCategoryResponseModel(category);

@@ -34,7 +34,8 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public FeedbackRsModel createFeedback(FeedbackRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
-        Feedback feedback = feedbackBuilder.buildFeedback(requestBody, user);
+        Feedback feedback = feedbackRepo.save(
+                feedbackBuilder.buildFeedback(requestBody, user));
 
         log.info(format(FEEDBACK_CREATED_MSG, user.getUsername(), FeedbackMapper.INSTANCE.buildFeedbackResponseModel(feedback)));
         return FeedbackMapper.INSTANCE.buildFeedbackResponseModel(feedback);

@@ -9,6 +9,7 @@ import com.budgetmanagementapp.model.transfer.TransferRsModel;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
@@ -19,7 +20,30 @@ public abstract class TransactionMapper {
 
     public static TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
 
+    @Mappings({
+            @Mapping(target = "senderAccountId", ignore = true),
+            @Mapping(target = "receiverAccountId", ignore = true),
+            @Mapping(target = "labelIds", ignore = true),
+
+    })
     public abstract TransactionRsModel buildGenericResponseModel(Transaction transaction);
+
+    @AfterMapping
+    void mapGenericResponseModel(@MappingTarget TransactionRsModel.TransactionRsModelBuilder<?, ?> transactionRsModel, Transaction transaction) {
+
+        if (!Objects.isNull(transaction.getSenderAccount())) {
+            transactionRsModel.senderAccountId(transaction.getSenderAccount().getAccountId());
+        }
+        if (!Objects.isNull(transaction.getReceiverAccount())) {
+            transactionRsModel.receiverAccountId(transaction.getReceiverAccount().getAccountId());
+        }
+        if (!Objects.isNull(transaction.getCategory())) {
+            transactionRsModel.categoryId(transaction.getCategory().getCategoryId());
+        }
+        if (!Objects.isNull(transaction.getLabels())) {
+            transactionRsModel.labelIds(transaction.getLabels().stream().map(Label::getLabelId).collect(Collectors.toList()));
+        }
+    }
 
     @Mapping(source = "transaction.category.categoryId", target = "categoryId")
     public abstract InOutRsModel buildInOutResponseModel(Transaction transaction);

@@ -43,7 +43,7 @@ public class LabelServiceImpl implements LabelService {
     public LabelRsModel createLabel(LabelRqModel requestBody, String username) {
         User user = userByUsername(username);
         checkDuplicate(requestBody.getLabelName(), user);
-        Label label = labelBuilder.buildLabel(requestBody, user);
+        Label label = labelRepo.save(labelBuilder.buildLabel(requestBody, user));
 
         log.info(format(LABEL_CREATED_MSG, user.getUsername(), LabelMapper.INSTANCE.buildLabelResponseModel(label)));
         return LabelMapper.INSTANCE.buildLabelResponseModel(label);

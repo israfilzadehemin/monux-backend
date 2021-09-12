@@ -23,6 +23,7 @@ import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
 import com.budgetmanagementapp.model.user.SignupRqModel;
 import com.budgetmanagementapp.model.user.UserAuthModel;
 import com.budgetmanagementapp.model.user.UserRsModel;
+import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
@@ -45,6 +46,7 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepo;
+    private final OtpRepository otpRepo;
     private final MailSenderService mailSenderService;
     private final SmsSenderService smsSenderService;
     private final BCryptPasswordEncoder encoder;
@@ -77,9 +79,10 @@ public class UserServiceImpl implements UserService {
         }
 
         checkUsernameUniqueness(signupRqModel.getUsername());
-        User user = userBuilder.buildUser(signupRqModel.getUsername(), signupRqModel.getFullName());
+        User user = userRepo.save(
+                userBuilder.buildUser(signupRqModel.getUsername(), signupRqModel.getFullName()));
         String otp = generateOtp();
-        userBuilder.buildOtp(otp, user);
+        otpRepo.save(userBuilder.buildOtp(otp, user));
 
         if (signupRqModel.getUsername().contains("@")) {
             mailSenderService
@@ -119,8 +122,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResetPasswordRsModel resetPassword(ResetPasswordRqModel requestBody) {
-        User user = findByUsername(EncryptionTool.decrypt(requestBody.getUsername()));
+    public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody) {
+        User user = findByUsername(EncryptionTool.decrypt(username));
         checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
         updatePassword(requestBody.getPassword(), user);
 

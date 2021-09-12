@@ -58,7 +58,8 @@ public class TemplateServiceImpl implements TemplateService {
         Category category = categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), type, user);
         List<Label> labels = labelService.allByIdsAndTypeAndUser(requestBody.getLabelIds(), type.name(), user);
 
-        Template template = templateBuilder.buildTemplate(requestBody, user, category, labels, type, account);
+        Template template = templateRepo.save(
+                templateBuilder.buildTemplate(requestBody, user, category, labels, type, account));
 
         InOutRsModel response = TemplateMapper.INSTANCE.buildInOutResponseModel(template);
         log.info(format(IN_OUT_TEMPLATE_CREATED_MSG, user.getUsername(), response));
@@ -75,7 +76,8 @@ public class TemplateServiceImpl implements TemplateService {
             throw new TransferToSelfException(TRANSFER_TO_SELF_MSG);
         }
 
-        Template template = templateBuilder.buildTemplate(requestBody, user, senderAccount, receiverAccount);
+        Template template = templateRepo.save(
+                templateBuilder.buildTemplate(requestBody, user, senderAccount, receiverAccount));
 
         TransferRsModel response = TemplateMapper.INSTANCE.buildTransferResponseModel(template);
         log.info(format(TRANSFER_TEMPLATE_CREATED_MSG, user.getUsername(), response));
@@ -87,7 +89,8 @@ public class TemplateServiceImpl implements TemplateService {
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
 
-        Template template = templateBuilder.buildTemplate(requestBody, type, user, account);
+        Template template = templateRepo.save(
+                templateBuilder.buildTemplate(requestBody, type, user, account));
 
         DebtRsModel response = TemplateMapper.INSTANCE.buildDebtResponseModel(template);
         log.info(format(DEBT_TEMPLATE_CREATED_MSG, user.getUsername(), response));
@@ -162,7 +165,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         log.info(String.format(DELETED_TEMPLATES_MSG, username, deletedTemplates));
         return deletedTemplates.stream()
-                .map(templateBuilder::buildGenericResponseModel)
+                .map(TemplateMapper.INSTANCE::buildGenericResponseModel)
                 .collect(Collectors.toList());
     }
 

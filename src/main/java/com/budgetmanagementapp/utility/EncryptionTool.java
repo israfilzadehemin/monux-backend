@@ -1,5 +1,8 @@
 package com.budgetmanagementapp.utility;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -45,8 +48,9 @@ public class EncryptionTool {
             Cipher cipher = Cipher.getInstance(algorithm);
             cipher.init(Cipher.ENCRYPT_MODE, key, iv);
             byte[] cipherText = cipher.doFinal(input.getBytes());
-            return Base64.getEncoder()
-                    .encodeToString(cipherText);
+            String encrypted = Base64.getEncoder().encodeToString(cipherText);
+            return URLEncoder.encode(encrypted, StandardCharsets.UTF_8);
+
         } catch (NoSuchPaddingException | NoSuchAlgorithmException |
                 InvalidAlgorithmParameterException | InvalidKeyException |
                 BadPaddingException | IllegalBlockSizeException e){
@@ -60,7 +64,7 @@ public class EncryptionTool {
             cipher.init(Cipher.DECRYPT_MODE, key, iv);
             byte[] plainText = cipher.doFinal(Base64.getDecoder()
                     .decode(cipherText));
-            return new String(plainText);
+            return URLDecoder.decode(new String(plainText), StandardCharsets.UTF_8);
         } catch (NoSuchPaddingException | NoSuchAlgorithmException |
                 InvalidAlgorithmParameterException | InvalidKeyException |
                 BadPaddingException | IllegalBlockSizeException e){
