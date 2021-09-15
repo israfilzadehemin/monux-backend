@@ -1,16 +1,14 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.transaction.DebtRqModel;
-import com.budgetmanagementapp.model.transaction.DebtRsModel;
-import com.budgetmanagementapp.model.transaction.InOutRqModel;
-import com.budgetmanagementapp.model.transaction.InOutRsModel;
-import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import com.budgetmanagementapp.model.transaction.*;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.transfer.TransferRsModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
 import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.utility.TransactionType;
+
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface TransactionService {
@@ -38,4 +36,8 @@ public interface TransactionService {
     List<TransactionRsModel> getLastTransactionsByUserAndAccount(String username, String accountId, int pageCount, int size, String sortField, String sortDir);
 
     List<TransactionRsModel> deleteTransactionById(String username, List<String> transactionIds);
+
+    AmountListRsModel getLastTransactionsByUserAndDateTimeForMonths(String username, LocalDateTime dateTime);
+
+    AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime);
 }

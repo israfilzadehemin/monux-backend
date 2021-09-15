@@ -3,19 +3,7 @@ package com.budgetmanagementapp.service.impl;
 import static com.budgetmanagementapp.utility.Constant.ACCOUNT_ALL;
 import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DELETED_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -35,11 +23,7 @@ import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.mapper.TransactionMapper;
-import com.budgetmanagementapp.model.transaction.DebtRqModel;
-import com.budgetmanagementapp.model.transaction.DebtRsModel;
-import com.budgetmanagementapp.model.transaction.InOutRqModel;
-import com.budgetmanagementapp.model.transaction.InOutRsModel;
-import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import com.budgetmanagementapp.model.transaction.*;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.transfer.TransferRsModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
@@ -55,14 +39,13 @@ import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.PaginationTool;
 import com.budgetmanagementapp.utility.TransactionType;
+
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -336,6 +319,45 @@ public class TransactionServiceImpl implements TransactionService {
 
         log.info(format(DELETED_TRANSACTIONS_MSG, user.getUsername(), response));
         return response;
+    }
+
+    @Override
+    public AmountListRsModel getLastTransactionsByUserAndDateTimeForMonths(String username, LocalDateTime dateTime) {
+        User user = userService.findByUsername(username);
+        List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusMonths(12), LocalDateTime.now());
+        AmountListRsModel response = getLastTransactionsByUserAndDateTime(transactions);
+
+        log.info(format(LAST_TRANSACTIONS_BY_MONTHS_MSG, user.getUsername(), response));
+        return response;
+    }
+
+    @Override
+    public AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime) {
+        User user = userService.findByUsername(username);
+        List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusWeeks(12), LocalDateTime.now());
+        AmountListRsModel response = getLastTransactionsByUserAndDateTime(transactions);
+
+        log.info(format(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response));
+        return response;
+    }
+
+    private AmountListRsModel getLastTransactionsByUserAndDateTime(List<Transaction> transactions) {
+        List<BigDecimal> incomeTransactionAmounts = new ArrayList<>();
+        List<BigDecimal> outgoingTransactionAmounts = new ArrayList<>();
+
+        transactions.stream()
+                .sorted(Comparator.comparing(Transaction::getDateTime).reversed())
+                .forEach(transaction -> {
+                    if (getTransactionType(transaction.getType()).equals(INCOME))
+                        incomeTransactionAmounts.add(transaction.getAmount());
+                    if (getTransactionType(transaction.getType()).equals(OUTGOING))
+                        outgoingTransactionAmounts.add(transaction.getAmount());
+                });
+
+        return AmountListRsModel.builder()
+                .incomeAmounts(incomeTransactionAmounts)
+                .outgoingAmounts(outgoingTransactionAmounts)
+                .build();
     }
 
     private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,

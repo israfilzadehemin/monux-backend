@@ -3,6 +3,8 @@ package com.budgetmanagementapp.repository;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -47,6 +49,10 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
         deleteTransactionByUserAndTransactionId(user, transactionId);
     }
 
+    default List<Transaction> lastByUserAndDateTime(User user, LocalDateTime dateTime, LocalDateTime now) {
+        return findAllByUserAndDateTimeBetween(user, dateTime, now);
+    }
+
     Optional<Transaction> findByTransactionIdAndUser(String transactionId, User user);
 
     List<Transaction> findAllByUser(User user);
@@ -64,5 +70,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<Transaction> findByUserAndTransactionIdIn(User user, List<String> transactionIds);
 
     void deleteTransactionByUserAndTransactionId(User user, String transactionId);
+
+    List<Transaction> findAllByUserAndDateTimeBetween(User user, LocalDateTime dateTime, LocalDateTime now);
 
 }
