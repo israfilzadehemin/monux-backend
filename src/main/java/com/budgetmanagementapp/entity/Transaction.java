@@ -21,6 +21,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
+@ToString
 public class Transaction {
 
     @Id

@@ -42,6 +42,8 @@ import com.budgetmanagementapp.utility.TransactionType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.MonthDay;
+import java.time.YearMonth;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -325,7 +327,33 @@ public class TransactionServiceImpl implements TransactionService {
     public AmountListRsModel getLastTransactionsByUserAndDateTimeForMonths(String username, LocalDateTime dateTime) {
         User user = userService.findByUsername(username);
         List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusMonths(12), LocalDateTime.now());
-        AmountListRsModel response = getLastTransactionsByUserAndDateTime(transactions);
+
+        List<Transaction> incomeTransaction = new ArrayList<>();
+        List<Transaction> outgoingTransaction = new ArrayList<>();
+
+        transactions.stream()
+                .sorted(Comparator.comparing(Transaction::getDateTime).reversed())
+                .forEach(transaction -> {
+                    if (getTransactionType(transaction.getType()).equals(INCOME))
+                        incomeTransaction.add(transaction);
+                    if (getTransactionType(transaction.getType()).equals(OUTGOING))
+                        outgoingTransaction.add(transaction);
+                });
+
+        TreeMap<YearMonth, Double> incomeAmountsByMonths = incomeTransaction.stream()
+                .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
+                        TreeMap::new,
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())));
+
+        TreeMap<YearMonth, Double> outgoingAmountsByMonths = outgoingTransaction.stream()
+                .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
+                        TreeMap::new,
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())));
+
+        AmountListRsModel response = AmountListRsModel.builder()
+                .incomeAmounts(incomeAmountsByMonths)
+                .outgoingAmounts(outgoingAmountsByMonths)
+                .build();
 
         log.info(format(LAST_TRANSACTIONS_BY_MONTHS_MSG, user.getUsername(), response));
         return response;
@@ -335,29 +363,38 @@ public class TransactionServiceImpl implements TransactionService {
     public AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime) {
         User user = userService.findByUsername(username);
         List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusWeeks(12), LocalDateTime.now());
-        AmountListRsModel response = getLastTransactionsByUserAndDateTime(transactions);
-
-        log.info(format(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response));
-        return response;
-    }
-
-    private AmountListRsModel getLastTransactionsByUserAndDateTime(List<Transaction> transactions) {
-        List<BigDecimal> incomeTransactionAmounts = new ArrayList<>();
-        List<BigDecimal> outgoingTransactionAmounts = new ArrayList<>();
+        List<Transaction> incomeTransaction = new ArrayList<>();
+        List<Transaction> outgoingTransaction = new ArrayList<>();
 
         transactions.stream()
                 .sorted(Comparator.comparing(Transaction::getDateTime).reversed())
                 .forEach(transaction -> {
                     if (getTransactionType(transaction.getType()).equals(INCOME))
-                        incomeTransactionAmounts.add(transaction.getAmount());
+                        incomeTransaction.add(transaction);
                     if (getTransactionType(transaction.getType()).equals(OUTGOING))
-                        outgoingTransactionAmounts.add(transaction.getAmount());
+                        outgoingTransaction.add(transaction);
                 });
 
-        return AmountListRsModel.builder()
-                .incomeAmounts(incomeTransactionAmounts)
-                .outgoingAmounts(outgoingTransactionAmounts)
+        TreeMap<MonthDay, Double> incomeAmountsByWeeks = incomeTransaction.stream()
+                .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()),
+                        TreeMap::new,
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())));
+
+        TreeMap<MonthDay, Double> outgoingAmountsByWeeks = outgoingTransaction.stream()
+                .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()),
+                        TreeMap::new,
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())));
+
+        System.err.println(incomeAmountsByWeeks);
+        System.err.println(outgoingAmountsByWeeks);
+
+        AmountListRsModel response = AmountListRsModel.builder()
+                .incomeAmounts(incomeAmountsByWeeks)
+                .outgoingAmounts(outgoingAmountsByWeeks)
                 .build();
+
+        log.info(format(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response));
+        return response;
     }
 
     private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,
