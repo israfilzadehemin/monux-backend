@@ -5,7 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.util.TreeMap;
+import java.util.Map;
 
 @AllArgsConstructor
 @Getter
@@ -15,6 +15,6 @@ import java.util.TreeMap;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class AmountListRsModel {
-    TreeMap<?, ?> incomeAmounts;
-    TreeMap<?, ?> outgoingAmounts;
+    Map<?, ?> incomeAmounts;
+    Map<?, ?> outgoingAmounts;
 }
