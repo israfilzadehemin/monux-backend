@@ -335,9 +335,7 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> incomeTransaction = new ArrayList<>();
         List<Transaction> outgoingTransaction = new ArrayList<>();
 
-        transactions.stream()
-                .sorted(Comparator.comparing(Transaction::getDateTime).reversed())
-                .forEach(transaction -> {
+        transactions.forEach(transaction -> {
                     if (getTransactionType(transaction.getType()).equals(INCOME))
                         incomeTransaction.add(transaction);
                     if (getTransactionType(transaction.getType()).equals(OUTGOING))
@@ -370,9 +368,7 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> incomeTransaction = new ArrayList<>();
         List<Transaction> outgoingTransaction = new ArrayList<>();
 
-        transactions.stream()
-                .sorted(Comparator.comparing(Transaction::getDateTime).reversed())
-                .forEach(transaction -> {
+        transactions.forEach(transaction -> {
                     if (getTransactionType(transaction.getType()).equals(INCOME))
                         incomeTransaction.add(transaction);
                     if (getTransactionType(transaction.getType()).equals(OUTGOING))
