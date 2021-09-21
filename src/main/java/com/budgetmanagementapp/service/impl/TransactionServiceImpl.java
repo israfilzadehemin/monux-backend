@@ -345,12 +345,14 @@ public class TransactionServiceImpl implements TransactionService {
         Map<YearMonth, Double> incomeAmountsByMonths = incomeTransaction.stream()
                 .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
-                        Collectors.summingDouble(t -> t.getAmount().doubleValue())));
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                .descendingMap();
 
         Map<YearMonth, Double> outgoingAmountsByMonths = outgoingTransaction.stream()
                 .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
-                        Collectors.summingDouble(t -> t.getAmount().doubleValue())));
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                .descendingMap();
 
         AmountListRsModel response = AmountListRsModel.builder()
                 .incomeAmounts(incomeAmountsByMonths)
@@ -379,13 +381,15 @@ public class TransactionServiceImpl implements TransactionService {
                 .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()
                                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
                         TreeMap::new,
-                        Collectors.summingDouble(t -> t.getAmount().doubleValue())));
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                .descendingMap();
 
         Map<MonthDay, Double> outgoingAmountsByWeeks = outgoingTransaction.stream()
                 .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()
                                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
                         TreeMap::new,
-                        Collectors.summingDouble(t -> t.getAmount().doubleValue())));
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                .descendingMap();
 
         AmountListRsModel response = AmountListRsModel.builder()
                 .incomeAmounts(incomeAmountsByWeeks)
