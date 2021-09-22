@@ -16,13 +16,7 @@ import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
 import com.budgetmanagementapp.mapper.UserMapper;
-import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
-import com.budgetmanagementapp.model.user.SignupRqModel;
-import com.budgetmanagementapp.model.user.UserAuthModel;
-import com.budgetmanagementapp.model.user.UserRsModel;
+import com.budgetmanagementapp.model.user.*;
 import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.UserService;
@@ -129,6 +123,14 @@ public class UserServiceImpl implements UserService {
 
         log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
         return UserMapper.INSTANCE.buildResetPasswordResponseModel(user.getUsername(), requestBody);
+    }
+
+    @Override
+    public UserInfoRsModel userInfo(String username) {
+        User user = userRepo.byUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+
+        return UserMapper.INSTANCE.buildUserInfoResponseModel(user);
     }
 
     private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {

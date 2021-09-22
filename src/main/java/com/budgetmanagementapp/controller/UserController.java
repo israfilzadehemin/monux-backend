@@ -1,12 +1,9 @@
 package com.budgetmanagementapp.controller;
 
+import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_INITIAL_ACCOUNT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_FORGET_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_RESET_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.account.AccountRqModel;
 import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
@@ -24,6 +21,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -109,4 +108,15 @@ public class UserController {
         mailSenderService.sendEmail("israfilzadehemin@gmail.com", "Hey", "Hello");
         return ResponseEntity.ok("Hey");
     }
+
+    @GetMapping(USER_INFO_URL)
+    public ResponseEntity<?> getUserInfo(Authentication auth) {
+        log.info(format(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(userService.userInfo(((UserDetails) auth.getPrincipal()).getUsername()))
+                        .build());
+    }
+
 }

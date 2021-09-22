@@ -1,13 +1,8 @@
 package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
-import com.budgetmanagementapp.model.user.SignupRqModel;
-import com.budgetmanagementapp.model.user.UserAuthModel;
-import com.budgetmanagementapp.model.user.UserRsModel;
+import com.budgetmanagementapp.model.user.*;
+
 import java.util.Optional;
 import javax.mail.MessagingException;
 
@@ -26,4 +21,6 @@ public interface UserService {
     UserRsModel forgetPassword(String username) throws MessagingException;
 
     ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody);
+
+    UserInfoRsModel userInfo(String username);
 }
