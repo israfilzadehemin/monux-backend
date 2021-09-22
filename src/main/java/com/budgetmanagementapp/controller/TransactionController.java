@@ -5,17 +5,7 @@ import static com.budgetmanagementapp.utility.Constant.SORT_BY_DATETIME;
 import static com.budgetmanagementapp.utility.Constant.SORT_DIR_DESC;
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_IN_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_OUT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_INCOME_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_OUTGOING_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_TRANSFER_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_DELETE_TRANSACTIONS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_ALL_TRANSACTIONS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_LAST_TRANSACTIONS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_DEBT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_OUT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.transaction.DebtRqModel;
@@ -28,6 +18,8 @@ import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
 import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.service.TransactionService;
 import com.budgetmanagementapp.utility.TransactionType;
+
+import java.time.LocalDateTime;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -162,6 +154,32 @@ public class TransactionController {
                         .body(transactionService.getAllTransactionsByUserAndAccount(
                                 ((UserDetails) auth.getPrincipal()).getUsername(),
                                 accountId.orElse(ACCOUNT_ALL)))
+                        .build());
+    }
+
+    @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL)
+    public ResponseEntity<?> getLastTransactionsForMonths(Authentication auth) {
+
+        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, NO_BODY_MSG));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(transactionService.getLastTransactionsByUserAndDateTimeForMonths(
+                                ((UserDetails) auth.getPrincipal()).getUsername(),
+                                LocalDateTime.now()))
+                        .build());
+    }
+
+    @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL)
+    public ResponseEntity<?> getLastTransactionsForWeeks(Authentication auth) {
+
+        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, NO_BODY_MSG));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(transactionService.getLastTransactionsByUserAndDateTimeForWeeks(
+                                ((UserDetails) auth.getPrincipal()).getUsername(),
+                                LocalDateTime.now()))
                         .build());
     }
 

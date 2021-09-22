@@ -69,6 +69,8 @@ public class MsgConstant {
     public static final String ALL_CATEGORIES_MSG = "All categories of %s: %s";
     public static final String ALL_TRANSACTIONS_MSG = "All transactions of %s: %s";
     public static final String LAST_TRANSACTIONS_MSG = "Last transactions of %s: %s";
+    public static final String LAST_TRANSACTIONS_BY_MONTHS_MSG = "Last transactions during 12 months of %s: %s";
+    public static final String LAST_TRANSACTIONS_BY_WEEKS_MSG = "Last transactions during 12 weeks of %s: %s";
     public static final String DELETED_TRANSACTIONS_MSG = "Deleted transactions of %s: %s";
     public static final String ALL_TEMPLATES_MSG = "All templates of %s: %s";
     public static final String DELETED_TEMPLATES_MSG = "Deleted templates of %s: %s";

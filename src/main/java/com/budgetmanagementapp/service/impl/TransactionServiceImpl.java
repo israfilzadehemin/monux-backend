@@ -3,19 +3,7 @@ package com.budgetmanagementapp.service.impl;
 import static com.budgetmanagementapp.utility.Constant.ACCOUNT_ALL;
 import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DELETED_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -35,11 +23,7 @@ import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.mapper.TransactionMapper;
-import com.budgetmanagementapp.model.transaction.DebtRqModel;
-import com.budgetmanagementapp.model.transaction.DebtRsModel;
-import com.budgetmanagementapp.model.transaction.InOutRqModel;
-import com.budgetmanagementapp.model.transaction.InOutRsModel;
-import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import com.budgetmanagementapp.model.transaction.*;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.transfer.TransferRsModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
@@ -55,14 +39,19 @@ import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.PaginationTool;
 import com.budgetmanagementapp.utility.TransactionType;
+
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.MonthDay;
+import java.time.YearMonth;
+import java.time.temporal.TemporalAdjuster;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
+import java.util.*;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -338,6 +327,79 @@ public class TransactionServiceImpl implements TransactionService {
         return response;
     }
 
+    @Override
+    public AmountListRsModel getLastTransactionsByUserAndDateTimeForMonths(String username, LocalDateTime dateTime) {
+        User user = userService.findByUsername(username);
+        List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusMonths(12), LocalDateTime.now());
+
+        List<Transaction> incomeTransactions = new ArrayList<>();
+        List<Transaction> outgoingTransactions = new ArrayList<>();
+        groupTransactions(transactions, incomeTransactions, outgoingTransactions);
+
+        Map<YearMonth, Double> incomeAmountsByMonths = incomeTransactions.stream()
+                .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
+                        TreeMap::new,
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                .descendingMap();
+
+        Map<YearMonth, Double> outgoingAmountsByMonths = outgoingTransactions.stream()
+                .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
+                        TreeMap::new,
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                .descendingMap();
+
+        AmountListRsModel response = AmountListRsModel.builder()
+                .incomeAmounts(incomeAmountsByMonths)
+                .outgoingAmounts(outgoingAmountsByMonths)
+                .build();
+
+        log.info(format(LAST_TRANSACTIONS_BY_MONTHS_MSG, user.getUsername(), response));
+        return response;
+    }
+
+    @Override
+    public AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime) {
+        User user = userService.findByUsername(username);
+        List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusWeeks(12), LocalDateTime.now());
+
+        List<Transaction> incomeTransactions = new ArrayList<>();
+        List<Transaction> outgoingTransactions = new ArrayList<>();
+        groupTransactions(transactions, incomeTransactions, outgoingTransactions);
+
+        Map<MonthDay, Double> incomeAmountsByWeeks = incomeTransactions.stream()
+                .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()
+                                .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
+                        TreeMap::new,
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                .descendingMap();
+
+        Map<MonthDay, Double> outgoingAmountsByWeeks = outgoingTransactions.stream()
+                .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()
+                                .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
+                        TreeMap::new,
+                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                .descendingMap();
+
+        AmountListRsModel response = AmountListRsModel.builder()
+                .incomeAmounts(incomeAmountsByWeeks)
+                .outgoingAmounts(outgoingAmountsByWeeks)
+                .build();
+
+        log.info(format(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response));
+        return response;
+    }
+
+    private void groupTransactions(List<Transaction> transactions,
+                                   List<Transaction> incomeTransactions,
+                                   List<Transaction> outgoingTransactions) {
+        transactions.forEach(transaction -> {
+            if (getTransactionType(transaction.getType()).equals(INCOME))
+                incomeTransactions.add(transaction);
+            if (getTransactionType(transaction.getType()).equals(OUTGOING))
+                outgoingTransactions.add(transaction);
+        });
+    }
+
     private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,
                                                 Account account, Category category,
                                                 List<Label> labels) {
@@ -352,7 +414,6 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             transaction.setSenderAccount(account);
         }
-
         return transactionRepo.save(transaction);
     }
 

@@ -12,11 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,6 +21,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
+@ToString
 public class Transaction {
 
     @Id
