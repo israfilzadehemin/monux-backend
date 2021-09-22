@@ -49,8 +49,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
         deleteTransactionByUserAndTransactionId(user, transactionId);
     }
 
-    default List<Transaction> lastByUserAndDateTime(User user, LocalDateTime dateTime, LocalDateTime now) {
-        return findAllByUserAndDateTimeBetween(user, dateTime, now);
+    default List<Transaction> lastByUserAndDateTime(User user, LocalDateTime from, LocalDateTime to) {
+        return findAllByUserAndDateTimeBetween(user, from, to);
     }
 
     Optional<Transaction> findByTransactionIdAndUser(String transactionId, User user);
@@ -71,6 +71,6 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     void deleteTransactionByUserAndTransactionId(User user, String transactionId);
 
-    List<Transaction> findAllByUserAndDateTimeBetween(User user, LocalDateTime dateTime, LocalDateTime now);
+    List<Transaction> findAllByUserAndDateTimeBetween(User user, LocalDateTime from, LocalDateTime to);
 
 }

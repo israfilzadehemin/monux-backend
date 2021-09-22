@@ -332,23 +332,17 @@ public class TransactionServiceImpl implements TransactionService {
         User user = userService.findByUsername(username);
         List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusMonths(12), LocalDateTime.now());
 
-        List<Transaction> incomeTransaction = new ArrayList<>();
-        List<Transaction> outgoingTransaction = new ArrayList<>();
+        List<Transaction> incomeTransactions = new ArrayList<>();
+        List<Transaction> outgoingTransactions = new ArrayList<>();
+        groupTransactions(transactions, incomeTransactions, outgoingTransactions);
 
-        transactions.forEach(transaction -> {
-                    if (getTransactionType(transaction.getType()).equals(INCOME))
-                        incomeTransaction.add(transaction);
-                    if (getTransactionType(transaction.getType()).equals(OUTGOING))
-                        outgoingTransaction.add(transaction);
-                });
-
-        Map<YearMonth, Double> incomeAmountsByMonths = incomeTransaction.stream()
+        Map<YearMonth, Double> incomeAmountsByMonths = incomeTransactions.stream()
                 .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
                         Collectors.summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
 
-        Map<YearMonth, Double> outgoingAmountsByMonths = outgoingTransaction.stream()
+        Map<YearMonth, Double> outgoingAmountsByMonths = outgoingTransactions.stream()
                 .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
                         Collectors.summingDouble(t -> t.getAmount().doubleValue())))
@@ -367,24 +361,19 @@ public class TransactionServiceImpl implements TransactionService {
     public AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime) {
         User user = userService.findByUsername(username);
         List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusWeeks(12), LocalDateTime.now());
-        List<Transaction> incomeTransaction = new ArrayList<>();
-        List<Transaction> outgoingTransaction = new ArrayList<>();
 
-        transactions.forEach(transaction -> {
-                    if (getTransactionType(transaction.getType()).equals(INCOME))
-                        incomeTransaction.add(transaction);
-                    if (getTransactionType(transaction.getType()).equals(OUTGOING))
-                        outgoingTransaction.add(transaction);
-                });
+        List<Transaction> incomeTransactions = new ArrayList<>();
+        List<Transaction> outgoingTransactions = new ArrayList<>();
+        groupTransactions(transactions, incomeTransactions, outgoingTransactions);
 
-        Map<MonthDay, Double> incomeAmountsByWeeks = incomeTransaction.stream()
+        Map<MonthDay, Double> incomeAmountsByWeeks = incomeTransactions.stream()
                 .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()
                                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
                         TreeMap::new,
                         Collectors.summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
 
-        Map<MonthDay, Double> outgoingAmountsByWeeks = outgoingTransaction.stream()
+        Map<MonthDay, Double> outgoingAmountsByWeeks = outgoingTransactions.stream()
                 .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()
                                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
                         TreeMap::new,
@@ -398,6 +387,17 @@ public class TransactionServiceImpl implements TransactionService {
 
         log.info(format(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response));
         return response;
+    }
+
+    private void groupTransactions(List<Transaction> transactions,
+                                   List<Transaction> incomeTransactions,
+                                   List<Transaction> outgoingTransactions) {
+        transactions.forEach(transaction -> {
+            if (getTransactionType(transaction.getType()).equals(INCOME))
+                incomeTransactions.add(transaction);
+            if (getTransactionType(transaction.getType()).equals(OUTGOING))
+                outgoingTransactions.add(transaction);
+        });
     }
 
     private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,
