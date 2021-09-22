@@ -18,5 +18,6 @@ public abstract class UserMapper {
 
     public abstract ResetPasswordRsModel buildResetPasswordResponseModel(String username, ResetPasswordRqModel requestBody);
 
+    public abstract UserInfoRsModel buildUserInfoResponseModel(User user);
 
 }
