@@ -14,7 +14,9 @@ import java.util.Map;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AmountListRsModel {
+public class CategoryAmountListRsModel {
+    String dateTimeFrom;
+    String dateTimeTo;
     Map<?, ?> income;
     Map<?, ?> outgoing;
 }

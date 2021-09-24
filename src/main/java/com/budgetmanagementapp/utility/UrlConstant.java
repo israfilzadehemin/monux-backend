@@ -43,6 +43,7 @@ public class UrlConstant {
     public static final String TRANSACTION_GET_LAST_TRANSACTIONS_URL = "/v1/transaction/get-last-transactions";
     public static final String TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL = "/v1/transaction/get-last-transactions-by-months";
     public static final String TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL = "/v1/transaction/get-last-transactions-by-weeks";
+    public static final String TRANSACTION_TRANSACTIONS_BETWEEN_TIME_URL = "/v1/transaction/transactions-between-time";
     public static final String TRANSACTION_DELETE_TRANSACTIONS_URL = "/v1/transaction/delete-transactions";
     public static final String TEMPLATE_CREATE_INCOME_URL = "/v1/template/create-income-template";
     public static final String TEMPLATE_CREATE_OUTGOING_URL = "/v1/template/create-outgoing-template";

@@ -49,7 +49,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
         deleteTransactionByUserAndTransactionId(user, transactionId);
     }
 
-    default List<Transaction> lastByUserAndDateTime(User user, LocalDateTime from, LocalDateTime to) {
+    default List<Transaction> byUserAndDateTime(User user, LocalDateTime from, LocalDateTime to) {
         return findAllByUserAndDateTimeBetween(user, from, to);
     }
 

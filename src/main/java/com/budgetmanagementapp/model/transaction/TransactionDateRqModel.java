@@ -1,11 +1,10 @@
 package com.budgetmanagementapp.model.transaction;
 
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.util.Map;
+import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @Getter
@@ -14,7 +13,12 @@ import java.util.Map;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AmountListRsModel {
-    Map<?, ?> income;
-    Map<?, ?> outgoing;
+public class TransactionDateRqModel {
+
+    @NotBlank
+    String dateTimeFrom;
+
+    @NotBlank
+    String dateTimeTo;
+
 }

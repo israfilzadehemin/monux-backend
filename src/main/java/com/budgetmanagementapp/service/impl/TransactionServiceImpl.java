@@ -45,9 +45,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.MonthDay;
 import java.time.YearMonth;
-import java.time.temporal.TemporalAdjuster;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
-import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -330,7 +329,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public AmountListRsModel getLastTransactionsByUserAndDateTimeForMonths(String username, LocalDateTime dateTime) {
         User user = userService.findByUsername(username);
-        List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusMonths(12), LocalDateTime.now());
+        List<Transaction> transactions = transactionRepo.byUserAndDateTime(user, dateTime.minusMonths(12), LocalDateTime.now());
 
         List<Transaction> incomeTransactions = new ArrayList<>();
         List<Transaction> outgoingTransactions = new ArrayList<>();
@@ -349,8 +348,8 @@ public class TransactionServiceImpl implements TransactionService {
                 .descendingMap();
 
         AmountListRsModel response = AmountListRsModel.builder()
-                .incomeAmounts(incomeAmountsByMonths)
-                .outgoingAmounts(outgoingAmountsByMonths)
+                .income(incomeAmountsByMonths)
+                .outgoing(outgoingAmountsByMonths)
                 .build();
 
         log.info(format(LAST_TRANSACTIONS_BY_MONTHS_MSG, user.getUsername(), response));
@@ -360,7 +359,7 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime) {
         User user = userService.findByUsername(username);
-        List<Transaction> transactions = transactionRepo.lastByUserAndDateTime(user, dateTime.minusWeeks(12), LocalDateTime.now());
+        List<Transaction> transactions = transactionRepo.byUserAndDateTime(user, dateTime.minusWeeks(12), LocalDateTime.now());
 
         List<Transaction> incomeTransactions = new ArrayList<>();
         List<Transaction> outgoingTransactions = new ArrayList<>();
@@ -381,11 +380,42 @@ public class TransactionServiceImpl implements TransactionService {
                 .descendingMap();
 
         AmountListRsModel response = AmountListRsModel.builder()
-                .incomeAmounts(incomeAmountsByWeeks)
-                .outgoingAmounts(outgoingAmountsByWeeks)
+                .income(incomeAmountsByWeeks)
+                .outgoing(outgoingAmountsByWeeks)
                 .build();
 
         log.info(format(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response));
+        return response;
+    }
+
+    @Override
+    public CategoryAmountListRsModel transactionsBetweenTimeByCategory(String username, String from, String to) {
+        User user = userService.findByUsername(username);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        List<Transaction> transactions = transactionRepo
+                .byUserAndDateTime(user, LocalDateTime.parse(from, formatter), LocalDateTime.parse(to, formatter));
+
+        List<Transaction> incomeTransactions = new ArrayList<>();
+        List<Transaction> outgoingTransactions = new ArrayList<>();
+        groupTransactions(transactions, incomeTransactions, outgoingTransactions);
+
+        Map<String, BigDecimal> income = incomeTransactions.stream()
+                .collect(Collectors.groupingBy(t -> t.getCategory().getName(),
+                        Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
+
+        Map<String, BigDecimal> outgoing = outgoingTransactions.stream()
+                .collect(Collectors.groupingBy(t -> t.getCategory().getName(),
+                        Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
+
+        CategoryAmountListRsModel response = CategoryAmountListRsModel.builder()
+                .dateTimeFrom(from)
+                .dateTimeTo(to)
+                .income(income)
+                .outgoing(outgoing)
+                .build();
+
+        log.info(format(TRANSACTIONS_BETWEEN_TIME_MSG, user.getUsername(), response));
         return response;
     }
 
