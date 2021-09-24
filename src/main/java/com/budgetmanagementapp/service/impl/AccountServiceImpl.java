@@ -69,7 +69,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountRsModel updateAccount(UpdateAccountModel requestBody, String username) {
         User user = userService.findByUsername(username);
         Account account = byIdAndUser(requestBody.getAccountId(), user);
-        checkDuplicateAccount(requestBody.getNewAccountName(), user);
+        checkUpdateDuplicateAccount(requestBody.getNewAccountName(), user, account.getAccountId());
         updateAccountValues(requestBody, account);
 
         log.info(format(ACCOUNT_UPDATED_MSG, username, AccountMapper.INSTANCE.buildAccountResponseModel(account)));
@@ -197,6 +197,12 @@ public class AccountServiceImpl implements AccountService {
 
     private void checkDuplicateAccount(String accountName, User user) {
         if (accountRepo.byNameAndUser(accountName, user).isPresent()) {
+            throw new DuplicateAccountException(format(DUPLICATE_ACCOUNT_NAME_MSG, user.getUsername(), accountName));
+        }
+    }
+
+    private void checkUpdateDuplicateAccount(String accountName, User user, String accountId) {
+        if (accountRepo.byNameAndUserAndIdNot(accountName, user, accountId).isPresent()) {
             throw new DuplicateAccountException(format(DUPLICATE_ACCOUNT_NAME_MSG, user.getUsername(), accountName));
         }
     }
