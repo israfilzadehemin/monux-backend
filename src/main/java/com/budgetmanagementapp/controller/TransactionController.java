@@ -12,6 +12,7 @@ import com.budgetmanagementapp.model.transaction.DebtRqModel;
 import com.budgetmanagementapp.model.transaction.DeleteTransactionRqModel;
 import com.budgetmanagementapp.model.transaction.InOutRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.transaction.TransactionDateRqModel;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
@@ -180,6 +181,19 @@ public class TransactionController {
                         .body(transactionService.getLastTransactionsByUserAndDateTimeForWeeks(
                                 ((UserDetails) auth.getPrincipal()).getUsername(),
                                 LocalDateTime.now()))
+                        .build());
+    }
+
+    @PostMapping(TRANSACTION_TRANSACTIONS_BETWEEN_TIME_URL)
+    public ResponseEntity<?> transactionsBetweenTimeByCategory(@RequestBody @Valid TransactionDateRqModel requestBody,
+                                                               Authentication auth) {
+
+        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, requestBody));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(transactionService.transactionsBetweenTimeByCategory(((UserDetails) auth.getPrincipal()).getUsername(),
+                                requestBody.getDateTimeFrom(), requestBody.getDateTimeTo()))
                         .build());
     }
 

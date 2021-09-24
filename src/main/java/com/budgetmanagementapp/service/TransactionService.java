@@ -40,4 +40,6 @@ public interface TransactionService {
     AmountListRsModel getLastTransactionsByUserAndDateTimeForMonths(String username, LocalDateTime dateTime);
 
     AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime);
+
+    CategoryAmountListRsModel transactionsBetweenTimeByCategory(String username, String from, String to);
 }
