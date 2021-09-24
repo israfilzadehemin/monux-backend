@@ -391,10 +391,8 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public CategoryAmountListRsModel transactionsBetweenTimeByCategory(String username, String from, String to) {
         User user = userService.findByUsername(username);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
-        List<Transaction> transactions = transactionRepo
-                .byUserAndDateTime(user, LocalDateTime.parse(from, formatter), LocalDateTime.parse(to, formatter));
+        List<Transaction> transactions = transactionRepo.byUserAndDateTime(user,
+                CustomFormatter.stringToLocalDateTime(from), CustomFormatter.stringToLocalDateTime(to));
 
         List<Transaction> incomeTransactions = new ArrayList<>();
         List<Transaction> outgoingTransactions = new ArrayList<>();
