@@ -1,7 +1,6 @@
 package com.budgetmanagementapp.utility;
 
 public class UrlConstant {
-    public static final String H2_CONSOLE_URL = "/h2-console/**";
     public static final String USER_LOGIN_URL = "/v1/user/login";
     public static final String USER_SIGNUP_URL = "/v1/user/signup";
     public static final String USER_OTP_CONFIRM_URL = "/v1/user/confirm-otp";
@@ -22,6 +21,11 @@ public class UrlConstant {
     public static final String CATEGORY_CREATE_URL = "/v1/category/create-category";
     public static final String CATEGORY_UPDATE_URL = "/v1/category/update-category";
     public static final String CATEGORY_GET_ALL_CATEGORIES_URL = "/v1/category/get-all-categories";
+    public static final String BLOG_GET_ALL_BLOGS_URL = "/v1/blog/get-all-blogs";
+    public static final String BLOG_GET_BLOG_BY_ID_URL = "/v1/blog/get-blog-by-id";
+    public static final String BLOG_CREATE_BLOG_URL = "/v1/blog/create-blog";
+    public static final String BLOG_UPDATE_BLOG_URL = "/v1/blog/update-blog";
+    public static final String BLOG_DELETE_BLOG_URL = "/v1/blog/delete-blog";
     public static final String CATEGORY_GET_CATEGORIES_URL = "/v1/category/get-categories";
     public static final String LABEL_CREATE_URL = "/v1/label/create-label";
     public static final String LABEL_UPDATE_URL = "/v1/label/update-label";
