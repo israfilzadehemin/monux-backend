@@ -3,8 +3,8 @@ package com.budgetmanagementapp.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Pattern;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @AllArgsConstructor
@@ -32,8 +32,9 @@ public class Plan {
     @Column(name = "plan_price")
     private BigDecimal price;
 
-    @Column(name = "plan_periodType")
-    private LocalDate periodType;
+    @Column(name = "plan_period_type")
+    @Pattern(regexp = "MONTHLY|QUARTERLY|ANNUAL", message = "Invalid period type")
+    private String periodType;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

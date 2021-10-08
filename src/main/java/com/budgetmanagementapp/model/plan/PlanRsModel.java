@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanRsModel {

@@ -93,6 +93,7 @@ public class MsgConstant {
     public static final String PLAN_NOT_FOUND_MSG = "Plan is not found: '%s'";
     public static final String PLAN_CREATED_MSG = "Plan is created: %s";
     public static final String PLAN_UPDATED_MSG = "Plan updated: %s";
+    public static final String PLAN_DELETED_MSG = "Plan deleted: %s";
     public static final String FEATURE_CREATED_MSG = "Feature is created: %s";
 
 

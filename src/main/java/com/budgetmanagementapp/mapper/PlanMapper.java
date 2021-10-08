@@ -4,7 +4,6 @@ import com.budgetmanagementapp.entity.Feature;
 import com.budgetmanagementapp.entity.Plan;
 import com.budgetmanagementapp.model.plan.PlanRqModel;
 import com.budgetmanagementapp.model.plan.PlanRsModel;
-import com.budgetmanagementapp.utility.CustomFormatter;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -17,18 +16,13 @@ public abstract class PlanMapper {
 
     public static PlanMapper INSTANCE = Mappers.getMapper(PlanMapper.class);
 
-    @Mappings({
-            @Mapping(target = "periodType", ignore = true),
-            @Mapping(target = "features", ignore = true)
-    })
-
+    @Mapping(target = "features", ignore = true)
     public abstract Plan buildPlan(PlanRqModel request, List<Feature> features);
 
     @AfterMapping
-    void mapPlanIdAndPeriodType(@MappingTarget Plan.PlanBuilder plan, PlanRqModel request, List<Feature> features) {
+    void mapPlanIdAndPeriodType(@MappingTarget Plan.PlanBuilder plan, List<Feature> features) {
         plan.planId(UUID.randomUUID().toString());
         plan.features(features);
-        plan.periodType(CustomFormatter.stringToLocalDate(request.getPeriodType()));
     }
 
     public abstract PlanRsModel buildPlanResponseModel(Plan plan);
@@ -39,6 +33,4 @@ public abstract class PlanMapper {
                 .map(Feature::getFeatureId)
                 .collect(Collectors.toList()));
     }
-
-
 }

@@ -13,4 +13,6 @@ public interface PlanService {
 
     PlanRsModel updatePlan(UpdatePlanRqModel request);
 
+    PlanRsModel deletePlan(String planId);
+
 }

@@ -10,7 +10,6 @@ import com.budgetmanagementapp.model.plan.UpdatePlanRqModel;
 import com.budgetmanagementapp.repository.FeatureRepository;
 import com.budgetmanagementapp.repository.PlanRepository;
 import com.budgetmanagementapp.service.PlanService;
-import com.budgetmanagementapp.utility.CustomFormatter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -53,10 +52,20 @@ public class PlanServiceImpl implements PlanService {
         plan.setTitle(request.getTitle());
         plan.setText(request.getText());
         plan.setPrice(request.getPrice());
-        plan.setPeriodType(CustomFormatter.stringToLocalDate(request.getPeriodType()));
+        plan.setPeriodType(request.getPeriodType());
         planRepo.save(plan);
         PlanRsModel response = PlanMapper.INSTANCE.buildPlanResponseModel(plan);
         log.info(format(PLAN_UPDATED_MSG, response));
+        return response;
+    }
+
+    @Override
+    public PlanRsModel deletePlan(String planId) {
+        Plan plan = planRepo.byPlanId(planId).orElseThrow(
+                () -> new PlanNotFoundException(format(PLAN_NOT_FOUND_MSG, planId)));
+        planRepo.delete(plan);
+        PlanRsModel response = PlanMapper.INSTANCE.buildPlanResponseModel(plan);
+        log.info(format(PLAN_DELETED_MSG, response));
         return response;
     }
 }

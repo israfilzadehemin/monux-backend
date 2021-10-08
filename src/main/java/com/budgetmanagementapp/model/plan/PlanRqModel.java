@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @SuperBuilder
+@ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanRqModel {
     String title;
