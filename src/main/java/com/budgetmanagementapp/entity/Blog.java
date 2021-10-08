@@ -32,6 +32,6 @@ public class Blog {
     @Column(name = "blog_text")
     private String text;
 
-    @Column(name = "blog_icon")
-    private String icon;
+    @Column(name = "blog_image")
+    private String image;
 }

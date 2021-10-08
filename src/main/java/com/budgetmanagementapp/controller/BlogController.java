@@ -33,7 +33,7 @@ public class BlogController {
     }
 
     @GetMapping(BLOG_GET_BLOG_BY_ID_URL)
-    public ResponseEntity<?> getBlogById(@RequestParam String blogId) {
+    public ResponseEntity<?> getBlogById(@RequestParam(name = "blog-id") String blogId) {
 
         log.info(format(BLOG_WITH_PARAM, BLOG_GET_BLOG_BY_ID_URL, blogId));
         return ResponseEntity.ok(
@@ -66,7 +66,7 @@ public class BlogController {
     }
 
     @PostMapping(BLOG_DELETE_BLOG_URL)
-    public ResponseEntity<?> deleteBlog(@RequestParam String blogId) {
+    public ResponseEntity<?> deleteBlog(@RequestParam(name = "blog-id") String blogId) {
 
         log.info(format(BLOG_WITH_PARAM, BLOG_DELETE_BLOG_URL, blogId));
         return ResponseEntity.ok(

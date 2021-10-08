@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import com.budgetmanagementapp.builder.BlogBuilder;
 import com.budgetmanagementapp.entity.Blog;
 import com.budgetmanagementapp.exception.BlogNotFoundException;
 import com.budgetmanagementapp.mapper.BlogMapper;
@@ -26,7 +25,6 @@ import static java.lang.String.format;
 public class BlogServiceImpl implements BlogService {
 
     private final BlogRepository blogRepo;
-    private final BlogBuilder blogBuilder;
 
     @Override
     public List<BlogRsModel> getAllBlogs() {
@@ -48,7 +46,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogRsModel addBlog(BlogRqModel request) {
-        Blog blog = blogBuilder.buildBlog(request);
+        Blog blog = BlogMapper.INSTANCE.buildBlog(request);
         blogRepo.save(blog);
         BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
         log.info(format(BLOG_CREATED_MSG, response));
@@ -60,7 +58,7 @@ public class BlogServiceImpl implements BlogService {
         Blog blog = blogById(request.getBlogId());
         blog.setTitle(request.getTitle());
         blog.setText(request.getText());
-        blog.setIcon(request.getIcon());
+        blog.setImage(request.getImage());
         blog.setUpdateDate(CustomFormatter.stringToLocalDateTime(request.getUpdateDate()));
         blogRepo.save(blog);
         BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);

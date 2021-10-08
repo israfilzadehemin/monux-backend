@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 public class BlogRqModel {
     String title;
     String text;
-    String icon;
+    String image;
     String creationDate;
     String updateDate;
 }

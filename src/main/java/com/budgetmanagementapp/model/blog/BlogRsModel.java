@@ -18,5 +18,5 @@ public class BlogRsModel {
     LocalDateTime updateDate;
     String title;
     String text;
-    String icon;
+    String image;
 }
