@@ -18,6 +18,8 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolationException;
+
 
 @Log4j2
 @ControllerAdvice
@@ -57,6 +59,7 @@ public class CustomExceptionHandler {
                 || exception instanceof AccountNotFoundException
                 || exception instanceof NoExistingTransactionException
                 || exception instanceof BlogNotFoundException
+                || exception instanceof PlanNotFoundException
         ) {
             return handleException(exception, HttpStatus.NOT_FOUND);
         }
@@ -82,6 +85,8 @@ public class CustomExceptionHandler {
             return handleException(exception, 7006);
         else if(exception instanceof MethodArgumentNotValidException)
             return handleException(exception, 7007);
+        else if(exception instanceof ConstraintViolationException)
+            return handleException(exception, 7008);
         throw new RuntimeException(String.valueOf(exception.getClass()));
     }
 

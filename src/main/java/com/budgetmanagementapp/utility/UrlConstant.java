@@ -21,11 +21,6 @@ public class UrlConstant {
     public static final String CATEGORY_CREATE_URL = "/v1/category/create-category";
     public static final String CATEGORY_UPDATE_URL = "/v1/category/update-category";
     public static final String CATEGORY_GET_ALL_CATEGORIES_URL = "/v1/category/get-all-categories";
-    public static final String BLOG_GET_ALL_BLOGS_URL = "/v1/blog/get-all-blogs";
-    public static final String BLOG_GET_BLOG_BY_ID_URL = "/v1/blog/get-blog-by-id";
-    public static final String BLOG_CREATE_BLOG_URL = "/v1/blog/create-blog";
-    public static final String BLOG_UPDATE_BLOG_URL = "/v1/blog/update-blog";
-    public static final String BLOG_DELETE_BLOG_URL = "/v1/blog/delete-blog";
     public static final String CATEGORY_GET_CATEGORIES_URL = "/v1/category/get-categories";
     public static final String LABEL_CREATE_URL = "/v1/label/create-label";
     public static final String LABEL_UPDATE_URL = "/v1/label/update-label";
@@ -59,4 +54,15 @@ public class UrlConstant {
     public static final String TEMPLATE_UPDATE_DEBT_URL = "/v1/template/update-debt-template";
     public static final String TEMPLATE_GET_ALL_TEMPLATES_URL = "/v1/template/get-all-templates";
     public static final String TEMPLATE_DELETE_TEMPLATES_URL = "/v1/template/delete-templates";
+    public static final String BLOG_GET_ALL_BLOGS_URL = "/v1/blog/get-all-blogs";
+    public static final String BLOG_GET_BLOG_BY_ID_URL = "/v1/blog/get-blog-by-id";
+    public static final String BLOG_CREATE_BLOG_URL = "/v1/blog/create-blog";
+    public static final String BLOG_UPDATE_BLOG_URL = "/v1/blog/update-blog";
+    public static final String BLOG_DELETE_BLOG_URL = "/v1/blog/delete-blog";
+    public static final String PLAN_GET_ALL_PLANS_URL = "/v1/plan/get-all-plans";
+    public static final String PLAN_ADD_PLAN_URL = "/v1/plan/add-plan";
+    public static final String PLAN_UPDATE_PLAN_URL = "/v1/plan/update-plan";
+    public static final String PLAN_DELETE_PLAN_URL = "/v1/plan/delete-plan";
+    public static final String FEATURE_GET_ALL_FEATURES = "/v1/feature/get-all-features";
+    public static final String FEATURE_ADD_FEATURE = "/v1/feature/add-feature";
 }
