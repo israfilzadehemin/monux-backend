@@ -49,6 +49,7 @@ public class MsgConstant {
     public static final String PASSWORD_UPDATED_MSG = "Password has been updated for %s";
     public static final String PASSWORD_EQUALITY_MSG = "Password and confirm password is not same";
     public static final String REQUEST_MSG = "%s request with body: %s";
+    public static final String REQUEST_PARAM_MSG = "%s request with param: %s";
     public static final String OTP_CONFIRMED_MSG = "User %s confirmed their OTP";
     public static final String NO_BODY_MSG = "No body required";
     public static final String DUPLICATE_ACCOUNT_NAME_MSG = "User %s has existing account %s";
@@ -85,7 +86,7 @@ public class MsgConstant {
     public static final String NEGATIVE_BALANCE_NOT_ALLOWED = "Negative balance is not allowed for '%s'";
     public static final String INVALID_DATE_TIME_FORMAT_MSG = "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
     public static final String INVALID_RESET_PASSWORD_MSG = "Reset password exception";
-    public static final String BLOG_CREATED_MSG = "Blog is created: %s";
+    public static final String BLOG_CREATED_MSG = "Blog created: %s";
     public static final String BLOG_UPDATED_MSG = "Blog updated: %s";
     public static final String BLOG_DELETED_MSG = "Blog deleted: %s";
     public static final String BLOG_NOT_FOUND_MSG = "Blog is not found: '%s'";
@@ -95,6 +96,6 @@ public class MsgConstant {
     public static final String PLAN_UPDATED_MSG = "Plan updated: %s";
     public static final String PLAN_DELETED_MSG = "Plan deleted: %s";
     public static final String FEATURE_CREATED_MSG = "Feature is created: %s";
-
+    public static final String BANNER_NOT_FOUND_MSG = "Banner is not found: '%s'";
 
 }
