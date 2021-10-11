@@ -60,6 +60,7 @@ public class CustomExceptionHandler {
                 || exception instanceof NoExistingTransactionException
                 || exception instanceof BlogNotFoundException
                 || exception instanceof PlanNotFoundException
+                || exception instanceof BannerNotFoundException
         ) {
             return handleException(exception, HttpStatus.NOT_FOUND);
         }
