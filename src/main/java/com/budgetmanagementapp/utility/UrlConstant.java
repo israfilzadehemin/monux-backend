@@ -65,6 +65,8 @@ public class UrlConstant {
     public static final String PLAN_DELETE_PLAN_URL = "/v1/plan/delete-plan";
     public static final String FEATURE_GET_ALL_FEATURES = "/v1/feature/get-all-features";
     public static final String FEATURE_ADD_FEATURE = "/v1/feature/add-feature";
+    public static final String FEATURE_UPDATE_FEATURE = "/v1/feature/update-feature";
+    public static final String FEATURE_DELETE_FEATURE = "/v1/feature/delete-feature";
     public static final String DEFINITION_GET_ALL_DEFINITIONS_URL = "/v1/definition/get-all-definitions";
     public static final String DEFINITION_CREATE_URL = "/v1/definition/create-definition";
     public static final String DEFINITION_UPDATE_URL = "/v1/definition/update-definition";

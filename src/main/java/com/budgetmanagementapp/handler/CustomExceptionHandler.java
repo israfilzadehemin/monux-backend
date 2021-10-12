@@ -63,6 +63,7 @@ public class CustomExceptionHandler {
                 || exception instanceof BannerNotFoundException
                 || exception instanceof FagNotFoundException
                 || exception instanceof DefinitionNotFoundException
+                || exception instanceof FeatureNotFoundException
         ) {
             return handleException(exception, HttpStatus.NOT_FOUND);
         }

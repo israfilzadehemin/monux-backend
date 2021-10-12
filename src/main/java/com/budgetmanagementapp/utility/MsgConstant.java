@@ -96,6 +96,9 @@ public class MsgConstant {
     public static final String PLAN_UPDATED_MSG = "Plan updated: %s";
     public static final String PLAN_DELETED_MSG = "Plan deleted: %s";
     public static final String FEATURE_CREATED_MSG = "Feature created: %s";
+    public static final String FEATURE_UPDATED_MSG = "Feature updated: %s";
+    public static final String FEATURE_DELETED_MSG = "Feature deleted: %s";
+    public static final String FEATURE_NOT_FOUND_MSG = "Feature not found: %s";
     public static final String BANNER_NOT_FOUND_MSG = "Banner not found: '%s'";
     public static final String FAG_NOT_FOUND_MSG = "Fag not found: '%s'";
     public static final String DEFINITION_CREATED_MSG = "Definition created: %s";

@@ -4,8 +4,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -13,6 +11,6 @@ import java.util.List;
 @SuperBuilder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FeatureRqModel {
-    String content;
+public class UpdateFeatureRqModel extends FeatureRqModel{
+    String featureId;
 }
