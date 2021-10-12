@@ -10,19 +10,19 @@ import javax.persistence.*;
 @Setter
 @Builder
 @Entity
-public class Fag {
+public class Faq {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
 
-    @Column(name = "fag_id")
-    private String fagId;
+    @Column(name = "faq_id")
+    private String faqId;
 
-    @Column(name = "fag_question")
+    @Column(name = "faq_question")
     private String question;
 
-    @Column(name = "fag_answer")
+    @Column(name = "faq_answer")
     private String answer;
 }

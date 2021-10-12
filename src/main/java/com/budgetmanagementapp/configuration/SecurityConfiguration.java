@@ -53,8 +53,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, SERVICE_GET_ALL_SERVICES_URL).permitAll()
                 .antMatchers(HttpMethod.GET, BANNER_GET_BANNER_BY_ID_URL).permitAll()
                 .antMatchers(HttpMethod.GET, BANNER_GET_BANNER_BY_KEYWORD_URL).permitAll()
-                .antMatchers(HttpMethod.GET, FAG_GET_ALL_FAGS_URL).permitAll()
-                .antMatchers(HttpMethod.GET, FAG_GET_FAG_BY_ID).permitAll()
+                .antMatchers(HttpMethod.GET, FAQ_GET_ALL_FAQS_URL).permitAll()
+                .antMatchers(HttpMethod.GET, FAQ_GET_FAQ_BY_ID_URL).permitAll()
                 .anyRequest().authenticated();
 
         http

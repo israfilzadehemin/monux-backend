@@ -1,17 +1,17 @@
-package com.budgetmanagementapp.model.home;
+package com.budgetmanagementapp.model.faq;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
-@Builder
+@Setter
+@SuperBuilder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FagRsModel {
-    String fagId;
+public class FaqRqModel {
     String question;
     String answer;
 }

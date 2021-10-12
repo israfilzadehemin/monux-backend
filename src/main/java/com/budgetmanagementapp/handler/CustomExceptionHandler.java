@@ -61,7 +61,7 @@ public class CustomExceptionHandler {
                 || exception instanceof BlogNotFoundException
                 || exception instanceof PlanNotFoundException
                 || exception instanceof BannerNotFoundException
-                || exception instanceof FagNotFoundException
+                || exception instanceof FaqNotFoundException
                 || exception instanceof DefinitionNotFoundException
                 || exception instanceof FeatureNotFoundException
         ) {

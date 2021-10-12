@@ -75,7 +75,10 @@ public class UrlConstant {
     public static final String SERVICE_GET_ALL_SERVICES_URL = "/v1/service/get-all-services";
     public static final String BANNER_GET_BANNER_BY_ID_URL = "/v1/banner/get-banner-by-id";
     public static final String BANNER_GET_BANNER_BY_KEYWORD_URL = "/v1/banner/get-banner-by-keyword";
-    public static final String FAG_GET_ALL_FAGS_URL = "/v1/fag/get-all-fags";
-    public static final String FAG_GET_FAG_BY_ID = "/v1/fag/get-fag-by-id";
+    public static final String FAQ_GET_ALL_FAQS_URL = "/v1/faq/get-all-faqs";
+    public static final String FAQ_GET_FAQ_BY_ID_URL = "/v1/faq/get-faq-by-id";
+    public static final String FAQ_CREATE_URL = "/v1/faq/create-faq";
+    public static final String FAQ_UPDATE_URL = "/v1/faq/update-faq";
+    public static final String FAQ_DELETE_URL = "/v1/faq/delete-faq";
 
 }

@@ -100,7 +100,10 @@ public class MsgConstant {
     public static final String FEATURE_DELETED_MSG = "Feature deleted: %s";
     public static final String FEATURE_NOT_FOUND_MSG = "Feature not found: %s";
     public static final String BANNER_NOT_FOUND_MSG = "Banner not found: '%s'";
-    public static final String FAG_NOT_FOUND_MSG = "Fag not found: '%s'";
+    public static final String FAQ_NOT_FOUND_MSG = "Faq not found: '%s'";
+    public static final String FAQ_CREATED_MSG = "Faq created: %s";
+    public static final String FAQ_UPDATED_MSG = "Faq updated: %s";
+    public static final String FAQ_DELETED_MSG = "Faq deleted: %s";
     public static final String DEFINITION_CREATED_MSG = "Definition created: %s";
     public static final String DEFINITION_UPDATED_MSG = "Definition updated: %s";
     public static final String DEFINITION_DELETED_MSG = "Definition deleted: %s";
