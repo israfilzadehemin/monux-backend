@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.home.BannerRqModel;
 import com.budgetmanagementapp.service.BannerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -40,4 +41,39 @@ public class BannerController {
                         .body(bannerService.getBannerByKeyword(keyword))
                         .build());
     }
+
+    @PostMapping(BANNER_CREATE_URL)
+    public ResponseEntity<?> createBanner(@RequestBody BannerRqModel request) {
+
+        log.info(format(REQUEST_MSG, BANNER_CREATE_URL, request));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.CREATED)
+                        .body(bannerService.createBanner(request))
+                        .build());
+    }
+
+    @PostMapping(BANNER_UPDATE_URL)
+    public ResponseEntity<?> updateBanner(@RequestBody BannerRqModel request,
+                                          @RequestParam(name = "banner-id") String bannerId) {
+
+        log.info(format(REQUEST_MSG, BANNER_UPDATE_URL, request));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(bannerService.updateBanner(request, bannerId))
+                        .build());
+    }
+
+    @PostMapping(BANNER_DELETE_URL)
+    public ResponseEntity<?> deleteBanner(@RequestParam(name = "banner-id") String bannerId) {
+
+        log.info(format(REQUEST_PARAM_MSG, BANNER_DELETE_URL, bannerId));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(bannerService.deleteBanner(bannerId))
+                        .build());
+    }
+
 }

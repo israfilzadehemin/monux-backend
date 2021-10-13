@@ -99,7 +99,6 @@ public class MsgConstant {
     public static final String FEATURE_UPDATED_MSG = "Feature updated: %s";
     public static final String FEATURE_DELETED_MSG = "Feature deleted: %s";
     public static final String FEATURE_NOT_FOUND_MSG = "Feature not found: %s";
-    public static final String BANNER_NOT_FOUND_MSG = "Banner not found: '%s'";
     public static final String FAQ_NOT_FOUND_MSG = "Faq not found: '%s'";
     public static final String FAQ_CREATED_MSG = "Faq created: %s";
     public static final String FAQ_UPDATED_MSG = "Faq updated: %s";
@@ -116,7 +115,9 @@ public class MsgConstant {
     public static final String SERVICE_CREATED_MSG = "Service created: %s";
     public static final String SERVICE_UPDATED_MSG = "Service updated: %s";
     public static final String SERVICE_DELETED_MSG = "Service deleted: %s";
-
-
+    public static final String BANNER_NOT_FOUND_MSG = "Banner not found: '%s'";
+    public static final String BANNER_CREATED_MSG = "Banner created: %s";
+    public static final String BANNER_UPDATED_MSG = "Banner updated: %s";
+    public static final String BANNER_DELETED_MSG = "Banner deleted: %s";
 
 }

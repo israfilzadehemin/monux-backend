@@ -86,5 +86,8 @@ public class UrlConstant {
     public static final String SERVICE_CREATE_URL = "/v1/service/create-service";
     public static final String SERVICE_UPDATE_URL = "/v1/service/update-service";
     public static final String SERVICE_DELETE_URL = "/v1/service/delete-service";
+    public static final String BANNER_CREATE_URL = "/v1/banner/create-banner";
+    public static final String BANNER_UPDATE_URL = "/v1/banner/update-banner";
+    public static final String BANNER_DELETE_URL = "/v1/banner/delete-banner";
 
 }
