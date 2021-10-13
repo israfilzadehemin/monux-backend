@@ -108,6 +108,11 @@ public class MsgConstant {
     public static final String DEFINITION_UPDATED_MSG = "Definition updated: %s";
     public static final String DEFINITION_DELETED_MSG = "Definition deleted: %s";
     public static final String DEFINITION_NOT_FOUND_MSG = "Definition not found: '%s'";
+    public static final String STEP_NOT_FOUND_MSG = "Step not found: '%s'";
+    public static final String STEP_CREATED_MSG = "Step created: %s";
+    public static final String STEP_UPDATED_MSG = "Step updated: %s";
+    public static final String STEP_DELETED_MSG = "Step deleted: %s";
+
 
 
 }
