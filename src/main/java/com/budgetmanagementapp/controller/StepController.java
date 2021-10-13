@@ -60,7 +60,7 @@ public class StepController {
         log.info(format(REQUEST_PARAM_MSG, STEP_DELETE_URL, stepId));
         return ResponseEntity.ok(
                 ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
+                        .status(HttpStatus.OK)
                         .body(stepService.deleteStep(stepId))
                         .build());
     }

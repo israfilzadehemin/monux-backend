@@ -112,6 +112,10 @@ public class MsgConstant {
     public static final String STEP_CREATED_MSG = "Step created: %s";
     public static final String STEP_UPDATED_MSG = "Step updated: %s";
     public static final String STEP_DELETED_MSG = "Step deleted: %s";
+    public static final String SERVICE_NOT_FOUND_MSG = "Service not found: '%s'";
+    public static final String SERVICE_CREATED_MSG = "Service created: %s";
+    public static final String SERVICE_UPDATED_MSG = "Service updated: %s";
+    public static final String SERVICE_DELETED_MSG = "Service deleted: %s";
 
 
 

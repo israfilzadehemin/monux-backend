@@ -83,5 +83,8 @@ public class UrlConstant {
     public static final String STEP_CREATE_URL = "/v1/step/create-step";
     public static final String STEP_UPDATE_URL = "/v1/step/update-step";
     public static final String STEP_DELETE_URL = "/v1/step/delete-step";
+    public static final String SERVICE_CREATE_URL = "/v1/service/create-service";
+    public static final String SERVICE_UPDATE_URL = "/v1/service/update-service";
+    public static final String SERVICE_DELETE_URL = "/v1/service/delete-service";
 
 }

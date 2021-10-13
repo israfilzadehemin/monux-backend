@@ -65,6 +65,7 @@ public class CustomExceptionHandler {
                 || exception instanceof DefinitionNotFoundException
                 || exception instanceof FeatureNotFoundException
                 || exception instanceof StepNotFoundException
+                || exception instanceof ServiceNotFoundException
         ) {
             return handleException(exception, HttpStatus.NOT_FOUND);
         }
