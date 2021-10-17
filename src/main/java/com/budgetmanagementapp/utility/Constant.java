@@ -17,7 +17,10 @@ public class Constant {
     public static final String STATUS_OPEN = "OPEN";
     public static final String STATUS_PAID = "PAID";
     public static final String STATUS_USED = "USED";
-    public static final String CASH_ACCOUNT = "Nəğd pul hesabı";
+    public static final String CASH_ACCOUNT = "cashAccount";
+    public static final String CARD_ACCOUNT = "cardAccount";
+    public static final String INVESTMENT_ACCOUNT = "investmentAccount";
+    public static final String SAVING_ACCOUNT = "savingAccount";
     public static final String OTP_CONFIRMATION_SUBJECT = "Confirmation code for your account";
     public static final String OTP_CONFIRMATION_BODY = "Your confirmation code is: %s";
     public static final String RESET_PASSWORD_SUBJECT = "Reset password link for your account";

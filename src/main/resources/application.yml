@@ -20,5 +20,14 @@ spring:
     hibernate:
       ddl-auto: none
 
+  liquibase:
+    enabled: ${SPRING_LIQUIBASE_ENABLED:true}
+    change-log: classpath:liquibase/changelog-master.yml
+    drop-first: false
+    default-schema: ${MONUX_DB_SCHEMA:public}
+    database-change-log-table: MONUX_DBCHANGELOG
+    database-change-log-lock-table: MONUX_DBCHANGELOGLOCK
+
+
 server:
   port: 8090
