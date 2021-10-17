@@ -1,10 +1,8 @@
-package com.budgetmanagementapp.model.feature;
+package com.budgetmanagementapp.model.faq;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,6 +11,6 @@ import java.util.List;
 @SuperBuilder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FeatureRqModel {
-    String content;
+public class UpdateFaqRqModel extends FaqRqModel{
+    String faqId;
 }

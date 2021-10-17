@@ -1,17 +1,17 @@
 package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.definition.DefinitionRqModel;
+import com.budgetmanagementapp.model.definition.UpdateDefinitionRqModel;
 import com.budgetmanagementapp.service.DefinitionService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.DEFINITION_GET_ALL_DEFINITIONS_URL;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
 
 @Log4j2
@@ -29,6 +29,39 @@ public class DefinitionController {
                 ResponseModel.builder()
                         .status(HttpStatus.OK)
                         .body(definitionService.getAllDefinitions())
+                        .build());
+    }
+
+    @PostMapping(DEFINITION_CREATE_URL)
+    public ResponseEntity<?> createDefinition(@RequestBody DefinitionRqModel requestBody) {
+
+        log.info(format(REQUEST_MSG, DEFINITION_CREATE_URL, requestBody));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.CREATED)
+                        .body(definitionService.createDefinition(requestBody))
+                        .build());
+    }
+
+    @PostMapping(DEFINITION_UPDATE_URL)
+    public ResponseEntity<?> updateDefinition(@RequestBody UpdateDefinitionRqModel requestBody) {
+
+        log.info(format(REQUEST_MSG, DEFINITION_UPDATE_URL, requestBody));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(definitionService.updateDefinition(requestBody))
+                        .build());
+    }
+
+    @PostMapping(DEFINITION_DELETE_URL)
+    public ResponseEntity<?> deleteDefinition(@RequestParam(name = "definition-id") String definitionId) {
+
+        log.info(format(REQUEST_PARAM_MSG, DEFINITION_DELETE_URL, definitionId));
+        return ResponseEntity.ok(
+                ResponseModel.builder()
+                        .status(HttpStatus.OK)
+                        .body(definitionService.deleteDefinition(definitionId))
                         .build());
     }
 }
