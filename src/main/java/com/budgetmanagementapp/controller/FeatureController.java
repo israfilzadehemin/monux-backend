@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
@@ -33,7 +35,7 @@ public class FeatureController {
     }
 
     @PostMapping(FEATURE_ADD_FEATURE)
-    public ResponseEntity<?> addFeature(@RequestBody FeatureRqModel request) {
+    public ResponseEntity<?> addFeature(@RequestBody @Valid FeatureRqModel request) {
 
         log.info(format(REQUEST_MSG, FEATURE_ADD_FEATURE, request));
         return ResponseEntity.ok(
@@ -44,7 +46,7 @@ public class FeatureController {
     }
 
     @PostMapping(FEATURE_UPDATE_FEATURE)
-    public ResponseEntity<?> updateFeature(@RequestBody UpdateFeatureRqModel request) {
+    public ResponseEntity<?> updateFeature(@RequestBody @Valid UpdateFeatureRqModel request) {
 
         log.info(format(REQUEST_MSG, FEATURE_UPDATE_FEATURE, request));
         return ResponseEntity.ok(

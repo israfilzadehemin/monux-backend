@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
@@ -42,7 +44,7 @@ public class FaqController {
     }
 
     @PostMapping(FAQ_CREATE_URL)
-    public ResponseEntity<?> createFaq(@RequestBody FaqRqModel request) {
+    public ResponseEntity<?> createFaq(@RequestBody @Valid FaqRqModel request) {
         log.info(format(REQUEST_MSG, FAQ_CREATE_URL, request));
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -52,7 +54,7 @@ public class FaqController {
     }
 
     @PostMapping(FAQ_UPDATE_URL)
-    public ResponseEntity<?> updateFaq(@RequestBody UpdateFaqRqModel request) {
+    public ResponseEntity<?> updateFaq(@RequestBody @Valid UpdateFaqRqModel request) {
         log.info(format(REQUEST_MSG, FAQ_UPDATE_URL, request));
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -62,7 +64,7 @@ public class FaqController {
     }
 
     @PostMapping(FAQ_DELETE_URL)
-    public ResponseEntity<?> updateFaq(@RequestParam("faq-id") String faqId) {
+    public ResponseEntity<?> deleteFaq(@RequestParam("faq-id") String faqId) {
         log.info(format(REQUEST_PARAM_MSG, FAQ_DELETE_URL, faqId));
         return ResponseEntity.ok(
                 ResponseModel.builder()

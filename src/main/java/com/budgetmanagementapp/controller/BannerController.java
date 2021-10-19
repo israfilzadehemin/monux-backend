@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
@@ -43,7 +45,7 @@ public class BannerController {
     }
 
     @PostMapping(BANNER_CREATE_URL)
-    public ResponseEntity<?> createBanner(@RequestBody BannerRqModel request) {
+    public ResponseEntity<?> createBanner(@RequestBody @Valid BannerRqModel request) {
 
         log.info(format(REQUEST_MSG, BANNER_CREATE_URL, request));
         return ResponseEntity.ok(
@@ -54,7 +56,7 @@ public class BannerController {
     }
 
     @PostMapping(BANNER_UPDATE_URL)
-    public ResponseEntity<?> updateBanner(@RequestBody BannerRqModel request,
+    public ResponseEntity<?> updateBanner(@RequestBody @Valid BannerRqModel request,
                                           @RequestParam(name = "banner-id") String bannerId) {
 
         log.info(format(REQUEST_MSG, BANNER_UPDATE_URL, request));

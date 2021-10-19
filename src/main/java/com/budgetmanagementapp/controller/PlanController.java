@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
@@ -33,7 +35,7 @@ public class PlanController {
     }
 
     @PostMapping(PLAN_ADD_PLAN_URL)
-    public ResponseEntity<?> addPlan(@RequestBody PlanRqModel request) {
+    public ResponseEntity<?> addPlan(@RequestBody @Valid PlanRqModel request) {
 
         log.info(format(REQUEST_MSG, PLAN_ADD_PLAN_URL, request));
         return ResponseEntity.ok(
@@ -44,7 +46,7 @@ public class PlanController {
     }
 
     @PostMapping(PLAN_UPDATE_PLAN_URL)
-    public ResponseEntity<?> updatePlan(@RequestBody UpdatePlanRqModel request) {
+    public ResponseEntity<?> updatePlan(@RequestBody @Valid UpdatePlanRqModel request) {
 
         log.info(format(REQUEST_MSG, PLAN_UPDATE_PLAN_URL, request));
         return ResponseEntity.ok(

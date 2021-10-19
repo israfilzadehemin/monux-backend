@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
@@ -44,7 +46,7 @@ public class BlogController {
     }
 
     @PostMapping(BLOG_CREATE_BLOG_URL)
-    public ResponseEntity<?> createBlog(@RequestBody BlogRqModel request) {
+    public ResponseEntity<?> createBlog(@RequestBody @Valid BlogRqModel request) {
 
         log.info(format(REQUEST_MSG, BLOG_CREATE_BLOG_URL, request));
         return ResponseEntity.ok(
@@ -55,7 +57,7 @@ public class BlogController {
     }
 
     @PostMapping(BLOG_UPDATE_BLOG_URL)
-    public ResponseEntity<?> updateBlog(@RequestBody UpdateBlogRqModel request) {
+    public ResponseEntity<?> updateBlog(@RequestBody @Valid UpdateBlogRqModel request) {
 
         log.info(format(REQUEST_MSG, BLOG_UPDATE_BLOG_URL, request));
         return ResponseEntity.ok(

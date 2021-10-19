@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
@@ -32,7 +34,7 @@ public class StepController {
     }
 
     @PostMapping(STEP_CREATE_URL)
-    public ResponseEntity<?> createStep(@RequestBody StepRqModel request) {
+    public ResponseEntity<?> createStep(@RequestBody @Valid StepRqModel request) {
 
         log.info(format(REQUEST_MSG, STEP_CREATE_URL, request));
         return ResponseEntity.ok(
@@ -43,7 +45,7 @@ public class StepController {
     }
 
     @PostMapping(STEP_UPDATE_URL)
-    public ResponseEntity<?> updateStep(@RequestBody StepRqModel request,
+    public ResponseEntity<?> updateStep(@RequestBody @Valid StepRqModel request,
                                         @RequestParam(name = "step-id") String stepId) {
 
         log.info(format(REQUEST_MSG, STEP_UPDATE_URL, request));
