@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
@@ -33,7 +35,7 @@ public class DefinitionController {
     }
 
     @PostMapping(DEFINITION_CREATE_URL)
-    public ResponseEntity<?> createDefinition(@RequestBody DefinitionRqModel requestBody) {
+    public ResponseEntity<?> createDefinition(@RequestBody @Valid DefinitionRqModel requestBody) {
 
         log.info(format(REQUEST_MSG, DEFINITION_CREATE_URL, requestBody));
         return ResponseEntity.ok(
@@ -44,7 +46,7 @@ public class DefinitionController {
     }
 
     @PostMapping(DEFINITION_UPDATE_URL)
-    public ResponseEntity<?> updateDefinition(@RequestBody UpdateDefinitionRqModel requestBody) {
+    public ResponseEntity<?> updateDefinition(@RequestBody @Valid UpdateDefinitionRqModel requestBody) {
 
         log.info(format(REQUEST_MSG, DEFINITION_UPDATE_URL, requestBody));
         return ResponseEntity.ok(

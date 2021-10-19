@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -15,9 +16,16 @@ import java.util.List;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanRqModel {
+    @NotBlank
     String title;
+
+    @NotBlank
     String text;
+
     BigDecimal price;
+
+    @NotBlank
     String periodType;
+
     List<String> featuresIds;
 }

@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.STEP_DELETE_URL;
@@ -34,7 +36,7 @@ public class ServiceController {
     }
 
     @PostMapping(SERVICE_CREATE_URL)
-    public ResponseEntity<?> createService(@RequestBody ServiceRqModel request) {
+    public ResponseEntity<?> createService(@RequestBody @Valid ServiceRqModel request) {
 
         log.info(format(REQUEST_MSG, SERVICE_CREATE_URL, request));
         return ResponseEntity.ok(
@@ -45,8 +47,8 @@ public class ServiceController {
     }
 
     @PostMapping(SERVICE_UPDATE_URL)
-    public ResponseEntity<?> updateService(@RequestBody ServiceRqModel request,
-                                        @RequestParam(name = "service-id") String serviceId) {
+    public ResponseEntity<?> updateService(@RequestBody @Valid ServiceRqModel request,
+                                           @RequestParam(name = "service-id") String serviceId) {
 
         log.info(format(REQUEST_MSG, SERVICE_UPDATE_URL, request));
         return ResponseEntity.ok(
