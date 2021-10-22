@@ -107,6 +107,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.2.1.RELEASE</version>
                 <configuration>
+                    <mainClass>com.budgetmanagementapp.BudgetManagementAppApplication</mainClass>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
