@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/budget-app
-    username: postgres
-    password: xiaominote9
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/budget-app}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:xiaominote9}
     driver-class-name: org.postgresql.Driver
   mail:
     host: smtp.gmail.com
