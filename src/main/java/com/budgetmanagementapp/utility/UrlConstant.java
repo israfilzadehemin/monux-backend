@@ -1,7 +1,6 @@
 package com.budgetmanagementapp.utility;
 
 public class UrlConstant {
-    public static final String H2_CONSOLE_URL = "/h2-console/**";
     public static final String USER_LOGIN_URL = "/v1/user/login";
     public static final String USER_SIGNUP_URL = "/v1/user/signup";
     public static final String USER_OTP_CONFIRM_URL = "/v1/user/confirm-otp";
@@ -55,4 +54,40 @@ public class UrlConstant {
     public static final String TEMPLATE_UPDATE_DEBT_URL = "/v1/template/update-debt-template";
     public static final String TEMPLATE_GET_ALL_TEMPLATES_URL = "/v1/template/get-all-templates";
     public static final String TEMPLATE_DELETE_TEMPLATES_URL = "/v1/template/delete-templates";
+    public static final String BLOG_GET_ALL_BLOGS_URL = "/v1/blog/get-all-blogs";
+    public static final String BLOG_GET_BLOG_BY_ID_URL = "/v1/blog/get-blog-by-id";
+    public static final String BLOG_CREATE_BLOG_URL = "/v1/blog/create-blog";
+    public static final String BLOG_UPDATE_BLOG_URL = "/v1/blog/update-blog";
+    public static final String BLOG_DELETE_BLOG_URL = "/v1/blog/delete-blog";
+    public static final String PLAN_GET_ALL_PLANS_URL = "/v1/plan/get-all-plans";
+    public static final String PLAN_ADD_PLAN_URL = "/v1/plan/add-plan";
+    public static final String PLAN_UPDATE_PLAN_URL = "/v1/plan/update-plan";
+    public static final String PLAN_DELETE_PLAN_URL = "/v1/plan/delete-plan";
+    public static final String FEATURE_GET_ALL_FEATURES = "/v1/feature/get-all-features";
+    public static final String FEATURE_ADD_FEATURE = "/v1/feature/add-feature";
+    public static final String FEATURE_UPDATE_FEATURE = "/v1/feature/update-feature";
+    public static final String FEATURE_DELETE_FEATURE = "/v1/feature/delete-feature";
+    public static final String DEFINITION_GET_ALL_DEFINITIONS_URL = "/v1/definition/get-all-definitions";
+    public static final String DEFINITION_CREATE_URL = "/v1/definition/create-definition";
+    public static final String DEFINITION_UPDATE_URL = "/v1/definition/update-definition";
+    public static final String DEFINITION_DELETE_URL = "/v1/definition/delete-definition";
+    public static final String STEP_GET_ALL_STEPS_URL = "/v1/step/get-all-steps";
+    public static final String SERVICE_GET_ALL_SERVICES_URL = "/v1/service/get-all-services";
+    public static final String BANNER_GET_BANNER_BY_ID_URL = "/v1/banner/get-banner-by-id";
+    public static final String BANNER_GET_BANNER_BY_KEYWORD_URL = "/v1/banner/get-banner-by-keyword";
+    public static final String FAQ_GET_ALL_FAQS_URL = "/v1/faq/get-all-faqs";
+    public static final String FAQ_GET_FAQ_BY_ID_URL = "/v1/faq/get-faq-by-id";
+    public static final String FAQ_CREATE_URL = "/v1/faq/create-faq";
+    public static final String FAQ_UPDATE_URL = "/v1/faq/update-faq";
+    public static final String FAQ_DELETE_URL = "/v1/faq/delete-faq";
+    public static final String STEP_CREATE_URL = "/v1/step/create-step";
+    public static final String STEP_UPDATE_URL = "/v1/step/update-step";
+    public static final String STEP_DELETE_URL = "/v1/step/delete-step";
+    public static final String SERVICE_CREATE_URL = "/v1/service/create-service";
+    public static final String SERVICE_UPDATE_URL = "/v1/service/update-service";
+    public static final String SERVICE_DELETE_URL = "/v1/service/delete-service";
+    public static final String BANNER_CREATE_URL = "/v1/banner/create-banner";
+    public static final String BANNER_UPDATE_URL = "/v1/banner/update-banner";
+    public static final String BANNER_DELETE_URL = "/v1/banner/delete-banner";
+
 }

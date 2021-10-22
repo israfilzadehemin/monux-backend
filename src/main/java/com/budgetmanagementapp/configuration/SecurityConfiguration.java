@@ -44,7 +44,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, USER_CREATE_INITIAL_ACCOUNT_URL).permitAll()
                 .antMatchers(HttpMethod.GET, ACCOUNT_GET_ALL_ACCOUNT_TYPES_URL).permitAll()
                 .antMatchers(HttpMethod.GET, ACCOUNT_GET_ALL_CURRENCIES_URL).permitAll()
-                .antMatchers(H2_CONSOLE_URL).permitAll()
+                .antMatchers(HttpMethod.GET, BLOG_GET_ALL_BLOGS_URL).permitAll()
+                .antMatchers(HttpMethod.GET, BLOG_GET_BLOG_BY_ID_URL).permitAll()
+                .antMatchers(HttpMethod.GET, PLAN_GET_ALL_PLANS_URL).permitAll()
+                .antMatchers(HttpMethod.GET, FEATURE_GET_ALL_FEATURES).permitAll()
+                .antMatchers(HttpMethod.GET, DEFINITION_GET_ALL_DEFINITIONS_URL).permitAll()
+                .antMatchers(HttpMethod.GET, STEP_GET_ALL_STEPS_URL).permitAll()
+                .antMatchers(HttpMethod.GET, SERVICE_GET_ALL_SERVICES_URL).permitAll()
+                .antMatchers(HttpMethod.GET, BANNER_GET_BANNER_BY_ID_URL).permitAll()
+                .antMatchers(HttpMethod.GET, BANNER_GET_BANNER_BY_KEYWORD_URL).permitAll()
+                .antMatchers(HttpMethod.GET, FAQ_GET_ALL_FAQS_URL).permitAll()
+                .antMatchers(HttpMethod.GET, FAQ_GET_FAQ_BY_ID_URL).permitAll()
                 .anyRequest().authenticated();
 
         http

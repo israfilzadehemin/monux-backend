@@ -49,6 +49,7 @@ public class MsgConstant {
     public static final String PASSWORD_UPDATED_MSG = "Password has been updated for %s";
     public static final String PASSWORD_EQUALITY_MSG = "Password and confirm password is not same";
     public static final String REQUEST_MSG = "%s request with body: %s";
+    public static final String REQUEST_PARAM_MSG = "%s request with param: %s";
     public static final String OTP_CONFIRMED_MSG = "User %s confirmed their OTP";
     public static final String NO_BODY_MSG = "No body required";
     public static final String DUPLICATE_ACCOUNT_NAME_MSG = "User %s has existing account %s";
@@ -85,4 +86,38 @@ public class MsgConstant {
     public static final String NEGATIVE_BALANCE_NOT_ALLOWED = "Negative balance is not allowed for '%s'";
     public static final String INVALID_DATE_TIME_FORMAT_MSG = "DateTime should be in following format: 'yyyy-MM-dd HH:mm'";
     public static final String INVALID_RESET_PASSWORD_MSG = "Reset password exception";
+    public static final String BLOG_CREATED_MSG = "Blog created: %s";
+    public static final String BLOG_UPDATED_MSG = "Blog updated: %s";
+    public static final String BLOG_DELETED_MSG = "Blog deleted: %s";
+    public static final String BLOG_NOT_FOUND_MSG = "Blog is not found: '%s'";
+    public static final String BLOG_WITH_PARAM = "%s blog with param: %s";
+    public static final String PLAN_NOT_FOUND_MSG = "Plan is not found: '%s'";
+    public static final String PLAN_CREATED_MSG = "Plan created: %s";
+    public static final String PLAN_UPDATED_MSG = "Plan updated: %s";
+    public static final String PLAN_DELETED_MSG = "Plan deleted: %s";
+    public static final String FEATURE_CREATED_MSG = "Feature created: %s";
+    public static final String FEATURE_UPDATED_MSG = "Feature updated: %s";
+    public static final String FEATURE_DELETED_MSG = "Feature deleted: %s";
+    public static final String FEATURE_NOT_FOUND_MSG = "Feature not found: %s";
+    public static final String FAQ_NOT_FOUND_MSG = "Faq not found: '%s'";
+    public static final String FAQ_CREATED_MSG = "Faq created: %s";
+    public static final String FAQ_UPDATED_MSG = "Faq updated: %s";
+    public static final String FAQ_DELETED_MSG = "Faq deleted: %s";
+    public static final String DEFINITION_CREATED_MSG = "Definition created: %s";
+    public static final String DEFINITION_UPDATED_MSG = "Definition updated: %s";
+    public static final String DEFINITION_DELETED_MSG = "Definition deleted: %s";
+    public static final String DEFINITION_NOT_FOUND_MSG = "Definition not found: '%s'";
+    public static final String STEP_NOT_FOUND_MSG = "Step not found: '%s'";
+    public static final String STEP_CREATED_MSG = "Step created: %s";
+    public static final String STEP_UPDATED_MSG = "Step updated: %s";
+    public static final String STEP_DELETED_MSG = "Step deleted: %s";
+    public static final String SERVICE_NOT_FOUND_MSG = "Service not found: '%s'";
+    public static final String SERVICE_CREATED_MSG = "Service created: %s";
+    public static final String SERVICE_UPDATED_MSG = "Service updated: %s";
+    public static final String SERVICE_DELETED_MSG = "Service deleted: %s";
+    public static final String BANNER_NOT_FOUND_MSG = "Banner not found: '%s'";
+    public static final String BANNER_CREATED_MSG = "Banner created: %s";
+    public static final String BANNER_UPDATED_MSG = "Banner updated: %s";
+    public static final String BANNER_DELETED_MSG = "Banner deleted: %s";
+
 }
