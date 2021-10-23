@@ -1,8 +1,10 @@
 spring:
+  application:
+    name: monux
   datasource:
-    url: jdbc:postgresql://localhost:5432/budget-app
-    username: postgres
-    password: xiaominote9
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/budget-app}
+    username: ${DATABASE_USERNAME:postgres}
+    password: ${DATABASE_PASSWORD:xiaominote9}
     driver-class-name: org.postgresql.Driver
   mail:
     host: smtp.gmail.com
