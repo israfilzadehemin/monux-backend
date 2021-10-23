@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: monux
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/budget-app}
     username: ${DATABASE_USERNAME:postgres}
