@@ -12,9 +12,13 @@ import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.service.FeedbackService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,12 +31,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Log4j2
+@Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Feedback")
 public class FeedbackController {
 
     private final FeedbackService feedbackService;
 
     private static final String REQUEST_PARAM_FEEDBACK_ID = "feedback-id";
 
+    @ApiOperation("Create feedback")
     @PostMapping(FEEDBACK_CREATE_URL)
     public ResponseEntity<?> createFeedback(@RequestBody @Valid FeedbackRqModel requestBody, Authentication auth) {
 
@@ -45,6 +51,7 @@ public class FeedbackController {
                         .build());
     }
 
+    @ApiOperation("Get all feedbacks")
     @GetMapping(FEEDBACK_GET_ALL_FEEDBACKS_URL)
     public ResponseEntity<?> getAllFeedbacks(Authentication auth) {
 
@@ -57,6 +64,7 @@ public class FeedbackController {
                         .build());
     }
 
+    @ApiOperation("Get feedback by id")
     @GetMapping(FEEDBACK_GET_FEEDBACK_BY_ID_URL)
     public ResponseEntity<?> getFeedbackById(
             @RequestParam(name = REQUEST_PARAM_FEEDBACK_ID) @NotBlank String feedbackId, Authentication auth) {

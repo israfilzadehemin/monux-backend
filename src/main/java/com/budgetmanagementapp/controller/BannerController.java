@@ -3,9 +3,12 @@ package com.budgetmanagementapp.controller;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.home.BannerRqModel;
 import com.budgetmanagementapp.service.BannerService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,10 +21,12 @@ import static java.lang.String.format;
 @Log4j2
 @AllArgsConstructor
 @RestController
+@Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Banner")
 public class BannerController {
 
     private final BannerService bannerService;
 
+    @ApiOperation("Get banner by id")
     @GetMapping(BANNER_GET_BANNER_BY_ID_URL)
     public ResponseEntity<?> getBannerById(@RequestParam("banner-id") String bannerId) {
 
@@ -33,6 +38,7 @@ public class BannerController {
                         .build());
     }
 
+    @ApiOperation("Get banner by keyword")
     @GetMapping(BANNER_GET_BANNER_BY_KEYWORD_URL)
     public ResponseEntity<?> getBannerByKeyword(@RequestParam("banner-keyword") String keyword) {
 
@@ -44,6 +50,7 @@ public class BannerController {
                         .build());
     }
 
+    @ApiOperation("Create banner")
     @PostMapping(BANNER_CREATE_URL)
     public ResponseEntity<?> createBanner(@RequestBody @Valid BannerRqModel request) {
 
@@ -55,6 +62,7 @@ public class BannerController {
                         .build());
     }
 
+    @ApiOperation("Update banner")
     @PostMapping(BANNER_UPDATE_URL)
     public ResponseEntity<?> updateBanner(@RequestBody @Valid BannerRqModel request,
                                           @RequestParam(name = "banner-id") String bannerId) {
@@ -67,6 +75,7 @@ public class BannerController {
                         .build());
     }
 
+    @ApiOperation("Delete banner")
     @PostMapping(BANNER_DELETE_URL)
     public ResponseEntity<?> deleteBanner(@RequestParam(name = "banner-id") String bannerId) {
 

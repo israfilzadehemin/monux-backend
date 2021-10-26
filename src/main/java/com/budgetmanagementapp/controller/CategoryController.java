@@ -13,9 +13,13 @@ import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
 import com.budgetmanagementapp.service.CategoryService;
 import javax.validation.Valid;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -27,10 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Log4j2
+@Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Category")
 public class CategoryController {
 
     private final CategoryService categoryService;
 
+    @ApiOperation("Create category")
     @PostMapping(CATEGORY_CREATE_URL)
     public ResponseEntity<?> createCategory(@RequestBody @Valid CategoryRqModel requestBody,
                                             Authentication auth) {
@@ -44,6 +50,7 @@ public class CategoryController {
                         .build());
     }
 
+    @ApiOperation("Get all categories")
     @GetMapping(CATEGORY_GET_ALL_CATEGORIES_URL)
     public ResponseEntity<?> getAllCategories(Authentication auth) {
 
@@ -56,6 +63,7 @@ public class CategoryController {
                         .build());
     }
 
+    @ApiOperation("Get all categories of user")
     @GetMapping(CATEGORY_GET_CATEGORIES_URL)
     public ResponseEntity<?> getCategoriesOfUser(Authentication auth) {
 
@@ -68,6 +76,7 @@ public class CategoryController {
                         .build());
     }
 
+    @ApiOperation("Update category")
     @PostMapping(CATEGORY_UPDATE_URL)
     public ResponseEntity<?> updateCustomCategory(@RequestBody @Valid UpdateCategoryRqModel requestBody,
                                                   Authentication auth) {

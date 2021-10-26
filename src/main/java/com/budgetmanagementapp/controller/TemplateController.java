@@ -16,9 +16,13 @@ import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.service.TemplateService;
 import com.budgetmanagementapp.utility.TransactionType;
 import javax.validation.Valid;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,10 +34,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Log4j2
+@Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Template")
 public class TemplateController {
 
     private final TemplateService templateService;
 
+    @ApiOperation("Create income template")
     @PostMapping(TEMPLATE_CREATE_INCOME_URL)
     public ResponseEntity<?> createIncomeTemplate(@RequestBody @Valid InOutRqModel requestBody,
                                                   Authentication auth) {
@@ -50,9 +56,10 @@ public class TemplateController {
 
     }
 
+    @ApiOperation("Create outgoing template")
     @PostMapping(TEMPLATE_CREATE_OUTGOING_URL)
-    public ResponseEntity<?> createOutcomeTemplate(@RequestBody @Valid InOutRqModel requestBody,
-                                                   Authentication auth) {
+    public ResponseEntity<?> createOutgoingTemplate(@RequestBody @Valid InOutRqModel requestBody,
+                                                    Authentication auth) {
 
         log.info(format(REQUEST_MSG, TEMPLATE_CREATE_OUTGOING_URL, requestBody));
         return ResponseEntity.ok(
@@ -66,6 +73,7 @@ public class TemplateController {
 
     }
 
+    @ApiOperation("Create transfer template")
     @PostMapping(TEMPLATE_CREATE_TRANSFER_URL)
     public ResponseEntity<?> createTransferTemplate(@RequestBody @Valid TransferRqModel requestBody,
                                                     Authentication auth) {
@@ -82,6 +90,7 @@ public class TemplateController {
 
     }
 
+    @ApiOperation("Create debt in template")
     @PostMapping(TEMPLATE_CREATE_DEBT_IN_URL)
     public ResponseEntity<?> createDebtInTemplate(@RequestBody @Valid DebtRqModel requestBody,
                                                   Authentication auth) {
@@ -99,6 +108,7 @@ public class TemplateController {
 
     }
 
+    @ApiOperation("Create debt out template")
     @PostMapping(TEMPLATE_CREATE_DEBT_OUT_URL)
     public ResponseEntity<?> createDebtOutTemplate(@RequestBody @Valid DebtRqModel requestBody,
                                                    Authentication auth) {
@@ -116,6 +126,7 @@ public class TemplateController {
 
     }
 
+    @ApiOperation("Get all templates")
     @GetMapping(TEMPLATE_GET_ALL_TEMPLATES_URL)
     public ResponseEntity<?> getAllTemplates(Authentication auth) {
 
@@ -128,7 +139,7 @@ public class TemplateController {
                         .build());
     }
 
-
+    @ApiOperation("Update income and outgoing templates")
     @PostMapping(TEMPLATE_UPDATE_IN_OUT_URL)
     public ResponseEntity<?> updateInOutTemplate(@RequestBody @Valid UpdateInOutRqModel requestBody,
                                                  Authentication auth) {
@@ -145,6 +156,7 @@ public class TemplateController {
 
     }
 
+    @ApiOperation("Update transfer template")
     @PostMapping(TEMPLATE_UPDATE_TRANSFER_URL)
     public ResponseEntity<?> updateTransferTemplate(@RequestBody @Valid UpdateTransferRqModel requestBody,
                                                     Authentication auth) {
@@ -161,6 +173,7 @@ public class TemplateController {
 
     }
 
+    @ApiOperation("Update debt in and out template")
     @PostMapping(TEMPLATE_UPDATE_DEBT_URL)
     public ResponseEntity<?> updateDebtTemplate(@RequestBody @Valid UpdateDebtRqModel requestBody,
                                                 Authentication auth) {
@@ -177,6 +190,7 @@ public class TemplateController {
 
     }
 
+    @ApiOperation("Delete template")
     @PostMapping(TEMPLATE_DELETE_TEMPLATES_URL)
     public ResponseEntity<?> deleteTemplateTransactions(@RequestBody @Valid DeleteTransactionRqModel requestBody,
                                                         Authentication auth){
