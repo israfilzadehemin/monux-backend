@@ -1,1 +1,2 @@
 web: java -jar build/libs/monux-1.0-SNAPSHOT.jar
+release: java -jar target/dependency/liquibase.jar --changeLogFile=src/main/resources/liquibase/changelog-master.yaml --url=${DATABASE_URL:jdbc:postgresql://localhost:5433/budget-app} --classpath=target/dependency/postgres.jar update
