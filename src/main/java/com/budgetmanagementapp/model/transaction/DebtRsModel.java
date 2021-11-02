@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.model.transaction;
 
 import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,5 +19,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DebtRsModel extends TransactionRsModel {
+    @ApiModelProperty(
+            name = "accountId",
+            dataType = "string")
     String accountId;
 }

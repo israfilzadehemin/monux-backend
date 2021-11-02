@@ -20,6 +20,7 @@ import javax.validation.Valid;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -79,7 +80,12 @@ public class UserController {
 
     @ApiOperation("Forgot password of user")
     @PostMapping(USER_FORGET_PASSWORD_URL)
-    public ResponseEntity<?> forgetPassword(@RequestParam String username) throws MessagingException {
+    public ResponseEntity<?> forgetPassword(
+            @ApiParam(
+                    name = "username",
+                    type = "string",
+                    required = true)
+            @RequestParam String username) throws MessagingException {
         log.info(USER_RESET_PASSWORD_URL);
         return ResponseEntity.ok(
                 ResponseModel.builder()

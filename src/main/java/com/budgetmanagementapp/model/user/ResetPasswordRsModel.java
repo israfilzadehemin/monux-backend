@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.model.user;
 
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,6 +13,13 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResetPasswordRsModel {
+    @ApiModelProperty(
+            name = "username",
+            dataType = "string")
     String username;
+
+    @ApiModelProperty(
+            name = "password",
+            dataType = "string")
     String password;
 }

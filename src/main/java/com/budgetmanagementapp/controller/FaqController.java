@@ -6,6 +6,7 @@ import com.budgetmanagementapp.model.faq.UpdateFaqRqModel;
 import com.budgetmanagementapp.service.FaqService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -40,7 +41,13 @@ public class FaqController {
 
     @ApiOperation("Get faq by id")
     @GetMapping(FAQ_GET_FAQ_BY_ID_URL)
-    public ResponseEntity<?> getFaqById(@RequestParam(name = "faq-id") String faqId) {
+    public ResponseEntity<?> getFaqById(
+            @ApiParam(
+                    name = "faq-id",
+                    type = "string",
+                    example = "",
+                    required = true)
+            @RequestParam(name = "faq-id") String faqId) {
         log.info(format(REQUEST_MSG, FAQ_GET_FAQ_BY_ID_URL, faqId));
         return ResponseEntity.ok(
                 ResponseModel.builder()
@@ -73,7 +80,13 @@ public class FaqController {
 
     @ApiOperation("Delete faq")
     @PostMapping(FAQ_DELETE_URL)
-    public ResponseEntity<?> deleteFaq(@RequestParam("faq-id") String faqId) {
+    public ResponseEntity<?> deleteFaq(
+            @ApiParam(
+                    name = "faq-id",
+                    type = "string",
+                    example = "",
+                    required = true)
+            @RequestParam("faq-id") String faqId) {
         log.info(format(REQUEST_PARAM_MSG, FAQ_DELETE_URL, faqId));
         return ResponseEntity.ok(
                 ResponseModel.builder()

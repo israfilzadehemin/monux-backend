@@ -1,6 +1,8 @@
 package com.budgetmanagementapp.model.user;
 
 import javax.validation.constraints.NotBlank;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,10 +20,15 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ConfirmOtpRqModel {
-
+    @ApiModelProperty(
+            name = "username",
+            dataType = "string")
     @NotBlank
     String username;
 
+    @ApiModelProperty(
+            name = "otp",
+            dataType = "string")
     @NotBlank
     String otp;
 }

@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -113,6 +114,11 @@ public class AccountController {
     @ApiOperation("Toggle account allow negative")
     @PostMapping(ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL)
     public ResponseEntity<?> toggleAccountAllowNegative(
+            @ApiParam(
+                    name = REQUEST_PARAM_ACCOUNT_ID,
+                    type = "string",
+                    example = "500de72f-7e0d-4fa9-bcca-4069629c2648",
+                    required = true)
             @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) @NotBlank String accountId,
             Authentication auth) {
 
@@ -128,6 +134,11 @@ public class AccountController {
     @ApiOperation("Toggle show in sum")
     @PostMapping(ACCOUNT_TOGGLE_SHOW_IN_SUM_URL)
     public ResponseEntity<?> toggleShowInSum(
+            @ApiParam(
+                    name = REQUEST_PARAM_ACCOUNT_ID,
+                    type = "string",
+                    example = "500de72f-7e0d-4fa9-bcca-4069629c2648",
+                    required = true)
             @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) @NotBlank String accountId,
             Authentication auth) {
 

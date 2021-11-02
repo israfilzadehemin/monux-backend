@@ -6,6 +6,7 @@ import com.budgetmanagementapp.model.feature.UpdateFeatureRqModel;
 import com.budgetmanagementapp.service.FeatureService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,13 @@ public class FeatureController {
 
     @ApiOperation("Delete feature")
     @PostMapping(FEATURE_DELETE_FEATURE)
-    public ResponseEntity<?> deleteFeature(@RequestParam(name = "feature-id") String featureId) {
+    public ResponseEntity<?> deleteFeature(
+            @ApiParam(
+                    name = "feature-id",
+                    type = "string",
+                    example = "",
+                    required = true)
+            @RequestParam(name = "feature-id") String featureId) {
 
         log.info(format(REQUEST_PARAM_MSG, FEATURE_DELETE_FEATURE, featureId));
         return ResponseEntity.ok(

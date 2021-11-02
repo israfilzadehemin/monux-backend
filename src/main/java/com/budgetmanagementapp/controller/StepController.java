@@ -5,6 +5,7 @@ import com.budgetmanagementapp.model.home.StepRqModel;
 import com.budgetmanagementapp.service.StepService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -53,6 +54,11 @@ public class StepController {
     @ApiOperation("Update step")
     @PostMapping(STEP_UPDATE_URL)
     public ResponseEntity<?> updateStep(@RequestBody @Valid StepRqModel request,
+                                        @ApiParam(
+                                                name = "step-id",
+                                                type = "string",
+                                                example = "",
+                                                required = true)
                                         @RequestParam(name = "step-id") String stepId) {
 
         log.info(format(REQUEST_MSG, STEP_UPDATE_URL, request));
@@ -65,7 +71,13 @@ public class StepController {
 
     @ApiOperation("Delete step")
     @PostMapping(STEP_DELETE_URL)
-    public ResponseEntity<?> deleteStep(@RequestParam(name = "step-id") String stepId) {
+    public ResponseEntity<?> deleteStep(
+            @ApiParam(
+                    name = "step-id",
+                    type = "string",
+                    example = "",
+                    required = true)
+            @RequestParam(name = "step-id") String stepId) {
 
         log.info(format(REQUEST_PARAM_MSG, STEP_DELETE_URL, stepId));
         return ResponseEntity.ok(

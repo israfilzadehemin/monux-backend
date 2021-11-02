@@ -15,6 +15,7 @@ import javax.validation.constraints.NotBlank;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -67,6 +68,11 @@ public class FeedbackController {
     @ApiOperation("Get feedback by id")
     @GetMapping(FEEDBACK_GET_FEEDBACK_BY_ID_URL)
     public ResponseEntity<?> getFeedbackById(
+            @ApiParam(
+                    name = REQUEST_PARAM_FEEDBACK_ID,
+                    type = "string",
+                    example = "",
+                    required = true)
             @RequestParam(name = REQUEST_PARAM_FEEDBACK_ID) @NotBlank String feedbackId, Authentication auth) {
 
         log.info(format(REQUEST_MSG, FEEDBACK_GET_FEEDBACK_BY_ID_URL, NO_BODY_MSG));

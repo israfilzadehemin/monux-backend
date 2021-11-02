@@ -6,6 +6,7 @@ import com.budgetmanagementapp.model.blog.UpdateBlogRqModel;
 import com.budgetmanagementapp.service.BlogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,13 @@ public class BlogController {
 
     @ApiOperation("Get blog by id")
     @GetMapping(BLOG_GET_BLOG_BY_ID_URL)
-    public ResponseEntity<?> getBlogById(@RequestParam(name = "blog-id") String blogId) {
+    public ResponseEntity<?> getBlogById(
+            @ApiParam(
+                    name = "blog-id",
+                    type = "string",
+                    example = "",
+                    required = true)
+            @RequestParam(name = "blog-id") String blogId) {
 
         log.info(format(BLOG_WITH_PARAM, BLOG_GET_BLOG_BY_ID_URL, blogId));
         return ResponseEntity.ok(
@@ -77,7 +84,13 @@ public class BlogController {
 
     @ApiOperation("Delete blog")
     @PostMapping(BLOG_DELETE_BLOG_URL)
-    public ResponseEntity<?> deleteBlog(@RequestParam(name = "blog-id") String blogId) {
+    public ResponseEntity<?> deleteBlog(
+            @ApiParam(
+                    name = "blog-id",
+                    type = "string",
+                    example = "",
+                    required = true)
+            @RequestParam(name = "blog-id") String blogId) {
 
         log.info(format(BLOG_WITH_PARAM, BLOG_DELETE_BLOG_URL, blogId));
         return ResponseEntity.ok(

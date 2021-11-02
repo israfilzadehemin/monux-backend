@@ -6,6 +6,7 @@ import com.budgetmanagementapp.model.plan.UpdatePlanRqModel;
 import com.budgetmanagementapp.service.PlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -65,7 +66,13 @@ public class PlanController {
 
     @ApiOperation("Delete plan")
     @PostMapping(PLAN_DELETE_PLAN_URL)
-    public ResponseEntity<?> deletePlan(@RequestParam("plan-id") String planId) {
+    public ResponseEntity<?> deletePlan(
+            @ApiParam(
+                    name = "plan-id",
+                    type = "string",
+                    example = "",
+                    required = true)
+            @RequestParam("plan-id") String planId) {
         return ResponseEntity.ok(
                 ResponseModel.builder()
                         .status(HttpStatus.OK)

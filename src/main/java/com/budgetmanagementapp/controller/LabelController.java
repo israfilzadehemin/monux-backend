@@ -17,6 +17,7 @@ import javax.validation.Valid;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -95,6 +96,11 @@ public class LabelController {
     @ApiOperation("Toggle label visibilty")
     @PostMapping(LABEL_TOGGLE_VISIBILITY_URL)
     public ResponseEntity<?> toggleVisibility(
+            @ApiParam(
+                    name = REQUEST_PARAM_LABEL_ID,
+                    type = "string",
+                    example = "",
+                    required = true)
             @RequestParam(name = REQUEST_PARAM_LABEL_ID) String labelId, Authentication auth) {
         log.info(format(REQUEST_MSG, LABEL_TOGGLE_VISIBILITY_URL, labelId));
         return ResponseEntity.ok(
