@@ -14,9 +14,14 @@ import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
 import com.budgetmanagementapp.service.LabelService;
 import javax.validation.Valid;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,12 +34,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Log4j2
+@Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Label")
 public class LabelController {
 
     private final LabelService labelService;
 
     private static final String REQUEST_PARAM_LABEL_ID = "label-id";
 
+    @ApiOperation("Create label")
     @PostMapping(LABEL_CREATE_URL)
     public ResponseEntity<?> createLabel(@RequestBody @Valid LabelRqModel requestBody, Authentication auth) {
 
@@ -47,6 +54,7 @@ public class LabelController {
                         .build());
     }
 
+    @ApiOperation("Get all labels")
     @GetMapping(LABEL_GET_ALL_LABELS_URL)
     public ResponseEntity<?> getAllLabels(Authentication auth) {
 
@@ -59,6 +67,7 @@ public class LabelController {
                         .build());
     }
 
+    @ApiOperation("Get labels of user")
     @GetMapping(LABEL_GET_LABELS_URL)
     public ResponseEntity<?> getLabelsOfUser(Authentication auth) {
 
@@ -71,6 +80,7 @@ public class LabelController {
                         .build());
     }
 
+    @ApiOperation("Update label")
     @PostMapping(LABEL_UPDATE_URL)
     public ResponseEntity<?> updateLabel(@RequestBody @Valid UpdateLabelRqModel requestBody, Authentication auth) {
 
@@ -83,8 +93,14 @@ public class LabelController {
                         .build());
     }
 
+    @ApiOperation("Toggle label visibilty")
     @PostMapping(LABEL_TOGGLE_VISIBILITY_URL)
     public ResponseEntity<?> toggleVisibility(
+            @ApiParam(
+                    name = REQUEST_PARAM_LABEL_ID,
+                    type = "string",
+                    example = "",
+                    required = true)
             @RequestParam(name = REQUEST_PARAM_LABEL_ID) String labelId, Authentication auth) {
         log.info(format(REQUEST_MSG, LABEL_TOGGLE_VISIBILITY_URL, labelId));
         return ResponseEntity.ok(

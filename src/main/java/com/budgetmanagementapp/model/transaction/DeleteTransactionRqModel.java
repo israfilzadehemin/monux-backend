@@ -1,6 +1,8 @@
 package com.budgetmanagementapp.model.transaction;
 
 import java.util.List;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +20,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DeleteTransactionRqModel{
-
+    @ApiModelProperty(
+            name = "transactionIds",
+            dataType = "list of string")
     List<String> transactionIds;
 }
