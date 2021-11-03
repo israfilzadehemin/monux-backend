@@ -9,6 +9,7 @@ import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.feedback.FeedbackRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.feedback.FeedbackRsModel;
 import com.budgetmanagementapp.service.FeedbackService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -29,6 +30,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @Log4j2
@@ -41,33 +44,27 @@ public class FeedbackController {
 
     @ApiOperation("Create feedback")
     @PostMapping(FEEDBACK_CREATE_URL)
-    public ResponseEntity<?> createFeedback(@RequestBody @Valid FeedbackRqModel requestBody, Authentication auth) {
+    public ResponseEntity<ResponseModel<FeedbackRsModel>> createFeedback(@RequestBody @Valid FeedbackRqModel requestBody, Authentication auth) {
 
         log.info(format(REQUEST_MSG, FEEDBACK_CREATE_URL, requestBody));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(feedbackService.createFeedback(requestBody,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+                ResponseModel.of(feedbackService.createFeedback(requestBody,
+                                ((UserDetails) auth.getPrincipal()).getUsername()), HttpStatus.CREATED));
     }
 
     @ApiOperation("Get all feedbacks")
     @GetMapping(FEEDBACK_GET_ALL_FEEDBACKS_URL)
-    public ResponseEntity<?> getAllFeedbacks(Authentication auth) {
+    public ResponseEntity<ResponseModel<List<FeedbackRsModel>>> getAllFeedbacks(Authentication auth) {
 
         log.info(format(REQUEST_MSG, FEEDBACK_GET_ALL_FEEDBACKS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(feedbackService
-                                .getFeedbacksByUser(((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+                ResponseModel.of(feedbackService.getFeedbacksByUser(
+                        ((UserDetails) auth.getPrincipal()).getUsername()), HttpStatus.OK));
     }
 
     @ApiOperation("Get feedback by id")
     @GetMapping(FEEDBACK_GET_FEEDBACK_BY_ID_URL)
-    public ResponseEntity<?> getFeedbackById(
+    public ResponseEntity<ResponseModel<FeedbackRsModel>> getFeedbackById(
             @ApiParam(
                     name = REQUEST_PARAM_FEEDBACK_ID,
                     type = "string",
@@ -77,12 +74,9 @@ public class FeedbackController {
 
         log.info(format(REQUEST_MSG, FEEDBACK_GET_FEEDBACK_BY_ID_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(feedbackService.getFeedbackById(
+                ResponseModel.of(feedbackService.getFeedbackById(
                                 feedbackId,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+                                ((UserDetails) auth.getPrincipal()).getUsername()), HttpStatus.OK));
     }
 
 }

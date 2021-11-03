@@ -2,6 +2,7 @@ package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.blog.BlogRqModel;
+import com.budgetmanagementapp.model.blog.BlogRsModel;
 import com.budgetmanagementapp.model.blog.UpdateBlogRqModel;
 import com.budgetmanagementapp.service.BlogService;
 import io.swagger.annotations.Api;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
@@ -30,19 +33,16 @@ public class BlogController {
 
     @ApiOperation("Get all blogs")
     @GetMapping(BLOG_GET_ALL_BLOGS_URL)
-    public ResponseEntity<?> getAllBlogs() {
+    public ResponseEntity<ResponseModel<List<BlogRsModel>>> getAllBlogs() {
 
         log.info(format(REQUEST_MSG, BLOG_GET_ALL_BLOGS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(blogService.getAllBlogs())
-                        .build());
+                ResponseModel.of(blogService.getAllBlogs(), HttpStatus.OK));
     }
 
     @ApiOperation("Get blog by id")
     @GetMapping(BLOG_GET_BLOG_BY_ID_URL)
-    public ResponseEntity<?> getBlogById(
+    public ResponseEntity<ResponseModel<BlogRsModel>> getBlogById(
             @ApiParam(
                     name = "blog-id",
                     type = "string",
@@ -52,39 +52,30 @@ public class BlogController {
 
         log.info(format(BLOG_WITH_PARAM, BLOG_GET_BLOG_BY_ID_URL, blogId));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(blogService.getBlogById(blogId))
-                        .build());
+                ResponseModel.of(blogService.getBlogById(blogId), HttpStatus.OK));
     }
 
     @ApiOperation("Create blog")
     @PostMapping(BLOG_CREATE_BLOG_URL)
-    public ResponseEntity<?> createBlog(@RequestBody @Valid BlogRqModel request) {
+    public ResponseEntity<ResponseModel<BlogRsModel>> createBlog(@RequestBody @Valid BlogRqModel request) {
 
         log.info(format(REQUEST_MSG, BLOG_CREATE_BLOG_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(blogService.addBlog(request))
-                        .build());
+                ResponseModel.of(blogService.addBlog(request), HttpStatus.CREATED));
     }
 
     @ApiOperation("Update blog")
     @PostMapping(BLOG_UPDATE_BLOG_URL)
-    public ResponseEntity<?> updateBlog(@RequestBody @Valid UpdateBlogRqModel request) {
+    public ResponseEntity<ResponseModel<BlogRsModel>> updateBlog(@RequestBody @Valid UpdateBlogRqModel request) {
 
         log.info(format(REQUEST_MSG, BLOG_UPDATE_BLOG_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(blogService.updateBlog(request))
-                        .build());
+                ResponseModel.of(blogService.updateBlog(request), HttpStatus.OK));
     }
 
     @ApiOperation("Delete blog")
     @PostMapping(BLOG_DELETE_BLOG_URL)
-    public ResponseEntity<?> deleteBlog(
+    public ResponseEntity<ResponseModel<BlogRsModel>> deleteBlog(
             @ApiParam(
                     name = "blog-id",
                     type = "string",
@@ -94,10 +85,7 @@ public class BlogController {
 
         log.info(format(BLOG_WITH_PARAM, BLOG_DELETE_BLOG_URL, blogId));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(blogService.deleteBlog(blogId))
-                        .build());
+                ResponseModel.of(blogService.deleteBlog(blogId), HttpStatus.OK));
     }
 
 }
