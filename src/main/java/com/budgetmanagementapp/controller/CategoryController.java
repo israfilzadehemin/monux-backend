@@ -8,14 +8,15 @@ import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_GET_CATEGORIE
 import static com.budgetmanagementapp.utility.UrlConstant.CATEGORY_UPDATE_URL;
 import static java.lang.String.format;
 
-import com.budgetmanagementapp.model.category.CategoryRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.category.CategoryRqModel;
+import com.budgetmanagementapp.model.category.CategoryRsModel;
 import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
 import com.budgetmanagementapp.service.CategoryService;
-import javax.validation.Valid;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
+import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -52,15 +53,12 @@ public class CategoryController {
 
     @ApiOperation("Get all categories")
     @GetMapping(CATEGORY_GET_ALL_CATEGORIES_URL)
-    public ResponseEntity<?> getAllCategories(Authentication auth) {
+    public ResponseEntity<ResponseModel<List<CategoryRsModel>>> getAllCategories(Authentication auth) {
 
         log.info(format(REQUEST_MSG, CATEGORY_GET_ALL_CATEGORIES_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(categoryService.getCategoriesByUser(
-                                ((UserDetails) auth.getPrincipal()).getUsername(), true))
-                        .build());
+                ResponseModel.of(categoryService.getCategoriesByUser(
+                        ((UserDetails) auth.getPrincipal()).getUsername(), true), HttpStatus.OK));
     }
 
     @ApiOperation("Get all categories of user")
