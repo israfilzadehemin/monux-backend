@@ -2,6 +2,7 @@ package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.home.StepRqModel;
+import com.budgetmanagementapp.model.home.StepRsModel;
 import com.budgetmanagementapp.service.StepService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -14,6 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
@@ -29,31 +32,25 @@ public class StepController {
 
     @ApiOperation("Get all steps")
     @GetMapping(STEP_GET_ALL_STEPS_URL)
-    public ResponseEntity<?> getAllSteps() {
+    public ResponseEntity<ResponseModel<List<StepRsModel>>> getAllSteps() {
 
         log.info(format(REQUEST_MSG, STEP_GET_ALL_STEPS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(stepService.getAllSteps())
-                        .build());
+                ResponseModel.of(stepService.getAllSteps(), HttpStatus.OK));
     }
 
     @ApiOperation("Create step")
     @PostMapping(STEP_CREATE_URL)
-    public ResponseEntity<?> createStep(@RequestBody @Valid StepRqModel request) {
+    public ResponseEntity<ResponseModel<StepRsModel>> createStep(@RequestBody @Valid StepRqModel request) {
 
         log.info(format(REQUEST_MSG, STEP_CREATE_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(stepService.createStep(request))
-                        .build());
+                ResponseModel.of(stepService.createStep(request), HttpStatus.CREATED));
     }
 
     @ApiOperation("Update step")
     @PostMapping(STEP_UPDATE_URL)
-    public ResponseEntity<?> updateStep(@RequestBody @Valid StepRqModel request,
+    public ResponseEntity<ResponseModel<StepRsModel>> updateStep(@RequestBody @Valid StepRqModel request,
                                         @ApiParam(
                                                 name = "step-id",
                                                 type = "string",
@@ -63,15 +60,12 @@ public class StepController {
 
         log.info(format(REQUEST_MSG, STEP_UPDATE_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(stepService.updateStep(request, stepId))
-                        .build());
+                ResponseModel.of(stepService.updateStep(request, stepId), HttpStatus.OK));
     }
 
     @ApiOperation("Delete step")
     @PostMapping(STEP_DELETE_URL)
-    public ResponseEntity<?> deleteStep(
+    public ResponseEntity<ResponseModel<StepRsModel>> deleteStep(
             @ApiParam(
                     name = "step-id",
                     type = "string",
@@ -81,9 +75,6 @@ public class StepController {
 
         log.info(format(REQUEST_PARAM_MSG, STEP_DELETE_URL, stepId));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(stepService.deleteStep(stepId))
-                        .build());
+                ResponseModel.of(stepService.deleteStep(stepId), HttpStatus.OK));
     }
 }

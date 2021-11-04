@@ -2,6 +2,7 @@ package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.home.BannerRqModel;
+import com.budgetmanagementapp.model.home.BannerRsModel;
 import com.budgetmanagementapp.service.BannerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +30,7 @@ public class BannerController {
 
     @ApiOperation("Get banner by id")
     @GetMapping(BANNER_GET_BANNER_BY_ID_URL)
-    public ResponseEntity<?> getBannerById(
+    public ResponseEntity<ResponseModel<BannerRsModel>> getBannerById(
             @ApiParam(
                     name = "banner-id",
                     type = "string",
@@ -39,15 +40,12 @@ public class BannerController {
 
         log.info(format(REQUEST_PARAM_MSG, BANNER_GET_BANNER_BY_ID_URL, bannerId));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(bannerService.getBannerById(bannerId))
-                        .build());
+                ResponseModel.of(bannerService.getBannerById(bannerId), HttpStatus.OK));
     }
 
     @ApiOperation("Get banner by keyword")
     @GetMapping(BANNER_GET_BANNER_BY_KEYWORD_URL)
-    public ResponseEntity<?> getBannerByKeyword(
+    public ResponseEntity<ResponseModel<BannerRsModel>> getBannerByKeyword(
             @ApiParam(
                     name = "banner-keyword",
                     type = "string",
@@ -57,27 +55,21 @@ public class BannerController {
 
         log.info(format(REQUEST_PARAM_MSG, BANNER_GET_BANNER_BY_KEYWORD_URL, keyword));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(bannerService.getBannerByKeyword(keyword))
-                        .build());
+                ResponseModel.of(bannerService.getBannerByKeyword(keyword),HttpStatus.OK));
     }
 
     @ApiOperation("Create banner")
     @PostMapping(BANNER_CREATE_URL)
-    public ResponseEntity<?> createBanner(@RequestBody @Valid BannerRqModel request) {
+    public ResponseEntity<ResponseModel<BannerRsModel>> createBanner(@RequestBody @Valid BannerRqModel request) {
 
         log.info(format(REQUEST_MSG, BANNER_CREATE_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(bannerService.createBanner(request))
-                        .build());
+                ResponseModel.of(bannerService.createBanner(request), HttpStatus.CREATED));
     }
 
     @ApiOperation("Update banner")
     @PostMapping(BANNER_UPDATE_URL)
-    public ResponseEntity<?> updateBanner(@RequestBody @Valid BannerRqModel request,
+    public ResponseEntity<ResponseModel<BannerRsModel>> updateBanner(@RequestBody @Valid BannerRqModel request,
                                           @ApiParam(
                                                   name = "banner-id",
                                                   type = "string",
@@ -87,15 +79,12 @@ public class BannerController {
 
         log.info(format(REQUEST_MSG, BANNER_UPDATE_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(bannerService.updateBanner(request, bannerId))
-                        .build());
+                ResponseModel.of(bannerService.updateBanner(request, bannerId), HttpStatus.OK));
     }
 
     @ApiOperation("Delete banner")
     @PostMapping(BANNER_DELETE_URL)
-    public ResponseEntity<?> deleteBanner(
+    public ResponseEntity<ResponseModel<BannerRsModel>> deleteBanner(
             @ApiParam(
                     name = "banner-id",
                     type = "string",
@@ -105,10 +94,7 @@ public class BannerController {
 
         log.info(format(REQUEST_PARAM_MSG, BANNER_DELETE_URL, bannerId));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(bannerService.deleteBanner(bannerId))
-                        .build());
-    }
+                ResponseModel.of(bannerService.deleteBanner(bannerId), HttpStatus.OK));
 
+    }
 }

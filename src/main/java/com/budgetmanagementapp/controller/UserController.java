@@ -6,11 +6,9 @@ import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.model.account.AccountRqModel;
-import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
-import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
+import com.budgetmanagementapp.model.account.AccountRsModel;
+import com.budgetmanagementapp.model.user.*;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.user.SignupRqModel;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
@@ -42,100 +40,72 @@ public class UserController {
 
     @ApiOperation("Create user with email")
     @PostMapping(USER_SIGNUP_URL)
-    public ResponseEntity<?> signupWithEmail(@RequestBody @Valid SignupRqModel requestBody)
+    public ResponseEntity<ResponseModel<UserRsModel>> signupWithEmail(@RequestBody @Valid SignupRqModel requestBody)
             throws MessagingException {
 
         log.info(String.format(REQUEST_MSG, USER_SIGNUP_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(userService.signup(requestBody))
-                        .build()
-        );
+        return ResponseEntity.ok(ResponseModel.of(
+                userService.signup(requestBody), HttpStatus.CREATED));
     }
 
     @ApiOperation("Confirm otp of user")
     @PostMapping(USER_OTP_CONFIRM_URL)
-    public ResponseEntity<?> confirmOtp(@RequestBody @Valid ConfirmOtpRqModel requestBody) {
+    public ResponseEntity<ResponseModel<ConfirmOtpRsModel>> confirmOtp(@RequestBody @Valid ConfirmOtpRqModel requestBody) {
         log.info(String.format(REQUEST_MSG, USER_OTP_CONFIRM_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(otpService.confirmOtp(requestBody))
-                        .build()
-        );
+        return ResponseEntity.ok(ResponseModel.of(
+                otpService.confirmOtp(requestBody), HttpStatus.OK));
     }
 
     @ApiOperation("Create password for user")
     @PostMapping(USER_CREATE_PASSWORD_URL)
-    public ResponseEntity<?> createPassword(@RequestBody @Valid CreatePasswordRqModel requestBody) {
+    public ResponseEntity<ResponseModel<CreatePasswordRsModel>> createPassword(@RequestBody @Valid CreatePasswordRqModel requestBody) {
         log.info(String.format(REQUEST_MSG, USER_CREATE_PASSWORD_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(userService.createPassword(requestBody))
-                        .build()
-        );
+        return ResponseEntity.ok(ResponseModel.of(
+                userService.createPassword(requestBody), HttpStatus.CREATED));
     }
 
     @ApiOperation("Forgot password of user")
     @PostMapping(USER_FORGET_PASSWORD_URL)
-    public ResponseEntity<?> forgetPassword(
+    public ResponseEntity<ResponseModel<UserRsModel>> forgetPassword(
             @ApiParam(
                     name = "username",
                     type = "string",
                     required = true)
             @RequestParam String username) throws MessagingException {
         log.info(USER_RESET_PASSWORD_URL);
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(userService.forgetPassword(username))
-                        .build()
-        );
+        return ResponseEntity.ok(ResponseModel.of(
+                userService.forgetPassword(username), HttpStatus.OK));
     }
 
     @ApiOperation("Reset password of user")
     @PostMapping(USER_RESET_PASSWORD_URL)
-    public ResponseEntity<?> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
+    public ResponseEntity<ResponseModel<ResetPasswordRsModel>> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
                                            @RequestParam String username) {
         log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(userService.resetPassword(username, requestBody))
-                        .build()
-        );
+        return ResponseEntity.ok(ResponseModel.of(
+                userService.resetPassword(username, requestBody), HttpStatus.OK));
     }
 
     @ApiOperation("Create initial account for user")
     @PostMapping(USER_CREATE_INITIAL_ACCOUNT_URL)
-    public ResponseEntity<?> createInitialAccount(@RequestBody AccountRqModel requestBody) {
+    public ResponseEntity<ResponseModel<AccountRsModel>> createInitialAccount(@RequestBody AccountRqModel requestBody) {
         log.info(String.format(REQUEST_MSG, USER_CREATE_INITIAL_ACCOUNT_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(accountService.createAccount(requestBody, true))
-                        .build()
-        );
+        return ResponseEntity.ok(ResponseModel.of(
+                accountService.createAccount(requestBody, true), HttpStatus.CREATED));
     }
 
     @ApiOperation("Demo for email sending")
     @GetMapping("/demo")
-    public ResponseEntity<?> demo() throws MessagingException {
+    public ResponseEntity<String> demo() throws MessagingException {
         mailSenderService.sendEmail("israfilzadehemin@gmail.com", "Hey", "Hello");
         return ResponseEntity.ok("Hey");
     }
 
     @ApiOperation("Get user information")
     @GetMapping(USER_INFO_URL)
-    public ResponseEntity<?> getUserInfo(Authentication auth) {
+    public ResponseEntity<ResponseModel<UserInfoRsModel>> getUserInfo(Authentication auth) {
         log.info(format(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(userService.userInfo(((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+        return ResponseEntity.ok(ResponseModel.of(
+                userService.userInfo(((UserDetails) auth.getPrincipal()).getUsername()), HttpStatus.OK));
     }
-
 }

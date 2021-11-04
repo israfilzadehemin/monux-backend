@@ -2,6 +2,7 @@ package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.feature.FeatureRqModel;
+import com.budgetmanagementapp.model.feature.FeatureRsModel;
 import com.budgetmanagementapp.model.feature.UpdateFeatureRqModel;
 import com.budgetmanagementapp.service.FeatureService;
 import io.swagger.annotations.Api;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
@@ -30,43 +33,34 @@ public class FeatureController {
 
     @ApiOperation("Get all features")
     @GetMapping(FEATURE_GET_ALL_FEATURES)
-    public ResponseEntity<?> getAllFeatures(){
+    public ResponseEntity<ResponseModel<List<FeatureRsModel>>> getAllFeatures(){
 
         log.info(format(REQUEST_MSG, FEATURE_GET_ALL_FEATURES, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(featureService.getAllFeatures())
-                        .build());
+                ResponseModel.of(featureService.getAllFeatures(), HttpStatus.OK));
     }
 
     @ApiOperation("Add feature")
     @PostMapping(FEATURE_ADD_FEATURE)
-    public ResponseEntity<?> addFeature(@RequestBody @Valid FeatureRqModel request) {
+    public ResponseEntity<ResponseModel<FeatureRsModel>> addFeature(@RequestBody @Valid FeatureRqModel request) {
 
         log.info(format(REQUEST_MSG, FEATURE_ADD_FEATURE, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(featureService.addFeature(request))
-                        .build());
+                ResponseModel.of(featureService.addFeature(request), HttpStatus.CREATED));
     }
 
     @ApiOperation("Update feature")
     @PostMapping(FEATURE_UPDATE_FEATURE)
-    public ResponseEntity<?> updateFeature(@RequestBody @Valid UpdateFeatureRqModel request) {
+    public ResponseEntity<ResponseModel<FeatureRsModel>> updateFeature(@RequestBody @Valid UpdateFeatureRqModel request) {
 
         log.info(format(REQUEST_MSG, FEATURE_UPDATE_FEATURE, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(featureService.updateFeature(request))
-                        .build());
+                ResponseModel.of(featureService.updateFeature(request), HttpStatus.OK));
     }
 
     @ApiOperation("Delete feature")
     @PostMapping(FEATURE_DELETE_FEATURE)
-    public ResponseEntity<?> deleteFeature(
+    public ResponseEntity<ResponseModel<FeatureRsModel>> deleteFeature(
             @ApiParam(
                     name = "feature-id",
                     type = "string",
@@ -76,10 +70,7 @@ public class FeatureController {
 
         log.info(format(REQUEST_PARAM_MSG, FEATURE_DELETE_FEATURE, featureId));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(featureService.deleteFeature(featureId))
-                        .build());
+                ResponseModel.of(featureService.deleteFeature(featureId), HttpStatus.OK));
     }
 
 

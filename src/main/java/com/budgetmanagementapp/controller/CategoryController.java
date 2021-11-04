@@ -39,16 +39,14 @@ public class CategoryController {
 
     @ApiOperation("Create category")
     @PostMapping(CATEGORY_CREATE_URL)
-    public ResponseEntity<?> createCategory(@RequestBody @Valid CategoryRqModel requestBody,
+    public ResponseEntity<ResponseModel<CategoryRsModel>> createCategory(@RequestBody @Valid CategoryRqModel requestBody,
                                             Authentication auth) {
 
         log.info(format(REQUEST_MSG, CATEGORY_CREATE_URL, requestBody));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(categoryService.createCategory(requestBody,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+                ResponseModel.of(categoryService
+                        .createCategory(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
+                        HttpStatus.CREATED));
     }
 
     @ApiOperation("Get all categories")
@@ -63,29 +61,24 @@ public class CategoryController {
 
     @ApiOperation("Get all categories of user")
     @GetMapping(CATEGORY_GET_CATEGORIES_URL)
-    public ResponseEntity<?> getCategoriesOfUser(Authentication auth) {
+    public ResponseEntity<ResponseModel<List<CategoryRsModel>>> getCategoriesOfUser(Authentication auth) {
 
         log.info(format(REQUEST_MSG, CATEGORY_GET_CATEGORIES_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(categoryService.getCategoriesByUser(
-                                ((UserDetails) auth.getPrincipal()).getUsername(), false))
-                        .build());
+                ResponseModel.of(categoryService.getCategoriesByUser(
+                                ((UserDetails) auth.getPrincipal()).getUsername(), false), HttpStatus.OK));
     }
 
     @ApiOperation("Update category")
     @PostMapping(CATEGORY_UPDATE_URL)
-    public ResponseEntity<?> updateCustomCategory(@RequestBody @Valid UpdateCategoryRqModel requestBody,
+    public ResponseEntity<ResponseModel<CategoryRsModel>> updateCustomCategory(@RequestBody @Valid UpdateCategoryRqModel requestBody,
                                                   Authentication auth) {
 
         log.info(format(REQUEST_MSG, CATEGORY_UPDATE_URL, requestBody));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(categoryService
-                                .updateCategory(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+                ResponseModel.of(categoryService
+                                .updateCategory(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
+                                HttpStatus.OK));
     }
 
 }

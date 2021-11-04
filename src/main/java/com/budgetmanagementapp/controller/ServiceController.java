@@ -2,7 +2,7 @@ package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.home.ServiceRqModel;
-import com.budgetmanagementapp.model.home.StepRqModel;
+import com.budgetmanagementapp.model.home.ServiceRsModel;
 import com.budgetmanagementapp.service.ServiceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import java.util.List;
+
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
-import static com.budgetmanagementapp.utility.UrlConstant.STEP_DELETE_URL;
 import static java.lang.String.format;
 
 @Log4j2
@@ -31,31 +32,25 @@ public class ServiceController {
 
     @ApiOperation("Get all steps")
     @GetMapping(SERVICE_GET_ALL_SERVICES_URL)
-    public ResponseEntity<?> getAllSteps() {
+    public ResponseEntity<ResponseModel<List<ServiceRsModel>>> getAllSteps() {
 
         log.info(format(REQUEST_MSG, SERVICE_GET_ALL_SERVICES_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(serviceService.getAllServices())
-                        .build());
+                ResponseModel.of(serviceService.getAllServices(), HttpStatus.OK));
     }
 
     @ApiOperation("Create service")
     @PostMapping(SERVICE_CREATE_URL)
-    public ResponseEntity<?> createService(@RequestBody @Valid ServiceRqModel request) {
+    public ResponseEntity<ResponseModel<ServiceRsModel>> createService(@RequestBody @Valid ServiceRqModel request) {
 
         log.info(format(REQUEST_MSG, SERVICE_CREATE_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(serviceService.createService(request))
-                        .build());
+                ResponseModel.of(serviceService.createService(request), HttpStatus.CREATED));
     }
 
     @ApiOperation("Update service")
     @PostMapping(SERVICE_UPDATE_URL)
-    public ResponseEntity<?> updateService(@RequestBody @Valid ServiceRqModel request,
+    public ResponseEntity<ResponseModel<ServiceRsModel>> updateService(@RequestBody @Valid ServiceRqModel request,
                                            @ApiParam(
                                                    name = "service-id",
                                                    type = "string",
@@ -65,15 +60,12 @@ public class ServiceController {
 
         log.info(format(REQUEST_MSG, SERVICE_UPDATE_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(serviceService.updateService(request, serviceId))
-                        .build());
+                ResponseModel.of(serviceService.updateService(request, serviceId), HttpStatus.OK));
     }
 
     @ApiOperation("Delete service")
     @PostMapping(SERVICE_DELETE_URL)
-    public ResponseEntity<?> deleteService(
+    public ResponseEntity<ResponseModel<ServiceRsModel>> deleteService(
             @ApiParam(
                     name = "service-id",
                     type = "string",
@@ -83,10 +75,7 @@ public class ServiceController {
 
         log.info(format(REQUEST_PARAM_MSG, SERVICE_DELETE_URL, serviceId));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(serviceService.deleteService(serviceId))
-                        .build());
+                ResponseModel.of(serviceService.deleteService(serviceId), HttpStatus.OK));
     }
 
 }

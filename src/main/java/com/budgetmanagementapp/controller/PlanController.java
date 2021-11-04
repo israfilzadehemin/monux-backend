@@ -2,6 +2,7 @@ package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.plan.PlanRqModel;
+import com.budgetmanagementapp.model.plan.PlanRsModel;
 import com.budgetmanagementapp.model.plan.UpdatePlanRqModel;
 import com.budgetmanagementapp.service.PlanService;
 import io.swagger.annotations.Api;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import java.util.List;
 
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
@@ -31,42 +34,33 @@ public class PlanController {
 
     @ApiOperation("Get all plans")
     @GetMapping(PLAN_GET_ALL_PLANS_URL)
-    public ResponseEntity<?> getAllPlans() {
+    public ResponseEntity<ResponseModel<List<PlanRsModel>>> getAllPlans() {
         log.info(format(REQUEST_MSG, PLAN_GET_ALL_PLANS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(planService.getAllPlans())
-                        .build());
+                ResponseModel.of(planService.getAllPlans(), HttpStatus.OK));
     }
 
     @ApiOperation("Add plan")
     @PostMapping(PLAN_ADD_PLAN_URL)
-    public ResponseEntity<?> addPlan(@RequestBody @Valid PlanRqModel request) {
+    public ResponseEntity<ResponseModel<PlanRsModel>> addPlan(@RequestBody @Valid PlanRqModel request) {
 
         log.info(format(REQUEST_MSG, PLAN_ADD_PLAN_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(planService.addPlan(request))
-                        .build());
+                ResponseModel.of(planService.addPlan(request), HttpStatus.CREATED));
     }
 
     @ApiOperation("Update plan")
     @PostMapping(PLAN_UPDATE_PLAN_URL)
-    public ResponseEntity<?> updatePlan(@RequestBody @Valid UpdatePlanRqModel request) {
+    public ResponseEntity<ResponseModel<PlanRsModel>> updatePlan(@RequestBody @Valid UpdatePlanRqModel request) {
 
         log.info(format(REQUEST_MSG, PLAN_UPDATE_PLAN_URL, request));
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(planService.updatePlan(request))
-                        .build());
+                ResponseModel.of(planService.updatePlan(request), HttpStatus.OK));
     }
 
     @ApiOperation("Delete plan")
     @PostMapping(PLAN_DELETE_PLAN_URL)
-    public ResponseEntity<?> deletePlan(
+    public ResponseEntity<ResponseModel<PlanRsModel>> deletePlan(
             @ApiParam(
                     name = "plan-id",
                     type = "string",
@@ -74,9 +68,6 @@ public class PlanController {
                     required = true)
             @RequestParam("plan-id") String planId) {
         return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(planService.deletePlan(planId))
-                        .build());
+                ResponseModel.of(planService.deletePlan(planId), HttpStatus.OK));
     }
 }
