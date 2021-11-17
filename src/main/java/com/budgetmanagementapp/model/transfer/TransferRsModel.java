@@ -32,4 +32,11 @@ public class TransferRsModel extends TransactionRsModel {
             example = "500de72f-7e0d-4fa9-bcca-4069629c2648",
             required = true)
     String senderAccountId;
+
+    @ApiModelProperty(
+            name = "rate",
+            dataType = "double",
+            example = "1.7",
+            required = true)
+    Double rate;
 }

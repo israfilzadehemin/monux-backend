@@ -45,7 +45,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.MonthDay;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,7 +112,10 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction transaction = transactionRepo.save(
                 transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount));
-        accountService.updateBalance(requestBody.getAmount(), accounts);
+
+        if (accounts.get(SENDER_ACCOUNT).getCurrency() == accounts.get(RECEIVER_ACCOUNT).getCurrency()) {
+            accountService.updateBalance(requestBody.getAmount(), accounts);
+        } else accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), accounts);
 
         TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(transaction);
         log.info(format(TRANSFER_TRANSACTION_CREATED_MSG, user.getUsername(), response));
@@ -200,8 +202,15 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction updatedTransaction =
                 updateTransactionValues(requestBody, transaction, senderAccount, receiverAccount);
-        accountService.updateBalance(oldAmount, oldAccounts);
-        accountService.updateBalance(requestBody.getAmount(), newAccounts);
+
+        if (oldAccounts.get(SENDER_ACCOUNT).getCurrency() == oldAccounts.get(RECEIVER_ACCOUNT).getCurrency()
+         && newAccounts.get(RECEIVER_ACCOUNT).getCurrency() == newAccounts.get(RECEIVER_ACCOUNT).getCurrency()) {
+            accountService.updateBalance(oldAmount, oldAccounts);
+            accountService.updateBalance(requestBody.getAmount(), newAccounts);
+        } else {
+            accountService.updateBalanceForTransferDelete(oldAmount, requestBody.getRate(), oldAccounts);
+            accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), newAccounts);
+        }
 
         TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(updatedTransaction);
         log.info(format(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
@@ -303,7 +312,6 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionRsModel> deleteTransactionById(String username, List<String> transactionIds) {
         User user = userService.findByUsername(username);
 
-
         List<TransactionRsModel> response = transactionsByUserAndIdList(user, transactionIds).stream().map(tr -> {
             Map<String, Account> map = new HashMap<>();
 
@@ -316,7 +324,12 @@ public class TransactionServiceImpl implements TransactionService {
                 }
             }
 
-            accountService.updateBalance(tr.getAmount(), map);
+            if (tr.getSenderAccount().getCurrency() == tr.getReceiverAccount().getCurrency()) {
+                accountService.updateBalance(tr.getAmount(), map);
+            } else {
+                accountService.updateBalanceForTransferDelete(tr.getAmount(), tr.getRate(), map);
+            }
+
             transactionRepo.deleteById(user, tr.getTransactionId());
             return TransactionMapper.INSTANCE.buildGenericResponseModel(tr);
 
@@ -454,6 +467,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setDescription(requestBody.getDescription());
         transaction.setSenderAccount(senderAccount);
         transaction.setReceiverAccount(receiverAccount);
+        transaction.setRate(requestBody.getRate());
         return transactionRepo.save(transaction);
     }
 

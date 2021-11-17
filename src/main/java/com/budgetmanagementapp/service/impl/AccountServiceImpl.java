@@ -134,6 +134,34 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public void updateBalanceByRate(BigDecimal amount, Double rate, Map<String, Account> accounts) {
+
+        if (!Objects.isNull(accounts.get(SENDER_ACCOUNT))) {
+            accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount));
+            accountRepo.save(accounts.get(SENDER_ACCOUNT));
+        }
+
+        if (!Objects.isNull(accounts.get(RECEIVER_ACCOUNT))) {
+            accounts.get(RECEIVER_ACCOUNT).setBalance(accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount.multiply(BigDecimal.valueOf(rate))));
+            accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
+        }
+    }
+
+    @Override
+    public void updateBalanceForTransferDelete(BigDecimal amount, Double rate, Map<String, Account> accounts) {
+
+        if (!Objects.isNull(accounts.get(SENDER_ACCOUNT))) {
+            accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount.multiply(BigDecimal.valueOf(rate))));
+            accountRepo.save(accounts.get(SENDER_ACCOUNT));
+        }
+
+        if (!Objects.isNull(accounts.get(RECEIVER_ACCOUNT))) {
+            accounts.get(RECEIVER_ACCOUNT).setBalance(accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount));
+            accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
+        }
+    }
+
+    @Override
     public List<AccountTypeRsModel> getAllAccountTypes() {
         List<AccountTypeRsModel> response = accountTypeRepo.findAll().stream()
                 .map(AccountMapper.INSTANCE::buildAccountTypeResponseModel)

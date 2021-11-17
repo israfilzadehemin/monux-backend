@@ -36,4 +36,11 @@ public class TransferRqModel extends TransactionRqModel {
             required = true)
     @NotBlank
     String senderAccountId;
+
+    @ApiModelProperty(
+            name = "rate",
+            dataType = "double",
+            example = "1.7",
+            required = true)
+    Double rate;
 }
