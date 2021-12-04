@@ -183,6 +183,7 @@ public class TransactionServiceImpl implements TransactionService {
         Account senderAccount = accountService.byIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountService.byIdAndUser(requestBody.getReceiverAccountId(), user);
         BigDecimal oldAmount = transaction.getAmount();
+        Double oldRate = transaction.getRate();
 
         if (requestBody.getReceiverAccountId().equals(requestBody.getSenderAccountId())) {
             throw new TransferToSelfException(TRANSFER_TO_SELF_MSG);
@@ -201,7 +202,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction updatedTransaction =
                 updateTransactionValues(requestBody, transaction, senderAccount, receiverAccount);
 
-        accountService.updateBalanceForTransferDelete(oldAmount, transaction.getRate(), oldAccounts);
+        accountService.updateBalanceForTransferDelete(oldAmount, oldRate, oldAccounts);
         accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), newAccounts);
 
         TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(updatedTransaction);
