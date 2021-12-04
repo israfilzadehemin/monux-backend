@@ -201,7 +201,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction updatedTransaction =
                 updateTransactionValues(requestBody, transaction, senderAccount, receiverAccount);
 
-        accountService.updateBalanceForTransferDelete(oldAmount, requestBody.getRate(), oldAccounts);
+        accountService.updateBalanceForTransferDelete(oldAmount, transaction.getRate(), oldAccounts);
         accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), newAccounts);
 
         TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(updatedTransaction);
