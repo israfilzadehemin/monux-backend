@@ -119,5 +119,6 @@ public class MsgConstant {
     public static final String BANNER_CREATED_MSG = "Banner created: %s";
     public static final String BANNER_UPDATED_MSG = "Banner updated: %s";
     public static final String BANNER_DELETED_MSG = "Banner deleted: %s";
+    public static final String RATE_VALUE_EXCEPTION = "Rate can not be equals to or less than zero";
 
 }

@@ -11,12 +11,7 @@ import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.AccountNotFoundException;
-import com.budgetmanagementapp.exception.AccountTypeNotFoundException;
-import com.budgetmanagementapp.exception.CurrencyNotFoundException;
-import com.budgetmanagementapp.exception.DuplicateAccountException;
-import com.budgetmanagementapp.exception.InitialAccountExistingException;
-import com.budgetmanagementapp.exception.NotEnoughBalanceException;
+import com.budgetmanagementapp.exception.*;
 import com.budgetmanagementapp.mapper.AccountMapper;
 import com.budgetmanagementapp.model.account.*;
 import com.budgetmanagementapp.repository.AccountRepository;
@@ -35,6 +30,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 @Log4j2
@@ -119,6 +116,7 @@ public class AccountServiceImpl implements AccountService {
         return AccountMapper.INSTANCE.buildAccountResponseModel(account);
     }
 
+    @Transactional
     @Override
     public void updateBalance(BigDecimal amount, Map<String, Account> accounts) {
 
@@ -133,8 +131,11 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Transactional
     @Override
     public void updateBalanceByRate(BigDecimal amount, Double rate, Map<String, Account> accounts) {
+
+        if (rate <= 0) throw new TransferRateException(RATE_VALUE_EXCEPTION);
 
         if (!Objects.isNull(accounts.get(SENDER_ACCOUNT))) {
             accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount));
@@ -147,6 +148,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+    @Transactional
     @Override
     public void updateBalanceForTransferDelete(BigDecimal amount, Double rate, Map<String, Account> accounts) {
 
