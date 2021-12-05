@@ -51,6 +51,7 @@ public class TransactionBuilder {
                 .senderAccount(senderAccount)
                 .receiverAccount(receiverAccount)
                 .user(user)
+                .rate(requestBody.getRate())
                 .build();
     }
 

@@ -45,7 +45,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.MonthDay;
 import java.time.YearMonth;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -113,7 +112,8 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction transaction = transactionRepo.save(
                 transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount));
-        accountService.updateBalance(requestBody.getAmount(), accounts);
+
+        accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), accounts);
 
         TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(transaction);
         log.info(format(TRANSFER_TRANSACTION_CREATED_MSG, user.getUsername(), response));
@@ -183,6 +183,7 @@ public class TransactionServiceImpl implements TransactionService {
         Account senderAccount = accountService.byIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountService.byIdAndUser(requestBody.getReceiverAccountId(), user);
         BigDecimal oldAmount = transaction.getAmount();
+        Double oldRate = transaction.getRate();
 
         if (requestBody.getReceiverAccountId().equals(requestBody.getSenderAccountId())) {
             throw new TransferToSelfException(TRANSFER_TO_SELF_MSG);
@@ -200,8 +201,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction updatedTransaction =
                 updateTransactionValues(requestBody, transaction, senderAccount, receiverAccount);
-        accountService.updateBalance(oldAmount, oldAccounts);
-        accountService.updateBalance(requestBody.getAmount(), newAccounts);
+
+        accountService.updateBalanceForTransferDelete(oldAmount, oldRate, oldAccounts);
+        accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), newAccounts);
 
         TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(updatedTransaction);
         log.info(format(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
@@ -303,7 +305,6 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionRsModel> deleteTransactionById(String username, List<String> transactionIds) {
         User user = userService.findByUsername(username);
 
-
         List<TransactionRsModel> response = transactionsByUserAndIdList(user, transactionIds).stream().map(tr -> {
             Map<String, Account> map = new HashMap<>();
 
@@ -316,7 +317,8 @@ public class TransactionServiceImpl implements TransactionService {
                 }
             }
 
-            accountService.updateBalance(tr.getAmount(), map);
+            accountService.updateBalanceForTransferDelete(tr.getAmount(), tr.getRate(), map);
+
             transactionRepo.deleteById(user, tr.getTransactionId());
             return TransactionMapper.INSTANCE.buildGenericResponseModel(tr);
 
@@ -454,6 +456,7 @@ public class TransactionServiceImpl implements TransactionService {
         transaction.setDescription(requestBody.getDescription());
         transaction.setSenderAccount(senderAccount);
         transaction.setReceiverAccount(receiverAccount);
+        transaction.setRate(requestBody.getRate());
         return transactionRepo.save(transaction);
     }
 
@@ -533,7 +536,6 @@ public class TransactionServiceImpl implements TransactionService {
                     && senderAccount.getBalance().compareTo(requestBody.getAmount()) < 0) {
                 throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
             }
-
         }
     }
 
