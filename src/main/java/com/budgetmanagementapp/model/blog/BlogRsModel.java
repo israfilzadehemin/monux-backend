@@ -33,15 +33,34 @@ public class BlogRsModel {
     LocalDateTime updateDate;
 
     @ApiModelProperty(
-            name = "title",
-            dataType = "string",
-            example = "New Blog")
-    String title;
+            name = "titleAz",
+            dataType = "string")
+    String titleAz;
 
     @ApiModelProperty(
-            name = "text",
+            name = "titleEn",
             dataType = "string")
-    String text;
+    String titleEn;
+
+    @ApiModelProperty(
+            name = "titleRu",
+            dataType = "string")
+    String titleRu;
+
+    @ApiModelProperty(
+            name = "textAz",
+            dataType = "string")
+    String textAz;
+
+    @ApiModelProperty(
+            name = "textEn",
+            dataType = "string")
+    String textEn;
+
+    @ApiModelProperty(
+            name = "textRu",
+            dataType = "string")
+    String textRu;
 
     @ApiModelProperty(
             name = "image",

@@ -33,11 +33,11 @@ public class BlogController {
 
     @ApiOperation("Get all blogs")
     @GetMapping(BLOG_GET_ALL_BLOGS_URL)
-    public ResponseEntity<ResponseModel<List<BlogRsModel>>> getAllBlogs() {
+    public ResponseEntity<ResponseModel<List<BlogRsModel>>> getAllBlogs(@RequestParam String language) {
 
         log.info(format(REQUEST_MSG, BLOG_GET_ALL_BLOGS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.of(blogService.getAllBlogs(), HttpStatus.OK));
+                ResponseModel.of(blogService.getAllBlogs(language), HttpStatus.OK));
     }
 
     @ApiOperation("Get blog by id")

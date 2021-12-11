@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface BlogService {
 
-    List<BlogRsModel> getAllBlogs();
+    List<BlogRsModel> getAllBlogs(String language);
 
     BlogRsModel getBlogById(String blogId);
 

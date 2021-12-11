@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Blog;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.BlogNotFoundException;
 import com.budgetmanagementapp.mapper.BlogMapper;
 import com.budgetmanagementapp.model.blog.BlogRqModel;
@@ -14,6 +15,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
@@ -27,7 +29,7 @@ public class BlogServiceImpl implements BlogService {
     private final BlogRepository blogRepo;
 
     @Override
-    public List<BlogRsModel> getAllBlogs() {
+    public List<BlogRsModel> getAllBlogs(String language) {
         return blogRepo.findAll().stream()
                 .map(BlogMapper.INSTANCE::buildBlogResponseModel)
                 .collect(Collectors.toList());
@@ -47,8 +49,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogRsModel addBlog(BlogRqModel request) {
         Blog blog = BlogMapper.INSTANCE.buildBlog(request);
-        blogRepo.save(blog);
-        BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
+         BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
         log.info(format(BLOG_CREATED_MSG, response));
         return response;
     }
@@ -56,8 +57,18 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogRsModel updateBlog(UpdateBlogRqModel request) {
         Blog blog = blogById(request.getBlogId());
-        blog.setTitle(request.getTitle());
-        blog.setText(request.getText());
+        blog.setTitle(Translation.builder()
+                .translationId(UUID.randomUUID().toString())
+                .az(request.getTitleAz())
+                .en(request.getTitleEn())
+                .ru(request.getTitleRu())
+                .build());
+        blog.setText(Translation.builder()
+                .translationId(UUID.randomUUID().toString())
+                .az(request.getTextAz())
+                .en(request.getTextEn())
+                .ru(request.getTextRu())
+                .build());
         blog.setImage(request.getImage());
         blog.setUpdateDate(CustomFormatter.stringToLocalDateTime(request.getUpdateDate()));
         blogRepo.save(blog);
