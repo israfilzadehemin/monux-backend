@@ -16,14 +16,28 @@ public abstract class BlogMapper {
     public static BlogMapper INSTANCE = Mappers.getMapper(BlogMapper.class);
 
     @Mappings({
-            @Mapping(target = "textAz", source = "text.az"),
-            @Mapping(target = "textEn", source = "text.en"),
-            @Mapping(target = "textRu", source = "text.ru"),
-            @Mapping(target = "titleAz", source = "title.az"),
-            @Mapping(target = "titleEn", source = "title.en"),
-            @Mapping(target = "titleRu", source = "title.ru")
+            @Mapping(target = "text", ignore = true),
+            @Mapping(target = "title", ignore = true)
     })
     public abstract BlogRsModel buildBlogResponseModel(Blog blog);
+
+    @AfterMapping
+    void mapBlogToResponse(@MappingTarget BlogRsModel.BlogRsModelBuilder response, Blog blog, String language) {
+        switch (language) {
+            case "az" -> {
+                response.title(blog.getTitle().getAz());
+                response.text(blog.getText().getAz());
+            }
+            case "ru" -> {
+                response.title(blog.getTitle().getRu());
+                response.text(blog.getText().getRu());
+            }
+            default -> {
+                response.title(blog.getTitle().getEn());
+                response.text(blog.getText().getEn());
+            }
+        }
+    }
 
     @Mappings({
             @Mapping(target = "creationDate", ignore = true),
@@ -39,7 +53,7 @@ public abstract class BlogMapper {
     public abstract Blog buildBlog(BlogRqModel request);
 
     @AfterMapping
-    void mapDateTimeAndId(@MappingTarget Blog.BlogBuilder blog, BlogRqModel request) {
+    void mapBlogToResponse(@MappingTarget Blog.BlogBuilder blog, BlogRqModel request) {
         blog.title(Translation.builder()
                 .translationId(UUID.randomUUID().toString())
                 .az(request.getTitleAz())

@@ -48,11 +48,12 @@ public class BlogController {
                     type = "string",
                     example = "",
                     required = true)
-            @RequestParam(name = "blog-id") String blogId) {
+            @RequestParam(name = "blog-id") String blogId,
+            @RequestParam String language) {
 
         log.info(format(BLOG_WITH_PARAM, BLOG_GET_BLOG_BY_ID_URL, blogId));
         return ResponseEntity.ok(
-                ResponseModel.of(blogService.getBlogById(blogId), HttpStatus.OK));
+                ResponseModel.of(blogService.getBlogById(blogId, language), HttpStatus.OK));
     }
 
     @ApiOperation("Create blog")

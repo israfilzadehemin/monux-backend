@@ -36,7 +36,7 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public BlogRsModel getBlogById(String blogId) {
+    public BlogRsModel getBlogById(String blogId, String language) {
         return BlogMapper.INSTANCE.buildBlogResponseModel(blogById(blogId));
     }
 
@@ -49,7 +49,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogRsModel addBlog(BlogRqModel request) {
         Blog blog = BlogMapper.INSTANCE.buildBlog(request);
-         BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
+        BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
         log.info(format(BLOG_CREATED_MSG, response));
         return response;
     }
@@ -58,13 +58,11 @@ public class BlogServiceImpl implements BlogService {
     public BlogRsModel updateBlog(UpdateBlogRqModel request) {
         Blog blog = blogById(request.getBlogId());
         blog.setTitle(Translation.builder()
-                .translationId(UUID.randomUUID().toString())
                 .az(request.getTitleAz())
                 .en(request.getTitleEn())
                 .ru(request.getTitleRu())
                 .build());
         blog.setText(Translation.builder()
-                .translationId(UUID.randomUUID().toString())
                 .az(request.getTextAz())
                 .en(request.getTextEn())
                 .ru(request.getTextRu())
