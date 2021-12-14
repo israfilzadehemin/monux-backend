@@ -49,6 +49,7 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public BlogRsModel addBlog(BlogRqModel request) {
         Blog blog = BlogMapper.INSTANCE.buildBlog(request);
+        blogRepo.save(blog);
         BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
         log.info(format(BLOG_CREATED_MSG, response));
         return response;

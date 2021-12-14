@@ -15,22 +15,52 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BannerRqModel {
     @ApiModelProperty(
-            name = "title",
+            name = "titleAz",
+            dataType = "string",
+            example = "Ana Səhifə",
+            required = true)
+    @NotBlank
+    String titleAz;
+
+    @ApiModelProperty(
+            name = "titleEn",
             dataType = "string",
             example = "Home Page",
             required = true)
     @NotBlank
-    String title;
+    String titleEn;
 
     @ApiModelProperty(
-            name = "text",
+            name = "titleRu",
+            dataType = "string",
+            example = "Домашняя страница",
+            required = true)
+    @NotBlank
+    String titleRu;
+
+    @ApiModelProperty(
+            name = "textAz",
             dataType = "string",
             required = true)
     @NotBlank
-    String text;
+    String textAz;
 
     @ApiModelProperty(
-            name = "text",
+            name = "textEn",
+            dataType = "string",
+            required = true)
+    @NotBlank
+    String textEn;
+
+    @ApiModelProperty(
+            name = "textRu",
+            dataType = "string",
+            required = true)
+    @NotBlank
+    String textRu;
+
+    @ApiModelProperty(
+            name = "image",
             dataType = "string")
     String image;
 

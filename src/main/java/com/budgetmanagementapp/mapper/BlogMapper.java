@@ -28,7 +28,7 @@ public abstract class BlogMapper {
     public abstract BlogRsModel buildBlogResponseModelWithLanguage(Blog blog, String language);
 
     @AfterMapping
-    void mapBlogToResponse(@MappingTarget BlogRsModel.BlogRsModelBuilder response, Blog blog, String language) {
+    void mapEntityToResponse(@MappingTarget BlogRsModel.BlogRsModelBuilder response, Blog blog, String language) {
         switch (language) {
             case "en" -> {
                 response.title(blog.getTitle().getEn());
@@ -48,18 +48,21 @@ public abstract class BlogMapper {
     @Mappings({
             @Mapping(target = "creationDate", ignore = true),
             @Mapping(target = "updateDate", ignore = true),
-            @Mapping(target = "text", ignore = true),
             @Mapping(target = "title.az", source = "titleAz"),
             @Mapping(target = "title.en", source = "titleEn"),
             @Mapping(target = "title.ru", source = "titleRu"),
             @Mapping(target = "text.az", source = "textAz"),
             @Mapping(target = "text.en", source = "textEn"),
-            @Mapping(target = "text.ru", source = "textRu")
+            @Mapping(target = "text.ru", source = "textRu"),
     })
     public abstract Blog buildBlog(BlogRqModel request);
 
     @AfterMapping
-    void mapBlogToResponse(@MappingTarget Blog.BlogBuilder blog, BlogRqModel request) {
+    void mapRequestToEntity(@MappingTarget Blog.BlogBuilder blog, BlogRqModel request) {
+        blog.blogId(UUID.randomUUID().toString());
+        blog.creationDate(CustomFormatter.stringToLocalDateTime(request.getCreationDate()));
+        blog.updateDate(CustomFormatter.stringToLocalDateTime(request.getUpdateDate()));
+
         blog.title(Translation.builder()
                 .translationId(UUID.randomUUID().toString())
                 .az(request.getTitleAz())
@@ -72,9 +75,6 @@ public abstract class BlogMapper {
                 .en(request.getTextEn())
                 .ru(request.getTextRu())
                 .build());
-        blog.blogId(UUID.randomUUID().toString());
-        blog.creationDate(CustomFormatter.stringToLocalDateTime(request.getCreationDate()));
-        blog.updateDate(CustomFormatter.stringToLocalDateTime(request.getUpdateDate()));
     }
 
 }
