@@ -31,13 +31,13 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<BlogRsModel> getAllBlogs(String language) {
         return blogRepo.findAll().stream()
-                .map(BlogMapper.INSTANCE::buildBlogResponseModel)
+                .map(blog -> BlogMapper.INSTANCE.buildBlogResponseModelWithLanguage(blog, language))
                 .collect(Collectors.toList());
     }
 
     @Override
     public BlogRsModel getBlogById(String blogId, String language) {
-        return BlogMapper.INSTANCE.buildBlogResponseModel(blogById(blogId));
+        return BlogMapper.INSTANCE.buildBlogResponseModelWithLanguage(blogById(blogId), language);
     }
 
     @Override

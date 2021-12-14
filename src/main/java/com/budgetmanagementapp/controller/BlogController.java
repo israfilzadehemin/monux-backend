@@ -33,7 +33,13 @@ public class BlogController {
 
     @ApiOperation("Get all blogs")
     @GetMapping(BLOG_GET_ALL_BLOGS_URL)
-    public ResponseEntity<ResponseModel<List<BlogRsModel>>> getAllBlogs(@RequestParam String language) {
+    public ResponseEntity<ResponseModel<List<BlogRsModel>>> getAllBlogs(
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language) {
 
         log.info(format(REQUEST_MSG, BLOG_GET_ALL_BLOGS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
@@ -49,7 +55,12 @@ public class BlogController {
                     example = "",
                     required = true)
             @RequestParam(name = "blog-id") String blogId,
-            @RequestParam String language) {
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language) {
 
         log.info(format(BLOG_WITH_PARAM, BLOG_GET_BLOG_BY_ID_URL, blogId));
         return ResponseEntity.ok(

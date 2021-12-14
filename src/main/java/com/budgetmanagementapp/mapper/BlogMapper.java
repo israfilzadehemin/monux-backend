@@ -21,20 +21,26 @@ public abstract class BlogMapper {
     })
     public abstract BlogRsModel buildBlogResponseModel(Blog blog);
 
+    @Mappings({
+            @Mapping(target = "text", ignore = true),
+            @Mapping(target = "title", ignore = true)
+    })
+    public abstract BlogRsModel buildBlogResponseModelWithLanguage(Blog blog, String language);
+
     @AfterMapping
     void mapBlogToResponse(@MappingTarget BlogRsModel.BlogRsModelBuilder response, Blog blog, String language) {
         switch (language) {
-            case "az" -> {
-                response.title(blog.getTitle().getAz());
-                response.text(blog.getText().getAz());
+            case "en" -> {
+                response.title(blog.getTitle().getEn());
+                response.text(blog.getText().getEn());
             }
             case "ru" -> {
                 response.title(blog.getTitle().getRu());
                 response.text(blog.getText().getRu());
             }
             default -> {
-                response.title(blog.getTitle().getEn());
-                response.text(blog.getText().getEn());
+                response.title(blog.getTitle().getAz());
+                response.text(blog.getText().getAz());
             }
         }
     }
