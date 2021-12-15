@@ -11,8 +11,8 @@
     <groupId>com</groupId>
     <artifactId>budget-management-app</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>budget-management-app</name>
-    <description>Budget Management App mobile service</description>
+    <name>monux-backend</name>
+    <description>Monux mobile and web service</description>
     <properties>
         <java.version>14</java.version>
     </properties>
@@ -124,7 +124,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>com.budgetmanagementapp.BudgetManagementAppApplication</mainClass>
+                            <mainClass>com.budgetmanagementapp.MonuxApplication</mainClass>
                         </manifest>
                     </archive>
                 </configuration>

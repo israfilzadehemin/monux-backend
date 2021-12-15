@@ -5,6 +5,8 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.model.blog.BlogRqModel;
 import com.budgetmanagementapp.model.blog.BlogRsModel;
 import com.budgetmanagementapp.utility.CustomFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -19,16 +21,32 @@ public abstract class BlogMapper {
             @Mapping(target = "text", ignore = true),
             @Mapping(target = "title", ignore = true)
     })
-    public abstract BlogRsModel buildBlogResponseModel(Blog blog);
+    public abstract BlogRsModel mapEntityToResponseModel(Blog blog);
+
+    @AfterMapping
+    void setLanguageBasedFieldsToResponseModel(@MappingTarget BlogRsModel.BlogRsModelBuilder responseModel, Blog blog) {
+        Map<String, String> titles = new HashMap<>();
+        Map<String, String> texts = new HashMap<>();
+
+        titles.put("titleAz", blog.getTitle().getAz());
+        titles.put("titleEn", blog.getTitle().getEn());
+        titles.put("titleRu", blog.getTitle().getRu());
+        texts.put("textAz", blog.getText().getAz());
+        texts.put("textEn", blog.getText().getEn());
+        texts.put("textRu", blog.getText().getRu());
+
+        responseModel.title(titles);
+        responseModel.text(texts);
+    }
 
     @Mappings({
             @Mapping(target = "text", ignore = true),
             @Mapping(target = "title", ignore = true)
     })
-    public abstract BlogRsModel buildBlogResponseModelWithLanguage(Blog blog, String language);
+    public abstract BlogRsModel mapEntityToResponseModelWithLanguage(Blog blog, String language);
 
     @AfterMapping
-    void mapEntityToResponse(@MappingTarget BlogRsModel.BlogRsModelBuilder response, Blog blog, String language) {
+    void mapLanguageBasedFields(@MappingTarget BlogRsModel.BlogRsModelBuilder response, Blog blog, String language) {
         switch (language) {
             case "en" -> {
                 response.title(blog.getTitle().getEn());
@@ -57,8 +75,9 @@ public abstract class BlogMapper {
     })
     public abstract Blog buildBlog(BlogRqModel request);
 
+
     @AfterMapping
-    void mapRequestToEntity(@MappingTarget Blog.BlogBuilder blog, BlogRqModel request) {
+    void setExtraFields(@MappingTarget Blog.BlogBuilder blog, BlogRqModel request) {
         blog.blogId(UUID.randomUUID().toString());
         blog.creationDate(CustomFormatter.stringToLocalDateTime(request.getCreationDate()));
         blog.updateDate(CustomFormatter.stringToLocalDateTime(request.getUpdateDate()));
@@ -76,5 +95,6 @@ public abstract class BlogMapper {
                 .ru(request.getTextRu())
                 .build());
     }
+
 
 }

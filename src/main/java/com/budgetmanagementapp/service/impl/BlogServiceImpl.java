@@ -15,7 +15,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
@@ -31,13 +30,13 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public List<BlogRsModel> getAllBlogs(String language) {
         return blogRepo.findAll().stream()
-                .map(blog -> BlogMapper.INSTANCE.buildBlogResponseModelWithLanguage(blog, language))
+                .map(blog -> BlogMapper.INSTANCE.mapEntityToResponseModelWithLanguage(blog, language))
                 .collect(Collectors.toList());
     }
 
     @Override
     public BlogRsModel getBlogById(String blogId, String language) {
-        return BlogMapper.INSTANCE.buildBlogResponseModelWithLanguage(blogById(blogId), language);
+        return BlogMapper.INSTANCE.mapEntityToResponseModelWithLanguage(blogById(blogId), language);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class BlogServiceImpl implements BlogService {
     public BlogRsModel addBlog(BlogRqModel request) {
         Blog blog = BlogMapper.INSTANCE.buildBlog(request);
         blogRepo.save(blog);
-        BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
+        BlogRsModel response = BlogMapper.INSTANCE.mapEntityToResponseModel(blog);
         log.info(format(BLOG_CREATED_MSG, response));
         return response;
     }
@@ -71,7 +70,7 @@ public class BlogServiceImpl implements BlogService {
         blog.setImage(request.getImage());
         blog.setUpdateDate(CustomFormatter.stringToLocalDateTime(request.getUpdateDate()));
         blogRepo.save(blog);
-        BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
+        BlogRsModel response = BlogMapper.INSTANCE.mapEntityToResponseModel(blog);
         log.info(format(BLOG_UPDATED_MSG, response));
         return response;
     }
@@ -80,7 +79,7 @@ public class BlogServiceImpl implements BlogService {
     public BlogRsModel deleteBlog(String blogId) {
         Blog blog = blogById(blogId);
         blogRepo.delete(blog);
-        BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
+        BlogRsModel response = BlogMapper.INSTANCE.mapEntityToResponseModel(blog);
         log.info(format(BLOG_DELETED_MSG, response));
         return response;
     }
