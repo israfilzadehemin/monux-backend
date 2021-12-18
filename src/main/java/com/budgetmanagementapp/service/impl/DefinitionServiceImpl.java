@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Definition;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DefinitionNotFoundException;
 import com.budgetmanagementapp.mapper.DefinitionMapper;
 import com.budgetmanagementapp.model.definition.DefinitionRqModel;
@@ -26,9 +27,9 @@ public class DefinitionServiceImpl implements DefinitionService {
     private final DefinitionRepository definitionRepo;
 
     @Override
-    public List<DefinitionRsModel> getAllDefinitions() {
+    public List<DefinitionRsModel> getAllDefinitions(String language) {
         return definitionRepo.findAll().stream()
-                .map(DefinitionMapper.INSTANCE::buildDefinitionRsModel)
+                .map(definition -> DefinitionMapper.INSTANCE.buildDefinitionRsModelWithLanguage(definition, language))
                 .collect(Collectors.toList());
     }
 
@@ -44,8 +45,16 @@ public class DefinitionServiceImpl implements DefinitionService {
     @Override
     public DefinitionRsModel updateDefinition(UpdateDefinitionRqModel request) {
         Definition definition = findById(request.getDefinitionId());
-        definition.setTitle(request.getTitle());
-        definition.setText(request.getText());
+        definition.setTitle(Translation.builder()
+                .az(request.getTitleAz())
+                .en(request.getTitleEn())
+                .ru(request.getTitleRu())
+                .build());
+        definition.setText(Translation.builder()
+                .az(request.getTextAz())
+                .en(request.getTextEn())
+                .ru(request.getTextRu())
+                .build());
         definition.setIcon(request.getIcon());
         definitionRepo.save(definition);
         DefinitionRsModel response = DefinitionMapper.INSTANCE.buildDefinitionRsModel(definition);

@@ -11,3 +11,5 @@
         file: liquibase/1/changelog-1.4.yml
     - include:
         file: liquibase/1/changelog-1.5.yml
+    - include:
+        file: liquibase/1/changelog-1.6.yml

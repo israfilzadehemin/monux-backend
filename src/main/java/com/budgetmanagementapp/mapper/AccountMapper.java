@@ -9,7 +9,7 @@ import com.budgetmanagementapp.model.account.CurrencyRsModel;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class AccountMapper {
 
     public static AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);

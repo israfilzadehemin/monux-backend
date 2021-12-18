@@ -2,6 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Feature;
 import com.budgetmanagementapp.entity.Plan;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.PlanNotFoundException;
 import com.budgetmanagementapp.mapper.PlanMapper;
 import com.budgetmanagementapp.model.plan.PlanRqModel;
@@ -29,9 +30,9 @@ public class PlanServiceImpl implements PlanService {
     private final FeatureRepository featureRepo;
 
     @Override
-    public List<PlanRsModel> getAllPlans() {
+    public List<PlanRsModel> getAllPlans(String language) {
         return planRepo.findAll().stream()
-                .map(PlanMapper.INSTANCE::buildPlanResponseModel)
+                .map(plan -> PlanMapper.INSTANCE.buildPlanResponseModelWithLanguage(plan, language))
                 .collect(Collectors.toList());
     }
 
@@ -49,8 +50,16 @@ public class PlanServiceImpl implements PlanService {
     public PlanRsModel updatePlan(UpdatePlanRqModel request) {
         Plan plan = planRepo.byPlanId(request.getPlanId())
                 .orElseThrow(() -> new PlanNotFoundException(format(PLAN_NOT_FOUND_MSG, request.getPlanId())));
-        plan.setTitle(request.getTitle());
-        plan.setText(request.getText());
+        plan.setTitle(Translation.builder()
+                .az(request.getTitleAz())
+                .en(request.getTextEn())
+                .ru(request.getTitleRu())
+                .build());
+        plan.setText(Translation.builder()
+                .az(request.getTextAz())
+                .en(request.getTextEn())
+                .ru(request.getTextRu())
+                .build());
         plan.setPrice(request.getPrice());
         plan.setPeriodType(request.getPeriodType());
         planRepo.save(plan);

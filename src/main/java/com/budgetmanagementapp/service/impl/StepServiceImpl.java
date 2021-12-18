@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Step;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.StepNotFoundException;
 import com.budgetmanagementapp.mapper.StepMapper;
 import com.budgetmanagementapp.model.home.StepRqModel;
@@ -25,9 +26,9 @@ public class StepServiceImpl implements StepService {
     private final StepRepository stepRepo;
 
     @Override
-    public List<StepRsModel> getAllSteps() {
+    public List<StepRsModel> getAllSteps(String language) {
         return stepRepo.findAll().stream()
-                .map(StepMapper.INSTANCE::buildStepResponseModel)
+                .map(step -> StepMapper.INSTANCE.buildStepResponseModelWithLanguage(step, language))
                 .collect(Collectors.toList());
     }
 
@@ -43,8 +44,16 @@ public class StepServiceImpl implements StepService {
     @Override
     public StepRsModel updateStep(StepRqModel request, String stepId) {
         Step step = stepById(stepId);
-        step.setTitle(request.getTitle());
-        step.setText(request.getText());
+        step.setTitle(Translation.builder()
+                .az(request.getTitleAz())
+                .en(request.getTitleEn())
+                .ru(request.getTitleRu())
+                .build());
+        step.setText(Translation.builder()
+                .az(request.getTitleAz())
+                .en(request.getTitleEn())
+                .ru(request.getTitleRu())
+                .build());
         step.setIcon(request.getIcon());
         step.setColor(request.getColor());
         stepRepo.save(step);

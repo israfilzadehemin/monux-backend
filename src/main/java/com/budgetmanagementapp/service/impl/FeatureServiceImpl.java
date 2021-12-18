@@ -3,6 +3,7 @@ package com.budgetmanagementapp.service.impl;
 import com.budgetmanagementapp.entity.Feature;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.Plan;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.FeatureNotFoundException;
 import com.budgetmanagementapp.mapper.FeatureMapper;
 import com.budgetmanagementapp.model.feature.FeatureRqModel;
@@ -28,9 +29,9 @@ public class FeatureServiceImpl implements FeatureService {
     private final FeatureRepository featureRepo;
 
     @Override
-    public List<FeatureRsModel> getAllFeatures() {
+    public List<FeatureRsModel> getAllFeatures(String language) {
         return featureRepo.findAll().stream()
-                .map(FeatureMapper.INSTANCE::buildFeatureResponseModel)
+                .map(feature -> FeatureMapper.INSTANCE.buildFeatureResponseModelWithLanguage(feature, language))
                 .collect(Collectors.toList());
     }
 
@@ -46,7 +47,11 @@ public class FeatureServiceImpl implements FeatureService {
     @Override
     public FeatureRsModel updateFeature(UpdateFeatureRqModel request) {
         Feature feature = findById(request.getFeatureId());
-        feature.setContent(request.getContent());
+        feature.setContent(Translation.builder()
+                .az(request.getContentAz())
+                .en(request.getContentEn())
+                .ru(request.getContentRu())
+                .build());
         featureRepo.save(feature);
         FeatureRsModel response = FeatureMapper.INSTANCE.buildFeatureResponseModel(feature);
         log.info(format(FEATURE_UPDATED_MSG, response));

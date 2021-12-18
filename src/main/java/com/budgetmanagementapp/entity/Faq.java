@@ -20,9 +20,17 @@ public class Faq {
     @Column(name = "faq_id")
     private String faqId;
 
-    @Column(name = "faq_question")
-    private String question;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_faq_with_translation_question",
+            joinColumns = {@JoinColumn(name = "faq_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation question;
 
-    @Column(name = "faq_answer")
-    private String answer;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_faq_with_translation_answer",
+            joinColumns = {@JoinColumn(name = "faq_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation answer;
 }

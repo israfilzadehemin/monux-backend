@@ -68,3 +68,159 @@ create table rel_banner_with_translation_title
 
 alter table rel_banner_with_translation_title
     owner to postgres;
+
+create table rel_definition_with_translation_text
+(
+    translation_id bigint
+        constraint fkptk8y9j3cgkgx74itegj5tltm
+            references translation,
+    definition_id  bigint not null
+        primary key
+        constraint fkh4nn1ij4uk8qyc2dqgnpolf3j
+            references definition
+);
+
+alter table rel_definition_with_translation_text
+    owner to postgres;
+
+create table rel_definition_with_translation_title
+(
+    translation_id bigint
+        constraint fkc5trcnw7kr8nshm9xxv4ftwg6
+            references translation,
+    definition_id  bigint not null
+        primary key
+        constraint fk2es1r968vnpwno4bopqv4nqvj
+            references definition
+);
+
+alter table rel_definition_with_translation_title
+    owner to postgres;
+
+create table rel_faq_with_translation_answer
+(
+    translation_id bigint
+        constraint fk977qxc0ue1iyyxc16mawhidu4
+            references translation,
+    faq_id         bigint not null
+        primary key
+        constraint fk2biwqeja7u1pd1i9b2qgt7i5f
+            references faq
+);
+
+alter table rel_faq_with_translation_answer
+    owner to postgres;
+
+create table rel_faq_with_translation_question
+(
+    translation_id bigint
+        constraint fkqe2v3rm5i6niqp9kg08eqtfys
+            references translation,
+    faq_id         bigint not null
+        primary key
+        constraint fk93910hn81k76mqumgd2ts1iix
+            references faq
+);
+
+alter table rel_faq_with_translation_question
+    owner to postgres;
+
+create table rel_feature_with_translation
+(
+    translation_id bigint
+        constraint fkeogqoafbwuq18omh15t6oykvx
+            references translation,
+    feature_id     bigint not null
+        primary key
+        constraint fk97dljvsyxn3jjgwdi1t1qqlp9
+            references feature
+);
+
+alter table rel_feature_with_translation
+    owner to postgres;
+
+create table rel_plan_with_translation_text
+(
+    translation_id bigint
+        constraint fkbb9kv2vvggfhaljf1ingemat7
+            references translation,
+    plan_id        bigint not null
+        primary key
+        constraint fkmwwepm2c1sv320rdyvsm9k4n1
+            references plan
+);
+
+alter table rel_plan_with_translation_text
+    owner to postgres;
+
+create table rel_plan_with_translation_title
+(
+    translation_id bigint
+        constraint fkle8myiwiv9ar64erb1hfxbkhd
+            references translation,
+    plan_id        bigint not null
+        primary key
+        constraint fkmr0xegueg5k5tb1c4xylkb2k5
+            references plan
+);
+
+alter table rel_plan_with_translation_title
+    owner to postgres;
+
+create table rel_service_with_translation_text
+(
+    translation_id bigint
+        constraint fkfmpoxavyhdks0litahslp3w0k
+            references translation,
+    service_id     bigint not null
+        primary key
+        constraint fkh1r12u2cjqdwdi9yhxxyegmk9
+            references service
+);
+
+alter table rel_service_with_translation_text
+    owner to postgres;
+
+create table rel_service_with_translation_title
+(
+    translation_id bigint
+        constraint fkoo1fwk6jwj01opcx3thhwapf
+            references translation,
+    service_id     bigint not null
+        primary key
+        constraint fkge4fx28fjjb6gsvxh2podjv85
+            references service
+);
+
+alter table rel_service_with_translation_title
+    owner to postgres;
+
+create table rel_step_with_translation_text
+(
+    translation_id bigint
+        constraint fkagt0cs4fjubkh253whbin9r5y
+            references translation,
+    step_id        bigint not null
+        primary key
+        constraint fkahkjbs2xj9vd4bi4hnm59hbgw
+            references step
+);
+
+alter table rel_step_with_translation_text
+    owner to postgres;
+
+create table rel_step_with_translation_title
+(
+    translation_id bigint
+        constraint fkny9l42cpquwq3etlhfdvejm2u
+            references translation,
+    step_id        bigint not null
+        primary key
+        constraint fkp9kr4ap7pw2klm066htoinp3
+            references step
+);
+
+alter table rel_step_with_translation_title
+    owner to postgres;
+
+

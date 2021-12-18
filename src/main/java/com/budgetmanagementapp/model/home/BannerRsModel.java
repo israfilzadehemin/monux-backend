@@ -23,12 +23,12 @@ public class BannerRsModel {
             name = "title",
             dataType = "string",
             example = "Home Page")
-    String title;
+    Object title;
 
     @ApiModelProperty(
             name = "text",
             dataType = "string")
-    String text;
+    Object text;
 
     @ApiModelProperty(
             name = "image",

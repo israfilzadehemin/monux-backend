@@ -24,13 +24,13 @@ public class DefinitionRsModel {
             dataType = "string",
             example = "")
     @NotBlank
-    String title;
+    Object title;
 
     @ApiModelProperty(
             name = "text",
             dataType = "string")
     @NotBlank
-    String text;
+    Object text;
 
     @ApiModelProperty(
             name = "icon",

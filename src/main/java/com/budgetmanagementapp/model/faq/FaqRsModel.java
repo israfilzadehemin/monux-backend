@@ -22,11 +22,11 @@ public class FaqRsModel {
             name = "question",
             dataType = "string")
     @NotBlank
-    String question;
+    Object question;
 
     @ApiModelProperty(
             name = "answer",
             dataType = "string")
     @NotBlank
-    String answer;
+    Object answer;
 }

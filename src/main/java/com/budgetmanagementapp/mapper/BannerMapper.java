@@ -7,6 +7,8 @@ import com.budgetmanagementapp.model.home.BannerRsModel;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 @Mapper
@@ -25,7 +27,7 @@ public abstract class BannerMapper {
     public abstract Banner buildBanner(BannerRqModel request);
 
     @AfterMapping
-    void mapRequestToBanner(@MappingTarget Banner.BannerBuilder banner, BannerRqModel request) {
+    void setExtraFields(@MappingTarget Banner.BannerBuilder banner, BannerRqModel request) {
         banner.bannerId(UUID.randomUUID().toString());
         banner.title(Translation.builder()
                 .translationId(UUID.randomUUID().toString())
@@ -47,6 +49,23 @@ public abstract class BannerMapper {
     })
     public abstract BannerRsModel buildBannerResponseModel(Banner banner);
 
+    @AfterMapping
+    void setLanguageBasedFieldsToResponseModel(@MappingTarget BannerRsModel.BannerRsModelBuilder response, Banner banner) {
+        Map<String, String> titles = new HashMap<>();
+        Map<String, String> texts = new HashMap<>();
+
+        titles.put("titleAz", banner.getTitle().getAz());
+        titles.put("titleEn", banner.getTitle().getEn());
+        titles.put("titleRu", banner.getTitle().getRu());
+
+        texts.put("textAz", banner.getText().getAz());
+        texts.put("textEn", banner.getText().getEn());
+        texts.put("textRu", banner.getText().getRu());
+
+        response.title(titles);
+        response.text(texts);
+    }
+
     @Mappings({
             @Mapping(target = "title", ignore = true),
             @Mapping(target = "text", ignore = true)
@@ -54,7 +73,7 @@ public abstract class BannerMapper {
     public abstract BannerRsModel buildBannerResponseModelWithLanguage(Banner banner, String language);
 
     @AfterMapping
-    void mapBannerToResponse(@MappingTarget BannerRsModel.BannerRsModelBuilder response, Banner banner, String language) {
+    void mapLanguageBasedFields(@MappingTarget BannerRsModel.BannerRsModelBuilder response, Banner banner, String language) {
         switch (language) {
             case "en" -> {
                 response.title(banner.getTitle().getEn());

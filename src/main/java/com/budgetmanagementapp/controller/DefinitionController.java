@@ -33,11 +33,17 @@ public class DefinitionController {
 
     @ApiOperation("Get all definitions")
     @GetMapping(DEFINITION_GET_ALL_DEFINITIONS_URL)
-    public ResponseEntity<ResponseModel<List<DefinitionRsModel>>> getAllDefinitions() {
+    public ResponseEntity<ResponseModel<List<DefinitionRsModel>>> getAllDefinitions(
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language) {
 
         log.info(format(REQUEST_MSG, DEFINITION_GET_ALL_DEFINITIONS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.of(definitionService.getAllDefinitions(), HttpStatus.OK));
+                ResponseModel.of(definitionService.getAllDefinitions(language), HttpStatus.OK));
     }
 
     @ApiOperation("Create definition")

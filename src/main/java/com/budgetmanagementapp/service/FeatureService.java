@@ -7,7 +7,7 @@ import com.budgetmanagementapp.model.feature.UpdateFeatureRqModel;
 import java.util.List;
 
 public interface FeatureService {
-    List<FeatureRsModel> getAllFeatures();
+    List<FeatureRsModel> getAllFeatures(String language);
 
     FeatureRsModel addFeature(FeatureRqModel request);
 

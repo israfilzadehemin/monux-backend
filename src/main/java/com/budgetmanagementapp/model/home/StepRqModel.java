@@ -15,18 +15,46 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class StepRqModel {
     @ApiModelProperty(
-            name = "title",
+            name = "titleAz",
             dataType = "string",
             required = true)
     @NotBlank
-    String title;
+    String titleAz;
 
     @ApiModelProperty(
-            name = "text",
+            name = "titleEn",
             dataType = "string",
             required = true)
     @NotBlank
-    String text;
+    String titleEn;
+
+    @ApiModelProperty(
+            name = "titleRu",
+            dataType = "string",
+            required = true)
+    @NotBlank
+    String titleRu;
+
+    @ApiModelProperty(
+            name = "textAz",
+            dataType = "string",
+            required = true)
+    @NotBlank
+    String textAz;
+
+    @ApiModelProperty(
+            name = "textEn",
+            dataType = "string",
+            required = true)
+    @NotBlank
+    String textEn;
+
+    @ApiModelProperty(
+            name = "textRu",
+            dataType = "string",
+            required = true)
+    @NotBlank
+    String textRu;
 
     @ApiModelProperty(
             name = "icon",

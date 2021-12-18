@@ -23,11 +23,19 @@ public class Plan {
     @Column(name = "plan_id")
     private String planId;
 
-    @Column(name = "plan_title")
-    private String title;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_plan_with_translation_title",
+            joinColumns = {@JoinColumn(name = "plan_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation title;
 
-    @Column(name = "plan_text")
-    private String text;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_plan_with_translation_text",
+            joinColumns = {@JoinColumn(name = "plan_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation text;
 
     @Column(name = "plan_price")
     private BigDecimal price;
