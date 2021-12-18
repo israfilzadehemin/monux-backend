@@ -55,6 +55,9 @@ public class User {
     @Column(name = "paymentStatus")
     private String paymentStatus;
 
+    @Column(name = "lang")
+    private String language;
+
     @OneToOne(mappedBy = "user")
     private Otp otp;
 

@@ -21,4 +21,9 @@ public class UserInfoRsModel {
             name = "fullName",
             dataType = "string")
     String fullName;
+
+    @ApiModelProperty(
+            name = "language",
+            dataType = "string")
+    String language;
 }

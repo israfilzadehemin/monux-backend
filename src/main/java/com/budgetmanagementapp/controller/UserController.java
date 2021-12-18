@@ -1,21 +1,13 @@
 package com.budgetmanagementapp.controller;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
-import static java.lang.String.format;
-
+import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.account.AccountRqModel;
 import com.budgetmanagementapp.model.account.AccountRsModel;
 import com.budgetmanagementapp.model.user.*;
-import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.MailSenderService;
-import javax.mail.MessagingException;
-import javax.validation.Valid;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -27,6 +19,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
+import javax.validation.Valid;
+
+import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static java.lang.String.format;
 
 @RestController
 @AllArgsConstructor
@@ -80,7 +80,7 @@ public class UserController {
     @ApiOperation("Reset password of user")
     @PostMapping(USER_RESET_PASSWORD_URL)
     public ResponseEntity<ResponseModel<ResetPasswordRsModel>> resetPassword(@RequestBody @Valid ResetPasswordRqModel requestBody,
-                                           @RequestParam String username) {
+                                                                             @RequestParam String username) {
         log.info(String.format(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody));
         return ResponseEntity.ok(ResponseModel.of(
                 userService.resetPassword(username, requestBody), HttpStatus.OK));
@@ -107,5 +107,19 @@ public class UserController {
         log.info(format(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG));
         return ResponseEntity.ok(ResponseModel.of(
                 userService.userInfo(((UserDetails) auth.getPrincipal()).getUsername()), HttpStatus.OK));
+    }
+
+    @ApiOperation("Update user language")
+    @PutMapping(USER_UPDATE_LANG_URL)
+    public ResponseEntity<ResponseModel<UserInfoRsModel>> updateUserLanguage(
+            Authentication auth,
+            @ApiParam(name = "language",
+                    type = "string",
+                    example = "az, en, ru",
+                    required = true)
+            @RequestParam("language") String language) {
+        log.info(format(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG));
+        return ResponseEntity.ok(ResponseModel.of(
+                userService.updateUserLanguage(((UserDetails) auth.getPrincipal()).getUsername(), language), HttpStatus.OK));
     }
 }
