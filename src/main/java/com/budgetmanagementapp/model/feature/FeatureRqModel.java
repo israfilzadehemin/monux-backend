@@ -16,8 +16,21 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeatureRqModel {
     @ApiModelProperty(
-            name = "content",
+            name = "contentAz",
             dataType = "string")
     @NotBlank
-    String content;
+    String contentAz;
+
+    @ApiModelProperty(
+            name = "contentEn",
+            dataType = "string")
+    @NotBlank
+    String contentEn;
+
+    @ApiModelProperty(
+            name = "contentRu",
+            dataType = "string")
+    @NotBlank
+    String contentRu;
+
 }

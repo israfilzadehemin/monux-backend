@@ -33,11 +33,17 @@ public class FeatureController {
 
     @ApiOperation("Get all features")
     @GetMapping(FEATURE_GET_ALL_FEATURES)
-    public ResponseEntity<ResponseModel<List<FeatureRsModel>>> getAllFeatures(){
+    public ResponseEntity<ResponseModel<List<FeatureRsModel>>> getAllFeatures(
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language){
 
         log.info(format(REQUEST_MSG, FEATURE_GET_ALL_FEATURES, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.of(featureService.getAllFeatures(), HttpStatus.OK));
+                ResponseModel.of(featureService.getAllFeatures(language), HttpStatus.OK));
     }
 
     @ApiOperation("Add feature")

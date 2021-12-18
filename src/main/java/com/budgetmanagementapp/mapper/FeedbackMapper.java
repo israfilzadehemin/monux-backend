@@ -6,7 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class FeedbackMapper {
 
     public static FeedbackMapper INSTANCE = Mappers.getMapper(FeedbackMapper.class);

@@ -32,11 +32,18 @@ public class ServiceController {
 
     @ApiOperation("Get all steps")
     @GetMapping(SERVICE_GET_ALL_SERVICES_URL)
-    public ResponseEntity<ResponseModel<List<ServiceRsModel>>> getAllSteps() {
+    public ResponseEntity<ResponseModel<List<ServiceRsModel>>> getAllSteps(
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language
+    ) {
 
         log.info(format(REQUEST_MSG, SERVICE_GET_ALL_SERVICES_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.of(serviceService.getAllServices(), HttpStatus.OK));
+                ResponseModel.of(serviceService.getAllServices(language), HttpStatus.OK));
     }
 
     @ApiOperation("Create service")

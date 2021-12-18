@@ -17,19 +17,23 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanRsModel {
     @ApiModelProperty(
-            name = "title",
+            name = "planId",
             dataType = "string")
     String planId;
+
     @ApiModelProperty(
             name = "title",
             dataType = "string",
-            example = "Starter")
-    String title;
+            required = true)
+    @NotBlank
+    Object title;
 
     @ApiModelProperty(
             name = "text",
-            dataType = "string")
-    String text;
+            dataType = "string",
+            required = true)
+    @NotBlank
+    Object text;
 
     @ApiModelProperty(
             name = "price",

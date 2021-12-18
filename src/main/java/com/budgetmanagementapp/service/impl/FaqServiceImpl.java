@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Faq;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.FaqNotFoundException;
 import com.budgetmanagementapp.mapper.FaqMapper;
 import com.budgetmanagementapp.model.faq.FaqRqModel;
@@ -26,16 +27,16 @@ public class FaqServiceImpl implements FaqService {
     private final FaqRepository faqRepo;
 
     @Override
-    public List<FaqRsModel> getAllFaqs() {
+    public List<FaqRsModel> getAllFaqs(String language) {
         return faqRepo.findAll().stream()
-                .map(FaqMapper.INSTANCE::buildFaqResponseModel)
+                .map(faq -> FaqMapper.INSTANCE.buildFaqResponseModelWithLanguage(faq, language))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public FaqRsModel getFaqById(String faqId) {
+    public FaqRsModel getFaqById(String faqId, String language) {
         Faq faq = findById(faqId);
-        return FaqMapper.INSTANCE.buildFaqResponseModel(faq);
+        return FaqMapper.INSTANCE.buildFaqResponseModelWithLanguage(faq, language);
     }
 
     @Override
@@ -50,8 +51,16 @@ public class FaqServiceImpl implements FaqService {
     @Override
     public FaqRsModel updateFaq(UpdateFaqRqModel request) {
         Faq faq = findById(request.getFaqId());
-        faq.setQuestion(request.getQuestion());
-        faq.setAnswer(request.getAnswer());
+        faq.setQuestion(Translation.builder()
+                .az(request.getQuestionAz())
+                .en(request.getQuestionEn())
+                .ru(request.getQuestionRu())
+                .build());
+        faq.setAnswer(Translation.builder()
+                .az(request.getAnswerAz())
+                .en(request.getAnswerEn())
+                .ru(request.getAnswerRu())
+                .build());
         faqRepo.save(faq);
         FaqRsModel response = FaqMapper.INSTANCE.buildFaqResponseModel(faq);
         log.info(format(FAQ_UPDATED_MSG, response));
@@ -67,7 +76,7 @@ public class FaqServiceImpl implements FaqService {
         return response;
     }
 
-    private Faq findById(String faqId){
+    private Faq findById(String faqId) {
         return faqRepo.byId(faqId).orElseThrow(
                 () -> new FaqNotFoundException(format(FAQ_NOT_FOUND_MSG, faqId)));
     }

@@ -20,11 +20,19 @@ public class Service {
     @Column(name = "service_id")
     private String serviceId;
 
-    @Column(name = "service_title")
-    private String title;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_service_with_translation_title",
+            joinColumns = {@JoinColumn(name = "service_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation title;
 
-    @Column(name = "service_text")
-    private String text;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_service_with_translation_text",
+            joinColumns = {@JoinColumn(name = "service_id   ", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation text;
 
     @Column(name = "service_icon")
     private String icon;

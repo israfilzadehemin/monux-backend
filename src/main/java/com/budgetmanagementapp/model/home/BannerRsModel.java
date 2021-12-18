@@ -15,22 +15,23 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BannerRsModel {
     @ApiModelProperty(
-            name = "title",
+            name = "bannerId",
             dataType = "string")
     String bannerId;
+
     @ApiModelProperty(
             name = "title",
             dataType = "string",
             example = "Home Page")
-    String title;
+    Object title;
 
     @ApiModelProperty(
             name = "text",
             dataType = "string")
-    String text;
+    Object text;
 
     @ApiModelProperty(
-            name = "text",
+            name = "image",
             dataType = "string")
     String image;
 

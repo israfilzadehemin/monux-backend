@@ -6,12 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 @AllArgsConstructor
-public class BudgetManagementAppApplication {
-
-
+public class MonuxApplication {
     public static void main(String[] args) {
-        SpringApplication.run(BudgetManagementAppApplication.class, args);
+        SpringApplication.run(MonuxApplication.class, args);
     }
-
-
 }

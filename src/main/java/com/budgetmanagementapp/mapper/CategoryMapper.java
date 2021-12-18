@@ -7,7 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class CategoryMapper {
 
     public static CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);

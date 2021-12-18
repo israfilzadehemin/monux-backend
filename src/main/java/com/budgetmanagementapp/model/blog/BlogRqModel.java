@@ -16,19 +16,49 @@ import javax.validation.constraints.NotBlank;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BlogRqModel {
     @ApiModelProperty(
-            name = "title",
+            name = "titleAz",
+            dataType = "string",
+            example = "Yeni blog",
+            required = true)
+    @NotBlank
+    String titleAz;
+
+    @ApiModelProperty(
+            name = "titleEn",
             dataType = "string",
             example = "New Blog",
             required = true)
     @NotBlank
-    String title;
+    String titleEn;
 
     @ApiModelProperty(
-            name = "text",
+            name = "titleRu",
+            dataType = "string",
+            example = "Новый блог",
+            required = true)
+    @NotBlank
+    String titleRu;
+
+    @ApiModelProperty(
+            name = "textAz",
             dataType = "string",
             required = true)
     @NotBlank
-    String text;
+    String textAz;
+
+    @ApiModelProperty(
+            name = "textEn",
+            dataType = "string",
+            required = true)
+    @NotBlank
+    String textEn;
+
+    @ApiModelProperty(
+            name = "textRu",
+            dataType = "string",
+            required = true)
+    @NotBlank
+    String textRu;
 
     @ApiModelProperty(
             name = "image",

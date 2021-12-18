@@ -20,11 +20,19 @@ public class Definition {
     @Column(name = "definition_id")
     private String definitionId;
 
-    @Column(name = "definition_title")
-    private String title;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_definition_with_translation_title",
+            joinColumns = {@JoinColumn(name = "definition_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation title;
 
-    @Column(name = "definition_text")
-    private String text;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_definition_with_translation_text",
+            joinColumns = {@JoinColumn(name = "definition_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation text;
 
     @Column(name = "definition_icon")
     private String icon;

@@ -8,7 +8,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class OtpMapper {
 
     public static OtpMapper INSTANCE = Mappers.getMapper(OtpMapper.class);

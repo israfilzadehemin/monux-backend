@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface StepService {
 
-    List<StepRsModel> getAllSteps();
+    List<StepRsModel> getAllSteps(String language);
 
     StepRsModel createStep(StepRqModel request);
 

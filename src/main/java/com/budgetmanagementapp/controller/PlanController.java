@@ -34,10 +34,17 @@ public class PlanController {
 
     @ApiOperation("Get all plans")
     @GetMapping(PLAN_GET_ALL_PLANS_URL)
-    public ResponseEntity<ResponseModel<List<PlanRsModel>>> getAllPlans() {
+    public ResponseEntity<ResponseModel<List<PlanRsModel>>> getAllPlans(
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language
+    ) {
         log.info(format(REQUEST_MSG, PLAN_GET_ALL_PLANS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.of(planService.getAllPlans(), HttpStatus.OK));
+                ResponseModel.of(planService.getAllPlans(language), HttpStatus.OK));
     }
 
     @ApiOperation("Add plan")

@@ -20,5 +20,5 @@ public class FeatureRsModel {
     @ApiModelProperty(
             name = "content",
             dataType = "string")
-    String content;
+    Object content;
 }

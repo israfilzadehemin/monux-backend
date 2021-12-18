@@ -22,12 +22,12 @@ public class ServiceRsModel {
     @ApiModelProperty(
             name = "title",
             dataType = "string")
-    String title;
+    Object title;
 
     @ApiModelProperty(
             name = "text",
             dataType = "string")
-    String text;
+    Object text;
 
     @ApiModelProperty(
             name = "icon",

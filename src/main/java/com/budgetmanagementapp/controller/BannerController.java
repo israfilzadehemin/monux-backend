@@ -36,11 +36,17 @@ public class BannerController {
                     type = "string",
                     example = "",
                     required = true)
-            @RequestParam("banner-id") String bannerId) {
+            @RequestParam("banner-id") String bannerId,
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "az, en, ru",
+                    required = true)
+            @RequestParam("language") String language) {
 
         log.info(format(REQUEST_PARAM_MSG, BANNER_GET_BANNER_BY_ID_URL, bannerId));
         return ResponseEntity.ok(
-                ResponseModel.of(bannerService.getBannerById(bannerId), HttpStatus.OK));
+                ResponseModel.of(bannerService.getBannerById(bannerId, language), HttpStatus.OK));
     }
 
     @ApiOperation("Get banner by keyword")
@@ -51,11 +57,17 @@ public class BannerController {
                     type = "string",
                     example = "",
                     required = true)
-            @RequestParam("banner-keyword") String keyword) {
+            @RequestParam("banner-keyword") String keyword,
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "az, en, ru",
+                    required = true)
+            @RequestParam("language") String language) {
 
         log.info(format(REQUEST_PARAM_MSG, BANNER_GET_BANNER_BY_KEYWORD_URL, keyword));
         return ResponseEntity.ok(
-                ResponseModel.of(bannerService.getBannerByKeyword(keyword),HttpStatus.OK));
+                ResponseModel.of(bannerService.getBannerByKeyword(keyword, language),HttpStatus.OK));
     }
 
     @ApiOperation("Create banner")

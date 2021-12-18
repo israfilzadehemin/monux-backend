@@ -32,11 +32,18 @@ public class StepController {
 
     @ApiOperation("Get all steps")
     @GetMapping(STEP_GET_ALL_STEPS_URL)
-    public ResponseEntity<ResponseModel<List<StepRsModel>>> getAllSteps() {
+    public ResponseEntity<ResponseModel<List<StepRsModel>>> getAllSteps(
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language
+    ) {
 
         log.info(format(REQUEST_MSG, STEP_GET_ALL_STEPS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.of(stepService.getAllSteps(), HttpStatus.OK));
+                ResponseModel.of(stepService.getAllSteps(language), HttpStatus.OK));
     }
 
     @ApiOperation("Create step")

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DefinitionService {
 
-    List<DefinitionRsModel> getAllDefinitions();
+    List<DefinitionRsModel> getAllDefinitions(String language);
 
     DefinitionRsModel createDefinition(DefinitionRqModel request);
 

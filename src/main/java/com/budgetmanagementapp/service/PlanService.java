@@ -7,7 +7,7 @@ import com.budgetmanagementapp.model.plan.UpdatePlanRqModel;
 import java.util.List;
 
 public interface PlanService {
-    List<PlanRsModel> getAllPlans();
+    List<PlanRsModel> getAllPlans(String language);
 
     PlanRsModel addPlan(PlanRqModel request);
 

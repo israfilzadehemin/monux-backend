@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.service.impl;
 
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.ServiceNotFoundException;
 import com.budgetmanagementapp.mapper.ServiceMapper;
 import com.budgetmanagementapp.model.home.ServiceRqModel;
@@ -24,9 +25,9 @@ public class ServiceServiceImpl implements ServiceService {
     private final ServiceRepository serviceRepo;
 
     @Override
-    public List<ServiceRsModel> getAllServices() {
+    public List<ServiceRsModel> getAllServices(String language) {
         return serviceRepo.findAll().stream()
-                .map(ServiceMapper.INSTANCE::buildServiceResponseModel)
+                .map(service -> ServiceMapper.INSTANCE.buildServiceResponseModelWithLanguage(service, language))
                 .collect(Collectors.toList());
     }
 
@@ -42,8 +43,16 @@ public class ServiceServiceImpl implements ServiceService {
     @Override
     public ServiceRsModel updateService(ServiceRqModel request, String serviceId) {
         com.budgetmanagementapp.entity.Service service = serviceById(serviceId);
-        service.setTitle(request.getTitle());
-        service.setText(request.getText());
+        service.setTitle(Translation.builder()
+                .az(request.getTitleAz())
+                .en(request.getTitleEn())
+                .ru(request.getTitleRu())
+                .build());
+        service.setText(Translation.builder()
+                .az(request.getTextAz())
+                .en(request.getTextEn())
+                .ru(request.getTextRu())
+                .build());
         service.setIcon(request.getIcon());
         serviceRepo.save(service);
         ServiceRsModel response = ServiceMapper.INSTANCE.buildServiceResponseModel(service);

@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Banner;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.BannerNotFoundException;
 import com.budgetmanagementapp.mapper.BannerMapper;
 import com.budgetmanagementapp.model.home.BannerRqModel;
@@ -22,15 +23,15 @@ public class BannerServiceImpl implements BannerService {
     private final BannerRepository bannerRepo;
 
     @Override
-    public BannerRsModel getBannerById(String bannerId) {
-        return BannerMapper.INSTANCE.buildBannerResponseModel(bannerById(bannerId));
+    public BannerRsModel getBannerById(String bannerId, String language) {
+        return BannerMapper.INSTANCE.buildBannerResponseModelWithLanguage(bannerById(bannerId), language);
     }
 
     @Override
-    public BannerRsModel getBannerByKeyword(String keyword) {
+    public BannerRsModel getBannerByKeyword(String keyword, String language) {
         Banner banner = bannerRepo.byKeyword(keyword).orElseThrow(
                 () -> new BannerNotFoundException(format(BANNER_NOT_FOUND_MSG, keyword)));
-        return BannerMapper.INSTANCE.buildBannerResponseModel(banner);
+        return BannerMapper.INSTANCE.buildBannerResponseModelWithLanguage(banner, language);
     }
 
     @Override
@@ -45,9 +46,17 @@ public class BannerServiceImpl implements BannerService {
     @Override
     public BannerRsModel updateBanner(BannerRqModel request, String bannerId) {
         Banner banner = bannerById(bannerId);
-        banner.setTitle(request.getTitle());
-        banner.setText(request.getText());
-        banner.setTitle(request.getKeyword());
+        banner.setTitle(Translation.builder()
+                .az(request.getTitleAz())
+                .en(request.getTitleEn())
+                .ru(request.getTitleRu())
+                .build());
+        banner.setText(Translation.builder()
+                .az(request.getTextAz())
+                .en(request.getTextEn())
+                .ru(request.getTextRu())
+                .build());
+        banner.setKeyword(request.getKeyword());
         banner.setImage(request.getImage());
         bannerRepo.save(banner);
         BannerRsModel response = BannerMapper.INSTANCE.buildBannerResponseModel(banner);

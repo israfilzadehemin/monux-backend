@@ -33,10 +33,16 @@ public class FaqController {
 
     @ApiOperation("Get all faqs")
     @GetMapping(FAQ_GET_ALL_FAQS_URL)
-    public ResponseEntity<ResponseModel<List<FaqRsModel>>> getAllFaqs() {
+    public ResponseEntity<ResponseModel<List<FaqRsModel>>> getAllFaqs(
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language) {
         log.info(format(REQUEST_MSG, FAQ_GET_ALL_FAQS_URL, NO_BODY_MSG));
         return ResponseEntity.ok(
-                ResponseModel.of(faqService.getAllFaqs(), HttpStatus.OK));
+                ResponseModel.of(faqService.getAllFaqs(language), HttpStatus.OK));
     }
 
     @ApiOperation("Get faq by id")
@@ -47,10 +53,16 @@ public class FaqController {
                     type = "string",
                     example = "",
                     required = true)
-            @RequestParam(name = "faq-id") String faqId) {
+            @RequestParam(name = "faq-id") String faqId,
+            @ApiParam(
+                    name = "language",
+                    type = "string",
+                    example = "en, az, ru",
+                    required = true)
+            @RequestParam(name = "language") String language) {
         log.info(format(REQUEST_MSG, FAQ_GET_FAQ_BY_ID_URL, faqId));
         return ResponseEntity.ok(
-                ResponseModel.of(faqService.getFaqById(faqId), HttpStatus.OK));
+                ResponseModel.of(faqService.getFaqById(faqId, language), HttpStatus.OK));
     }
 
     @ApiOperation("Create faq")

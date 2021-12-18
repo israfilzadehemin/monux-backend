@@ -26,11 +26,19 @@ public class Blog {
     @Column(name = "blog_update_date")
     private LocalDateTime updateDate;
 
-    @Column(name = "blog_title")
-    private String title;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_blog_with_translation_title",
+            joinColumns = {@JoinColumn(name = "blog_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")} )
+    private Translation title;
 
-    @Column(name = "blog_text")
-    private String text;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_blog_with_translation_text",
+            joinColumns = {@JoinColumn(name = "blog_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")} )
+    private Translation text;
 
     @Column(name = "blog_image")
     private String image;
