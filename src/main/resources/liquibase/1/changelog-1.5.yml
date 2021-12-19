@@ -1,7 +1,7 @@
 databaseChangeLog:
   - changeSet:
-      id: all-tables
-      author: Emin Israfilzadeh
+      id: translation
+      author: Shafa Mammadova
       changes:
         - sqlFile:
             path: liquibase/1/changelog-1.5-translation.sql

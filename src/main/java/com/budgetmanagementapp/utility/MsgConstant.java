@@ -48,8 +48,8 @@ public class MsgConstant {
     public static final String PASSWORD_CREATED_MSG = "Password has been created for %s";
     public static final String PASSWORD_UPDATED_MSG = "Password has been updated for %s";
     public static final String PASSWORD_EQUALITY_MSG = "Password and confirm password is not same";
-    public static final String REQUEST_MSG = "%s request with body: %s";
-    public static final String REQUEST_PARAM_MSG = "%s request with param: %s";
+    public static final String REQUEST_MSG = " Request details -> URL: '{}', body and params: '{}'";
+    public static final String RESPONSE_MSG = " Response details ->  Request URL: '{}', response body: '{}'";
     public static final String OTP_CONFIRMED_MSG = "User %s confirmed their OTP";
     public static final String NO_BODY_MSG = "No body required";
     public static final String DUPLICATE_ACCOUNT_NAME_MSG = "User %s has existing account %s";
@@ -90,7 +90,6 @@ public class MsgConstant {
     public static final String BLOG_UPDATED_MSG = "Blog updated: %s";
     public static final String BLOG_DELETED_MSG = "Blog deleted: %s";
     public static final String BLOG_NOT_FOUND_MSG = "Blog is not found: '%s'";
-    public static final String BLOG_WITH_PARAM = "%s blog with param: %s";
     public static final String PLAN_NOT_FOUND_MSG = "Plan is not found: '%s'";
     public static final String PLAN_CREATED_MSG = "Plan created: %s";
     public static final String PLAN_UPDATED_MSG = "Plan updated: %s";
