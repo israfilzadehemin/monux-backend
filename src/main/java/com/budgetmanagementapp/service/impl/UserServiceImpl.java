@@ -133,6 +133,16 @@ public class UserServiceImpl implements UserService {
         return UserMapper.INSTANCE.buildUserInfoResponseModel(user);
     }
 
+    @Override
+    public UserInfoRsModel updateUserLanguage(String username, String language) {
+        User user = userRepo.byUsername(username)
+                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+        user.setLanguage(language);
+        userRepo.save(user);
+
+        return UserMapper.INSTANCE.buildUserInfoResponseModel(user);
+    }
+
     private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
         return userRepo.byUsernameAndStatus(requestBody.getUsername(), STATUS_CONFIRMED)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));

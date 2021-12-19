@@ -2,6 +2,7 @@ package com.budgetmanagementapp.model.user;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -51,5 +52,12 @@ public class UserRsModel {
             dataType = "string",
             example = "paid")
     String paymentStatus;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModelProperty(
+            name = "language",
+            dataType = "string",
+            example = "az, en, ru")
+    String language;
 
 }
