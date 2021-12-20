@@ -14,7 +14,7 @@ import java.util.UUID;
 @Mapper
 public abstract class BannerMapper {
 
-    public static BannerMapper INSTANCE = Mappers.getMapper(BannerMapper.class);
+    public static BannerMapper BANNER_MAPPER_INSTANCE = Mappers.getMapper(BannerMapper.class);
 
     @Mappings({
             @Mapping(target = "title.az", source = "titleAz"),

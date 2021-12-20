@@ -18,7 +18,7 @@ import static com.budgetmanagementapp.utility.TransactionType.INCOME;
 @Mapper
 public abstract class TemplateMapper {
 
-    public static TemplateMapper INSTANCE = Mappers.getMapper(TemplateMapper.class);
+    public static final TemplateMapper TEMPLATE_MAPPER_INSTANCE = Mappers.getMapper(TemplateMapper.class);
 
     @Mappings({
             @Mapping(source = "template.templateId", target = "transactionId"),

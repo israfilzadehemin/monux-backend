@@ -11,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public abstract class OtpMapper {
 
-    public static OtpMapper INSTANCE = Mappers.getMapper(OtpMapper.class);
+    public static final OtpMapper OTP_MAPPER_INSTANCE = Mappers.getMapper(OtpMapper.class);
 
     @Mappings({
             @Mapping(source = "otp.status", target = "otpStatus"),

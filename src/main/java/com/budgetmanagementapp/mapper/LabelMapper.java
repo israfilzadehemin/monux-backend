@@ -10,7 +10,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public abstract class LabelMapper {
 
-    public static LabelMapper INSTANCE = Mappers.getMapper(LabelMapper.class);
+    public static final LabelMapper LABEL_MAPPER_INSTANCE = Mappers.getMapper(LabelMapper.class);
 
     @Mappings({
             @Mapping(source = "label.name", target = "labelName"),

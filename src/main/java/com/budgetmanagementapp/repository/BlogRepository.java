@@ -8,15 +8,9 @@ import java.util.Optional;
 
 public interface BlogRepository extends JpaRepository<Blog, Long> {
 
-    default Optional<Blog> byCreationDate(LocalDateTime creationDate){
-        return findByCreationDate(creationDate);
-    }
-
     default Optional<Blog> byBlogId(String blogId){
         return findBlogByBlogId(blogId);
     }
-
-    Optional<Blog> findByCreationDate(LocalDateTime creationDate);
 
     Optional<Blog> findBlogByBlogId(String blogId);
 }

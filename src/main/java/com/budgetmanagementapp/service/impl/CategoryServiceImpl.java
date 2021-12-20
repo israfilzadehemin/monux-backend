@@ -1,7 +1,9 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.CategoryMapper.CATEGORY_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
 import static com.budgetmanagementapp.utility.MsgConstant.ALL_CATEGORIES_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_BY_ID_TYPE_USER_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_CATEGORY_NAME_MSG;
@@ -14,7 +16,6 @@ import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.CategoryNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateCategoryException;
-import com.budgetmanagementapp.mapper.CategoryMapper;
 import com.budgetmanagementapp.model.category.CategoryRqModel;
 import com.budgetmanagementapp.model.category.CategoryRsModel;
 import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
@@ -43,20 +44,19 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryRsModel createCategory(CategoryRqModel requestBody, String username) {
         User user = userService.findByUsername(username);
         checkDuplicate(requestBody.getCategoryName(), user);
-        Category category = categoryRepo.save(
-                categoryBuilder.buildCategory(requestBody, user));
+        Category category = categoryRepo.save(categoryBuilder.buildCategory(requestBody, user));
 
-        log.info(format(CATEGORY_CREATED_MSG, user.getUsername(), CategoryMapper.INSTANCE.buildCategoryResponseModel(category)));
-        return CategoryMapper.INSTANCE.buildCategoryResponseModel(category);
+        log.info(CATEGORY_CREATED_MSG,
+                user.getUsername(), CATEGORY_MAPPER_INSTANCE.buildCategoryResponseModel(category));
+        return CATEGORY_MAPPER_INSTANCE.buildCategoryResponseModel(category);
     }
 
     @Override
     public List<CategoryRsModel> getCategoriesByUser(String username, boolean includeCommonCategories) {
         User user = userService.findByUsername(username);
-
         List<CategoryRsModel> categories = categoriesByUser(includeCommonCategories, user);
 
-        log.info(format(ALL_CATEGORIES_MSG, user.getUsername(), categories));
+        log.info(ALL_CATEGORIES_MSG, user.getUsername(), categories);
         return categories;
     }
 
@@ -65,18 +65,23 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryByIdAndUser(requestBody.getCategoryId(), username);
         updateCategoryValues(requestBody, category);
 
-        log.info(format(CATEGORY_UPDATED_MSG, username, CategoryMapper.INSTANCE.buildCategoryResponseModel(category)));
-        return CategoryMapper.INSTANCE.buildCategoryResponseModel(category);
+        var categoryRsModel = CATEGORY_MAPPER_INSTANCE.buildCategoryResponseModel(category);
+
+        log.info(CATEGORY_UPDATED_MSG, username, categoryRsModel);
+        return categoryRsModel;
     }
 
     @Override
     public Category byIdAndTypeAndUser(String categoryId, TransactionType type, User user) {
-        return categoryRepo
+        var category = categoryRepo
                 .byIdAndTypeAndUsers(
                         categoryId,
                         CategoryType.valueOf(type.name()).name(),
                         Arrays.asList(user, userService.findByUsername(COMMON_USERNAME)))
                 .orElseThrow(() -> new CategoryNotFoundException(format(INVALID_CATEGORY_ID_MSG, categoryId)));
+
+        log.info(CATEGORY_BY_ID_TYPE_USER_MSG, categoryId, type, user, category);
+        return category;
     }
 
     private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
@@ -103,16 +108,16 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     private List<CategoryRsModel> categoriesByUser(boolean includeCommonCategories, User user) {
-        User generalUser = userService.findByUsername(COMMON_USERNAME);
+        User commonUser = userService.findByUsername(COMMON_USERNAME);
 
         return includeCommonCategories
-                ? categoryRepo.allByUserOrGeneralUser(user, generalUser)
+                ? categoryRepo.allByUserOrGeneralUser(user, commonUser)
                 .stream()
-                .map(CategoryMapper.INSTANCE::buildCategoryResponseModel)
+                .map(CATEGORY_MAPPER_INSTANCE::buildCategoryResponseModel)
                 .collect(Collectors.toList())
                 : categoryRepo.allByUser(user)
                 .stream()
-                .map(CategoryMapper.INSTANCE::buildCategoryResponseModel)
+                .map(CATEGORY_MAPPER_INSTANCE::buildCategoryResponseModel)
                 .collect(Collectors.toList());
     }
 

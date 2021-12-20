@@ -9,7 +9,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public abstract class FeedbackMapper {
 
-    public static FeedbackMapper INSTANCE = Mappers.getMapper(FeedbackMapper.class);
+    public static FeedbackMapper FEEDBACK_MAPPER_INSTANCE = Mappers.getMapper(FeedbackMapper.class);
 
     @Mapping(source = "feedback.dateTime", target = "creationDateTime")
     public abstract FeedbackRsModel buildFeedbackResponseModel(Feedback feedback);

@@ -15,13 +15,13 @@ import java.util.UUID;
 @Mapper
 public abstract class BlogMapper {
 
-    public static BlogMapper INSTANCE = Mappers.getMapper(BlogMapper.class);
+    public static BlogMapper BLOG_MAPPER_INSTANCE = Mappers.getMapper(BlogMapper.class);
 
     @Mappings({
             @Mapping(target = "text", ignore = true),
             @Mapping(target = "title", ignore = true)
     })
-    public abstract BlogRsModel mapEntityToResponseModel(Blog blog);
+    public abstract BlogRsModel buildBlogResponseModel(Blog blog);
 
     @AfterMapping
     void setLanguageBasedFieldsToResponseModel(@MappingTarget BlogRsModel.BlogRsModelBuilder responseModel, Blog blog) {
@@ -43,7 +43,7 @@ public abstract class BlogMapper {
             @Mapping(target = "text", ignore = true),
             @Mapping(target = "title", ignore = true)
     })
-    public abstract BlogRsModel mapEntityToResponseModelWithLanguage(Blog blog, String language);
+    public abstract BlogRsModel buildBlogResponseModelWithLanguage(Blog blog, String language);
 
     @AfterMapping
     void mapLanguageBasedFields(@MappingTarget BlogRsModel.BlogRsModelBuilder response, Blog blog, String language) {

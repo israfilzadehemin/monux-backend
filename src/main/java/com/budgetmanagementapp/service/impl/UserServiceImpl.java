@@ -1,11 +1,17 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.*;
+import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
+import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
+import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_BODY;
+import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_SUBJECT;
+import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
+import static com.budgetmanagementapp.utility.Constant.STATUS_CONFIRMED;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_EQUALITY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USERNAME_NOT_UNIQUE_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_ADDED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_USERNAME;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_FULL_RESET_PASSWORD_URL;
 import static java.lang.String.format;
@@ -16,7 +22,14 @@ import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
 import com.budgetmanagementapp.mapper.UserMapper;
-import com.budgetmanagementapp.model.user.*;
+import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
+import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
+import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
+import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
+import com.budgetmanagementapp.model.user.SignupRqModel;
+import com.budgetmanagementapp.model.user.UserAuthModel;
+import com.budgetmanagementapp.model.user.UserInfoRsModel;
+import com.budgetmanagementapp.model.user.UserRsModel;
 import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.UserService;
@@ -24,7 +37,6 @@ import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.EncryptionTool;
 import com.budgetmanagementapp.utility.MailSenderService;
 import com.budgetmanagementapp.utility.SmsSenderService;
-
 import java.util.Optional;
 import java.util.Random;
 import javax.mail.MessagingException;
@@ -58,9 +70,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepo
+        var user = userRepo
                 .byUsernameAndStatus(username, STATUS_ACTIVE)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+
+        log.info(USER_BY_USERNAME, username, user);
+        return user;
     }
 
     @Override
@@ -105,12 +120,12 @@ public class UserServiceImpl implements UserService {
             CustomValidator.validateEmailFormat(username);
             mailSenderService
                     .sendEmail(username, RESET_PASSWORD_SUBJECT, format(RESET_PASSWORD_BODY,
-                            USER_FULL_RESET_PASSWORD_URL+encryptedUsername));
+                            USER_FULL_RESET_PASSWORD_URL + encryptedUsername));
         } else {
             CustomValidator.validatePhoneNumberFormat(username);
             smsSenderService
                     .sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY,
-                            USER_FULL_RESET_PASSWORD_URL+encryptedUsername));
+                            USER_FULL_RESET_PASSWORD_URL + encryptedUsername));
         }
         return UserMapper.INSTANCE.buildUserResponseModel(findByUsername(username));
     }

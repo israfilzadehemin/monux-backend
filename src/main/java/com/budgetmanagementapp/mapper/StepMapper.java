@@ -14,7 +14,7 @@ import java.util.UUID;
 @Mapper
 public abstract class StepMapper {
 
-    public static StepMapper INSTANCE = Mappers.getMapper(StepMapper.class);
+    public static final StepMapper STEP_MAPPER_INSTANCE = Mappers.getMapper(StepMapper.class);
 
     @Mappings({
             @Mapping(target = "title.az", source = "titleAz"),

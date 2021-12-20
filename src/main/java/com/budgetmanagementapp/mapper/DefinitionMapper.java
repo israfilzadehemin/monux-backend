@@ -14,7 +14,7 @@ import java.util.UUID;
 @Mapper
 public abstract class DefinitionMapper {
 
-    public static DefinitionMapper INSTANCE = Mappers.getMapper(DefinitionMapper.class);
+    public static DefinitionMapper DEFINITION_MAPPER_INSTANCE = Mappers.getMapper(DefinitionMapper.class);
 
     @Mappings({
             @Mapping(target = "title.az", source = "titleAz"),

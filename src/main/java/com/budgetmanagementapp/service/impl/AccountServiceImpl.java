@@ -1,37 +1,63 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.AccountMapper.ACCOUNT_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.CASH_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_BY_ID_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_BY_NAME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ALLOW_NEGATIVE_TOGGLED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_ACCOUNTS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_ACCOUNT_TYPES_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_CURRENCIES_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.BALANCE_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_BY_NAME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_ACCOUNT_NAME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INITIAL_ACCOUNT_EXISTING_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.NEGATIVE_BALANCE_NOT_ALLOWED;
+import static com.budgetmanagementapp.utility.MsgConstant.RATE_VALUE_EXCEPTION;
+import static com.budgetmanagementapp.utility.MsgConstant.SHOW_IN_SUM_TOGGLED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_ACCOUNT_MSG;
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 
 import com.budgetmanagementapp.builder.AccountBuilder;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.*;
-import com.budgetmanagementapp.mapper.AccountMapper;
-import com.budgetmanagementapp.model.account.*;
+import com.budgetmanagementapp.exception.AccountNotFoundException;
+import com.budgetmanagementapp.exception.AccountTypeNotFoundException;
+import com.budgetmanagementapp.exception.CurrencyNotFoundException;
+import com.budgetmanagementapp.exception.DuplicateAccountException;
+import com.budgetmanagementapp.exception.InitialAccountExistingException;
+import com.budgetmanagementapp.exception.NotEnoughBalanceException;
+import com.budgetmanagementapp.exception.TransferRateException;
+import com.budgetmanagementapp.model.account.AccountRqModel;
+import com.budgetmanagementapp.model.account.AccountRsModel;
+import com.budgetmanagementapp.model.account.AccountTypeRsModel;
+import com.budgetmanagementapp.model.account.CurrencyRsModel;
+import com.budgetmanagementapp.model.account.UpdateAccountModel;
+import com.budgetmanagementapp.model.account.UpdateBalanceModel;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CurrencyRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
-
+import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 @Service
 @Log4j2
@@ -53,13 +79,13 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = accountRepo.save(
                 accountBuilder.buildAccount(requestBody,
-                user,
-                getAccountType(requestBody.getAccountTypeName(), isInitialAccount),
-                getCurrency(requestBody.getCurrency()),
-                isInitialAccount));
+                        user,
+                        getAccountType(requestBody.getAccountTypeName(), isInitialAccount),
+                        getCurrency(requestBody.getCurrency()),
+                        isInitialAccount));
 
-        log.info(format(ACCOUNT_CREATED_MSG, user.getUsername(), AccountMapper.INSTANCE.buildAccountResponseModel(account)));
-        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
+        log.info(ACCOUNT_CREATED_MSG, user.getUsername(), ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account));
+        return ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -69,8 +95,8 @@ public class AccountServiceImpl implements AccountService {
         checkUpdateDuplicateAccount(requestBody.getNewAccountName(), user, account.getAccountId());
         updateAccountValues(requestBody, account);
 
-        log.info(format(ACCOUNT_UPDATED_MSG, username, AccountMapper.INSTANCE.buildAccountResponseModel(account)));
-        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
+        log.info(ACCOUNT_UPDATED_MSG, username, ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account));
+        return ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -79,8 +105,8 @@ public class AccountServiceImpl implements AccountService {
         checkNegativeBalance(account);
         toggleAllowNegativeValue(account);
 
-        log.info(format(ALLOW_NEGATIVE_TOGGLED_MSG, username, AccountMapper.INSTANCE.buildAccountResponseModel(account)));
-        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
+        log.info(ALLOW_NEGATIVE_TOGGLED_MSG, username, ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account));
+        return ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -88,8 +114,8 @@ public class AccountServiceImpl implements AccountService {
         Account account = byIdAndUser(accountId, userService.findByUsername(username));
         toggleShowInSumValue(account);
 
-        log.info(format(SHOW_IN_SUM_TOGGLED_MSG, username, AccountMapper.INSTANCE.buildAccountResponseModel(account)));
-        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
+        log.info(SHOW_IN_SUM_TOGGLED_MSG, username, ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account));
+        return ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account);
     }
 
     @Override
@@ -99,10 +125,10 @@ public class AccountServiceImpl implements AccountService {
         List<AccountRsModel> accounts =
                 accountRepo.allByUser(user)
                         .stream()
-                        .map(AccountMapper.INSTANCE::buildAccountResponseModel)
+                        .map(ACCOUNT_MAPPER_INSTANCE::buildAccountResponseModel)
                         .collect(Collectors.toList());
 
-        log.info(format(ALL_ACCOUNTS_MSG, user.getUsername(), accounts));
+        log.info(ALL_ACCOUNTS_MSG, user.getUsername(), accounts);
         return accounts;
     }
 
@@ -112,20 +138,21 @@ public class AccountServiceImpl implements AccountService {
         checkNegativeBalance(requestBody, account);
         updateBalanceValue(requestBody, account);
 
-        log.info(format(BALANCE_UPDATED_MSG, username, account.getName(), AccountMapper.INSTANCE.buildAccountResponseModel(account)));
-        return AccountMapper.INSTANCE.buildAccountResponseModel(account);
+        log.info(
+                BALANCE_UPDATED_MSG,
+                username, account.getName(), ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account));
+        return ACCOUNT_MAPPER_INSTANCE.buildAccountResponseModel(account);
     }
 
     @Transactional
     @Override
     public void updateBalance(BigDecimal amount, Map<String, Account> accounts) {
-
-        if (!Objects.isNull(accounts.get(SENDER_ACCOUNT))) {
+        if (!isNull(accounts.get(SENDER_ACCOUNT))) {
             accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount));
             accountRepo.save(accounts.get(SENDER_ACCOUNT));
         }
 
-        if (!Objects.isNull(accounts.get(RECEIVER_ACCOUNT))) {
+        if (!isNull(accounts.get(RECEIVER_ACCOUNT))) {
             accounts.get(RECEIVER_ACCOUNT).setBalance(accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount));
             accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
         }
@@ -134,16 +161,16 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public void updateBalanceByRate(BigDecimal amount, Double rate, Map<String, Account> accounts) {
-
         if (rate <= 0) throw new TransferRateException(RATE_VALUE_EXCEPTION);
 
-        if (!Objects.isNull(accounts.get(SENDER_ACCOUNT))) {
+        if (!isNull(accounts.get(SENDER_ACCOUNT))) {
             accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount));
             accountRepo.save(accounts.get(SENDER_ACCOUNT));
         }
 
-        if (!Objects.isNull(accounts.get(RECEIVER_ACCOUNT))) {
-            accounts.get(RECEIVER_ACCOUNT).setBalance(accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount.multiply(BigDecimal.valueOf(rate))));
+        if (!isNull(accounts.get(RECEIVER_ACCOUNT))) {
+            accounts.get(RECEIVER_ACCOUNT).setBalance(
+                    accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount.multiply(BigDecimal.valueOf(rate))));
             accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
         }
     }
@@ -151,13 +178,13 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public void updateBalanceForTransferDelete(BigDecimal amount, Double rate, Map<String, Account> accounts) {
-
-        if (!Objects.isNull(accounts.get(SENDER_ACCOUNT))) {
-            accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount.multiply(BigDecimal.valueOf(rate))));
+        if (!isNull(accounts.get(SENDER_ACCOUNT))) {
+            accounts.get(SENDER_ACCOUNT).setBalance(
+                    accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount.multiply(BigDecimal.valueOf(rate))));
             accountRepo.save(accounts.get(SENDER_ACCOUNT));
         }
 
-        if (!Objects.isNull(accounts.get(RECEIVER_ACCOUNT))) {
+        if (!isNull(accounts.get(RECEIVER_ACCOUNT))) {
             accounts.get(RECEIVER_ACCOUNT).setBalance(accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount));
             accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
         }
@@ -165,43 +192,53 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<AccountTypeRsModel> getAllAccountTypes() {
-        List<AccountTypeRsModel> response = accountTypeRepo.findAll().stream()
-                .map(AccountMapper.INSTANCE::buildAccountTypeResponseModel)
+        List<AccountTypeRsModel> response = accountTypeRepo.findAll()
+                .stream()
+                .map(ACCOUNT_MAPPER_INSTANCE::buildAccountTypeResponseModel)
                 .collect(Collectors.toList());
 
-        log.info(String.format(ALL_ACCOUNT_TYPES_MSG, response));
+        log.info(ALL_ACCOUNT_TYPES_MSG, response);
         return response;
     }
 
     @Override
     public List<CurrencyRsModel> getAllCurrencies() {
         List<CurrencyRsModel> response = currencyRepo.findAll().stream()
-                .map(AccountMapper.INSTANCE::buildCurrencyResponseModel)
+                .map(ACCOUNT_MAPPER_INSTANCE::buildCurrencyResponseModel)
                 .collect(Collectors.toList());
 
-        log.info(String.format(ALL_CURRENCIES_MSG, response));
+        log.info(ALL_CURRENCIES_MSG, response);
         return response;
     }
 
     @Override
     public Account byIdAndUser(String accountId, User user) {
-        return accountRepo
+        var account = accountRepo
                 .byIdAndUser(accountId, user)
                 .orElseThrow(() -> new AccountNotFoundException(
                         format(UNAUTHORIZED_ACCOUNT_MSG, user.getUsername(), accountId)));
+
+        log.info(ACCOUNT_BY_ID_MSG, accountId, account);
+        return account;
     }
 
-    private Currency getCurrency(String currency) {
-        return currencyRepo
-                .byName(currency)
-                .orElseThrow(() -> new CurrencyNotFoundException(format(CURRENCY_NOT_FOUND_MSG, currency)));
+    private Currency getCurrency(String currencyName) {
+        var currency = currencyRepo
+                .byName(currencyName)
+                .orElseThrow(() -> new CurrencyNotFoundException(format(CURRENCY_NOT_FOUND_MSG, currencyName)));
+
+        log.info(CURRENCY_BY_NAME_MSG, currencyName, currency);
+        return currency;
     }
 
     private AccountType getAccountType(String accountTypeName, boolean isInitialAccount) {
-        return accountTypeRepo
+        var accountType = accountTypeRepo
                 .byName(isInitialAccount ? CASH_ACCOUNT : accountTypeName)
                 .orElseThrow(() ->
                         new AccountTypeNotFoundException(format(ACCOUNT_TYPE_NOT_FOUND_MSG, accountTypeName)));
+
+        log.info(ACCOUNT_TYPE_BY_NAME_MSG, accountTypeName, accountType);
+        return accountType;
     }
 
     private void updateAccountValues(UpdateAccountModel requestBody, Account account) {
