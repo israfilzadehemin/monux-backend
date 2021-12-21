@@ -12,7 +12,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public abstract class AccountMapper {
 
-    public static AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);
+    public static AccountMapper ACCOUNT_MAPPER_INSTANCE = Mappers.getMapper(AccountMapper.class);
 
     @Mappings({
             @Mapping(target = "accountName", source = "name"),

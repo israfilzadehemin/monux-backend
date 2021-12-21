@@ -14,7 +14,7 @@ import java.util.UUID;
 @Mapper
 public abstract class ServiceMapper {
 
-    public static ServiceMapper INSTANCE = Mappers.getMapper(ServiceMapper.class);
+    public static final ServiceMapper SERVICE_MAPPER_INSTANCE = Mappers.getMapper(ServiceMapper.class);
 
     @Mappings({
             @Mapping(target = "title.az", source = "titleAz"),

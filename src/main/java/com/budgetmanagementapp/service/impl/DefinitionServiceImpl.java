@@ -1,23 +1,26 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.DefinitionMapper.DEFINITION_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_DEFINITIONS;
+import static com.budgetmanagementapp.utility.MsgConstant.DEFINITION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEFINITION_DELETED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEFINITION_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEFINITION_UPDATED_MSG;
+import static java.lang.String.format;
+
 import com.budgetmanagementapp.entity.Definition;
 import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DefinitionNotFoundException;
-import com.budgetmanagementapp.mapper.DefinitionMapper;
 import com.budgetmanagementapp.model.definition.DefinitionRqModel;
 import com.budgetmanagementapp.model.definition.DefinitionRsModel;
 import com.budgetmanagementapp.model.definition.UpdateDefinitionRqModel;
 import com.budgetmanagementapp.repository.DefinitionRepository;
 import com.budgetmanagementapp.service.DefinitionService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -28,17 +31,23 @@ public class DefinitionServiceImpl implements DefinitionService {
 
     @Override
     public List<DefinitionRsModel> getAllDefinitions(String language) {
-        return definitionRepo.findAll().stream()
-                .map(definition -> DefinitionMapper.INSTANCE.buildDefinitionRsModelWithLanguage(definition, language))
+        var definitions = definitionRepo.findAll()
+                .stream()
+                .map(definition -> DEFINITION_MAPPER_INSTANCE.buildDefinitionRsModelWithLanguage(definition, language))
                 .collect(Collectors.toList());
+
+        log.info(ALL_DEFINITIONS, definitions);
+        return definitions;
     }
 
     @Override
     public DefinitionRsModel createDefinition(DefinitionRqModel request) {
-        Definition definition = DefinitionMapper.INSTANCE.buildDefinition(request);
+        Definition definition = DEFINITION_MAPPER_INSTANCE.buildDefinition(request);
         definitionRepo.save(definition);
-        DefinitionRsModel response = DefinitionMapper.INSTANCE.buildDefinitionRsModel(definition);
-        log.info(format(DEFINITION_CREATED_MSG, response));
+
+        DefinitionRsModel response = DEFINITION_MAPPER_INSTANCE.buildDefinitionRsModel(definition);
+
+        log.info(DEFINITION_CREATED_MSG, response);
         return response;
     }
 
@@ -46,19 +55,19 @@ public class DefinitionServiceImpl implements DefinitionService {
     public DefinitionRsModel updateDefinition(UpdateDefinitionRqModel request) {
         Definition definition = findById(request.getDefinitionId());
         definition.setTitle(Translation.builder()
-                .az(request.getTitleAz())
-                .en(request.getTitleEn())
-                .ru(request.getTitleRu())
+                .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())
                 .build());
+
         definition.setText(Translation.builder()
-                .az(request.getTextAz())
-                .en(request.getTextEn())
-                .ru(request.getTextRu())
+                .az(request.getTextAz()).en(request.getTextEn()).ru(request.getTextRu())
                 .build());
+
         definition.setIcon(request.getIcon());
         definitionRepo.save(definition);
-        DefinitionRsModel response = DefinitionMapper.INSTANCE.buildDefinitionRsModel(definition);
-        log.info(format(DEFINITION_UPDATED_MSG, response));
+
+        DefinitionRsModel response = DEFINITION_MAPPER_INSTANCE.buildDefinitionRsModel(definition);
+
+        log.info(DEFINITION_UPDATED_MSG, response);
         return response;
     }
 
@@ -66,8 +75,10 @@ public class DefinitionServiceImpl implements DefinitionService {
     public DefinitionRsModel deleteDefinition(String definitionId) {
         Definition definition = findById(definitionId);
         definitionRepo.delete(definition);
-        DefinitionRsModel response = DefinitionMapper.INSTANCE.buildDefinitionRsModel(definition);
-        log.info(format(DEFINITION_DELETED_MSG, response));
+
+        DefinitionRsModel response = DEFINITION_MAPPER_INSTANCE.buildDefinitionRsModel(definition);
+
+        log.info(DEFINITION_DELETED_MSG, response);
         return response;
     }
 

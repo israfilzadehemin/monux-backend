@@ -14,7 +14,7 @@ import java.util.UUID;
 @Mapper
 public abstract class FeatureMapper {
 
-    public static FeatureMapper INSTANCE = Mappers.getMapper(FeatureMapper.class);
+    public static FeatureMapper FEATURE_MAPPER_INSTANCE = Mappers.getMapper(FeatureMapper.class);
 
     @Mappings({
             @Mapping(target = "content.az", source = "contentAz"),

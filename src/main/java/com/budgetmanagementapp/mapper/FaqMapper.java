@@ -14,7 +14,7 @@ import java.util.UUID;
 @Mapper
 public abstract class FaqMapper {
 
-    public static FaqMapper INSTANCE = Mappers.getMapper(FaqMapper.class);
+    public static FaqMapper FAQ_MAPPER_INSTANCE = Mappers.getMapper(FaqMapper.class);
 
     @Mappings({
             @Mapping(target = "question.az", source = "questionAz"),

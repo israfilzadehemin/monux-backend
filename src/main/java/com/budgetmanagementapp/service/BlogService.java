@@ -13,8 +13,6 @@ public interface BlogService {
 
     BlogRsModel getBlogById(String blogId, String language);
 
-    Blog getBlogByDate(String dateTime);
-
     BlogRsModel addBlog(BlogRqModel request);
 
     BlogRsModel updateBlog(UpdateBlogRqModel request);
