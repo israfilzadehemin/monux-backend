@@ -146,20 +146,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public void updateBalance(BigDecimal amount, Map<String, Account> accounts) {
-        if (!isNull(accounts.get(SENDER_ACCOUNT))) {
-            accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount));
-            accountRepo.save(accounts.get(SENDER_ACCOUNT));
-        }
-
-        if (!isNull(accounts.get(RECEIVER_ACCOUNT))) {
-            accounts.get(RECEIVER_ACCOUNT).setBalance(accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount));
-            accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
-        }
-    }
-
-    @Transactional
-    @Override
     public void updateBalanceByRate(BigDecimal amount, Double rate, Map<String, Account> accounts) {
         if (rate <= 0) throw new TransferRateException(RATE_VALUE_EXCEPTION);
 

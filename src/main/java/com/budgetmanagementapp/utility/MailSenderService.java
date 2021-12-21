@@ -1,6 +1,8 @@
 package com.budgetmanagementapp.utility;
 
 
+import static com.budgetmanagementapp.utility.MsgConstant.MESSAGES_SENT_MSG;
+
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class MailSenderService {
             helper.setFrom(addressFrom);
 
             mailSender.send(message);
+            log.info(MESSAGES_SENT_MSG, message);
         } catch (UnsupportedEncodingException e) {
             log.warn("UnsupportedEncodingException caught while message sending");
         }

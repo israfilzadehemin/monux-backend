@@ -140,5 +140,6 @@ public class MsgConstant {
     public static final String BANNER_DELETED_MSG = "Banner deleted: {}";
     public static final String TEMPLATE_BY_ID_USER_MSG = "Template by ID -> {}, user -> {}: {}";
     public static final String RATE_VALUE_EXCEPTION = "Rate can not be equal to or less than zero";
+    public static final String MESSAGES_SENT_MSG = "Message sent: {}";
 
 }

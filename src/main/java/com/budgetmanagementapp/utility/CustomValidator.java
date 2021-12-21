@@ -16,10 +16,13 @@ import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
 import com.budgetmanagementapp.model.account.AccountRqModel;
 import java.util.Arrays;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 @Component
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CustomValidator {
 
     public static void validateEmailFormat(String email) {

@@ -112,7 +112,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction transaction = transactionRepo.save(
                 transactionBuilder.buildTransaction(requestBody, user, account, category, labels, type));
-        accountService.updateBalance(requestBody.getAmount(), accounts);
+        accountService.updateBalanceByRate(requestBody.getAmount(), 1.0, accounts);
 
         InOutRsModel inOutRsModel = TRANSACTION_MAPPER_INSTANCE.buildInOutResponseModel(transaction);
         log.info(IN_OUT_TRANSACTION_CREATED_MSG, user.getUsername(), inOutRsModel);
@@ -163,7 +163,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         Transaction transaction = transactionRepo.save(
                 transactionBuilder.buildTransaction(requestBody, type, account, user));
-        accountService.updateBalance(requestBody.getAmount(), accounts);
+        accountService.updateBalanceByRate(requestBody.getAmount(), 1.0, accounts);
 
         DebtRsModel response = TRANSACTION_MAPPER_INSTANCE.buildDebtResponseModel(transaction);
         log.info(DEBT_TRANSACTION_CREATED_MSG, user.getUsername(), response);
@@ -196,8 +196,8 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         Transaction updatedTransaction = updateTransactionValues(requestBody, transaction, account, category, labels);
-        accountService.updateBalance(oldAmount, oldAccounts);
-        accountService.updateBalance(requestBody.getAmount(), newAccounts);
+        accountService.updateBalanceByRate(oldAmount, 1.0, oldAccounts);
+        accountService.updateBalanceByRate(requestBody.getAmount(), 1.0, newAccounts);
 
         InOutRsModel inOutRsModel = TRANSACTION_MAPPER_INSTANCE.buildInOutResponseModel(updatedTransaction);
         log.info(IN_OUT_TRANSACTION_UPDATED_MSG, user.getUsername(), inOutRsModel);
@@ -261,8 +261,8 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         Transaction updatedTransaction = updateTransactionValues(requestBody, account, transaction);
-        accountService.updateBalance(oldAmount, oldAccounts);
-        accountService.updateBalance(requestBody.getAmount(), newAccounts);
+        accountService.updateBalanceByRate(oldAmount, 1.0, oldAccounts);
+        accountService.updateBalanceByRate(requestBody.getAmount(), 1.0, newAccounts);
 
         DebtRsModel response = TRANSACTION_MAPPER_INSTANCE.buildDebtResponseModel(updatedTransaction);
         log.info(DEBT_TRANSACTION_UPDATED_MSG, user.getUsername(), response);

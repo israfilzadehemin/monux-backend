@@ -23,8 +23,6 @@ public interface AccountService {
 
     Account byIdAndUser(String accountId, User user);
 
-    void updateBalance(BigDecimal amount, Map<String, Account> accounts);
-
     void updateBalanceByRate(BigDecimal amount, Double rate, Map<String, Account> accounts);
 
     void updateBalanceForTransferDelete(BigDecimal amount, Double rate, Map<String, Account> accounts);
