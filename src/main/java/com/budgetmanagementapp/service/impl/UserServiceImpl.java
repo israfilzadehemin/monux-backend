@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.UserMapper.USER_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
 import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
 import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_BODY;
@@ -12,7 +13,9 @@ import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_UPDATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USERNAME_NOT_UNIQUE_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_ADDED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_USERNAME;
+import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_USERNAME_STATUS;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.USER_UPDATE_LANG_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.USER_FULL_RESET_PASSWORD_URL;
 import static java.lang.String.format;
 
@@ -21,7 +24,6 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
-import com.budgetmanagementapp.mapper.UserMapper;
 import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
 import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
 import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
@@ -95,22 +97,24 @@ public class UserServiceImpl implements UserService {
 
         if (signupRqModel.getUsername().contains("@")) {
             mailSenderService
-                    .sendEmail(signupRqModel.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
+                    .sendEmail(signupRqModel.getUsername(), OTP_CONFIRMATION_SUBJECT,
+                            format(OTP_CONFIRMATION_BODY, otp));
         } else {
             smsSenderService
-                    .sendMessage(signupRqModel.getUsername(), OTP_CONFIRMATION_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
+                    .sendMessage(signupRqModel.getUsername(), OTP_CONFIRMATION_SUBJECT,
+                            format(OTP_CONFIRMATION_BODY, otp));
         }
 
-        log.info(format(USER_ADDED_MSG, signupRqModel.getUsername()));
-        return UserMapper.INSTANCE.buildUserResponseModel(user);
+        log.info(USER_ADDED_MSG, signupRqModel.getUsername());
+        return USER_MAPPER_INSTANCE.buildUserResponseModel(user);
     }
 
     @Override
     public CreatePasswordRsModel createPassword(CreatePasswordRqModel requestBody) {
         User user = userByUsernameAndStatus(requestBody);
         updatePasswordAndStatusValues(requestBody.getPassword(), user);
-        log.info(format(PASSWORD_CREATED_MSG, user.getUsername()));
-        return UserMapper.INSTANCE.buildPasswordResponseModel(requestBody);
+        log.info(PASSWORD_CREATED_MSG, user.getUsername());
+        return USER_MAPPER_INSTANCE.buildPasswordResponseModel(requestBody);
     }
 
     @Override
@@ -127,7 +131,7 @@ public class UserServiceImpl implements UserService {
                     .sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY,
                             USER_FULL_RESET_PASSWORD_URL + encryptedUsername));
         }
-        return UserMapper.INSTANCE.buildUserResponseModel(findByUsername(username));
+        return USER_MAPPER_INSTANCE.buildUserResponseModel(findByUsername(username));
     }
 
     @Override
@@ -136,8 +140,8 @@ public class UserServiceImpl implements UserService {
         checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
         updatePassword(requestBody.getPassword(), user);
 
-        log.info(format(PASSWORD_UPDATED_MSG, user.getUsername()));
-        return UserMapper.INSTANCE.buildResetPasswordResponseModel(user.getUsername(), requestBody);
+        log.info(PASSWORD_UPDATED_MSG, user.getUsername());
+        return USER_MAPPER_INSTANCE.buildResetPasswordResponseModel(user.getUsername(), requestBody);
     }
 
     @Override
@@ -145,7 +149,10 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.byUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
 
-        return UserMapper.INSTANCE.buildUserInfoResponseModel(user);
+        UserInfoRsModel userInfoRsModel = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
+
+        log.info(USER_BY_USERNAME, username, userInfoRsModel);
+        return userInfoRsModel;
     }
 
     @Override
@@ -155,12 +162,18 @@ public class UserServiceImpl implements UserService {
         user.setLanguage(language);
         userRepo.save(user);
 
-        return UserMapper.INSTANCE.buildUserInfoResponseModel(user);
+        UserInfoRsModel userInfoRsModel = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
+
+        log.info(USER_UPDATE_LANG_MSG, userInfoRsModel);
+        return userInfoRsModel;
     }
 
     private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
-        return userRepo.byUsernameAndStatus(requestBody.getUsername(), STATUS_CONFIRMED)
+        User user = userRepo.byUsernameAndStatus(requestBody.getUsername(), STATUS_CONFIRMED)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
+
+        log.info(USER_BY_USERNAME_STATUS, requestBody.getUsername(), STATUS_CONFIRMED, user);
+        return user;
     }
 
     private void updatePasswordAndStatusValues(String password, User user) {

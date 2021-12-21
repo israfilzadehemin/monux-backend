@@ -123,7 +123,7 @@ public class TemplateServiceImpl implements TemplateService {
 
         InOutRsModel inOutRsModel = TEMPLATE_MAPPER_INSTANCE.buildInOutResponseModel(updatedTemplate);
 
-        log.info(format(IN_OUT_TEMPLATE_UPDATED_MSG, user.getUsername(), inOutRsModel));
+        log.info(IN_OUT_TEMPLATE_UPDATED_MSG, user.getUsername(), inOutRsModel);
         return inOutRsModel;
     }
 

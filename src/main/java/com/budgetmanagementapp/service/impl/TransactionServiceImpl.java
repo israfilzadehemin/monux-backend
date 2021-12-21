@@ -1,9 +1,27 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.TransactionMapper.TRANSACTION_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.ACCOUNT_ALL;
 import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DELETED_TRANSACTIONS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_BY_MONTHS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_BY_WEEKS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTIONS_BETWEEN_TIME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTIONS_USER_IDS;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_BY_ID_USER;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -12,6 +30,10 @@ import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
 import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 import static java.util.Collections.singletonMap;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.reducing;
+import static java.util.stream.Collectors.summingDouble;
+import static java.util.stream.Collectors.toList;
 
 import com.budgetmanagementapp.builder.TransactionBuilder;
 import com.budgetmanagementapp.entity.Account;
@@ -22,12 +44,17 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
-import com.budgetmanagementapp.mapper.TransactionMapper;
-import com.budgetmanagementapp.model.transaction.*;
-import com.budgetmanagementapp.model.transfer.TransferRqModel;
-import com.budgetmanagementapp.model.transfer.TransferRsModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
+import com.budgetmanagementapp.model.transaction.AmountListRsModel;
+import com.budgetmanagementapp.model.transaction.CategoryAmountListRsModel;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRsModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRsModel;
+import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import com.budgetmanagementapp.model.transfer.TransferRqModel;
+import com.budgetmanagementapp.model.transfer.TransferRsModel;
 import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.repository.TransactionRepository;
 import com.budgetmanagementapp.service.AccountService;
@@ -39,17 +66,19 @@ import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.PaginationTool;
 import com.budgetmanagementapp.utility.TransactionType;
-
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.MonthDay;
 import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.transaction.Transactional;
-
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Pageable;
@@ -85,9 +114,9 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionBuilder.buildTransaction(requestBody, user, account, category, labels, type));
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
-        InOutRsModel response = TransactionMapper.INSTANCE.buildInOutResponseModel(transaction);
-        log.info(format(IN_OUT_TRANSACTION_CREATED_MSG, user.getUsername(), response));
-        return response;
+        InOutRsModel inOutRsModel = TRANSACTION_MAPPER_INSTANCE.buildInOutResponseModel(transaction);
+        log.info(IN_OUT_TRANSACTION_CREATED_MSG, user.getUsername(), inOutRsModel);
+        return inOutRsModel;
     }
 
     @Override
@@ -115,9 +144,9 @@ public class TransactionServiceImpl implements TransactionService {
 
         accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), accounts);
 
-        TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(transaction);
-        log.info(format(TRANSFER_TRANSACTION_CREATED_MSG, user.getUsername(), response));
-        return response;
+        TransferRsModel transferRsModel = TRANSACTION_MAPPER_INSTANCE.buildTransferResponseModel(transaction);
+        log.info(TRANSFER_TRANSACTION_CREATED_MSG, user.getUsername(), transferRsModel);
+        return transferRsModel;
     }
 
     @Override
@@ -136,8 +165,8 @@ public class TransactionServiceImpl implements TransactionService {
                 transactionBuilder.buildTransaction(requestBody, type, account, user));
         accountService.updateBalance(requestBody.getAmount(), accounts);
 
-        DebtRsModel response = TransactionMapper.INSTANCE.buildDebtResponseModel(transaction);
-        log.info(format(DEBT_TRANSACTION_CREATED_MSG, user.getUsername(), response));
+        DebtRsModel response = TRANSACTION_MAPPER_INSTANCE.buildDebtResponseModel(transaction);
+        log.info(DEBT_TRANSACTION_CREATED_MSG, user.getUsername(), response);
         return response;
     }
 
@@ -170,9 +199,9 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
-        InOutRsModel response = TransactionMapper.INSTANCE.buildInOutResponseModel(updatedTransaction);
-        log.info(format(IN_OUT_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
-        return response;
+        InOutRsModel inOutRsModel = TRANSACTION_MAPPER_INSTANCE.buildInOutResponseModel(updatedTransaction);
+        log.info(IN_OUT_TRANSACTION_UPDATED_MSG, user.getUsername(), inOutRsModel);
+        return inOutRsModel;
     }
 
     @Override
@@ -205,9 +234,9 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalanceForTransferDelete(oldAmount, oldRate, oldAccounts);
         accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), newAccounts);
 
-        TransferRsModel response = TransactionMapper.INSTANCE.buildTransferResponseModel(updatedTransaction);
-        log.info(format(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
-        return response;
+        TransferRsModel transferRsModel = TRANSACTION_MAPPER_INSTANCE.buildTransferResponseModel(updatedTransaction);
+        log.info(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), transferRsModel);
+        return transferRsModel;
     }
 
     @Override
@@ -235,8 +264,8 @@ public class TransactionServiceImpl implements TransactionService {
         accountService.updateBalance(oldAmount, oldAccounts);
         accountService.updateBalance(requestBody.getAmount(), newAccounts);
 
-        DebtRsModel response = TransactionMapper.INSTANCE.buildDebtResponseModel(updatedTransaction);
-        log.info(format(DEBT_TRANSACTION_UPDATED_MSG, user.getUsername(), response));
+        DebtRsModel response = TRANSACTION_MAPPER_INSTANCE.buildDebtResponseModel(updatedTransaction);
+        log.info(DEBT_TRANSACTION_UPDATED_MSG, user.getUsername(), response);
         return response;
     }
 
@@ -260,10 +289,10 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
-                            .map(TransactionMapper.INSTANCE::buildGenericResponseModel)
-                            .collect(Collectors.toList());
+                            .map(TRANSACTION_MAPPER_INSTANCE::buildGenericResponseModel)
+                            .collect(toList());
 
-            log.info(String.format(ALL_TRANSACTIONS_MSG, username, response));
+            log.info(ALL_TRANSACTIONS_MSG, username, response);
             return response;
         }
     }
@@ -292,10 +321,10 @@ public class TransactionServiceImpl implements TransactionService {
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
-                            .map(TransactionMapper.INSTANCE::buildGenericResponseModel)
-                            .collect(Collectors.toList());
+                            .map(TRANSACTION_MAPPER_INSTANCE::buildGenericResponseModel)
+                            .collect(toList());
 
-            log.info(format(LAST_TRANSACTIONS_MSG, username, response));
+            log.info(LAST_TRANSACTIONS_MSG, username, response);
             return response;
         }
     }
@@ -320,33 +349,34 @@ public class TransactionServiceImpl implements TransactionService {
             accountService.updateBalanceForTransferDelete(tr.getAmount(), tr.getRate(), map);
 
             transactionRepo.deleteById(user, tr.getTransactionId());
-            return TransactionMapper.INSTANCE.buildGenericResponseModel(tr);
+            return TRANSACTION_MAPPER_INSTANCE.buildGenericResponseModel(tr);
 
-        }).collect(Collectors.toList());
+        }).collect(toList());
 
-        log.info(format(DELETED_TRANSACTIONS_MSG, user.getUsername(), response));
+        log.info(DELETED_TRANSACTIONS_MSG, user.getUsername(), response);
         return response;
     }
 
     @Override
     public AmountListRsModel getLastTransactionsByUserAndDateTimeForMonths(String username, LocalDateTime dateTime) {
         User user = userService.findByUsername(username);
-        List<Transaction> transactions = transactionRepo.byUserAndDateTime(user, dateTime.minusMonths(12), LocalDateTime.now());
+        List<Transaction> transactions =
+                transactionRepo.byUserAndDateTime(user, dateTime.minusMonths(12), LocalDateTime.now());
 
         List<Transaction> incomeTransactions = new ArrayList<>();
         List<Transaction> outgoingTransactions = new ArrayList<>();
         groupTransactions(transactions, incomeTransactions, outgoingTransactions);
 
         Map<YearMonth, Double> incomeAmountsByMonths = incomeTransactions.stream()
-                .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
+                .collect(groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
-                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                        summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
 
         Map<YearMonth, Double> outgoingAmountsByMonths = outgoingTransactions.stream()
-                .collect(Collectors.groupingBy(t -> YearMonth.from(t.getDateTime()),
+                .collect(groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
-                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                        summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
 
         AmountListRsModel response = AmountListRsModel.builder()
@@ -354,31 +384,32 @@ public class TransactionServiceImpl implements TransactionService {
                 .outgoing(outgoingAmountsByMonths)
                 .build();
 
-        log.info(format(LAST_TRANSACTIONS_BY_MONTHS_MSG, user.getUsername(), response));
+        log.info(LAST_TRANSACTIONS_BY_MONTHS_MSG, user.getUsername(), response);
         return response;
     }
 
     @Override
     public AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime) {
         User user = userService.findByUsername(username);
-        List<Transaction> transactions = transactionRepo.byUserAndDateTime(user, dateTime.minusWeeks(12), LocalDateTime.now());
+        List<Transaction> transactions =
+                transactionRepo.byUserAndDateTime(user, dateTime.minusWeeks(12), LocalDateTime.now());
 
         List<Transaction> incomeTransactions = new ArrayList<>();
         List<Transaction> outgoingTransactions = new ArrayList<>();
         groupTransactions(transactions, incomeTransactions, outgoingTransactions);
 
         Map<MonthDay, Double> incomeAmountsByWeeks = incomeTransactions.stream()
-                .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()
+                .collect(groupingBy(t -> MonthDay.from(t.getDateTime()
                                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
                         TreeMap::new,
-                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                        summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
 
         Map<MonthDay, Double> outgoingAmountsByWeeks = outgoingTransactions.stream()
-                .collect(Collectors.groupingBy(t -> MonthDay.from(t.getDateTime()
+                .collect(groupingBy(t -> MonthDay.from(t.getDateTime()
                                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
                         TreeMap::new,
-                        Collectors.summingDouble(t -> t.getAmount().doubleValue())))
+                        summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
 
         AmountListRsModel response = AmountListRsModel.builder()
@@ -386,7 +417,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .outgoing(outgoingAmountsByWeeks)
                 .build();
 
-        log.info(format(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response));
+        log.info(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response);
         return response;
     }
 
@@ -401,21 +432,18 @@ public class TransactionServiceImpl implements TransactionService {
         groupTransactions(transactions, incomeTransactions, outgoingTransactions);
 
         Map<String, BigDecimal> income = incomeTransactions.stream()
-                .collect(Collectors.groupingBy(t -> t.getCategory().getName(),
-                        Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
+                .collect(groupingBy(t -> t.getCategory().getName(),
+                        reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
 
         Map<String, BigDecimal> outgoing = outgoingTransactions.stream()
-                .collect(Collectors.groupingBy(t -> t.getCategory().getName(),
-                        Collectors.reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
+                .collect(groupingBy(t -> t.getCategory().getName(),
+                        reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
 
         CategoryAmountListRsModel response = CategoryAmountListRsModel.builder()
-                .dateTimeFrom(from)
-                .dateTimeTo(to)
-                .income(income)
-                .outgoing(outgoing)
+                .dateTimeFrom(from).dateTimeTo(to).income(income).outgoing(outgoing)
                 .build();
 
-        log.info(format(TRANSACTIONS_BETWEEN_TIME_MSG, user.getUsername(), response));
+        log.info(TRANSACTIONS_BETWEEN_TIME_MSG, user.getUsername(), response);
         return response;
     }
 
@@ -423,10 +451,12 @@ public class TransactionServiceImpl implements TransactionService {
                                    List<Transaction> incomeTransactions,
                                    List<Transaction> outgoingTransactions) {
         transactions.forEach(transaction -> {
-            if (getTransactionType(transaction.getType()).equals(INCOME))
+            if (getTransactionType(transaction.getType()).equals(INCOME)) {
                 incomeTransactions.add(transaction);
-            if (getTransactionType(transaction.getType()).equals(OUTGOING))
+            }
+            if (getTransactionType(transaction.getType()).equals(OUTGOING)) {
                 outgoingTransactions.add(transaction);
+            }
         });
     }
 
@@ -477,10 +507,13 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private Transaction transactionByIdAndUser(String transactionId, User user) {
-        return transactionRepo.byIdAndUser(transactionId, user)
+        Transaction transaction = transactionRepo.byIdAndUser(transactionId, user)
                 .orElseThrow(() ->
                         new TransactionNotFoundException(
                                 format(UNAUTHORIZED_TRANSACTION_MSG, user.getUsername(), transactionId)));
+
+        log.info(TRANSACTION_BY_ID_USER, transactionId, user, transaction);
+        return transaction;
     }
 
     private List<Transaction> transactionsByUserAndIdList(User user, List<String> transactionIds) {
@@ -489,8 +522,11 @@ public class TransactionServiceImpl implements TransactionService {
             throw new TransactionNotFoundException(
                     format(UNAUTHORIZED_TRANSACTION_MSG, user.getUsername(), transactionIds));
         }
+
+        log.info(TRANSACTIONS_USER_IDS, user, transactionIds, transactions);
         return transactions;
     }
+
 
     private TransactionType getTransactionType(String type) {
         CustomValidator.validateTransactionType(type);
