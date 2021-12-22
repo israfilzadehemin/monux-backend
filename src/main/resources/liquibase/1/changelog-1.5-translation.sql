@@ -8,9 +8,6 @@ create table translation
     translation_id varchar(255)
 );
 
-alter table translation
-    owner to postgres;
-
 --blog relations
 create table rel_blog_with_translation_text
 (
@@ -23,9 +20,6 @@ create table rel_blog_with_translation_text
             references blog
 );
 
-alter table rel_blog_with_translation_text
-    owner to postgres;
-
 create table rel_blog_with_translation_title
 (
     translation_id bigint
@@ -37,37 +31,28 @@ create table rel_blog_with_translation_title
             references blog
 );
 
-alter table rel_blog_with_translation_title
-    owner to postgres;
-
 --banner relations
 create table rel_banner_with_translation_text
 (
     translation_id bigint
         constraint fkqh8dtfe29j36lan1cr34q8as0
             references translation,
-    banner_id        bigint not null
+    banner_id      bigint not null
         primary key
         constraint fkqkcki38ixx165qhbnq5ufm76t
             references banner
 );
-
-alter table rel_banner_with_translation_text
-    owner to postgres;
 
 create table rel_banner_with_translation_title
 (
     translation_id bigint
         constraint fk658agjaeo8vx7lvvlq3p6oq51
             references translation,
-    banner_id        bigint not null
+    banner_id      bigint not null
         primary key
         constraint fkmv7gv5kujkfi1cb0r7lo67gbn
             references banner
 );
-
-alter table rel_banner_with_translation_title
-    owner to postgres;
 
 create table rel_definition_with_translation_text
 (
@@ -80,9 +65,6 @@ create table rel_definition_with_translation_text
             references definition
 );
 
-alter table rel_definition_with_translation_text
-    owner to postgres;
-
 create table rel_definition_with_translation_title
 (
     translation_id bigint
@@ -93,9 +75,6 @@ create table rel_definition_with_translation_title
         constraint fk2es1r968vnpwno4bopqv4nqvj
             references definition
 );
-
-alter table rel_definition_with_translation_title
-    owner to postgres;
 
 create table rel_faq_with_translation_answer
 (
@@ -108,9 +87,6 @@ create table rel_faq_with_translation_answer
             references faq
 );
 
-alter table rel_faq_with_translation_answer
-    owner to postgres;
-
 create table rel_faq_with_translation_question
 (
     translation_id bigint
@@ -121,9 +97,6 @@ create table rel_faq_with_translation_question
         constraint fk93910hn81k76mqumgd2ts1iix
             references faq
 );
-
-alter table rel_faq_with_translation_question
-    owner to postgres;
 
 create table rel_feature_with_translation
 (
@@ -136,9 +109,6 @@ create table rel_feature_with_translation
             references feature
 );
 
-alter table rel_feature_with_translation
-    owner to postgres;
-
 create table rel_plan_with_translation_text
 (
     translation_id bigint
@@ -149,9 +119,6 @@ create table rel_plan_with_translation_text
         constraint fkmwwepm2c1sv320rdyvsm9k4n1
             references plan
 );
-
-alter table rel_plan_with_translation_text
-    owner to postgres;
 
 create table rel_plan_with_translation_title
 (
@@ -164,9 +131,6 @@ create table rel_plan_with_translation_title
             references plan
 );
 
-alter table rel_plan_with_translation_title
-    owner to postgres;
-
 create table rel_service_with_translation_text
 (
     translation_id bigint
@@ -177,9 +141,6 @@ create table rel_service_with_translation_text
         constraint fkh1r12u2cjqdwdi9yhxxyegmk9
             references service
 );
-
-alter table rel_service_with_translation_text
-    owner to postgres;
 
 create table rel_service_with_translation_title
 (
@@ -192,9 +153,6 @@ create table rel_service_with_translation_title
             references service
 );
 
-alter table rel_service_with_translation_title
-    owner to postgres;
-
 create table rel_step_with_translation_text
 (
     translation_id bigint
@@ -206,9 +164,6 @@ create table rel_step_with_translation_text
             references step
 );
 
-alter table rel_step_with_translation_text
-    owner to postgres;
-
 create table rel_step_with_translation_title
 (
     translation_id bigint
@@ -219,8 +174,3 @@ create table rel_step_with_translation_title
         constraint fkp9kr4ap7pw2klm066htoinp3
             references step
 );
-
-alter table rel_step_with_translation_title
-    owner to postgres;
-
-
