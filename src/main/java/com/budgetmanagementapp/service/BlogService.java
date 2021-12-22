@@ -9,11 +9,9 @@ import java.util.List;
 
 public interface BlogService {
 
-    List<BlogRsModel> getAllBlogs();
+    List<BlogRsModel> getAllBlogs(String language);
 
-    BlogRsModel getBlogById(String blogId);
-
-    Blog getBlogByDate(String dateTime);
+    BlogRsModel getBlogById(String blogId, String language);
 
     BlogRsModel addBlog(BlogRqModel request);
 

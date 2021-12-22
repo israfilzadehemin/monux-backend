@@ -7,10 +7,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class CategoryMapper {
 
-    public static CategoryMapper INSTANCE = Mappers.getMapper(CategoryMapper.class);
+    public static CategoryMapper CATEGORY_MAPPER_INSTANCE = Mappers.getMapper(CategoryMapper.class);
 
     @Mappings({
             @Mapping(source = "category.name", target = "categoryName"),

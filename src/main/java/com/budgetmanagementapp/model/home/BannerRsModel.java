@@ -1,7 +1,10 @@
 package com.budgetmanagementapp.model.home;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -11,10 +14,30 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BannerRsModel {
-
+    @ApiModelProperty(
+            name = "bannerId",
+            dataType = "string")
     String bannerId;
-    String title;
-    String text;
+
+    @ApiModelProperty(
+            name = "title",
+            dataType = "string",
+            example = "Home Page")
+    Object title;
+
+    @ApiModelProperty(
+            name = "text",
+            dataType = "string")
+    Object text;
+
+    @ApiModelProperty(
+            name = "image",
+            dataType = "string")
     String image;
+
+    @ApiModelProperty(
+            name = "keyword",
+            dataType = "string",
+            example = "home")
     String keyword;
 }

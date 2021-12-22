@@ -1,6 +1,8 @@
 package com.budgetmanagementapp.model.user;
 
 import javax.validation.constraints.NotBlank;
+
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,10 +20,16 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SignupRqModel {
-
+    @ApiModelProperty(
+            name = "username",
+            dataType = "string",
+            example = "example@gmail.com")
     @NotBlank
     String username;
 
+    @ApiModelProperty(
+            name = "fullName",
+            dataType = "string")
     @NotBlank
     String fullName;
 }

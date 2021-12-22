@@ -23,4 +23,6 @@ public interface UserService {
     ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody);
 
     UserInfoRsModel userInfo(String username);
+
+    UserInfoRsModel updateUserLanguage(String username, String language);
 }

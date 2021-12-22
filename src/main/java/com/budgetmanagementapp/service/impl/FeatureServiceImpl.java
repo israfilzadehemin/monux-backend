@@ -1,24 +1,26 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.FeatureMapper.FEATURE_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_FEATURES_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.FEATURE_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.FEATURE_DELETED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.FEATURE_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.FEATURE_UPDATED_MSG;
+import static java.lang.String.format;
+
 import com.budgetmanagementapp.entity.Feature;
-import com.budgetmanagementapp.entity.Label;
-import com.budgetmanagementapp.entity.Plan;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.FeatureNotFoundException;
-import com.budgetmanagementapp.mapper.FeatureMapper;
 import com.budgetmanagementapp.model.feature.FeatureRqModel;
 import com.budgetmanagementapp.model.feature.FeatureRsModel;
 import com.budgetmanagementapp.model.feature.UpdateFeatureRqModel;
 import com.budgetmanagementapp.repository.FeatureRepository;
 import com.budgetmanagementapp.service.FeatureService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -28,28 +30,37 @@ public class FeatureServiceImpl implements FeatureService {
     private final FeatureRepository featureRepo;
 
     @Override
-    public List<FeatureRsModel> getAllFeatures() {
-        return featureRepo.findAll().stream()
-                .map(FeatureMapper.INSTANCE::buildFeatureResponseModel)
+    public List<FeatureRsModel> getAllFeatures(String language) {
+        var features = featureRepo.findAll().stream()
+                .map(feature -> FEATURE_MAPPER_INSTANCE.buildFeatureResponseModelWithLanguage(feature, language))
                 .collect(Collectors.toList());
+
+        log.info(ALL_FEATURES_MSG, features);
+        return features;
     }
 
     @Override
     public FeatureRsModel addFeature(FeatureRqModel request) {
-        Feature feature = FeatureMapper.INSTANCE.buildFeature(request);
+        Feature feature = FEATURE_MAPPER_INSTANCE.buildFeature(request);
         featureRepo.save(feature);
-        FeatureRsModel response = FeatureMapper.INSTANCE.buildFeatureResponseModel(feature);
-        log.info(format(FEATURE_CREATED_MSG, response));
+
+        FeatureRsModel response = FEATURE_MAPPER_INSTANCE.buildFeatureResponseModel(feature);
+
+        log.info(FEATURE_CREATED_MSG, response);
         return response;
     }
 
     @Override
     public FeatureRsModel updateFeature(UpdateFeatureRqModel request) {
         Feature feature = findById(request.getFeatureId());
-        feature.setContent(request.getContent());
+        feature.setContent(Translation.builder()
+                .az(request.getContentAz()).en(request.getContentEn()).ru(request.getContentRu())
+                .build());
         featureRepo.save(feature);
-        FeatureRsModel response = FeatureMapper.INSTANCE.buildFeatureResponseModel(feature);
-        log.info(format(FEATURE_UPDATED_MSG, response));
+
+        FeatureRsModel response = FEATURE_MAPPER_INSTANCE.buildFeatureResponseModel(feature);
+
+        log.info(FEATURE_UPDATED_MSG, response);
         return response;
     }
 
@@ -57,8 +68,10 @@ public class FeatureServiceImpl implements FeatureService {
     public FeatureRsModel deleteFeature(String featureId) {
         Feature feature = findById(featureId);
         featureRepo.delete(feature);
-        FeatureRsModel response = FeatureMapper.INSTANCE.buildFeatureResponseModel(feature);
-        log.info(format(FEATURE_DELETED_MSG, response));
+
+        FeatureRsModel response = FEATURE_MAPPER_INSTANCE.buildFeatureResponseModel(feature);
+
+        log.info(FEATURE_DELETED_MSG, response);
         return response;
     }
 

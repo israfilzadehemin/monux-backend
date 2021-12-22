@@ -5,9 +5,9 @@ import com.budgetmanagementapp.model.home.BannerRsModel;
 
 public interface BannerService {
 
-    BannerRsModel getBannerById(String bannerId);
+    BannerRsModel getBannerById(String bannerId, String language);
 
-    BannerRsModel getBannerByKeyword(String keyword);
+    BannerRsModel getBannerByKeyword(String keyword, String language);
 
     BannerRsModel createBanner(BannerRqModel request);
 

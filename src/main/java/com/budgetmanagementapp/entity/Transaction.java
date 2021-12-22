@@ -44,6 +44,9 @@ public class Transaction {
     @Column(name = "transaction_type")
     private String type;
 
+    @Column(name = "rate")
+    private Double rate;
+
     @ManyToOne
     @JoinTable(
             name = "rel_transaction_with_account_from",

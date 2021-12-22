@@ -6,10 +6,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class UserMapper {
 
-    public static UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+    public static UserMapper USER_MAPPER_INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mapping(source = "user.dateTime", target = "creationDateTime")
     public abstract UserRsModel buildUserResponseModel(User user);

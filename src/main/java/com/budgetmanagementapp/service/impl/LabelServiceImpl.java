@@ -1,8 +1,10 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.LabelMapper.LABEL_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
 import static com.budgetmanagementapp.utility.MsgConstant.ALL_LABELS_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_LABEL_NAME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.LABELS_BY_IDS_TYPE_USER_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.LABEL_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.LABEL_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.LABEL_UPDATED_MSG;
@@ -15,7 +17,6 @@ import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DuplicateLabelException;
 import com.budgetmanagementapp.exception.LabelNotFoundException;
-import com.budgetmanagementapp.mapper.LabelMapper;
 import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.LabelRsModel;
 import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
@@ -45,8 +46,9 @@ public class LabelServiceImpl implements LabelService {
         checkDuplicate(requestBody.getLabelName(), user);
         Label label = labelRepo.save(labelBuilder.buildLabel(requestBody, user));
 
-        log.info(format(LABEL_CREATED_MSG, user.getUsername(), LabelMapper.INSTANCE.buildLabelResponseModel(label)));
-        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
+        var labelRsModel = LABEL_MAPPER_INSTANCE.buildLabelResponseModel(label);
+        log.info(LABEL_CREATED_MSG, user.getUsername(), labelRsModel);
+        return labelRsModel;
     }
 
     @Override
@@ -60,7 +62,7 @@ public class LabelServiceImpl implements LabelService {
             throw new LabelNotFoundException(format(LABEL_NOT_FOUND_MSG, username));
         }
 
-        log.info(format(ALL_LABELS_MSG, user.getUsername(), labels));
+        log.info(ALL_LABELS_MSG, user.getUsername(), labels);
         return labels;
     }
 
@@ -69,8 +71,10 @@ public class LabelServiceImpl implements LabelService {
         Label label = byIdAndUser(requestBody.getLabelId(), username);
         updateLabelValues(requestBody, label);
 
-        log.info(format(LABEL_UPDATED_MSG, username, LabelMapper.INSTANCE.buildLabelResponseModel(label)));
-        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
+        var labelRsModel = LABEL_MAPPER_INSTANCE.buildLabelResponseModel(label);
+
+        log.info(LABEL_UPDATED_MSG, username, labelRsModel);
+        return labelRsModel;
     }
 
     @Override
@@ -78,17 +82,24 @@ public class LabelServiceImpl implements LabelService {
         Label label = byIdAndUser(labelId, username);
         toggleLabelVisibility(label);
 
-        log.info(format(VISIBILITY_TOGGLED_MSG, username, LabelMapper.INSTANCE.buildLabelResponseModel(label)));
-        return LabelMapper.INSTANCE.buildLabelResponseModel(label);
+        var labelRsModel = LABEL_MAPPER_INSTANCE.buildLabelResponseModel(label);
+
+        log.info(VISIBILITY_TOGGLED_MSG, username, labelRsModel);
+        return labelRsModel;
     }
 
     @Override
     public List<Label> allByIdsAndTypeAndUser(List<String> labelIds, String type, User user) {
-        return labelIds
+        var labels = labelIds
                 .stream()
                 .filter(id -> byIdAndTypeAndUser(id, type, user).isPresent())
                 .map(id -> byIdAndTypeAndUser(id, type, user).get())
                 .collect(Collectors.toList());
+
+        log.info(LABELS_BY_IDS_TYPE_USER_MSG, labelIds, type, user, labels);
+        return labels;
+
+
     }
 
     private User userByUsername(String username) {
@@ -99,11 +110,11 @@ public class LabelServiceImpl implements LabelService {
         return includeCommonLabels
                 ? labelRepo.allByUserOrGeneralUser(user, generalUser)
                 .stream()
-                .map(LabelMapper.INSTANCE::buildLabelResponseModel)
+                .map(LABEL_MAPPER_INSTANCE::buildLabelResponseModel)
                 .collect(Collectors.toList())
                 : labelRepo.allByUser(user)
                 .stream()
-                .map(LabelMapper.INSTANCE::buildLabelResponseModel)
+                .map(LABEL_MAPPER_INSTANCE::buildLabelResponseModel)
                 .collect(Collectors.toList());
     }
 

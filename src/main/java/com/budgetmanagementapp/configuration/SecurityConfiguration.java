@@ -5,6 +5,7 @@ import com.budgetmanagementapp.security.AuthenticationFilter;
 import com.budgetmanagementapp.security.AuthorizationFilter;
 import com.budgetmanagementapp.security.JwtService;
 import com.budgetmanagementapp.service.UserService;
+import com.budgetmanagementapp.utility.UserRole;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
@@ -55,6 +56,37 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, BANNER_GET_BANNER_BY_KEYWORD_URL).permitAll()
                 .antMatchers(HttpMethod.GET, FAQ_GET_ALL_FAQS_URL).permitAll()
                 .antMatchers(HttpMethod.GET, FAQ_GET_FAQ_BY_ID_URL).permitAll()
+
+                .antMatchers(HttpMethod.POST, BLOG_CREATE_BLOG_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, BLOG_UPDATE_BLOG_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, BLOG_DELETE_BLOG_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, PLAN_ADD_PLAN_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, PLAN_UPDATE_PLAN_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, PLAN_DELETE_PLAN_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, FEATURE_ADD_FEATURE).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, FEATURE_UPDATE_FEATURE).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, FEATURE_DELETE_FEATURE).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, DEFINITION_CREATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, DEFINITION_UPDATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, DEFINITION_DELETE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, FAQ_CREATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, FAQ_UPDATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, FAQ_DELETE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, STEP_CREATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, STEP_UPDATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, STEP_DELETE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, SERVICE_CREATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, SERVICE_UPDATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, SERVICE_DELETE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, BANNER_CREATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, BANNER_UPDATE_URL).hasRole(UserRole.ADMIN.getRoleName())
+                .antMatchers(HttpMethod.POST, BANNER_DELETE_URL).hasRole(UserRole.ADMIN.getRoleName())
+
+                .antMatchers("/swagger-ui.html/**").permitAll()
+                .antMatchers("/v2/api-docs/**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+
                 .anyRequest().authenticated();
 
         http

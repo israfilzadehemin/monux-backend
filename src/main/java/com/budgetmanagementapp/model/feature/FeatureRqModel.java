@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.model.feature;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -14,6 +15,22 @@ import javax.validation.constraints.NotBlank;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeatureRqModel {
+    @ApiModelProperty(
+            name = "contentAz",
+            dataType = "string")
     @NotBlank
-    String content;
+    String contentAz;
+
+    @ApiModelProperty(
+            name = "contentEn",
+            dataType = "string")
+    @NotBlank
+    String contentEn;
+
+    @ApiModelProperty(
+            name = "contentRu",
+            dataType = "string")
+    @NotBlank
+    String contentRu;
+
 }

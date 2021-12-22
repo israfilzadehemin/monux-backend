@@ -21,8 +21,12 @@ public class Feature {
     @Column(name = "feature_id")
     private String featureId;
 
-    @Column(name = "feature_content")
-    private String content;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_feature_with_translation",
+            joinColumns = {@JoinColumn(name = "feature_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation content;
 
     @ManyToMany(mappedBy = "features", fetch = FetchType.EAGER)
     private List<Plan> plans;

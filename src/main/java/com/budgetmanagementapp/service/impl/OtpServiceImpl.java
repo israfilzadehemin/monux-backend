@@ -43,8 +43,8 @@ public class OtpServiceImpl implements OtpService {
             User user = userByOtp(otp);
             updateOtpAndUserValues(otp, user);
 
-            log.info(format(OTP_CONFIRMED_MSG, otp.getUser().getUsername()));
-            return OtpMapper.INSTANCE.buildOtpResponseModel(otp, user);
+            log.info(OTP_CONFIRMED_MSG, otp.getUser().getUsername());
+            return OtpMapper.OTP_MAPPER_INSTANCE.buildOtpResponseModel(otp, user);
         } else {
             throw new InvalidOtpException(INVALID_OTP_MSG);
         }

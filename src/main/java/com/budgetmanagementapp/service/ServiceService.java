@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ServiceService {
 
-    List<ServiceRsModel> getAllServices();
+    List<ServiceRsModel> getAllServices(String language);
 
     ServiceRsModel createService(ServiceRqModel request);
 

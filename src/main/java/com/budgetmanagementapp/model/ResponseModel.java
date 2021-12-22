@@ -17,7 +17,12 @@ import org.springframework.http.HttpStatus;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ResponseModel {
+public class ResponseModel<T> {
     HttpStatus status;
-    Object body;
+    T body;
+
+    public static <T> ResponseModel<T> of(T data, HttpStatus status) {
+        return new ResponseModel<>(status, data);
+    }
+
 }

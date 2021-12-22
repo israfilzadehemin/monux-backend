@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
 
-@Mapper(componentModel = "spring")
+@Mapper
 public abstract class TransactionMapper {
 
-    public static TransactionMapper INSTANCE = Mappers.getMapper(TransactionMapper.class);
+    public static final TransactionMapper TRANSACTION_MAPPER_INSTANCE = Mappers.getMapper(TransactionMapper.class);
 
     @Mappings({
             @Mapping(target = "senderAccountId", ignore = true),

@@ -8,9 +8,9 @@ import java.util.List;
 
 public interface FaqService {
 
-    List<FaqRsModel> getAllFaqs();
+    List<FaqRsModel> getAllFaqs(String language);
 
-    FaqRsModel getFaqById(String faqId);
+    FaqRsModel getFaqById(String faqId, String language);
 
     FaqRsModel createFaq(FaqRqModel request);
 

@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: transaction-rate
+      author: Shafa
+      changes:
+        - sqlFile:
+            path: liquibase/1/changelog-1.4-transaction-rate.sql

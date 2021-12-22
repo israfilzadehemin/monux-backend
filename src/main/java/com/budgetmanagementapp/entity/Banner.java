@@ -20,11 +20,19 @@ public class Banner {
     @Column(name = "banner_id")
     private String bannerId;
 
-    @Column(name = "banner_title")
-    private String title;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_banner_with_translation_title",
+            joinColumns = {@JoinColumn(name = "banner_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation title;
 
-    @Column(name = "banner_text")
-    private String text;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "rel_banner_with_translation_text",
+            joinColumns = {@JoinColumn(name = "banner_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
+    private Translation text;
 
     @Column(name = "banner_image")
     private String image;

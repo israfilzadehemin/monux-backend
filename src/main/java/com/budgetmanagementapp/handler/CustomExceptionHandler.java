@@ -42,7 +42,9 @@ public class CustomExceptionHandler {
                 || exception instanceof TransferToSelfException
                 || exception instanceof NotEnoughBalanceException
                 || exception instanceof InvalidPhoneNumberException
-                || exception instanceof ResetPasswordException) {
+                || exception instanceof ResetPasswordException
+                || exception instanceof TransferRateException
+        ) {
             return handleException(exception, HttpStatus.BAD_REQUEST);
 
         } else if (exception instanceof UserRoleNotFoundException

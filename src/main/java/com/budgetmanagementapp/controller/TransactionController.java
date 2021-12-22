@@ -5,27 +5,55 @@ import static com.budgetmanagementapp.utility.Constant.SORT_BY_DATETIME;
 import static com.budgetmanagementapp.utility.Constant.SORT_DIR_DESC;
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
-import static java.lang.String.format;
+import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
+import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
+import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
+import static com.budgetmanagementapp.utility.TransactionType.INCOME;
+import static com.budgetmanagementapp.utility.TransactionType.OUTGOING;
+import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_IN_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_DEBT_OUT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_INCOME_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_OUTGOING_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_CREATE_TRANSFER_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_DELETE_TRANSACTIONS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_ALL_TRANSACTIONS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_LAST_TRANSACTIONS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_TRANSACTIONS_BETWEEN_TIME_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_DEBT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_IN_OUT_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_UPDATE_TRANSFER_URL;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
-import com.budgetmanagementapp.model.transaction.DebtRqModel;
-import com.budgetmanagementapp.model.transaction.DeleteTransactionRqModel;
-import com.budgetmanagementapp.model.transaction.InOutRqModel;
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.transaction.TransactionDateRqModel;
-import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
+import com.budgetmanagementapp.model.transaction.AmountListRsModel;
+import com.budgetmanagementapp.model.transaction.CategoryAmountListRsModel;
+import com.budgetmanagementapp.model.transaction.DebtRqModel;
+import com.budgetmanagementapp.model.transaction.DebtRsModel;
+import com.budgetmanagementapp.model.transaction.DeleteTransactionRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRqModel;
+import com.budgetmanagementapp.model.transaction.InOutRsModel;
+import com.budgetmanagementapp.model.transaction.TransactionDateRqModel;
+import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import com.budgetmanagementapp.model.transfer.TransferRqModel;
+import com.budgetmanagementapp.model.transfer.TransferRsModel;
 import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.service.TransactionService;
-import com.budgetmanagementapp.utility.TransactionType;
-
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,233 +66,229 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @AllArgsConstructor
 @Log4j2
+@Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Transaction")
 public class TransactionController {
-
-    private final TransactionService transactionService;
 
     private static final String REQUEST_PARAM_ACCOUNT_ID = "account-id";
     private static final String REQUEST_PARAM_TRANSACTION_COUNT = "transaction-count";
+    private final TransactionService transactionService;
 
+    @ApiOperation("Create income transaction")
     @PostMapping(TRANSACTION_CREATE_INCOME_URL)
-    public ResponseEntity<?> createIncomeTransaction(@RequestBody @Valid InOutRqModel requestBody,
-                                                     Authentication auth) {
+    public ResponseEntity<ResponseModel<TransactionRsModel>> createIncomeTransaction(
+            @RequestBody @Valid InOutRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_INCOME_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
-                                requestBody,
-                                TransactionType.INCOME,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_CREATE_INCOME_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.createTransaction(
+                        requestBody, INCOME, ((UserDetails) auth.getPrincipal()).getUsername()),
+                CREATED);
 
+        log.info(RESPONSE_MSG, TRANSACTION_CREATE_INCOME_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Create outgoing transaction")
     @PostMapping(TRANSACTION_CREATE_OUTGOING_URL)
-    public ResponseEntity<?> createOutcomeTransaction(@RequestBody @Valid InOutRqModel requestBody,
-                                                      Authentication auth) {
+    public ResponseEntity<?> createOutgoingTransaction(
+            @RequestBody @Valid InOutRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_OUTGOING_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
-                                requestBody,
-                                TransactionType.OUTGOING,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_CREATE_OUTGOING_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.createTransaction(
+                        requestBody, OUTGOING, ((UserDetails) auth.getPrincipal()).getUsername()),
+                CREATED);
 
+        log.info(RESPONSE_MSG, TRANSACTION_CREATE_OUTGOING_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Create transfer transaction")
     @PostMapping(TRANSACTION_CREATE_TRANSFER_URL)
-    public ResponseEntity<?> createTransferTransaction(@RequestBody @Valid TransferRqModel requestBody,
-                                                       Authentication auth) {
+    public ResponseEntity<ResponseModel<TransferRsModel>> createTransferTransaction(
+            @RequestBody @Valid TransferRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_TRANSFER_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
-                                requestBody,
-                                TransactionType.TRANSFER,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_CREATE_TRANSFER_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.createTransaction(
+                        requestBody, TRANSFER, ((UserDetails) auth.getPrincipal()).getUsername()),
+                CREATED);
 
+        log.info(RESPONSE_MSG, TRANSACTION_CREATE_TRANSFER_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Create debt in transaction")
     @PostMapping(TRANSACTION_CREATE_DEBT_IN_URL)
-    public ResponseEntity<?> createDebtInTransaction(@RequestBody @Valid DebtRqModel requestBody,
-                                                     Authentication auth) {
+    public ResponseEntity<ResponseModel<DebtRsModel>> createDebtInTransaction(
+            @RequestBody @Valid DebtRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_IN_URL, requestBody));
+        log.info(REQUEST_MSG, TRANSACTION_CREATE_DEBT_IN_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.createTransaction(
+                        requestBody, DEBT_IN, ((UserDetails) auth.getPrincipal()).getUsername()),
+                CREATED);
 
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
-                                requestBody,
-                                TransactionType.DEBT_IN,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
-
+        log.info(RESPONSE_MSG, TRANSACTION_CREATE_DEBT_IN_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Create debt out transaction")
     @PostMapping(TRANSACTION_CREATE_DEBT_OUT_URL)
-    public ResponseEntity<?> createDebtOutTransaction(@RequestBody @Valid DebtRqModel requestBody,
-                                                      Authentication auth) {
+    public ResponseEntity<ResponseModel<DebtRsModel>> createDebtOutTransaction(
+            @RequestBody @Valid DebtRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_CREATE_DEBT_OUT_URL, requestBody));
+        log.info(REQUEST_MSG, TRANSACTION_CREATE_DEBT_OUT_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.createTransaction(
+                        requestBody, DEBT_OUT, ((UserDetails) auth.getPrincipal()).getUsername()),
+                CREATED);
 
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.CREATED)
-                        .body(transactionService.createTransaction(
-                                requestBody,
-                                TransactionType.DEBT_OUT,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
-
+        log.info(RESPONSE_MSG, TRANSACTION_CREATE_DEBT_OUT_URL, response);
+        return ResponseEntity.ok(response);
     }
 
-
+    @ApiOperation("Delete transactions")
     @PostMapping(TRANSACTION_DELETE_TRANSACTIONS_URL)
-    public ResponseEntity<?> deleteTransactions(@RequestBody @Valid DeleteTransactionRqModel requestBody,
-                                                Authentication auth) {
-        log.info(format(REQUEST_MSG, TRANSACTION_DELETE_TRANSACTIONS_URL, requestBody));
+    public ResponseEntity<ResponseModel<List<TransactionRsModel>>> deleteTransactions(
+            @RequestBody @Valid DeleteTransactionRqModel requestBody, Authentication auth) {
 
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.deleteTransactionById(
-                                ((UserDetails) auth.getPrincipal()).getUsername(),
-                                requestBody.getTransactionIds()))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_DELETE_TRANSACTIONS_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.deleteTransactionById(
+                        ((UserDetails) auth.getPrincipal()).getUsername(), requestBody.getTransactionIds()),
+                OK);
 
+        log.info(RESPONSE_MSG, TRANSACTION_DELETE_TRANSACTIONS_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Get all transactions")
     @GetMapping(TRANSACTION_GET_ALL_TRANSACTIONS_URL)
-    public ResponseEntity<?> getAllTransactions(Authentication auth,
-                                                @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID)
-                                                        Optional<String> accountId) {
+    public ResponseEntity<ResponseModel<List<TransactionRsModel>>> getAllTransactions(
+            Authentication auth,
+            @ApiParam(name = REQUEST_PARAM_ACCOUNT_ID, type = "string", example = "500de72f-7e...", required = true)
+            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) Optional<String> accountId) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_GET_ALL_TRANSACTIONS_URL, NO_BODY_MSG));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.getAllTransactionsByUserAndAccount(
-                                ((UserDetails) auth.getPrincipal()).getUsername(),
-                                accountId.orElse(ACCOUNT_ALL)))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_GET_ALL_TRANSACTIONS_URL, accountId);
+        var response = ResponseModel.of(
+                transactionService.getAllTransactionsByUserAndAccount(
+                        ((UserDetails) auth.getPrincipal()).getUsername(), accountId.orElse(ACCOUNT_ALL)),
+                OK);
+
+        log.info(RESPONSE_MSG, TRANSACTION_GET_ALL_TRANSACTIONS_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Get last transactions by months")
     @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL)
-    public ResponseEntity<?> getLastTransactionsForMonths(Authentication auth) {
+    public ResponseEntity<ResponseModel<AmountListRsModel>> getLastTransactionsForMonths(Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, NO_BODY_MSG));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.getLastTransactionsByUserAndDateTimeForMonths(
-                                ((UserDetails) auth.getPrincipal()).getUsername(),
-                                LocalDateTime.now()))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, NO_BODY_MSG);
+        var response = ResponseModel.of(
+                transactionService.getLastTransactionsByUserAndDateTimeForMonths(
+                        ((UserDetails) auth.getPrincipal()).getUsername(), LocalDateTime.now()),
+                OK);
+
+        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Get last transactions by weeks")
     @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL)
-    public ResponseEntity<?> getLastTransactionsForWeeks(Authentication auth) {
+    public ResponseEntity<ResponseModel<AmountListRsModel>> getLastTransactionsForWeeks(Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, NO_BODY_MSG));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.getLastTransactionsByUserAndDateTimeForWeeks(
-                                ((UserDetails) auth.getPrincipal()).getUsername(),
-                                LocalDateTime.now()))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, NO_BODY_MSG);
+        var response = ResponseModel.of(
+                transactionService.getLastTransactionsByUserAndDateTimeForWeeks(
+                        ((UserDetails) auth.getPrincipal()).getUsername(), LocalDateTime.now()),
+                OK);
+
+
+        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Get transactions between time period by category")
     @PostMapping(TRANSACTION_TRANSACTIONS_BETWEEN_TIME_URL)
-    public ResponseEntity<?> transactionsBetweenTimeByCategory(@RequestBody @Valid TransactionDateRqModel requestBody,
-                                                               Authentication auth) {
+    public ResponseEntity<ResponseModel<CategoryAmountListRsModel>> transactionsBetweenTimeByCategory(
+            @RequestBody @Valid TransactionDateRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, requestBody));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.transactionsBetweenTimeByCategory(((UserDetails) auth.getPrincipal()).getUsername(),
-                                requestBody.getDateTimeFrom(), requestBody.getDateTimeTo()))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.transactionsBetweenTimeByCategory(
+                        ((UserDetails) auth.getPrincipal()).getUsername(),
+                        requestBody.getDateTimeFrom(),
+                        requestBody.getDateTimeTo()),
+                OK);
+
+        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Get last transactions with pagination")
     @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_URL)
-    public ResponseEntity<?> getLastTransactions(Authentication auth,
-                                                 @RequestParam(name = REQUEST_PARAM_TRANSACTION_COUNT)
-                                                         Optional<Integer> transactionCount,
-                                                 @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID)
-                                                         Optional<String> accountId,
-                                                 Optional<String> sortBy, Optional<String> sortDirection) {
+    public ResponseEntity<ResponseModel<List<TransactionRsModel>>> getLastTransactions(
+            Authentication auth,
+            @RequestParam(name = REQUEST_PARAM_TRANSACTION_COUNT) Optional<Integer> transactionCount,
+            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) Optional<String> accountId,
+            Optional<String> sortBy,
+            Optional<String> sortDirection) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_URL, NO_BODY_MSG));
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.getLastTransactionsByUserAndAccount(
-                                ((UserDetails) auth.getPrincipal()).getUsername(),
-                                accountId.orElse(ACCOUNT_ALL),
-                                1,
-                                transactionCount.orElse(1),
-                                sortBy.orElse(SORT_BY_DATETIME),
-                                sortDirection.orElse(SORT_DIR_DESC)))
-                        .build());
+        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_URL, accountId);
+        var response = ResponseModel.of(
+                transactionService.getLastTransactionsByUserAndAccount(
+                        ((UserDetails) auth.getPrincipal()).getUsername(),
+                        accountId.orElse(ACCOUNT_ALL),
+                        1,
+                        transactionCount.orElse(1),
+                        sortBy.orElse(SORT_BY_DATETIME),
+                        sortDirection.orElse(SORT_DIR_DESC)), OK);
+
+        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Update income and outgoing transactions")
     @PostMapping(TRANSACTION_UPDATE_IN_OUT_URL)
-    public ResponseEntity<?> updateInOutTransaction(@RequestBody @Valid UpdateInOutRqModel requestBody,
-                                                    Authentication auth) {
+    public ResponseEntity<ResponseModel<InOutRsModel>> updateInOutTransaction(
+            @RequestBody @Valid UpdateInOutRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_IN_OUT_URL, requestBody));
+        log.info(REQUEST_MSG, TRANSACTION_UPDATE_IN_OUT_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.updateTransaction(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
+                OK);
 
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.updateTransaction(
-                                requestBody,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
-
+        log.info(RESPONSE_MSG, TRANSACTION_UPDATE_IN_OUT_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Update transfer transaction")
     @PostMapping(TRANSACTION_UPDATE_TRANSFER_URL)
-    public ResponseEntity<?> updateTransferTransaction(@RequestBody @Valid UpdateTransferRqModel requestBody,
-                                                       Authentication auth) {
+    public ResponseEntity<ResponseModel<TransferRsModel>> updateTransferTransaction(
+            @RequestBody @Valid UpdateTransferRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_TRANSFER_URL, requestBody));
+        log.info(REQUEST_MSG, TRANSACTION_UPDATE_TRANSFER_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.updateTransaction(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
+                OK);
 
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.updateTransaction(
-                                requestBody,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
-
+        log.info(RESPONSE_MSG, TRANSACTION_UPDATE_TRANSFER_URL, response);
+        return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Update debt in or out transaction")
     @PostMapping(TRANSACTION_UPDATE_DEBT_URL)
-    public ResponseEntity<?> updateDebtTransaction(@RequestBody @Valid UpdateDebtRqModel requestBody,
-                                                   Authentication auth) {
+    public ResponseEntity<ResponseModel<DebtRsModel>> updateDebtTransaction(
+            @RequestBody @Valid UpdateDebtRqModel requestBody, Authentication auth) {
 
-        log.info(format(REQUEST_MSG, TRANSACTION_UPDATE_DEBT_URL, requestBody));
+        log.info(REQUEST_MSG, TRANSACTION_UPDATE_DEBT_URL, requestBody);
+        var response = ResponseModel.of(
+                transactionService.updateTransaction(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
+                OK);
 
-        return ResponseEntity.ok(
-                ResponseModel.builder()
-                        .status(HttpStatus.OK)
-                        .body(transactionService.updateTransaction(
-                                requestBody,
-                                ((UserDetails) auth.getPrincipal()).getUsername()))
-                        .build());
-
+        log.info(RESPONSE_MSG, TRANSACTION_UPDATE_DEBT_URL, response);
+        return ResponseEntity.ok(response);
     }
 
 }

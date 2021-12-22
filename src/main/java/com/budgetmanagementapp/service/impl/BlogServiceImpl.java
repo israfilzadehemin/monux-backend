@@ -1,23 +1,28 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.BlogMapper.BLOG_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_BLOGS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.BLOG_BY_ID_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.BLOG_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.BLOG_DELETED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.BLOG_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.BLOG_UPDATED_MSG;
+import static java.lang.String.format;
+
 import com.budgetmanagementapp.entity.Blog;
+import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.BlogNotFoundException;
-import com.budgetmanagementapp.mapper.BlogMapper;
 import com.budgetmanagementapp.model.blog.BlogRqModel;
 import com.budgetmanagementapp.model.blog.BlogRsModel;
 import com.budgetmanagementapp.model.blog.UpdateBlogRqModel;
 import com.budgetmanagementapp.repository.BlogRepository;
 import com.budgetmanagementapp.service.BlogService;
 import com.budgetmanagementapp.utility.CustomFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -27,42 +32,52 @@ public class BlogServiceImpl implements BlogService {
     private final BlogRepository blogRepo;
 
     @Override
-    public List<BlogRsModel> getAllBlogs() {
-        return blogRepo.findAll().stream()
-                .map(BlogMapper.INSTANCE::buildBlogResponseModel)
+    public List<BlogRsModel> getAllBlogs(String language) {
+        var allBlogs = blogRepo.findAll()
+                .stream()
+                .map(blog -> BLOG_MAPPER_INSTANCE.buildBlogResponseModelWithLanguage(blog, language))
                 .collect(Collectors.toList());
+
+        log.info(ALL_BLOGS_MSG, allBlogs);
+        return allBlogs;
     }
 
     @Override
-    public BlogRsModel getBlogById(String blogId) {
-        return BlogMapper.INSTANCE.buildBlogResponseModel(blogById(blogId));
-    }
+    public BlogRsModel getBlogById(String blogId, String language) {
+        var blog = BLOG_MAPPER_INSTANCE.buildBlogResponseModelWithLanguage(blogById(blogId), language);
 
-    @Override
-    public Blog getBlogByDate(String dateTime) {
-        return blogRepo.findByCreationDate(CustomFormatter.stringToLocalDateTime(dateTime))
-                .orElseThrow( () -> new BlogNotFoundException(format(BLOG_NOT_FOUND_MSG, dateTime)));
+        log.info(BLOG_BY_ID_MSG, blogId, blog);
+        return blog;
     }
 
     @Override
     public BlogRsModel addBlog(BlogRqModel request) {
-        Blog blog = BlogMapper.INSTANCE.buildBlog(request);
+        Blog blog = BLOG_MAPPER_INSTANCE.buildBlog(request);
         blogRepo.save(blog);
-        BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
-        log.info(format(BLOG_CREATED_MSG, response));
+
+        BlogRsModel response = BLOG_MAPPER_INSTANCE.buildBlogResponseModel(blog);
+
+        log.info(BLOG_CREATED_MSG, response);
         return response;
     }
 
     @Override
     public BlogRsModel updateBlog(UpdateBlogRqModel request) {
         Blog blog = blogById(request.getBlogId());
-        blog.setTitle(request.getTitle());
-        blog.setText(request.getText());
+        blog.setTitle(Translation.builder()
+                .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())
+                .build());
+
+        blog.setText(Translation.builder()
+                .az(request.getTextAz()).en(request.getTextEn()).ru(request.getTextRu())
+                .build());
+
         blog.setImage(request.getImage());
         blog.setUpdateDate(CustomFormatter.stringToLocalDateTime(request.getUpdateDate()));
         blogRepo.save(blog);
-        BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
-        log.info(format(BLOG_UPDATED_MSG, response));
+
+        BlogRsModel response = BLOG_MAPPER_INSTANCE.buildBlogResponseModel(blog);
+        log.info(BLOG_UPDATED_MSG, response);
         return response;
     }
 
@@ -70,14 +85,16 @@ public class BlogServiceImpl implements BlogService {
     public BlogRsModel deleteBlog(String blogId) {
         Blog blog = blogById(blogId);
         blogRepo.delete(blog);
-        BlogRsModel response = BlogMapper.INSTANCE.buildBlogResponseModel(blog);
-        log.info(format(BLOG_DELETED_MSG, response));
+
+        BlogRsModel response = BLOG_MAPPER_INSTANCE.buildBlogResponseModel(blog);
+
+        log.info(BLOG_DELETED_MSG, response);
         return response;
     }
 
     public Blog blogById(String blogId) {
         return blogRepo.byBlogId(blogId)
-                .orElseThrow( () -> new BlogNotFoundException(format(BLOG_NOT_FOUND_MSG, blogId)));
+                .orElseThrow(() -> new BlogNotFoundException(format(BLOG_NOT_FOUND_MSG, blogId)));
     }
 
 }
