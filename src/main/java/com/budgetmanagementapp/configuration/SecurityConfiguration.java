@@ -35,6 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http
+                .cors().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST, USER_LOGIN_URL).permitAll()
                 .antMatchers(HttpMethod.POST, USER_SIGNUP_URL).permitAll()
