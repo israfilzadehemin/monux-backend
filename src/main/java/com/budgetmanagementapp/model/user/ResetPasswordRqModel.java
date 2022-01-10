@@ -28,4 +28,11 @@ public class ResetPasswordRqModel {
     @NotBlank
     @Size(min = 5)
     String confirmPassword;
+
+    @ApiModelProperty(
+            name = "OTP",
+            dataType = "string")
+    @NotBlank
+    @Size(min = 5, max = 5)
+    String otp;
 }

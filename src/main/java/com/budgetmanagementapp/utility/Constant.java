@@ -23,8 +23,8 @@ public class Constant {
     public static final String SAVING_ACCOUNT = "savingAccount";
     public static final String OTP_CONFIRMATION_SUBJECT = "Confirmation code for your account";
     public static final String OTP_CONFIRMATION_BODY = "Your confirmation code is: %s";
-    public static final String RESET_PASSWORD_SUBJECT = "Reset password link for your account";
-    public static final String RESET_PASSWORD_BODY = "Your reset password link is: %s";
+    public static final String RESET_PASSWORD_SUBJECT = "OTP for resetting your Monux password";
+    public static final String RESET_PASSWORD_BODY = "Your reset password OTP is: %s";
     public static final String ROLE_USER = "ROLE_USER";
     public static final String SENDER_ACCOUNT = "senderAccount";
     public static final String RECEIVER_ACCOUNT = "receiverAccount";
