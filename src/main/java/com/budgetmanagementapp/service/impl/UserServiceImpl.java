@@ -131,6 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody) {
         User user = findByUsername(username);
         Otp otp = otpRepo.findByOtp(requestBody.getOtp()).orElseThrow(() -> new InvalidOtpException(INVALID_OTP_MSG));
