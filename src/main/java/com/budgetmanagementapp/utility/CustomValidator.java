@@ -1,6 +1,8 @@
 package com.budgetmanagementapp.utility;
 
+import static com.budgetmanagementapp.utility.Constant.STATUS_NEW;
 import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_TYPE_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.EXPIRED_OTP_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_EMAIL_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_INITIAL_ACCOUNT_MODEL_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.INVALID_PHONE_NUMBER_MSG;
@@ -8,12 +10,15 @@ import static com.budgetmanagementapp.utility.MsgConstant.INVALID_REQUEST_MODEL_
 import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_TYPE_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.TransactionType.values;
 
+import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.exception.CategoryTypeNotFoundException;
+import com.budgetmanagementapp.exception.ExpiredOtpException;
 import com.budgetmanagementapp.exception.InvalidEmailException;
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.exception.InvalidPhoneNumberException;
 import com.budgetmanagementapp.exception.TransactionTypeNotFoundException;
 import com.budgetmanagementapp.model.account.AccountRqModel;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 import lombok.AccessLevel;
@@ -24,6 +29,20 @@ import org.springframework.stereotype.Component;
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CustomValidator {
+
+    public static void checkOtpAvailability(Otp otp) {
+        if (otp.getDateTime().isBefore(LocalDateTime.now().minusMinutes(2)) || !otp.getStatus().equals(STATUS_NEW)) {
+            throw new ExpiredOtpException(EXPIRED_OTP_MSG);
+        }
+    }
+
+    public static void validateUsername(String username) {
+        if (username.contains("@")) {
+            validateEmailFormat(username);
+        } else {
+            validatePhoneNumberFormat(username);
+        }
+    }
 
     public static void validateEmailFormat(String email) {
         if (!email.matches(

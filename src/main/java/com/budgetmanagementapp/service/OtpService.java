@@ -1,5 +1,6 @@
 package com.budgetmanagementapp.service;
 
+import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
 import com.budgetmanagementapp.model.user.ConfirmOtpRsModel;
 

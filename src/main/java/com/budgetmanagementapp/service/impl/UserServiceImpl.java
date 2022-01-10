@@ -7,6 +7,8 @@ import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_BODY;
 import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_SUBJECT;
 import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
 import static com.budgetmanagementapp.utility.Constant.STATUS_CONFIRMED;
+import static com.budgetmanagementapp.utility.Constant.STATUS_USED;
+import static com.budgetmanagementapp.utility.MsgConstant.INVALID_OTP_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_CREATED_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_EQUALITY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_UPDATED_MSG;
@@ -16,11 +18,12 @@ import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_USERNAME;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_USERNAME_STATUS;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.USER_UPDATE_LANG_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_FULL_RESET_PASSWORD_URL;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.builder.UserBuilder;
+import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
+import com.budgetmanagementapp.exception.InvalidOtpException;
 import com.budgetmanagementapp.exception.PasswordMismatchException;
 import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.exception.UsernameNotUniqueException;
@@ -36,7 +39,6 @@ import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
-import com.budgetmanagementapp.utility.EncryptionTool;
 import com.budgetmanagementapp.utility.MailSenderService;
 import com.budgetmanagementapp.utility.SmsSenderService;
 import java.util.Optional;
@@ -83,11 +85,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserRsModel signup(SignupRqModel signupRqModel) throws MessagingException {
-        if (signupRqModel.getUsername().contains("@")) {
-            CustomValidator.validateEmailFormat(signupRqModel.getUsername());
-        } else {
-            CustomValidator.validatePhoneNumberFormat(signupRqModel.getUsername());
-        }
+        CustomValidator.validateUsername(signupRqModel.getUsername());
 
         checkUsernameUniqueness(signupRqModel.getUsername());
         User user = userRepo.save(
@@ -119,26 +117,31 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRsModel forgetPassword(String username) throws MessagingException {
-        String encryptedUsername = EncryptionTool.encrypt(username);
+        CustomValidator.validateUsername(username);
+
+        String otp = generateOtp();
+        otpRepo.save(userBuilder.buildOtp(otp, findByUsername(username)));
+
         if (username.contains("@")) {
-            CustomValidator.validateEmailFormat(username);
-            mailSenderService
-                    .sendEmail(username, RESET_PASSWORD_SUBJECT, format(RESET_PASSWORD_BODY,
-                            USER_FULL_RESET_PASSWORD_URL + encryptedUsername));
+            mailSenderService.sendEmail(username, RESET_PASSWORD_SUBJECT, format(RESET_PASSWORD_BODY, otp));
         } else {
-            CustomValidator.validatePhoneNumberFormat(username);
-            smsSenderService
-                    .sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY,
-                            USER_FULL_RESET_PASSWORD_URL + encryptedUsername));
+            smsSenderService.sendMessage(username, RESET_PASSWORD_SUBJECT, format(OTP_CONFIRMATION_BODY, otp));
         }
         return USER_MAPPER_INSTANCE.buildUserResponseModel(findByUsername(username));
     }
 
     @Override
+    @Transactional
     public ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody) {
-        User user = findByUsername(EncryptionTool.decrypt(username));
+        User user = findByUsername(username);
+        Otp otp = otpRepo.findByOtp(requestBody.getOtp()).orElseThrow(() -> new InvalidOtpException(INVALID_OTP_MSG));
+        CustomValidator.checkOtpAvailability(otp);
+
         checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
         updatePassword(requestBody.getPassword(), user);
+
+        otp.setStatus(STATUS_USED);
+        otpRepo.save(otp);
 
         log.info(PASSWORD_UPDATED_MSG, user.getUsername());
         return USER_MAPPER_INSTANCE.buildResetPasswordResponseModel(user.getUsername(), requestBody);
