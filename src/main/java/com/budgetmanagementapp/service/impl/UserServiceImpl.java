@@ -164,8 +164,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRsModel deleteUser(String username) {
-        User user = userRepo.byUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+        var user = findByUsername(username);
 
         user.setStatus(UserStatus.INACTIVE);
         userRepo.save(user);
