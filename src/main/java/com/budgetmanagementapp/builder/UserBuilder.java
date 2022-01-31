@@ -4,6 +4,7 @@ import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.UserRoleNotFoundException;
 import com.budgetmanagementapp.repository.RoleRepository;
+import com.budgetmanagementapp.utility.UserStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +27,7 @@ public class UserBuilder {
                 .username(username)
                 .fullName(fullName)
                 .dateTime(LocalDateTime.now())
-                .status(STATUS_PROCESSING)
+                .status(UserStatus.PROCESSING)
                 .paymentStatus(STATUS_NOT_PAID)
                 .roles(Collections.singletonList(
                         roleRepo.byName(ROLE_USER)
