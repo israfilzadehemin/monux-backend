@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.*;
 
+import com.budgetmanagementapp.utility.PaymentStatus;
 import com.budgetmanagementapp.utility.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,8 +45,9 @@ public class User {
     @Column(name = "status")
     private UserStatus status;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "paymentStatus")
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
 
     @Column(name = "lang")
     private String language;
