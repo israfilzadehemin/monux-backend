@@ -26,7 +26,6 @@ import lombok.Setter;
 @Builder
 public class Template {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

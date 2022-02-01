@@ -3,14 +3,7 @@ package com.budgetmanagementapp.controller;
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_INITIAL_ACCOUNT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_FORGET_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_INFO_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_RESET_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_UPDATE_LANG_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -55,7 +48,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     private final UserService userService;
     private final AccountService accountService;
-    private final MailSenderService mailSenderService;
     private final OtpService otpService;
 
     @ApiOperation("Create user with email")
@@ -153,6 +145,15 @@ public class UserController {
                 OK);
 
         log.info(RESPONSE_MSG, USER_INFO_URL, response);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiOperation("Delete user")
+    @PostMapping(USER_DELETE_URL)
+    public ResponseEntity<ResponseModel<UserRsModel>> updateUserStatus(Authentication auth) {
+        var response = ResponseModel.of(
+                userService.deleteUser(((UserDetails) auth.getPrincipal()).getUsername()), OK);
+        log.info(RESPONSE_MSG, USER_DELETE_URL, response);
         return ResponseEntity.ok(response);
     }
 }

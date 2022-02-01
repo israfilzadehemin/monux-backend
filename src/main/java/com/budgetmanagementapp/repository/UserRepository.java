@@ -3,11 +3,13 @@ package com.budgetmanagementapp.repository;
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
 import java.util.Optional;
+
+import com.budgetmanagementapp.utility.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    default Optional<User> byUsernameAndStatus(String username, String status) {
+    default Optional<User> byUsernameAndStatus(String username, UserStatus status) {
         return findByUsernameIgnoreCaseAndStatus(username, status);
     }
 
@@ -15,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return findByUsernameIgnoreCase(username);
     }
 
-    default Optional<User> byIdAndStatus(long id, String status) {
+    default Optional<User> byIdAndStatus(long id, UserStatus status) {
         return findByIdAndStatus(id, status);
     }
 
@@ -23,10 +25,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
         return findByOtp(otp);
     }
 
-    Optional<User> findByUsernameIgnoreCaseAndStatus(String username, String status);
+    Optional<User> findByUsernameIgnoreCaseAndStatus(String username, UserStatus status);
     Optional<User> findByUsernameIgnoreCase(String username);
 
-    Optional<User> findByIdAndStatus(long id, String status);
+    Optional<User> findByIdAndStatus(long id, UserStatus status);
 
     Optional<User> findByOtp(Otp otp);
 }

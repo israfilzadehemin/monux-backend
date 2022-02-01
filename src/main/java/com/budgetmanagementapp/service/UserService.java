@@ -25,4 +25,6 @@ public interface UserService {
     UserInfoRsModel userInfo(String username);
 
     UserInfoRsModel updateUserLanguage(String username, String language);
+
+    UserRsModel deleteUser(String username);
 }
