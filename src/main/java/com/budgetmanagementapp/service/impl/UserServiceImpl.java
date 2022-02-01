@@ -5,19 +5,8 @@ import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
 import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
 import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_BODY;
 import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.STATUS_ACTIVE;
-import static com.budgetmanagementapp.utility.Constant.STATUS_CONFIRMED;
 import static com.budgetmanagementapp.utility.Constant.STATUS_USED;
-import static com.budgetmanagementapp.utility.MsgConstant.INVALID_OTP_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_EQUALITY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.PASSWORD_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USERNAME_NOT_UNIQUE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_ADDED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_USERNAME;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_USERNAME_STATUS;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_UPDATE_LANG_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static java.lang.String.format;
 
 import com.budgetmanagementapp.builder.UserBuilder;
@@ -45,6 +34,8 @@ import java.util.Optional;
 import java.util.Random;
 import javax.mail.MessagingException;
 import javax.transaction.Transactional;
+
+import com.budgetmanagementapp.utility.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -64,18 +55,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserAuthModel> findAuthModelByUsername(String username) {
-        return userRepo.byUsernameAndStatus(username, STATUS_ACTIVE).map(UserAuthModel::new);
+        return userRepo.byUsernameAndStatus(username, UserStatus.ACTIVE).map(UserAuthModel::new);
     }
 
     @Override
     public Optional<UserAuthModel> findById(long id) {
-        return userRepo.byIdAndStatus(id, STATUS_ACTIVE).map(UserAuthModel::new);
+        return userRepo.byIdAndStatus(id, UserStatus.ACTIVE).map(UserAuthModel::new);
     }
 
     @Override
     public User findByUsername(String username) {
         var user = userRepo
-                .byUsernameAndStatus(username, STATUS_ACTIVE)
+                .byUsernameAndStatus(username, UserStatus.ACTIVE)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
 
         log.info(USER_BY_USERNAME, username, user);
@@ -171,17 +162,29 @@ public class UserServiceImpl implements UserService {
         return userInfoRsModel;
     }
 
+    @Override
+    public UserRsModel deleteUser(String username) {
+        var user = findByUsername(username);
+
+        user.setStatus(UserStatus.INACTIVE);
+        userRepo.save(user);
+
+        var response = USER_MAPPER_INSTANCE.buildUserResponseModel(user);
+        log.info(USER_DEACTIVATE_MSG, response);
+        return response;
+    }
+
     private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
-        User user = userRepo.byUsernameAndStatus(requestBody.getUsername(), STATUS_CONFIRMED)
+        User user = userRepo.byUsernameAndStatus(requestBody.getUsername(), UserStatus.CONFIRMED)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
 
-        log.info(USER_BY_USERNAME_STATUS, requestBody.getUsername(), STATUS_CONFIRMED, user);
+        log.info(USER_BY_USERNAME_STATUS, requestBody.getUsername(), UserStatus.CONFIRMED, user);
         return user;
     }
 
     private void updatePasswordAndStatusValues(String password, User user) {
         user.setPassword(encoder.encode(password));
-        user.setStatus(STATUS_ACTIVE);
+        user.setStatus(UserStatus.ACTIVE);
         userRepo.save(user);
     }
 

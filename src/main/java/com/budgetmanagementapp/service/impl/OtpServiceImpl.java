@@ -19,6 +19,8 @@ import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.utility.CustomValidator;
 import javax.transaction.Transactional;
+
+import com.budgetmanagementapp.utility.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
@@ -60,7 +62,7 @@ public class OtpServiceImpl implements OtpService {
         otp.setStatus(STATUS_USED);
         otpRepo.save(otp);
 
-        user.setStatus(STATUS_CONFIRMED);
+        user.setStatus(UserStatus.CONFIRMED);
         userRepo.save(user);
     }
 }

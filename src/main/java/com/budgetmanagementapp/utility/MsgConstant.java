@@ -19,6 +19,7 @@ public class MsgConstant {
     public static final String USER_BY_USERNAME = "User by username -> {}: {}";
     public static final String USER_BY_USERNAME_STATUS = "User by username -> {}, status -> {}: {}";
     public static final String USER_UPDATE_LANG_MSG = "Language updated for user -> {}";
+    public static final String USER_DEACTIVATE_MSG = "User deactivated -> {}";
     public static final String USERNAME_NOT_UNIQUE_MSG = "This email or number has already been registered";
     public static final String USER_BY_OTP_NOT_FOUND_MSG = "User is not found by OTP: %s";
     public static final String ACCOUNT_TYPE_NOT_FOUND_MSG = "Account type  %s is not found";

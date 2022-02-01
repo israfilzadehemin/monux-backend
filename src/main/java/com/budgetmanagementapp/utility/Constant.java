@@ -9,13 +9,9 @@ public class Constant {
     public static final String CONTENT_TYPE_JSON = "application/json";
     public static final String SORT_BY_DATETIME = "dateTime";
     public static final String SORT_DIR_DESC = "desc";
-    public static final String STATUS_ACTIVE = "ACTIVE";
     public static final String STATUS_NEW = "NEW";
     public static final String STATUS_CONFIRMED = "CONFIRMED";
-    public static final String STATUS_PROCESSING = "PROCESSING";
-    public static final String STATUS_NOT_PAID = "NOT PAID";
     public static final String STATUS_OPEN = "OPEN";
-    public static final String STATUS_PAID = "PAID";
     public static final String STATUS_USED = "USED";
     public static final String CASH_ACCOUNT = "cashAccount";
     public static final String CARD_ACCOUNT = "cardAccount";
