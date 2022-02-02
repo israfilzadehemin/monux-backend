@@ -46,7 +46,7 @@ public class User {
     private UserStatus status;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "paymentStatus")
+    @Column(name = "payment_status")
     private PaymentStatus paymentStatus;
 
     @Column(name = "lang")

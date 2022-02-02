@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum PaymentStatus {
     PAID("PAID"),
-    NOT_PAID("NOT_PAID");
+    NOT_PAID("NOT PAID");
 
     private final String userStatus;
 
