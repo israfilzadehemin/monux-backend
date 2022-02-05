@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class SignupRqModel {
+public class UserRqModel {
     @ApiModelProperty(
             name = "username",
             dataType = "string",

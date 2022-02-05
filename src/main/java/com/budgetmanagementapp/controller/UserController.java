@@ -43,7 +43,7 @@ public class UserController {
 
     @ApiOperation("Create user with email")
     @PostMapping(USER_SIGNUP_URL)
-    public ResponseEntity<ResponseModel<UserRsModel>> signupWithEmail(@RequestBody @Valid SignupRqModel requestBody)
+    public ResponseEntity<ResponseModel<UserRsModel>> signupWithEmail(@RequestBody @Valid UserRqModel requestBody)
             throws MessagingException {
 
         log.info(REQUEST_MSG, USER_SIGNUP_URL, requestBody);
@@ -125,7 +125,7 @@ public class UserController {
     @ApiOperation("Update user information")
     @PutMapping(USER_INFO_URL)
     public ResponseEntity<ResponseModel<UserInfoRsModel>> updateUserInfo(Authentication auth,
-                                                                         @RequestBody UserUpdateRqModel request) {
+                                                                         @RequestBody UserRqModel request) {
         log.info(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG);
         var response = ResponseModel.of(userService.updateUserInfo(
                 ((UserDetails) auth.getPrincipal()).getUsername(), request), OK);

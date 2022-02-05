@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserRsModel signup(SignupRqModel signupRqModel) throws MessagingException {
+    public UserRsModel signup(UserRqModel signupRqModel) throws MessagingException {
         CustomValidator.validateUsername(signupRqModel.getUsername());
         CustomValidator.validateFullName(signupRqModel.getFullName());
 
@@ -141,16 +141,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoRsModel updateUserInfo(String username, UserUpdateRqModel userUpdateRqModel) {
-        CustomValidator.validateUsername(userUpdateRqModel.getUsername());
-        CustomValidator.validateFullName(userUpdateRqModel.getFullName());
+    public UserInfoRsModel updateUserInfo(String username, UserRqModel userRqModel) {
+        CustomValidator.validateUsername(userRqModel.getUsername());
+        CustomValidator.validateFullName(userRqModel.getFullName());
 
         User user = findByUsername(username);
-        user.setUsername(userUpdateRqModel.getUsername());
-        user.setFullName(userUpdateRqModel.getFullName());
-
-        if (userUpdateRqModel.getLanguage() != null)
-            user.setLanguage(userUpdateRqModel.getLanguage());
+        user.setUsername(userRqModel.getUsername());
+        user.setFullName(userRqModel.getFullName());
 
         userRepo.save(user);
         var userInfoRsModel = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
