@@ -12,13 +12,9 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeatureRsModel {
-    @ApiModelProperty(
-            name = "featureId",
-            dataType = "string")
+    @ApiModelProperty(name = "featureId", dataType = "string")
     String featureId;
 
-    @ApiModelProperty(
-            name = "content",
-            dataType = "string")
+    @ApiModelProperty(name = "content", dataType = "string")
     Object content;
 }

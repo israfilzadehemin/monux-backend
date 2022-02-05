@@ -1,14 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.UserMapper.USER_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_BODY;
-import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.STATUS_USED;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.builder.UserBuilder;
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
@@ -20,16 +11,21 @@ import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.MailSenderService;
 import com.budgetmanagementapp.utility.SmsSenderService;
-import java.util.Optional;
-import java.util.Random;
-import javax.mail.MessagingException;
-import javax.transaction.Transactional;
-
 import com.budgetmanagementapp.utility.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.transaction.Transactional;
+import java.util.Optional;
+import java.util.Random;
+
+import static com.budgetmanagementapp.mapper.UserMapper.USER_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.Constant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Service
 @Log4j2

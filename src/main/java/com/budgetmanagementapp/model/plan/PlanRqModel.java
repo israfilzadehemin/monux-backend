@@ -17,65 +17,37 @@ import java.util.List;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanRqModel {
-    @ApiModelProperty(
-            name = "titleAz",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "titleAz", dataType = "string", required = true)
     @NotBlank
     String titleAz;
 
-    @ApiModelProperty(
-            name = "titleEn",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "titleEn", dataType = "string", required = true)
     @NotBlank
     String titleEn;
 
-    @ApiModelProperty(
-            name = "titleRu",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "titleRu", dataType = "string", required = true)
     @NotBlank
     String titleRu;
 
-    @ApiModelProperty(
-            name = "textAz",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "textAz", dataType = "string", required = true)
     @NotBlank
     String textAz;
 
-    @ApiModelProperty(
-            name = "textEn",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "textEn", dataType = "string", required = true)
     @NotBlank
     String textEn;
 
-    @ApiModelProperty(
-            name = "textRu",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "textRu", dataType = "string", required = true)
     @NotBlank
     String textRu;
 
-    @ApiModelProperty(
-            name = "price",
-            dataType = "bigDecimal",
-            example = "30",
-            required = true)
+    @ApiModelProperty(name = "price", dataType = "bigDecimal", example = "30", required = true)
     BigDecimal price;
 
-    @ApiModelProperty(
-            name = "periodType",
-            dataType = "string",
-            example = "MONTHLY",
-            required = true)
+    @ApiModelProperty(name = "periodType", dataType = "string", example = "MONTHLY", required = true)
     @NotBlank
     String periodType;
 
-    @ApiModelProperty(
-            name = "periodType",
-            dataType = "list of string")
+    @ApiModelProperty(name = "periodType", dataType = "list of string")
     List<String> featuresIds;
 }

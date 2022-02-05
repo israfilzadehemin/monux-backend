@@ -1,63 +1,33 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.AccountMapper.ACCOUNT_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.Constant.CASH_ACCOUNT;
-import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
-import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_BY_ID_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_BY_NAME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ALLOW_NEGATIVE_TOGGLED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_ACCOUNTS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_ACCOUNT_TYPES_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_CURRENCIES_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BALANCE_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_BY_NAME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_ACCOUNT_NAME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INITIAL_ACCOUNT_EXISTING_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.NEGATIVE_BALANCE_NOT_ALLOWED;
-import static com.budgetmanagementapp.utility.MsgConstant.RATE_VALUE_EXCEPTION;
-import static com.budgetmanagementapp.utility.MsgConstant.SHOW_IN_SUM_TOGGLED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_ACCOUNT_MSG;
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-
 import com.budgetmanagementapp.builder.AccountBuilder;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.AccountNotFoundException;
-import com.budgetmanagementapp.exception.AccountTypeNotFoundException;
-import com.budgetmanagementapp.exception.CurrencyNotFoundException;
-import com.budgetmanagementapp.exception.DuplicateAccountException;
-import com.budgetmanagementapp.exception.InitialAccountExistingException;
-import com.budgetmanagementapp.exception.NotEnoughBalanceException;
-import com.budgetmanagementapp.exception.TransferRateException;
-import com.budgetmanagementapp.model.account.AccountRqModel;
-import com.budgetmanagementapp.model.account.AccountRsModel;
-import com.budgetmanagementapp.model.account.AccountTypeRsModel;
-import com.budgetmanagementapp.model.account.CurrencyRsModel;
-import com.budgetmanagementapp.model.account.UpdateAccountModel;
-import com.budgetmanagementapp.model.account.UpdateBalanceModel;
+import com.budgetmanagementapp.exception.*;
+import com.budgetmanagementapp.model.account.*;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CurrencyRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
+
+import static com.budgetmanagementapp.mapper.AccountMapper.ACCOUNT_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.Constant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
 
 @Service
 @Log4j2

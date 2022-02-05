@@ -5,6 +5,7 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.LabelRsModel;
 import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
+
 import java.util.List;
 
 public interface LabelService {

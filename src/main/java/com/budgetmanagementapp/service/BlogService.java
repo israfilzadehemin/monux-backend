@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.entity.Blog;
 import com.budgetmanagementapp.model.blog.BlogRqModel;
 import com.budgetmanagementapp.model.blog.BlogRsModel;
 import com.budgetmanagementapp.model.blog.UpdateBlogRqModel;

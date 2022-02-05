@@ -1,16 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.CategoryMapper.CATEGORY_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_CATEGORIES_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_BY_ID_TYPE_USER_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.CATEGORY_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_CATEGORY_NAME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INVALID_CATEGORY_ID_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_CATEGORY_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.builder.CategoryBuilder;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
@@ -25,12 +14,18 @@ import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CategoryType;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.TransactionType;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.CategoryMapper.CATEGORY_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Service
 @Log4j2

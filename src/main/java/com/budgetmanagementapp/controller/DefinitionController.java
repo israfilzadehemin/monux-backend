@@ -1,15 +1,5 @@
 package com.budgetmanagementapp.controller;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.DEFINITION_CREATE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.DEFINITION_DELETE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.DEFINITION_GET_ALL_DEFINITIONS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.DEFINITION_UPDATE_URL;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.definition.DefinitionRqModel;
 import com.budgetmanagementapp.model.definition.DefinitionRsModel;
@@ -18,17 +8,19 @@ import com.budgetmanagementapp.service.DefinitionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Log4j2
 @AllArgsConstructor
@@ -78,7 +70,7 @@ public class DefinitionController {
     @ApiOperation("Delete definition")
     @PostMapping(DEFINITION_DELETE_URL)
     public ResponseEntity<ResponseModel<DefinitionRsModel>> deleteDefinition(
-            @ApiParam(name = "definition-id", type = "string", example = "", required = true)
+            @ApiParam(name = "definition-id", type = "string", required = true)
             @RequestParam(name = "definition-id") String definitionId) {
 
         log.info(REQUEST_MSG, DEFINITION_DELETE_URL, definitionId);

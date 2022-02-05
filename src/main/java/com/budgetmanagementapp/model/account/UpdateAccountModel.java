@@ -21,28 +21,15 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateAccountModel {
-
-    @ApiModelProperty(
-            name = "accountId",
-            dataType = "string",
-            example = "541062a3-b99e-419b-9e2c-1daeb5fc5099",
-            required = true)
+    @ApiModelProperty(name = "accountId", dataType = "string", example = "541062a3-..", required = true)
     @NotBlank
     String accountId;
 
-    @ApiModelProperty(
-            name = "newAccountName",
-            dataType = "string",
-            example = "New Account",
-            required = true)
+    @ApiModelProperty(name = "newAccountName", dataType = "string", example = "New Account", required = true)
     @NotBlank
     String newAccountName;
 
-    @ApiModelProperty(
-            name = "accountTypeName",
-            dataType = "string",
-            example = "savingAccount",
-            required = true)
+    @ApiModelProperty(name = "accountTypeName", dataType = "string", example = "savingAccount", required = true)
     @NotBlank
     String accountTypeName;
 }

@@ -1,14 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.FaqMapper.FAQ_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_FAQS;
-import static com.budgetmanagementapp.utility.MsgConstant.FAQ_BY_ID;
-import static com.budgetmanagementapp.utility.MsgConstant.FAQ_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.FAQ_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.FAQ_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.FAQ_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Faq;
 import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.FaqNotFoundException;
@@ -17,11 +8,16 @@ import com.budgetmanagementapp.model.faq.FaqRsModel;
 import com.budgetmanagementapp.model.faq.UpdateFaqRqModel;
 import com.budgetmanagementapp.repository.FaqRepository;
 import com.budgetmanagementapp.service.FaqService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.FaqMapper.FAQ_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @Service

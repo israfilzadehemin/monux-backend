@@ -1,6 +1,7 @@
 package com.budgetmanagementapp.builder;
 
-import com.budgetmanagementapp.entity.*;
+import com.budgetmanagementapp.entity.Feedback;
+import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.model.feedback.FeedbackRqModel;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -14,12 +14,9 @@ import javax.validation.constraints.NotBlank;
 @ToString
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateBlogRqModel extends BlogRqModel{
+public class UpdateBlogRqModel extends BlogRqModel {
 
-    @ApiModelProperty(
-            name = "blogId",
-            dataType = "string",
-            example = "")
+    @ApiModelProperty(name = "blogId", dataType = "string")
     @NotBlank
     String blogId;
 }

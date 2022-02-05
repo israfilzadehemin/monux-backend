@@ -15,45 +15,31 @@ import javax.validation.constraints.NotBlank;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DefinitionRqModel {
-    @ApiModelProperty(
-            name = "titleAz",
-            dataType = "string")
+    @ApiModelProperty(name = "titleAz", dataType = "string")
     @NotBlank
     String titleAz;
 
-    @ApiModelProperty(
-            name = "titleEn",
-            dataType = "string")
+    @ApiModelProperty(name = "titleEn", dataType = "string")
     @NotBlank
     String titleEn;
 
-    @ApiModelProperty(
-            name = "titleRu",
-            dataType = "string")
+    @ApiModelProperty(name = "titleRu", dataType = "string")
     @NotBlank
     String titleRu;
 
-    @ApiModelProperty(
-            name = "textAz",
-            dataType = "string")
+    @ApiModelProperty(name = "textAz", dataType = "string")
     @NotBlank
     String textAz;
 
-    @ApiModelProperty(
-            name = "textEn",
-            dataType = "string")
+    @ApiModelProperty(name = "textEn", dataType = "string")
     @NotBlank
     String textEn;
 
-    @ApiModelProperty(
-            name = "textRu",
-            dataType = "string")
+    @ApiModelProperty(name = "textRu", dataType = "string")
     @NotBlank
     String textRu;
 
-    @ApiModelProperty(
-            name = "icon",
-            dataType = "string")
+    @ApiModelProperty(name = "icon", dataType = "string")
     @NotBlank
     String icon;
 }

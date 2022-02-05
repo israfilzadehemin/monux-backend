@@ -13,9 +13,6 @@ import lombok.experimental.SuperBuilder;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateDefinitionRqModel extends DefinitionRqModel {
-    @ApiModelProperty(
-            name = "definitionId",
-            dataType = "string",
-            example = "")
+    @ApiModelProperty(name = "definitionId", dataType = "string")
     String definitionId;
 }

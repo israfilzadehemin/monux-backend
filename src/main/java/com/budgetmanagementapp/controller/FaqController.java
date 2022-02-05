@@ -1,16 +1,5 @@
 package com.budgetmanagementapp.controller;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.FAQ_CREATE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.FAQ_DELETE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.FAQ_GET_ALL_FAQS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.FAQ_GET_FAQ_BY_ID_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.FAQ_UPDATE_URL;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.faq.FaqRqModel;
 import com.budgetmanagementapp.model.faq.FaqRsModel;
@@ -19,17 +8,19 @@ import com.budgetmanagementapp.service.FaqService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
@@ -55,7 +46,7 @@ public class FaqController {
     @ApiOperation("Get faq by id")
     @GetMapping(FAQ_GET_FAQ_BY_ID_URL)
     public ResponseEntity<ResponseModel<FaqRsModel>> getFaqById(
-            @ApiParam(name = "faq-id", type = "string", example = "", required = true)
+            @ApiParam(name = "faq-id", type = "string", required = true)
             @RequestParam(name = "faq-id") String faqId,
             @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
             @RequestParam(name = "language") String language) {
@@ -92,7 +83,7 @@ public class FaqController {
     @ApiOperation("Delete faq")
     @PostMapping(FAQ_DELETE_URL)
     public ResponseEntity<ResponseModel<FaqRsModel>> deleteFaq(
-            @ApiParam(name = "faq-id", type = "string", example = "", required = true)
+            @ApiParam(name = "faq-id", type = "string", required = true)
             @RequestParam("faq-id") String faqId) {
 
         log.info(REQUEST_MSG, FAQ_DELETE_URL, faqId);

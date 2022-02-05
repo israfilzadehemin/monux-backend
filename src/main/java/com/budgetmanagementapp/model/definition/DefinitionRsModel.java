@@ -14,27 +14,18 @@ import javax.validation.constraints.NotBlank;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DefinitionRsModel {
-    @ApiModelProperty(
-            name = "categoryType",
-            dataType = "string")
+    @ApiModelProperty(name = "categoryType", dataType = "string")
     String definitionId;
 
-    @ApiModelProperty(
-            name = "title",
-            dataType = "string",
-            example = "")
+    @ApiModelProperty(name = "title", dataType = "string")
     @NotBlank
     Object title;
 
-    @ApiModelProperty(
-            name = "text",
-            dataType = "string")
+    @ApiModelProperty(name = "text", dataType = "string")
     @NotBlank
     Object text;
 
-    @ApiModelProperty(
-            name = "icon",
-            dataType = "string")
+    @ApiModelProperty(name = "icon", dataType = "string")
     @NotBlank
     String icon;
 }

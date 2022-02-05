@@ -1,10 +1,8 @@
-package com.budgetmanagementapp.model.home;
+package com.budgetmanagementapp.model.banner;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,15 +11,16 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ServiceRsModel {
+public class BannerRsModel {
     @ApiModelProperty(
-            name = "serviceId",
+            name = "bannerId",
             dataType = "string")
-    String serviceId;
+    String bannerId;
 
     @ApiModelProperty(
             name = "title",
-            dataType = "string")
+            dataType = "string",
+            example = "Home Page")
     Object title;
 
     @ApiModelProperty(
@@ -30,7 +29,13 @@ public class ServiceRsModel {
     Object text;
 
     @ApiModelProperty(
-            name = "icon",
+            name = "image",
             dataType = "string")
-    String icon;
+    String image;
+
+    @ApiModelProperty(
+            name = "keyword",
+            dataType = "string",
+            example = "home")
+    String keyword;
 }

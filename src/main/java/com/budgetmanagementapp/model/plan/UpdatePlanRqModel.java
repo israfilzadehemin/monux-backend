@@ -15,10 +15,7 @@ import javax.validation.constraints.NotBlank;
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdatePlanRqModel extends PlanRqModel {
-    @ApiModelProperty(
-            name = "planId",
-            dataType = "string",
-            example = "")
+    @ApiModelProperty(name = "planId", dataType = "string")
     @NotBlank
     String planId;
 }

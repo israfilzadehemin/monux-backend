@@ -1,43 +1,15 @@
 package com.budgetmanagementapp.controller;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
-import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
-import static com.budgetmanagementapp.utility.TransactionType.INCOME;
-import static com.budgetmanagementapp.utility.TransactionType.OUTGOING;
-import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_DEBT_IN_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_DEBT_OUT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_INCOME_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_OUTGOING_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_CREATE_TRANSFER_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_DELETE_TEMPLATES_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_GET_ALL_TEMPLATES_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_UPDATE_DEBT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_UPDATE_IN_OUT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TEMPLATE_UPDATE_TRANSFER_URL;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
-import com.budgetmanagementapp.model.transaction.DebtRqModel;
-import com.budgetmanagementapp.model.transaction.DebtRsModel;
-import com.budgetmanagementapp.model.transaction.DeleteTransactionRqModel;
-import com.budgetmanagementapp.model.transaction.InOutRqModel;
-import com.budgetmanagementapp.model.transaction.InOutRsModel;
-import com.budgetmanagementapp.model.transaction.TransactionRsModel;
+import com.budgetmanagementapp.model.transaction.*;
 import com.budgetmanagementapp.model.transfer.TransferRqModel;
 import com.budgetmanagementapp.model.transfer.TransferRsModel;
 import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.service.TemplateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -48,6 +20,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
+import java.util.List;
+
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.TransactionType.*;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor

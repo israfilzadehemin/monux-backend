@@ -1,14 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.BlogMapper.BLOG_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_BLOGS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BLOG_BY_ID_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BLOG_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BLOG_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BLOG_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BLOG_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Blog;
 import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.BlogNotFoundException;
@@ -18,11 +9,16 @@ import com.budgetmanagementapp.model.blog.UpdateBlogRqModel;
 import com.budgetmanagementapp.repository.BlogRepository;
 import com.budgetmanagementapp.service.BlogService;
 import com.budgetmanagementapp.utility.CustomFormatter;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.BlogMapper.BLOG_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor

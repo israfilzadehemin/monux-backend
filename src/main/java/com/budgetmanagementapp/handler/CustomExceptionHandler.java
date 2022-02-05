@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.handler;
 
-
 import com.budgetmanagementapp.exception.*;
 import com.budgetmanagementapp.model.ErrorResponseModel;
 import com.budgetmanagementapp.model.ResponseModel;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
-
 
 @Log4j2
 @ControllerAdvice
@@ -81,21 +79,21 @@ public class CustomExceptionHandler {
     public ResponseEntity<?> handleException(Exception exception) {
         if (exception instanceof HttpMessageNotReadableException)
             return handleException(exception, 7000);
-        else if(exception instanceof MissingServletRequestParameterException)
+        else if (exception instanceof MissingServletRequestParameterException)
             return handleException(exception, 7001);
-        else if(exception instanceof HttpRequestMethodNotSupportedException)
+        else if (exception instanceof HttpRequestMethodNotSupportedException)
             return handleException(exception, 7002);
-        else if(exception instanceof MalformedJwtException)
+        else if (exception instanceof MalformedJwtException)
             return handleException(exception, 7003);
-        else if(exception instanceof SignatureException)
+        else if (exception instanceof SignatureException)
             return handleException(exception, 7004);
-        else if(exception instanceof ExpiredJwtException)
+        else if (exception instanceof ExpiredJwtException)
             return handleException(exception, 7005);
-        else if(exception instanceof UnsupportedJwtException)
+        else if (exception instanceof UnsupportedJwtException)
             return handleException(exception, 7006);
-        else if(exception instanceof MethodArgumentNotValidException)
+        else if (exception instanceof MethodArgumentNotValidException)
             return handleException(exception, 7007);
-        else if(exception instanceof ConstraintViolationException)
+        else if (exception instanceof ConstraintViolationException)
             return handleException(exception, 7008);
         throw new RuntimeException(String.valueOf(exception.getClass()));
     }
@@ -123,6 +121,5 @@ public class CustomExceptionHandler {
                                 .build())
                         .build());
     }
-
 }
 

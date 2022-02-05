@@ -1,7 +1,8 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.home.StepRqModel;
-import com.budgetmanagementapp.model.home.StepRsModel;
+import com.budgetmanagementapp.model.step.StepRqModel;
+import com.budgetmanagementapp.model.step.StepRsModel;
+import com.budgetmanagementapp.model.step.UpdateStepRqModel;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface StepService {
 
     StepRsModel createStep(StepRqModel request);
 
-    StepRsModel updateStep(StepRqModel request, String stepId);
+    StepRsModel updateStep(UpdateStepRqModel request);
 
     StepRsModel deleteStep(String stepId);
 }

@@ -3,8 +3,8 @@ package com.budgetmanagementapp.service;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.model.user.*;
 
-import java.util.Optional;
 import javax.mail.MessagingException;
+import java.util.Optional;
 
 public interface UserService {
 

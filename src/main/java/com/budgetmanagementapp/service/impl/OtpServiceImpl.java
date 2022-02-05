@@ -1,12 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.utility.Constant.STATUS_CONFIRMED;
-import static com.budgetmanagementapp.utility.Constant.STATUS_USED;
-import static com.budgetmanagementapp.utility.MsgConstant.INVALID_OTP_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.OTP_CONFIRMED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_BY_OTP_NOT_FOUND_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.InvalidOtpException;
@@ -18,12 +11,16 @@ import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.utility.CustomValidator;
-import javax.transaction.Transactional;
-
 import com.budgetmanagementapp.utility.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+
+import static com.budgetmanagementapp.utility.Constant.STATUS_USED;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @Service

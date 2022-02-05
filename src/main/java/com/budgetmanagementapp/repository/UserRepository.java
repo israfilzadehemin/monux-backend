@@ -2,10 +2,10 @@ package com.budgetmanagementapp.repository;
 
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
-import java.util.Optional;
-
 import com.budgetmanagementapp.utility.UserStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -26,6 +26,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     }
 
     Optional<User> findByUsernameIgnoreCaseAndStatus(String username, UserStatus status);
+
     Optional<User> findByUsernameIgnoreCase(String username);
 
     Optional<User> findByIdAndStatus(long id, UserStatus status);

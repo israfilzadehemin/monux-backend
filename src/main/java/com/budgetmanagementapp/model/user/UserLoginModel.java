@@ -1,16 +1,10 @@
 package com.budgetmanagementapp.model.user;
 
-import javax.validation.constraints.NotBlank;
-
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @Getter
@@ -20,21 +14,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserLoginModel {
-    @ApiModelProperty(
-            name = "username",
-            dataType = "string")
+    @ApiModelProperty(name = "username", dataType = "string")
     @NotBlank
     String username;
 
-    @ApiModelProperty(
-            name = "password",
-            dataType = "string")
+    @ApiModelProperty(name = "password", dataType = "string")
     @NotBlank
     String password;
 
-    @ApiModelProperty(
-            name = "rememberMe",
-            dataType = "boolean",
-            example = "true")
+    @ApiModelProperty(name = "rememberMe", dataType = "boolean", example = "true")
     Boolean rememberMe;
 }

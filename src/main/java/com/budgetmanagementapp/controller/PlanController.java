@@ -1,15 +1,5 @@
 package com.budgetmanagementapp.controller;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.PLAN_ADD_PLAN_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.PLAN_DELETE_PLAN_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.PLAN_GET_ALL_PLANS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.PLAN_UPDATE_PLAN_URL;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.plan.PlanRqModel;
 import com.budgetmanagementapp.model.plan.PlanRsModel;
@@ -18,17 +8,19 @@ import com.budgetmanagementapp.service.PlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @Log4j2
 @AllArgsConstructor
@@ -76,7 +68,7 @@ public class PlanController {
     @ApiOperation("Delete plan")
     @PostMapping(PLAN_DELETE_PLAN_URL)
     public ResponseEntity<ResponseModel<PlanRsModel>> deletePlan(
-            @ApiParam(name = "plan-id", type = "string", example = "", required = true)
+            @ApiParam(name = "plan-id", type = "string", required = true)
             @RequestParam("plan-id") String planId) {
 
         log.info(REQUEST_MSG, PLAN_DELETE_PLAN_URL, planId);

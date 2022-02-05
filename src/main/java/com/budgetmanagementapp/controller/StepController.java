@@ -1,32 +1,25 @@
 package com.budgetmanagementapp.controller;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.STEP_CREATE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.STEP_DELETE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.STEP_GET_ALL_STEPS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.STEP_UPDATE_URL;
-
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.home.StepRqModel;
-import com.budgetmanagementapp.model.home.StepRsModel;
+import com.budgetmanagementapp.model.step.StepRqModel;
+import com.budgetmanagementapp.model.step.StepRsModel;
+import com.budgetmanagementapp.model.step.UpdateStepRqModel;
 import com.budgetmanagementapp.service.StepService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import java.util.List;
-import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.util.List;
+
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 
 @Log4j2
 @AllArgsConstructor
@@ -62,13 +55,10 @@ public class StepController {
 
     @ApiOperation("Update step")
     @PostMapping(STEP_UPDATE_URL)
-    public ResponseEntity<ResponseModel<StepRsModel>> updateStep(
-            @RequestBody @Valid StepRqModel request,
-            @ApiParam(name = "step-id", type = "string", example = "", required = true)
-            @RequestParam(name = "step-id") String stepId) {
+    public ResponseEntity<ResponseModel<StepRsModel>> updateStep(@RequestBody @Valid UpdateStepRqModel request) {
 
         log.info(REQUEST_MSG, STEP_UPDATE_URL, request);
-        var response = ResponseModel.of(stepService.updateStep(request, stepId), HttpStatus.OK);
+        var response = ResponseModel.of(stepService.updateStep(request), HttpStatus.OK);
 
         log.info(RESPONSE_MSG, STEP_UPDATE_URL, response);
         return ResponseEntity.ok(response);
@@ -77,7 +67,7 @@ public class StepController {
     @ApiOperation("Delete step")
     @PostMapping(STEP_DELETE_URL)
     public ResponseEntity<ResponseModel<StepRsModel>> deleteStep(
-            @ApiParam(name = "step-id", type = "string", example = "", required = true)
+            @ApiParam(name = "step-id", type = "string", required = true)
             @RequestParam(name = "step-id") String stepId) {
 
         log.info(REQUEST_MSG, STEP_DELETE_URL, stepId);

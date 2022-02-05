@@ -1,4 +1,4 @@
-package com.budgetmanagementapp.model.home;
+package com.budgetmanagementapp.model.step;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -13,16 +13,20 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class BannerRqModel {
-    @ApiModelProperty(name = "titleAz", dataType = "string", example = "Ana Səhifə", required = true)
+public class UpdateStepRqModel extends StepRqModel {
+    @ApiModelProperty(name = "stepId", dataType = "string", required = true)
+    @NotBlank
+    String stepId;
+
+    @ApiModelProperty(name = "titleAz", dataType = "string", required = true)
     @NotBlank
     String titleAz;
 
-    @ApiModelProperty(name = "titleEn", dataType = "string", example = "Home Page", required = true)
+    @ApiModelProperty(name = "titleEn", dataType = "string", required = true)
     @NotBlank
     String titleEn;
 
-    @ApiModelProperty(name = "titleRu", dataType = "string", example = "Домашняя страница", required = true)
+    @ApiModelProperty(name = "titleRu", dataType = "string", required = true)
     @NotBlank
     String titleRu;
 
@@ -38,10 +42,9 @@ public class BannerRqModel {
     @NotBlank
     String textRu;
 
-    @ApiModelProperty(name = "image", dataType = "string")
-    String image;
+    @ApiModelProperty(name = "icon", dataType = "string")
+    String icon;
 
-    @ApiModelProperty(name = "keyword", dataType = "string", example = "home", required = true)
-    @NotBlank
-    String keyword;
+    @ApiModelProperty(name = "color", dataType = "string", example = "E633FF")
+    String color;
 }

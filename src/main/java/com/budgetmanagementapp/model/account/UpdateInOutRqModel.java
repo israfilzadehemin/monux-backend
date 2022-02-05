@@ -22,11 +22,7 @@ import lombok.experimental.SuperBuilder;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UpdateInOutRqModel extends InOutRqModel {
 
-    @ApiModelProperty(
-            name = "transactionId",
-            dataType = "string",
-            example = "663fb5d4-c3c1-4bc9-869f-3f2d17cfd3ac",
-            required = true)
+    @ApiModelProperty(name = "transactionId", dataType = "string", example = "663fb5d4-..", required = true)
     @NotBlank
     String transactionId;
 

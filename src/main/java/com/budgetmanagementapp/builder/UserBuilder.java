@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.UUID;
 
-import static com.budgetmanagementapp.utility.Constant.*;
+import static com.budgetmanagementapp.utility.Constant.ROLE_USER;
 import static com.budgetmanagementapp.utility.Constant.STATUS_NEW;
 import static com.budgetmanagementapp.utility.MsgConstant.ROLE_NOT_FOUND_MSG;
 

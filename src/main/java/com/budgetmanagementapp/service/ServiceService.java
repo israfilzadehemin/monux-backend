@@ -1,7 +1,8 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.home.ServiceRqModel;
-import com.budgetmanagementapp.model.home.ServiceRsModel;
+import com.budgetmanagementapp.model.service.ServiceRqModel;
+import com.budgetmanagementapp.model.service.ServiceRsModel;
+import com.budgetmanagementapp.model.service.UpdateServiceRqModel;
 
 import java.util.List;
 
@@ -11,7 +12,7 @@ public interface ServiceService {
 
     ServiceRsModel createService(ServiceRqModel request);
 
-    ServiceRsModel updateService(ServiceRqModel request, String serviceId);
+    ServiceRsModel updateService(UpdateServiceRqModel request);
 
     ServiceRsModel deleteService(String serviceId);
 }

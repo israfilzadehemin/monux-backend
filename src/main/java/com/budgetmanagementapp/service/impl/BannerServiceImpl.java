@@ -1,23 +1,20 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.BannerMapper.BANNER_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_BY_KEYWORD_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Banner;
 import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.BannerNotFoundException;
-import com.budgetmanagementapp.model.home.BannerRqModel;
-import com.budgetmanagementapp.model.home.BannerRsModel;
+import com.budgetmanagementapp.model.banner.BannerRqModel;
+import com.budgetmanagementapp.model.banner.BannerRsModel;
+import com.budgetmanagementapp.model.banner.UpdateBannerRqModel;
 import com.budgetmanagementapp.repository.BannerRepository;
 import com.budgetmanagementapp.service.BannerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import static com.budgetmanagementapp.mapper.BannerMapper.BANNER_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -54,8 +51,8 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public BannerRsModel updateBanner(BannerRqModel request, String bannerId) {
-        Banner banner = bannerById(bannerId);
+    public BannerRsModel updateBanner(UpdateBannerRqModel request) {
+        Banner banner = bannerById(request.getBannerId());
 
         banner.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())

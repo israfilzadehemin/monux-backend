@@ -14,16 +14,11 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRqModel {
-    @ApiModelProperty(
-            name = "username",
-            dataType = "string",
-            example = "example@gmail.com")
+    @ApiModelProperty(name = "username", dataType = "string", example = "example@gmail.com")
     @NotBlank
     String username;
 
-    @ApiModelProperty(
-            name = "fullName",
-            dataType = "string")
+    @ApiModelProperty(name = "fullName", dataType = "string")
     @NotBlank
     String fullName;
 }

@@ -1,18 +1,11 @@
 package com.budgetmanagementapp.model.user;
 
 import com.budgetmanagementapp.entity.User;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.util.HashSet;
 import java.util.Set;
-
-import com.budgetmanagementapp.model.user.RoleAuthModel;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.experimental.FieldDefaults;
 
 @NoArgsConstructor
 @AllArgsConstructor

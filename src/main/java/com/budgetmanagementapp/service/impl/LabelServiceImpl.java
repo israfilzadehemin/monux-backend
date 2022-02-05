@@ -1,17 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.LabelMapper.LABEL_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_LABELS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_LABEL_NAME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LABELS_BY_IDS_TYPE_USER_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LABEL_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LABEL_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LABEL_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_LABEL_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.VISIBILITY_TOGGLED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.builder.LabelBuilder;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
@@ -24,13 +12,19 @@ import com.budgetmanagementapp.repository.LabelRepository;
 import com.budgetmanagementapp.service.LabelService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
+
+import static com.budgetmanagementapp.mapper.LabelMapper.LABEL_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Service
 @AllArgsConstructor
