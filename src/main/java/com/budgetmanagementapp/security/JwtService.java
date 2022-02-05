@@ -32,16 +32,15 @@ public class JwtService {
     @Value("${jwt.expiry.remember}")
     private long expiryRememberMe;
 
-    public String generateToken(long userId, boolean rememberMe) {
+    public String generateToken(String username, boolean rememberMe) {
         final Date now = new Date();
         final long delta = rememberMe ? expiryRememberMe : expiryDefault;
         return Jwts.builder()
-                .setSubject(Long.toString(userId))
+                .setSubject(username)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + delta))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
-
     }
 
     public Optional<String> extractToken(HttpServletRequest request) {
