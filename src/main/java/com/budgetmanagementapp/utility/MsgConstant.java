@@ -22,6 +22,7 @@ public class MsgConstant {
     public static final String USER_UPDATE_INFO_MSG = "User updated -> {}";
     public static final String USER_DEACTIVATE_MSG = "User deactivated -> {}";
     public static final String USERNAME_NOT_UNIQUE_MSG = "This email or number has already been registered";
+    public static final String FULL_NAME_WRONG_FORMAT_MSG = "Full name must contain at least two words";
     public static final String PASSWORD_DUPLICATION_MSG = "New password can not be same with old password";
     public static final String USER_BY_OTP_NOT_FOUND_MSG = "User is not found by OTP: %s";
     public static final String ACCOUNT_TYPE_NOT_FOUND_MSG = "Account type  %s is not found";

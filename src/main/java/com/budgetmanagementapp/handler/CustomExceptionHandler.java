@@ -45,6 +45,7 @@ public class CustomExceptionHandler {
                 || exception instanceof ResetPasswordException
                 || exception instanceof TransferRateException
                 || exception instanceof DuplicatePasswordException
+                || exception instanceof FullNameFormatException
         ) {
             return handleException(exception, HttpStatus.BAD_REQUEST);
 

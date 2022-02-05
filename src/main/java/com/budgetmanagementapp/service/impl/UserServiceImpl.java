@@ -67,6 +67,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserRsModel signup(SignupRqModel signupRqModel) throws MessagingException {
         CustomValidator.validateUsername(signupRqModel.getUsername());
+        CustomValidator.validateFullName(signupRqModel.getFullName());
 
         checkUsernameUniqueness(signupRqModel.getUsername());
         User user = userRepo.save(
@@ -141,6 +142,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoRsModel updateUserInfo(String username, UserUpdateRqModel userUpdateRqModel) {
+        CustomValidator.validateUsername(userUpdateRqModel.getUsername());
+        CustomValidator.validateFullName(userUpdateRqModel.getFullName());
+
         User user = findByUsername(username);
         user.setUsername(userUpdateRqModel.getUsername());
         user.setFullName(userUpdateRqModel.getFullName());
