@@ -19,8 +19,11 @@ public class MsgConstant {
     public static final String USER_BY_USERNAME = "User by username -> {}: {}";
     public static final String USER_BY_USERNAME_STATUS = "User by username -> {}, status -> {}: {}";
     public static final String USER_UPDATE_LANG_MSG = "Language updated for user -> {}";
+    public static final String USER_UPDATE_INFO_MSG = "User updated -> {}";
     public static final String USER_DEACTIVATE_MSG = "User deactivated -> {}";
     public static final String USERNAME_NOT_UNIQUE_MSG = "This email or number has already been registered";
+    public static final String FULL_NAME_WRONG_FORMAT_MSG = "Full name must contain at least two words";
+    public static final String PASSWORD_DUPLICATION_MSG = "New password can not be same with old password";
     public static final String USER_BY_OTP_NOT_FOUND_MSG = "User is not found by OTP: %s";
     public static final String ACCOUNT_TYPE_NOT_FOUND_MSG = "Account type  %s is not found";
     public static final String ACCOUNT_TYPE_BY_NAME_MSG = "Account type by name -> {}: {}";
@@ -56,8 +59,8 @@ public class MsgConstant {
     public static final String PASSWORD_CREATED_MSG = "Password has been created for user -> {}";
     public static final String PASSWORD_UPDATED_MSG = "Password has been updated for user -> {}";
     public static final String PASSWORD_EQUALITY_MSG = "Password and confirm password is not same";
-    public static final String REQUEST_MSG = " Request details -> URL: '{}', body and params: '{}'";
-    public static final String RESPONSE_MSG = " Response details ->  Request URL: '{}', response body: '{}'";
+    public static final String REQUEST_MSG = "Request details -> URL: '{}', body and params: '{}'";
+    public static final String RESPONSE_MSG = "Response details ->  Request URL: '{}', response body: '{}'";
     public static final String OTP_CONFIRMED_MSG = "User {} confirmed their OTP";
     public static final String NO_BODY_MSG = "No body required";
     public static final String DUPLICATE_ACCOUNT_NAME_MSG = "User %s has existing account %s";

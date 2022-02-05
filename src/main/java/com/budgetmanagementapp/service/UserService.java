@@ -14,7 +14,7 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    UserRsModel signup(SignupRqModel signupRqModel) throws MessagingException;
+    UserRsModel signup(UserRqModel signupRqModel) throws MessagingException;
 
     CreatePasswordRsModel createPassword(CreatePasswordRqModel passwordRequestModel);
 
@@ -22,7 +22,9 @@ public interface UserService {
 
     ResetPasswordRsModel resetPassword(String username, ResetPasswordRqModel requestBody);
 
-    UserInfoRsModel userInfo(String username);
+    UserInfoRsModel getUserInfo(String username);
+
+    UserInfoRsModel updateUserInfo(String username, UserRqModel userRqModel);
 
     UserInfoRsModel updateUserLanguage(String username, String language);
 

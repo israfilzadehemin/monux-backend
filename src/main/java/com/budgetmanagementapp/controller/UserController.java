@@ -10,19 +10,10 @@ import static org.springframework.http.HttpStatus.OK;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.account.AccountRqModel;
 import com.budgetmanagementapp.model.account.AccountRsModel;
-import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
-import com.budgetmanagementapp.model.user.ConfirmOtpRsModel;
-import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
-import com.budgetmanagementapp.model.user.SignupRqModel;
-import com.budgetmanagementapp.model.user.UserInfoRsModel;
-import com.budgetmanagementapp.model.user.UserRsModel;
+import com.budgetmanagementapp.model.user.*;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
-import com.budgetmanagementapp.utility.MailSenderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -52,7 +43,7 @@ public class UserController {
 
     @ApiOperation("Create user with email")
     @PostMapping(USER_SIGNUP_URL)
-    public ResponseEntity<ResponseModel<UserRsModel>> signupWithEmail(@RequestBody @Valid SignupRqModel requestBody)
+    public ResponseEntity<ResponseModel<UserRsModel>> signupWithEmail(@RequestBody @Valid UserRqModel requestBody)
             throws MessagingException {
 
         log.info(REQUEST_MSG, USER_SIGNUP_URL, requestBody);
@@ -103,7 +94,6 @@ public class UserController {
     @PostMapping(USER_RESET_PASSWORD_URL)
     public ResponseEntity<ResponseModel<ResetPasswordRsModel>> resetPassword(
             @RequestBody @Valid ResetPasswordRqModel requestBody, @RequestParam String username) {
-
         log.info(REQUEST_MSG, USER_RESET_PASSWORD_URL, requestBody);
         var response = ResponseModel.of(userService.resetPassword(username, requestBody), OK);
 
@@ -126,7 +116,19 @@ public class UserController {
     public ResponseEntity<ResponseModel<UserInfoRsModel>> getUserInfo(Authentication auth) {
 
         log.info(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG);
-        var response = ResponseModel.of(userService.userInfo(((UserDetails) auth.getPrincipal()).getUsername()), OK);
+        var response = ResponseModel.of(userService.getUserInfo(((UserDetails) auth.getPrincipal()).getUsername()), OK);
+
+        log.info(RESPONSE_MSG, USER_INFO_URL, response);
+        return ResponseEntity.ok(response);
+    }
+
+    @ApiOperation("Update user information")
+    @PutMapping(USER_INFO_URL)
+    public ResponseEntity<ResponseModel<UserInfoRsModel>> updateUserInfo(Authentication auth,
+                                                                         @RequestBody UserRqModel request) {
+        log.info(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG);
+        var response = ResponseModel.of(userService.updateUserInfo(
+                ((UserDetails) auth.getPrincipal()).getUsername(), request), OK);
 
         log.info(RESPONSE_MSG, USER_INFO_URL, response);
         return ResponseEntity.ok(response);

@@ -18,6 +18,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -37,7 +38,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             authorizeUser(request, response, chain);
         } catch (InvalidModelException | NullPointerException
                 | SignatureException | MalformedJwtException | ExpiredJwtException
-                | UnsupportedJwtException | IllegalArgumentException exception) {
+                | UnsupportedJwtException | IllegalArgumentException | UsernameNotFoundException exception) {
             handleJwtException(response, exception);
         }
     }
@@ -47,8 +48,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         jwtService.extractToken(req)
                 .flatMap(jwtService::parseTokenToClaims)
                 .map(jwtService::getSubjectFromClaims)
-                .map(Long::parseLong)
-                .map(mUserDetailsService::loadById)
+                .map(mUserDetailsService::loadUserByUsername)
                 .map(ud -> new UsernamePasswordAuthenticationToken(ud, null, ud.getAuthorities()))
                 .ifPresent(auth -> {
                     auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));

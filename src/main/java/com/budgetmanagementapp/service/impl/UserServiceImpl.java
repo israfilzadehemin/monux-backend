@@ -12,18 +12,8 @@ import static java.lang.String.format;
 import com.budgetmanagementapp.builder.UserBuilder;
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.InvalidOtpException;
-import com.budgetmanagementapp.exception.PasswordMismatchException;
-import com.budgetmanagementapp.exception.UserNotFoundException;
-import com.budgetmanagementapp.exception.UsernameNotUniqueException;
-import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
-import com.budgetmanagementapp.model.user.SignupRqModel;
-import com.budgetmanagementapp.model.user.UserAuthModel;
-import com.budgetmanagementapp.model.user.UserInfoRsModel;
-import com.budgetmanagementapp.model.user.UserRsModel;
+import com.budgetmanagementapp.exception.*;
+import com.budgetmanagementapp.model.user.*;
 import com.budgetmanagementapp.repository.OtpRepository;
 import com.budgetmanagementapp.repository.UserRepository;
 import com.budgetmanagementapp.service.UserService;
@@ -75,8 +65,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserRsModel signup(SignupRqModel signupRqModel) throws MessagingException {
+    public UserRsModel signup(UserRqModel signupRqModel) throws MessagingException {
         CustomValidator.validateUsername(signupRqModel.getUsername());
+        CustomValidator.validateFullName(signupRqModel.getFullName());
 
         checkUsernameUniqueness(signupRqModel.getUsername());
         User user = userRepo.save(
@@ -139,13 +130,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoRsModel userInfo(String username) {
+    public UserInfoRsModel getUserInfo(String username) {
         User user = userRepo.byUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
 
         UserInfoRsModel userInfoRsModel = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
 
         log.info(USER_BY_USERNAME, username, userInfoRsModel);
+        return userInfoRsModel;
+    }
+
+    @Override
+    public UserInfoRsModel updateUserInfo(String username, UserRqModel userRqModel) {
+        CustomValidator.validateUsername(userRqModel.getUsername());
+        CustomValidator.validateFullName(userRqModel.getFullName());
+
+        User user = findByUsername(username);
+        user.setUsername(userRqModel.getUsername());
+        user.setFullName(userRqModel.getFullName());
+
+        userRepo.save(user);
+        var userInfoRsModel = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
+
+        log.info(USER_UPDATE_INFO_MSG, userInfoRsModel);
         return userInfoRsModel;
     }
 
@@ -178,7 +185,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepo.byUsernameAndStatus(requestBody.getUsername(), UserStatus.CONFIRMED)
                 .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
 
-        log.info(USER_BY_USERNAME_STATUS, requestBody.getUsername(), UserStatus.CONFIRMED, user);
+        log.info(USER_BY_USERNAME_STATUS, requestBody.getUsername(), UserStatus.CONFIRMED, user.getUserId());
         return user;
     }
 
@@ -189,8 +196,15 @@ public class UserServiceImpl implements UserService {
     }
 
     private void updatePassword(String password, User user) {
+        checkPasswordDuplication(user.getPassword(), password);
         user.setPassword(encoder.encode(password));
         userRepo.save(user);
+    }
+
+    private void checkPasswordDuplication(String oldPassword, String newPassword) {
+        if (encoder.matches(newPassword, oldPassword)) {
+            throw new DuplicatePasswordException(PASSWORD_DUPLICATION_MSG);
+        }
     }
 
     private void checkUsernameUniqueness(String username) {

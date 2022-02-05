@@ -71,7 +71,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
 
         String token = jwtService
-                .generateToken(userAuthModel.getId(), Boolean.parseBoolean(res.getHeader(HEADER_REMEMBER_ME)));
+                .generateToken(userAuthModel.getUsername(), Boolean.parseBoolean(res.getHeader(HEADER_REMEMBER_ME)));
 
         generateResponse(res, HttpStatus.OK, String.format(JWT_TOKEN_FORMAT, Constant.JWT_PREFIX, token));
         logger.info(String.format(JWT_TOKEN_GENERATED_MSG, userAuthModel.getUsername()));
@@ -100,6 +100,4 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                         .body(body)
                         .build());
     }
-
-
 }
