@@ -34,17 +34,17 @@ public class LabelController {
     private final LabelService labelService;
 
     @ApiOperation("Create label")
-    @PostMapping(LABEL_CREATE_URL)
+    @PostMapping(LABEL_URL)
     public ResponseEntity<ResponseModel<LabelRsModel>> createLabel(
             @RequestBody @Valid LabelRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_CREATE_URL, requestBody);
+        log.info(REQUEST_MSG, LABEL_URL, requestBody);
         var response =
                 ResponseModel.of(
                         labelService.createLabel(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                         CREATED);
 
-        log.info(RESPONSE_MSG, LABEL_CREATE_URL, response);
+        log.info(RESPONSE_MSG, LABEL_URL, response);
         return ResponseEntity.ok(response);
     }
 
@@ -77,17 +77,17 @@ public class LabelController {
     }
 
     @ApiOperation("Update label")
-    @PostMapping(LABEL_UPDATE_URL)
+    @PutMapping(LABEL_URL)
     public ResponseEntity<ResponseModel<LabelRsModel>> updateLabel(
             @RequestBody @Valid UpdateLabelRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_UPDATE_URL, requestBody);
+        log.info(REQUEST_MSG, LABEL_URL, requestBody);
         var response =
                 ResponseModel.of(
                         labelService.updateLabel(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                         OK);
 
-        log.info(RESPONSE_MSG, LABEL_UPDATE_URL, response);
+        log.info(RESPONSE_MSG, LABEL_URL, response);
         return ResponseEntity.ok(response);
     }
 
@@ -104,6 +104,5 @@ public class LabelController {
                         OK);
 
         return ResponseEntity.ok(response);
-
     }
 }

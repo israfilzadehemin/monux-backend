@@ -44,39 +44,39 @@ public class DefinitionController {
     }
 
     @ApiOperation("Create definition")
-    @PostMapping(DEFINITION_CREATE_URL)
+    @PostMapping(DEFINITION_URL)
     public ResponseEntity<ResponseModel<DefinitionRsModel>> createDefinition(
             @RequestBody @Valid DefinitionRqModel requestBody) {
 
-        log.info(REQUEST_MSG, DEFINITION_CREATE_URL, requestBody);
+        log.info(REQUEST_MSG, DEFINITION_URL, requestBody);
         var response = ResponseModel.of(definitionService.createDefinition(requestBody), CREATED);
 
-        log.info(RESPONSE_MSG, DEFINITION_CREATE_URL, response);
+        log.info(RESPONSE_MSG, DEFINITION_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update definition")
-    @PostMapping(DEFINITION_UPDATE_URL)
+    @PutMapping(DEFINITION_URL)
     public ResponseEntity<ResponseModel<DefinitionRsModel>> updateDefinition(
             @RequestBody @Valid UpdateDefinitionRqModel requestBody) {
 
-        log.info(REQUEST_MSG, DEFINITION_UPDATE_URL, requestBody);
+        log.info(REQUEST_MSG, DEFINITION_URL, requestBody);
         var response = ResponseModel.of(definitionService.updateDefinition(requestBody), OK);
 
-        log.info(RESPONSE_MSG, DEFINITION_UPDATE_URL, response);
+        log.info(RESPONSE_MSG, DEFINITION_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete definition")
-    @PostMapping(DEFINITION_DELETE_URL)
+    @DeleteMapping(DEFINITION_URL)
     public ResponseEntity<ResponseModel<DefinitionRsModel>> deleteDefinition(
             @ApiParam(name = "definition-id", type = "string", required = true)
             @RequestParam(name = "definition-id") String definitionId) {
 
-        log.info(REQUEST_MSG, DEFINITION_DELETE_URL, definitionId);
+        log.info(REQUEST_MSG, DEFINITION_URL, definitionId);
         var response = ResponseModel.of(definitionService.deleteDefinition(definitionId), OK);
 
-        log.info(RESPONSE_MSG, DEFINITION_DELETE_URL, response);
+        log.info(RESPONSE_MSG, DEFINITION_URL, response);
         return ResponseEntity.ok(response);
     }
 }

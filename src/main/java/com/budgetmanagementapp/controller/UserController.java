@@ -106,25 +106,25 @@ public class UserController {
     }
 
     @ApiOperation("Get user information")
-    @GetMapping(USER_INFO_URL)
+    @GetMapping(USER_URL)
     public ResponseEntity<ResponseModel<UserInfoRsModel>> getUserInfo(Authentication auth) {
 
-        log.info(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, USER_URL, NO_BODY_MSG);
         var response = ResponseModel.of(userService.getUserInfo(((UserDetails) auth.getPrincipal()).getUsername()), OK);
 
-        log.info(RESPONSE_MSG, USER_INFO_URL, response);
+        log.info(RESPONSE_MSG, USER_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update user information")
-    @PutMapping(USER_INFO_URL)
+    @PutMapping(USER_URL)
     public ResponseEntity<ResponseModel<UserInfoRsModel>> updateUserInfo(Authentication auth,
                                                                          @RequestBody UserRqModel request) {
-        log.info(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, USER_URL, NO_BODY_MSG);
         var response = ResponseModel.of(userService.updateUserInfo(
                 ((UserDetails) auth.getPrincipal()).getUsername(), request), OK);
 
-        log.info(RESPONSE_MSG, USER_INFO_URL, response);
+        log.info(RESPONSE_MSG, USER_URL, response);
         return ResponseEntity.ok(response);
     }
 
@@ -135,21 +135,21 @@ public class UserController {
             @ApiParam(name = "language", type = "string", example = "az, en, ru", required = true)
             @RequestParam("language") String language) {
 
-        log.info(REQUEST_MSG, USER_INFO_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, USER_UPDATE_LANG_URL, NO_BODY_MSG);
         var response = ResponseModel.of(
                 userService.updateUserLanguage(((UserDetails) auth.getPrincipal()).getUsername(), language),
                 OK);
 
-        log.info(RESPONSE_MSG, USER_INFO_URL, response);
+        log.info(RESPONSE_MSG, USER_UPDATE_LANG_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete user")
-    @PostMapping(USER_DELETE_URL)
+    @DeleteMapping(USER_URL)
     public ResponseEntity<ResponseModel<UserRsModel>> updateUserStatus(Authentication auth) {
         var response = ResponseModel.of(
                 userService.deleteUser(((UserDetails) auth.getPrincipal()).getUsername()), OK);
-        log.info(RESPONSE_MSG, USER_DELETE_URL, response);
+        log.info(RESPONSE_MSG, USER_URL, response);
         return ResponseEntity.ok(response);
     }
 }

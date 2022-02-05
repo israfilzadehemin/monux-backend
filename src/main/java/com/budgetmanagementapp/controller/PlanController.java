@@ -44,37 +44,37 @@ public class PlanController {
     }
 
     @ApiOperation("Add plan")
-    @PostMapping(PLAN_ADD_PLAN_URL)
+    @PostMapping(PLAN_URL)
     public ResponseEntity<ResponseModel<PlanRsModel>> addPlan(@RequestBody @Valid PlanRqModel request) {
 
-        log.info(REQUEST_MSG, PLAN_ADD_PLAN_URL, request);
+        log.info(REQUEST_MSG, PLAN_URL, request);
         var response = ResponseModel.of(planService.addPlan(request), CREATED);
 
-        log.info(RESPONSE_MSG, PLAN_ADD_PLAN_URL, response);
+        log.info(RESPONSE_MSG, PLAN_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update plan")
-    @PostMapping(PLAN_UPDATE_PLAN_URL)
+    @PutMapping(PLAN_URL)
     public ResponseEntity<ResponseModel<PlanRsModel>> updatePlan(@RequestBody @Valid UpdatePlanRqModel request) {
 
-        log.info(REQUEST_MSG, PLAN_UPDATE_PLAN_URL, request);
+        log.info(REQUEST_MSG, PLAN_URL, request);
         var response = ResponseModel.of(planService.updatePlan(request), OK);
 
-        log.info(REQUEST_MSG, PLAN_UPDATE_PLAN_URL, response);
+        log.info(REQUEST_MSG, PLAN_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete plan")
-    @PostMapping(PLAN_DELETE_PLAN_URL)
+    @DeleteMapping(PLAN_URL)
     public ResponseEntity<ResponseModel<PlanRsModel>> deletePlan(
             @ApiParam(name = "plan-id", type = "string", required = true)
             @RequestParam("plan-id") String planId) {
 
-        log.info(REQUEST_MSG, PLAN_DELETE_PLAN_URL, planId);
+        log.info(REQUEST_MSG, PLAN_URL, planId);
         var response = ResponseModel.of(planService.deletePlan(planId), OK);
 
-        log.info(RESPONSE_MSG, PLAN_DELETE_PLAN_URL, response);
+        log.info(RESPONSE_MSG, PLAN_URL, response);
         return ResponseEntity.ok(response);
     }
 }

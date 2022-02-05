@@ -16,10 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -39,47 +36,47 @@ public class TemplateController {
     private final TemplateService templateService;
 
     @ApiOperation("Create income template")
-    @PostMapping(TEMPLATE_CREATE_INCOME_URL)
+    @PostMapping(TEMPLATE_INCOME_URL)
     public ResponseEntity<ResponseModel<TransactionRsModel>> createIncomeTemplate(
             @RequestBody @Valid InOutRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, TEMPLATE_CREATE_INCOME_URL, requestBody);
+        log.info(REQUEST_MSG, TEMPLATE_INCOME_URL, requestBody);
         var response = ResponseModel.of(
                 templateService.createTemplate(
                         requestBody, INCOME, ((UserDetails) auth.getPrincipal()).getUsername()),
                 CREATED);
 
-        log.info(RESPONSE_MSG, TEMPLATE_CREATE_INCOME_URL, response);
+        log.info(RESPONSE_MSG, TEMPLATE_INCOME_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Create outgoing template")
-    @PostMapping(TEMPLATE_CREATE_OUTGOING_URL)
+    @PostMapping(TEMPLATE_OUTGOING_URL)
     public ResponseEntity<ResponseModel<TransactionRsModel>> createOutgoingTemplate(
             @RequestBody @Valid InOutRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, TEMPLATE_CREATE_OUTGOING_URL, requestBody);
+        log.info(REQUEST_MSG, TEMPLATE_OUTGOING_URL, requestBody);
         var response = ResponseModel.of(
                 templateService.createTemplate(
                         requestBody, OUTGOING, ((UserDetails) auth.getPrincipal()).getUsername()),
                 CREATED);
 
-        log.info(RESPONSE_MSG, TEMPLATE_CREATE_OUTGOING_URL, response);
+        log.info(RESPONSE_MSG, TEMPLATE_OUTGOING_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Create transfer template")
-    @PostMapping(TEMPLATE_CREATE_TRANSFER_URL)
+    @PostMapping(TEMPLATE_TRANSFER_URL)
     public ResponseEntity<ResponseModel<TransferRsModel>> createTransferTemplate(
             @RequestBody @Valid TransferRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, TEMPLATE_CREATE_TRANSFER_URL, requestBody);
+        log.info(REQUEST_MSG, TEMPLATE_TRANSFER_URL, requestBody);
         var response = ResponseModel.of(
                 templateService.createTemplate(
                         requestBody, TRANSFER, ((UserDetails) auth.getPrincipal()).getUsername()),
                 CREATED);
 
-        log.info(RESPONSE_MSG, TEMPLATE_CREATE_TRANSFER_URL, response);
+        log.info(RESPONSE_MSG, TEMPLATE_TRANSFER_URL, response);
         return ResponseEntity.ok(response);
     }
 
@@ -115,48 +112,48 @@ public class TemplateController {
     }
 
     @ApiOperation("Get all templates")
-    @GetMapping(TEMPLATE_GET_ALL_TEMPLATES_URL)
+    @GetMapping(TEMPLATE_TEMPLATES_URL)
     public ResponseEntity<ResponseModel<List<TransactionRsModel>>> getAllTemplates(Authentication auth) {
 
-        log.info(REQUEST_MSG, TEMPLATE_GET_ALL_TEMPLATES_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, TEMPLATE_TEMPLATES_URL, NO_BODY_MSG);
         var response = ResponseModel.of(
                 templateService.getAllTemplatesByUser(((UserDetails) auth.getPrincipal()).getUsername()),
                 OK);
 
-        log.info(RESPONSE_MSG, TEMPLATE_GET_ALL_TEMPLATES_URL, response);
+        log.info(RESPONSE_MSG, TEMPLATE_TEMPLATES_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update income and outgoing templates")
-    @PostMapping(TEMPLATE_UPDATE_IN_OUT_URL)
+    @PutMapping(TEMPLATE_INCOME_URL)
     public ResponseEntity<ResponseModel<InOutRsModel>> updateInOutTemplate(
             @RequestBody @Valid UpdateInOutRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, TEMPLATE_UPDATE_IN_OUT_URL, requestBody);
+        log.info(REQUEST_MSG, TEMPLATE_INCOME_URL, requestBody);
         var response = ResponseModel.of(
                 templateService.updateTemplate(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                 OK);
 
-        log.info(RESPONSE_MSG, TEMPLATE_UPDATE_IN_OUT_URL, response);
+        log.info(RESPONSE_MSG, TEMPLATE_INCOME_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update transfer template")
-    @PostMapping(TEMPLATE_UPDATE_TRANSFER_URL)
+    @PutMapping(TEMPLATE_TRANSFER_URL)
     public ResponseEntity<ResponseModel<TransferRsModel>> updateTransferTemplate(
             @RequestBody @Valid UpdateTransferRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, TEMPLATE_UPDATE_TRANSFER_URL, requestBody);
+        log.info(REQUEST_MSG, TEMPLATE_TRANSFER_URL, requestBody);
         var response = ResponseModel.of(
                 templateService.updateTemplate(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                 OK);
 
-        log.info(RESPONSE_MSG, TEMPLATE_UPDATE_TRANSFER_URL, response);
+        log.info(RESPONSE_MSG, TEMPLATE_TRANSFER_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update debt in and out template")
-    @PostMapping(TEMPLATE_UPDATE_DEBT_URL)
+    @PutMapping(TEMPLATE_UPDATE_DEBT_URL)
     public ResponseEntity<ResponseModel<DebtRsModel>> updateDebtTemplate(
             @RequestBody @Valid UpdateDebtRqModel requestBody, Authentication auth) {
 
@@ -170,17 +167,17 @@ public class TemplateController {
     }
 
     @ApiOperation("Delete template")
-    @PostMapping(TEMPLATE_DELETE_TEMPLATES_URL)
+    @DeleteMapping(TEMPLATE_TEMPLATES_URL)
     public ResponseEntity<ResponseModel<List<TransactionRsModel>>> deleteTemplateTransactions(
             @RequestBody @Valid DeleteTransactionRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, TEMPLATE_DELETE_TEMPLATES_URL, requestBody);
+        log.info(REQUEST_MSG, TEMPLATE_TEMPLATES_URL, requestBody);
         var response = ResponseModel.of(
                 templateService.deleteTemplateById(
                         ((UserDetails) auth.getPrincipal()).getUsername(), requestBody.getTransactionIds()),
                 OK);
 
-        log.info(RESPONSE_MSG, TEMPLATE_DELETE_TEMPLATES_URL, response);
+        log.info(RESPONSE_MSG, TEMPLATE_TEMPLATES_URL, response);
         return ResponseEntity.ok(response);
     }
 

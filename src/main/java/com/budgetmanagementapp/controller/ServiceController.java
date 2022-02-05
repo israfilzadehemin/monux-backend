@@ -44,37 +44,37 @@ public class ServiceController {
     }
 
     @ApiOperation("Create service")
-    @PostMapping(SERVICE_CREATE_URL)
+    @PostMapping(SERVICE_URL)
     public ResponseEntity<ResponseModel<ServiceRsModel>> createService(@RequestBody @Valid ServiceRqModel request) {
 
-        log.info(REQUEST_MSG, SERVICE_CREATE_URL, request);
+        log.info(REQUEST_MSG, SERVICE_URL, request);
         var response = ResponseModel.of(serviceService.createService(request), CREATED);
 
-        log.info(RESPONSE_MSG, SERVICE_CREATE_URL, response);
+        log.info(RESPONSE_MSG, SERVICE_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update service")
-    @PostMapping(SERVICE_UPDATE_URL)
+    @PutMapping(SERVICE_URL)
     public ResponseEntity<ResponseModel<ServiceRsModel>> updateService(@RequestBody @Valid UpdateServiceRqModel request) {
 
-        log.info(REQUEST_MSG, SERVICE_UPDATE_URL, request);
+        log.info(REQUEST_MSG, SERVICE_URL, request);
         var response = ResponseModel.of(serviceService.updateService(request), OK);
 
-        log.info(RESPONSE_MSG, SERVICE_UPDATE_URL, response);
+        log.info(RESPONSE_MSG, SERVICE_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete service")
-    @PostMapping(SERVICE_DELETE_URL)
+    @DeleteMapping(SERVICE_URL)
     public ResponseEntity<ResponseModel<ServiceRsModel>> deleteService(
             @ApiParam(name = "service-id", type = "string", required = true)
             @RequestParam(name = "service-id") String serviceId) {
 
-        log.info(REQUEST_MSG, SERVICE_DELETE_URL, serviceId);
+        log.info(REQUEST_MSG, SERVICE_URL, serviceId);
         var response = ResponseModel.of(serviceService.deleteService(serviceId), OK);
 
-        log.info(RESPONSE_MSG, SERVICE_DELETE_URL, response);
+        log.info(RESPONSE_MSG, SERVICE_URL, response);
         return ResponseEntity.ok(response);
     }
 

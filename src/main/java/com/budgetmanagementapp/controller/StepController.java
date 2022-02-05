@@ -19,7 +19,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.STEP_GET_ALL_STEPS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.STEP_URL;
 
 @Log4j2
 @AllArgsConstructor
@@ -43,37 +44,37 @@ public class StepController {
     }
 
     @ApiOperation("Create step")
-    @PostMapping(STEP_CREATE_URL)
+    @PostMapping(STEP_URL)
     public ResponseEntity<ResponseModel<StepRsModel>> createStep(@RequestBody @Valid StepRqModel request) {
 
-        log.info(REQUEST_MSG, STEP_CREATE_URL, request);
+        log.info(REQUEST_MSG, STEP_URL, request);
         var response = ResponseModel.of(stepService.createStep(request), HttpStatus.CREATED);
 
-        log.info(RESPONSE_MSG, STEP_CREATE_URL, response);
+        log.info(RESPONSE_MSG, STEP_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update step")
-    @PostMapping(STEP_UPDATE_URL)
+    @PutMapping(STEP_URL)
     public ResponseEntity<ResponseModel<StepRsModel>> updateStep(@RequestBody @Valid UpdateStepRqModel request) {
 
-        log.info(REQUEST_MSG, STEP_UPDATE_URL, request);
+        log.info(REQUEST_MSG, STEP_URL, request);
         var response = ResponseModel.of(stepService.updateStep(request), HttpStatus.OK);
 
-        log.info(RESPONSE_MSG, STEP_UPDATE_URL, response);
+        log.info(RESPONSE_MSG, STEP_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete step")
-    @PostMapping(STEP_DELETE_URL)
+    @DeleteMapping(STEP_URL)
     public ResponseEntity<ResponseModel<StepRsModel>> deleteStep(
             @ApiParam(name = "step-id", type = "string", required = true)
             @RequestParam(name = "step-id") String stepId) {
 
-        log.info(REQUEST_MSG, STEP_DELETE_URL, stepId);
+        log.info(REQUEST_MSG, STEP_URL, stepId);
         var response = ResponseModel.of(stepService.deleteStep(stepId), HttpStatus.OK);
 
-        log.info(RESPONSE_MSG, STEP_DELETE_URL, response);
+        log.info(RESPONSE_MSG, STEP_URL, response);
         return ResponseEntity.ok(response);
     }
 }

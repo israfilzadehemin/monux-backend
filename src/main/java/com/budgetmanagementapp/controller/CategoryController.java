@@ -13,10 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -35,17 +32,17 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @ApiOperation("Create category")
-    @PostMapping(CATEGORY_CREATE_URL)
+    @PostMapping(CATEGORY_URL)
     public ResponseEntity<ResponseModel<CategoryRsModel>> createCategory(
             @RequestBody @Valid CategoryRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, CATEGORY_CREATE_URL, requestBody);
+        log.info(REQUEST_MSG, CATEGORY_URL, requestBody);
         var response =
                 ResponseModel.of(
                         categoryService.createCategory(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                         CREATED);
 
-        log.info(RESPONSE_MSG, CATEGORY_CREATE_URL, response);
+        log.info(RESPONSE_MSG, CATEGORY_URL, response);
         return ResponseEntity.ok(response);
     }
 
@@ -78,17 +75,17 @@ public class CategoryController {
     }
 
     @ApiOperation("Update category")
-    @PostMapping(CATEGORY_UPDATE_URL)
+    @PutMapping(CATEGORY_URL)
     public ResponseEntity<ResponseModel<CategoryRsModel>> updateCustomCategory(
             @RequestBody @Valid UpdateCategoryRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, CATEGORY_UPDATE_URL, requestBody);
+        log.info(REQUEST_MSG, CATEGORY_URL, requestBody);
         var response =
                 ResponseModel.of(
                         categoryService.updateCategory(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                         OK);
 
-        log.info(RESPONSE_MSG, CATEGORY_UPDATE_URL, response);
+        log.info(RESPONSE_MSG, CATEGORY_URL, response);
         return ResponseEntity.ok(response);
     }
 

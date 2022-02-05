@@ -34,17 +34,17 @@ public class FeedbackController {
     private final FeedbackService feedbackService;
 
     @ApiOperation("Create feedback")
-    @PostMapping(FEEDBACK_CREATE_URL)
+    @PostMapping(FEEDBACK_URL)
     public ResponseEntity<ResponseModel<FeedbackRsModel>> createFeedback(
             @RequestBody @Valid FeedbackRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, FEEDBACK_CREATE_URL, requestBody);
+        log.info(REQUEST_MSG, FEEDBACK_URL, requestBody);
         var response =
                 ResponseModel.of(
                         feedbackService.createFeedback(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                         CREATED);
 
-        log.info(RESPONSE_MSG, FEEDBACK_CREATE_URL, response);
+        log.info(RESPONSE_MSG, FEEDBACK_URL, response);
         return ResponseEntity.ok(response);
     }
 
@@ -63,18 +63,18 @@ public class FeedbackController {
     }
 
     @ApiOperation("Get feedback by id")
-    @GetMapping(FEEDBACK_GET_FEEDBACK_BY_ID_URL)
+    @GetMapping(FEEDBACK_URL)
     public ResponseEntity<ResponseModel<FeedbackRsModel>> getFeedbackById(
             @ApiParam(name = REQUEST_PARAM_FEEDBACK_ID, type = "string", required = true)
             @RequestParam(name = REQUEST_PARAM_FEEDBACK_ID) @NotBlank String feedbackId, Authentication auth) {
 
-        log.info(REQUEST_MSG, FEEDBACK_GET_FEEDBACK_BY_ID_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, FEEDBACK_URL, NO_BODY_MSG);
         var response =
                 ResponseModel.of(
                         feedbackService.getFeedbackById(feedbackId, ((UserDetails) auth.getPrincipal()).getUsername()),
                         OK);
 
-        log.info(REQUEST_MSG, FEEDBACK_GET_FEEDBACK_BY_ID_URL, response);
+        log.info(REQUEST_MSG, FEEDBACK_URL, response);
         return ResponseEntity.ok(response);
     }
 

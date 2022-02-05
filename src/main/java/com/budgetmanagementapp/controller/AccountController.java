@@ -34,32 +34,32 @@ public class AccountController {
     private final AccountService accountService;
 
     @ApiOperation("Create account")
-    @PostMapping(ACCOUNT_CREATE_URL)
+    @PostMapping(ACCOUNT_URL)
     public ResponseEntity<ResponseModel<AccountRsModel>> createAccount(@RequestBody AccountRqModel requestBody,
                                                                        Authentication auth) {
         requestBody.setUsername(((UserDetails) auth.getPrincipal()).getUsername());
 
-        log.info(REQUEST_MSG, ACCOUNT_CREATE_URL, requestBody);
+        log.info(REQUEST_MSG, ACCOUNT_URL, requestBody);
         var response = ResponseModel.of(accountService.createAccount(requestBody, false), CREATED);
 
-        log.info(RESPONSE_MSG, ACCOUNT_CREATE_URL, response);
+        log.info(RESPONSE_MSG, ACCOUNT_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update account")
-    @PostMapping(ACCOUNT_UPDATE_URL)
+    @PutMapping(ACCOUNT_URL)
     public ResponseEntity<ResponseModel<AccountRsModel>> updateAccount(
             @RequestBody @Valid UpdateAccountModel requestBody, Authentication auth) {
-        log.info(REQUEST_MSG, ACCOUNT_UPDATE_URL, requestBody);
+        log.info(REQUEST_MSG, ACCOUNT_URL, requestBody);
         var response = ResponseModel.of(
                 accountService.updateAccount(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()), OK);
 
-        log.info(RESPONSE_MSG, ACCOUNT_UPDATE_URL, response);
+        log.info(RESPONSE_MSG, ACCOUNT_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update balance of account")
-    @PostMapping(ACCOUNT_UPDATE_BALANCE_URL)
+    @PutMapping(ACCOUNT_UPDATE_BALANCE_URL)
     public ResponseEntity<ResponseModel<AccountRsModel>> updateBalance(
             @RequestBody @Valid UpdateBalanceModel requestBody, Authentication auth) {
         log.info(REQUEST_MSG, ACCOUNT_UPDATE_BALANCE_URL, requestBody);

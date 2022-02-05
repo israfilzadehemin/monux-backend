@@ -59,37 +59,37 @@ public class BlogController {
     }
 
     @ApiOperation("Create blog")
-    @PostMapping(BLOG_CREATE_BLOG_URL)
+    @PostMapping(BLOG_URL)
     public ResponseEntity<ResponseModel<BlogRsModel>> createBlog(@RequestBody @Valid BlogRqModel request) {
 
-        log.info(REQUEST_MSG, BLOG_CREATE_BLOG_URL, request);
+        log.info(REQUEST_MSG, BLOG_URL, request);
         var response = ResponseModel.of(blogService.addBlog(request), CREATED);
 
-        log.info(RESPONSE_MSG, BLOG_CREATE_BLOG_URL, response);
+        log.info(RESPONSE_MSG, BLOG_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update blog")
-    @PostMapping(BLOG_UPDATE_BLOG_URL)
+    @PutMapping(BLOG_URL)
     public ResponseEntity<ResponseModel<BlogRsModel>> updateBlog(@RequestBody @Valid UpdateBlogRqModel request) {
 
-        log.info(REQUEST_MSG, BLOG_UPDATE_BLOG_URL, request);
+        log.info(REQUEST_MSG, BLOG_URL, request);
         var response = ResponseModel.of(blogService.updateBlog(request), OK);
 
-        log.info(REQUEST_MSG, BLOG_UPDATE_BLOG_URL, response);
+        log.info(REQUEST_MSG, BLOG_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete blog")
-    @PostMapping(BLOG_DELETE_BLOG_URL)
+    @DeleteMapping(BLOG_URL)
     public ResponseEntity<ResponseModel<BlogRsModel>> deleteBlog(
             @ApiParam(name = "blog-id", type = "string", required = true)
             @RequestParam(name = "blog-id") String blogId) {
 
-        log.info(REQUEST_MSG, BLOG_DELETE_BLOG_URL, blogId);
+        log.info(REQUEST_MSG, BLOG_URL, blogId);
         var response = ResponseModel.of(blogService.deleteBlog(blogId), OK);
 
-        log.info(RESPONSE_MSG, BLOG_DELETE_BLOG_URL, response);
+        log.info(RESPONSE_MSG, BLOG_URL, response);
         return ResponseEntity.ok(response);
     }
 

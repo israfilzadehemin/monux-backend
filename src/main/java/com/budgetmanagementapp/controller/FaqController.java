@@ -44,52 +44,52 @@ public class FaqController {
     }
 
     @ApiOperation("Get faq by id")
-    @GetMapping(FAQ_GET_FAQ_BY_ID_URL)
+    @GetMapping(FAQ_URL)
     public ResponseEntity<ResponseModel<FaqRsModel>> getFaqById(
             @ApiParam(name = "faq-id", type = "string", required = true)
             @RequestParam(name = "faq-id") String faqId,
             @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
             @RequestParam(name = "language") String language) {
 
-        log.info(REQUEST_MSG, FAQ_GET_FAQ_BY_ID_URL, faqId);
+        log.info(REQUEST_MSG, FAQ_URL, faqId);
         var response = ResponseModel.of(faqService.getFaqById(faqId, language), OK);
 
-        log.info(RESPONSE_MSG, FAQ_GET_FAQ_BY_ID_URL, response);
+        log.info(RESPONSE_MSG, FAQ_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Create faq")
-    @PostMapping(FAQ_CREATE_URL)
+    @PostMapping(FAQ_URL)
     public ResponseEntity<ResponseModel<FaqRsModel>> createFaq(@RequestBody @Valid FaqRqModel request) {
 
-        log.info(REQUEST_MSG, FAQ_CREATE_URL, request);
+        log.info(REQUEST_MSG, FAQ_URL, request);
         var response = ResponseModel.of(faqService.createFaq(request), CREATED);
 
-        log.info(REQUEST_MSG, FAQ_CREATE_URL, response);
+        log.info(REQUEST_MSG, FAQ_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update faq")
-    @PostMapping(FAQ_UPDATE_URL)
+    @PutMapping(FAQ_URL)
     public ResponseEntity<ResponseModel<FaqRsModel>> updateFaq(@RequestBody @Valid UpdateFaqRqModel request) {
 
-        log.info(REQUEST_MSG, FAQ_UPDATE_URL, request);
+        log.info(REQUEST_MSG, FAQ_URL, request);
         var response = ResponseModel.of(faqService.updateFaq(request), OK);
 
-        log.info(RESPONSE_MSG, FAQ_UPDATE_URL, response);
+        log.info(RESPONSE_MSG, FAQ_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete faq")
-    @PostMapping(FAQ_DELETE_URL)
+    @DeleteMapping(FAQ_URL)
     public ResponseEntity<ResponseModel<FaqRsModel>> deleteFaq(
             @ApiParam(name = "faq-id", type = "string", required = true)
             @RequestParam("faq-id") String faqId) {
 
-        log.info(REQUEST_MSG, FAQ_DELETE_URL, faqId);
+        log.info(REQUEST_MSG, FAQ_URL, faqId);
         var response = ResponseModel.of(faqService.deleteFaq(faqId), OK);
 
-        log.info(RESPONSE_MSG, FAQ_DELETE_URL, response);
+        log.info(RESPONSE_MSG, FAQ_URL, response);
         return ResponseEntity.ok(response);
     }
 }

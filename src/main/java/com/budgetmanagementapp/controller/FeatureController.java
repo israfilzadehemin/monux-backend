@@ -31,51 +31,51 @@ public class FeatureController {
     private final FeatureService featureService;
 
     @ApiOperation("Get all features")
-    @GetMapping(FEATURE_GET_ALL_FEATURES)
+    @GetMapping(FEATURE_GET_ALL_FEATURES_URL)
     public ResponseEntity<ResponseModel<List<FeatureRsModel>>> getAllFeatures(
             @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
             @RequestParam(name = "language") String language) {
 
-        log.info(REQUEST_MSG, FEATURE_GET_ALL_FEATURES, NO_BODY_MSG);
+        log.info(REQUEST_MSG, FEATURE_URL, NO_BODY_MSG);
         var response = ResponseModel.of(featureService.getAllFeatures(language), OK);
 
-        log.info(RESPONSE_MSG, FEATURE_GET_ALL_FEATURES, response);
+        log.info(RESPONSE_MSG, FEATURE_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Add feature")
-    @PostMapping(FEATURE_ADD_FEATURE)
+    @PostMapping(FEATURE_URL)
     public ResponseEntity<ResponseModel<FeatureRsModel>> addFeature(@RequestBody @Valid FeatureRqModel request) {
 
-        log.info(REQUEST_MSG, FEATURE_ADD_FEATURE, request);
+        log.info(REQUEST_MSG, FEATURE_URL, request);
         var response = ResponseModel.of(featureService.addFeature(request), CREATED);
 
-        log.info(RESPONSE_MSG, FEATURE_ADD_FEATURE, response);
+        log.info(RESPONSE_MSG, FEATURE_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update feature")
-    @PostMapping(FEATURE_UPDATE_FEATURE)
+    @PutMapping(FEATURE_URL)
     public ResponseEntity<ResponseModel<FeatureRsModel>> updateFeature(
             @RequestBody @Valid UpdateFeatureRqModel request) {
 
-        log.info(REQUEST_MSG, FEATURE_UPDATE_FEATURE, request);
+        log.info(REQUEST_MSG, FEATURE_URL, request);
         var response = ResponseModel.of(featureService.updateFeature(request), OK);
 
-        log.info(RESPONSE_MSG, FEATURE_UPDATE_FEATURE, response);
+        log.info(RESPONSE_MSG, FEATURE_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete feature")
-    @PostMapping(FEATURE_DELETE_FEATURE)
+    @DeleteMapping(FEATURE_URL)
     public ResponseEntity<ResponseModel<FeatureRsModel>> deleteFeature(
             @ApiParam(name = "feature-id", type = "string", required = true)
             @RequestParam(name = "feature-id") String featureId) {
 
-        log.info(RESPONSE_MSG, FEATURE_DELETE_FEATURE, featureId);
+        log.info(RESPONSE_MSG, FEATURE_URL, featureId);
         var response = ResponseModel.of(featureService.deleteFeature(featureId), OK);
 
-        log.info(RESPONSE_MSG, FEATURE_DELETE_FEATURE, response);
+        log.info(RESPONSE_MSG, FEATURE_URL, response);
         return ResponseEntity.ok(response);
     }
 
