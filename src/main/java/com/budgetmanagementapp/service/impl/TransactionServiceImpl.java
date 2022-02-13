@@ -383,7 +383,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         Map<LocalDate, Double> outgoingAmountsByWeeks = outgoingTransactions.stream()
                 .collect(groupingBy(t -> LocalDate.from(t.getDateTime()
-                                .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
+                                .with(TemporalAdjusters.previousOrSame(DayOfWeek.from(LocalDateTime.now())))),
                         TreeMap::new,
                         summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
