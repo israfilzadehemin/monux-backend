@@ -20,12 +20,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static com.budgetmanagementapp.utility.Constant.*;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
 import static com.budgetmanagementapp.utility.TransactionType.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -145,20 +145,6 @@ public class TransactionController {
                 OK);
 
         log.info(RESPONSE_MSG, TRANSACTION_TRANSACTIONS_URL, response);
-        return ResponseEntity.ok(response);
-    }
-
-    @ApiOperation("Get last transactions by months")
-    @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL)
-    public ResponseEntity<ResponseModel<AmountListRsModel>> getLastTransactionsForMonths(Authentication auth) {
-
-        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, NO_BODY_MSG);
-        var response = ResponseModel.of(
-                transactionService.getLastTransactionsByUserAndDateTimeForMonths(
-                        ((UserDetails) auth.getPrincipal()).getUsername(), LocalDateTime.now()),
-                OK);
-
-        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, response);
         return ResponseEntity.ok(response);
     }
 

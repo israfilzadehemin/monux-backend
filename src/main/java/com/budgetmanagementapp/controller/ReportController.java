@@ -22,8 +22,7 @@ import javax.validation.Valid;
 import java.time.LocalDateTime;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.TRANSACTION_TRANSACTIONS_BETWEEN_TIME_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
@@ -33,6 +32,20 @@ import static org.springframework.http.HttpStatus.OK;
 public class ReportController {
 
     private final TransactionService transactionService;
+
+    @ApiOperation("Get last transactions by months")
+    @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL)
+    public ResponseEntity<ResponseModel<AmountListRsModel>> getLastTransactionsForMonths(Authentication auth) {
+
+        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, NO_BODY_MSG);
+        var response = ResponseModel.of(
+                transactionService.getLastTransactionsByUserAndDateTimeForMonths(
+                        ((UserDetails) auth.getPrincipal()).getUsername(), LocalDateTime.now()),
+                OK);
+
+        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, response);
+        return ResponseEntity.ok(response);
+    }
 
     @ApiOperation("Get last transactions by weeks")
     @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL)
