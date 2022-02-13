@@ -25,11 +25,12 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.MonthDay;
 import java.time.YearMonth;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.IntStream;
 
 import static com.budgetmanagementapp.mapper.TransactionMapper.TRANSACTION_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.*;
@@ -322,11 +323,19 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> outgoingTransactions = new ArrayList<>();
         groupTransactions(transactions, incomeTransactions, outgoingTransactions);
 
+        List<YearMonth> yearMonths = IntStream.rangeClosed(0, 11)
+                .mapToObj(i -> YearMonth.from(LocalDateTime.now().minusMonths(i)))
+                .collect(toList());
+
         Map<YearMonth, Double> incomeAmountsByMonths = incomeTransactions.stream()
                 .collect(groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
                         summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
+
+        TreeMap<YearMonth, Double> incomeAmounts = new TreeMap<>();
+        yearMonths.forEach(a -> incomeAmounts.put(a,
+                incomeAmountsByMonths.get(a) != null ? incomeAmountsByMonths.get(a) : 0));
 
         Map<YearMonth, Double> outgoingAmountsByMonths = outgoingTransactions.stream()
                 .collect(groupingBy(t -> YearMonth.from(t.getDateTime()),
@@ -334,9 +343,13 @@ public class TransactionServiceImpl implements TransactionService {
                         summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
 
+        TreeMap<YearMonth, Double> outgoingAmounts = new TreeMap<>();
+        yearMonths.forEach(a -> outgoingAmounts.put(a,
+                outgoingAmountsByMonths.get(a) != null ? outgoingAmountsByMonths.get(a) : 0));
+
         AmountListRsModel response = AmountListRsModel.builder()
-                .income(incomeAmountsByMonths)
-                .outgoing(outgoingAmountsByMonths)
+                .income(incomeAmounts.descendingMap())
+                .outgoing(outgoingAmounts.descendingMap())
                 .build();
 
         log.info(LAST_TRANSACTIONS_BY_MONTHS_MSG, user.getUsername(), response);
@@ -353,23 +366,35 @@ public class TransactionServiceImpl implements TransactionService {
         List<Transaction> outgoingTransactions = new ArrayList<>();
         groupTransactions(transactions, incomeTransactions, outgoingTransactions);
 
-        Map<MonthDay, Double> incomeAmountsByWeeks = incomeTransactions.stream()
-                .collect(groupingBy(t -> MonthDay.from(t.getDateTime()
-                                .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
+        List<LocalDate> monthDays = IntStream.rangeClosed(0, 11)
+                .mapToObj(i -> LocalDate.from(LocalDateTime.now().minusWeeks(i)))
+                .collect(toList());
+
+        Map<LocalDate, Double> incomeAmountsByWeeks = incomeTransactions.stream()
+                .collect(groupingBy(t -> LocalDate.from(t.getDateTime()
+                                .with(TemporalAdjusters.previousOrSame(DayOfWeek.from(LocalDateTime.now())))),
                         TreeMap::new,
                         summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
 
-        Map<MonthDay, Double> outgoingAmountsByWeeks = outgoingTransactions.stream()
-                .collect(groupingBy(t -> MonthDay.from(t.getDateTime()
-                                .with(TemporalAdjusters.previousOrSame(DayOfWeek.of(1)))),
+        TreeMap<LocalDate, Double> incomeAmounts = new TreeMap<>();
+        monthDays.forEach(a -> incomeAmounts.put(a,
+                incomeAmountsByWeeks.get(a) != null ? incomeAmountsByWeeks.get(a) : 0));
+
+        Map<LocalDate, Double> outgoingAmountsByWeeks = outgoingTransactions.stream()
+                .collect(groupingBy(t -> LocalDate.from(t.getDateTime()
+                                .with(TemporalAdjusters.previousOrSame(DayOfWeek.from(LocalDateTime.now())))),
                         TreeMap::new,
                         summingDouble(t -> t.getAmount().doubleValue())))
                 .descendingMap();
+
+        TreeMap<LocalDate, Double> outgoingAmounts = new TreeMap<>();
+        monthDays.forEach(a -> outgoingAmounts.put(a,
+                outgoingAmountsByWeeks.get(a) != null ? outgoingAmountsByWeeks.get(a) : 0));
 
         AmountListRsModel response = AmountListRsModel.builder()
-                .income(incomeAmountsByWeeks)
-                .outgoing(outgoingAmountsByWeeks)
+                .income(incomeAmounts.descendingMap())
+                .outgoing(outgoingAmounts.descendingMap())
                 .build();
 
         log.info(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response);
