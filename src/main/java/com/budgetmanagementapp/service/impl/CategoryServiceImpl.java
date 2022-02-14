@@ -3,8 +3,8 @@ package com.budgetmanagementapp.service.impl;
 import com.budgetmanagementapp.builder.CategoryBuilder;
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.CategoryNotFoundException;
-import com.budgetmanagementapp.exception.DuplicateCategoryException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
+import com.budgetmanagementapp.exception.DuplicateException;
 import com.budgetmanagementapp.model.category.CategoryRqModel;
 import com.budgetmanagementapp.model.category.CategoryRsModel;
 import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
@@ -73,7 +73,7 @@ public class CategoryServiceImpl implements CategoryService {
                         categoryId,
                         CategoryType.valueOf(type.name()).name(),
                         Arrays.asList(user, userService.findByUsername(COMMON_USERNAME)))
-                .orElseThrow(() -> new CategoryNotFoundException(format(INVALID_CATEGORY_ID_MSG, categoryId)));
+                .orElseThrow(() -> new DataNotFoundException(format(INVALID_CATEGORY_ID_MSG, categoryId), 4000));
 
         log.info(CATEGORY_BY_ID_TYPE_USER_MSG, categoryId, type, user, category);
         return category;
@@ -91,15 +91,15 @@ public class CategoryServiceImpl implements CategoryService {
     private void checkDuplicate(String categoryName, User user) {
         if (categoryRepo.byNameAndUser(categoryName, user).isPresent()
                 || categoryRepo.byNameAndUser(categoryName, userService.findByUsername(COMMON_USERNAME)).isPresent()) {
-            throw new DuplicateCategoryException(
-                    format(DUPLICATE_CATEGORY_NAME_MSG, user.getUsername(), categoryName));
+            throw new DuplicateException(
+                    format(DUPLICATE_CATEGORY_NAME_MSG, user.getUsername(), categoryName), 4002);
         }
     }
 
     private Category categoryByIdAndUser(String categoryId, String username) {
         return categoryRepo.byIdAndUser(categoryId, userService.findByUsername(username))
                 .orElseThrow(
-                        () -> new CategoryNotFoundException(format(UNAUTHORIZED_CATEGORY_MSG, username, categoryId)));
+                        () -> new DataNotFoundException(format(UNAUTHORIZED_CATEGORY_MSG, username, categoryId), 4000));
     }
 
     private List<CategoryRsModel> categoriesByUser(boolean includeCommonCategories, User user) {

@@ -29,50 +29,23 @@ public class CustomExceptionHandler {
                 || exception instanceof InvalidOtpException
                 || exception instanceof ExpiredOtpException
                 || exception instanceof GenericException
-                || exception instanceof UsernameNotUniqueException
                 || exception instanceof PasswordMismatchException
                 || exception instanceof InitialAccountExistingException
                 || exception instanceof PasswordNotSufficientException
                 || exception instanceof InvalidEmailException
-                || exception instanceof DuplicateAccountException
-                || exception instanceof DuplicateCategoryException
-                || exception instanceof DuplicateLabelException
+                || exception instanceof DuplicateException
                 || exception instanceof TransferToSelfException
                 || exception instanceof NotEnoughBalanceException
                 || exception instanceof InvalidPhoneNumberException
                 || exception instanceof ResetPasswordException
                 || exception instanceof TransferRateException
-                || exception instanceof DuplicatePasswordException
                 || exception instanceof FullNameFormatException
         ) {
             return handleException(exception, HttpStatus.BAD_REQUEST);
-
-        } else if (exception instanceof UserRoleNotFoundException
-                || exception instanceof UserNotFoundException
-                || exception instanceof AccountTypeNotFoundException
-                || exception instanceof CategoryNotFoundException
-                || exception instanceof LabelNotFoundException
-                || exception instanceof FeedbackNotFoundException
-                || exception instanceof CategoryTypeNotFoundException
-                || exception instanceof TransactionTypeNotFoundException
-                || exception instanceof TransactionNotFoundException
-                || exception instanceof TemplateNotFoundException
-                || exception instanceof CurrencyNotFoundException
-                || exception instanceof AccountNotFoundException
-                || exception instanceof NoExistingTransactionException
-                || exception instanceof BlogNotFoundException
-                || exception instanceof PlanNotFoundException
-                || exception instanceof BannerNotFoundException
-                || exception instanceof FaqNotFoundException
-                || exception instanceof DefinitionNotFoundException
-                || exception instanceof FeatureNotFoundException
-                || exception instanceof StepNotFoundException
-                || exception instanceof ServiceNotFoundException
-        ) {
+        } else if (exception instanceof DataNotFoundException) {
             return handleException(exception, HttpStatus.NOT_FOUND);
         }
-
-        throw new RuntimeException(String.valueOf(exception.getClass()));
+        return handleException(exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
@@ -95,7 +68,7 @@ public class CustomExceptionHandler {
             return handleException(exception, 7007);
         else if (exception instanceof ConstraintViolationException)
             return handleException(exception, 7008);
-        throw new RuntimeException(String.valueOf(exception.getClass()));
+        return handleException(exception, 9999);
     }
 
     private ResponseEntity<?> handleException(AppException exception, HttpStatus status) {

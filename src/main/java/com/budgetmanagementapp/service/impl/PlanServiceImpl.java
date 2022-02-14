@@ -3,7 +3,7 @@ package com.budgetmanagementapp.service.impl;
 import com.budgetmanagementapp.entity.Feature;
 import com.budgetmanagementapp.entity.Plan;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.PlanNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.plan.PlanRqModel;
 import com.budgetmanagementapp.model.plan.PlanRsModel;
 import com.budgetmanagementapp.model.plan.UpdatePlanRqModel;
@@ -55,7 +55,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public PlanRsModel updatePlan(UpdatePlanRqModel request) {
         Plan plan = planRepo.byPlanId(request.getPlanId())
-                .orElseThrow(() -> new PlanNotFoundException(format(PLAN_NOT_FOUND_MSG, request.getPlanId())));
+                .orElseThrow(() -> new DataNotFoundException(format(PLAN_NOT_FOUND_MSG, request.getPlanId()), 6006));
 
         plan.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTextEn()).ru(request.getTitleRu())
@@ -77,7 +77,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public PlanRsModel deletePlan(String planId) {
         Plan plan = planRepo.byPlanId(planId).orElseThrow(
-                () -> new PlanNotFoundException(format(PLAN_NOT_FOUND_MSG, planId)));
+                () -> new DataNotFoundException(format(PLAN_NOT_FOUND_MSG, planId), 6006));
         planRepo.delete(plan);
 
         PlanRsModel planRsModel = PLAN_MAPPER_INSTANCE.buildPlanResponseModel(plan);

@@ -2,7 +2,7 @@ package com.budgetmanagementapp.builder;
 
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.UserRoleNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.repository.RoleRepository;
 import com.budgetmanagementapp.utility.PaymentStatus;
 import com.budgetmanagementapp.utility.UserStatus;
@@ -32,7 +32,7 @@ public class UserBuilder {
                 .paymentStatus(PaymentStatus.NOT_PAID)
                 .roles(Collections.singletonList(
                         roleRepo.byName(ROLE_USER)
-                                .orElseThrow(() -> new UserRoleNotFoundException(ROLE_NOT_FOUND_MSG))))
+                                .orElseThrow(() -> new DataNotFoundException(ROLE_NOT_FOUND_MSG, 1009))))
                 .build();
     }
 

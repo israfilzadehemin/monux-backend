@@ -2,8 +2,8 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.InvalidOtpException;
-import com.budgetmanagementapp.exception.UserNotFoundException;
 import com.budgetmanagementapp.mapper.OtpMapper;
 import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
 import com.budgetmanagementapp.model.user.ConfirmOtpRsModel;
@@ -52,7 +52,7 @@ public class OtpServiceImpl implements OtpService {
 
     private User userByOtp(Otp otp) {
         return userRepo.byOtp(otp).orElseThrow(
-                () -> new UserNotFoundException(format(USER_BY_OTP_NOT_FOUND_MSG, otp.getOtp())));
+                () -> new DataNotFoundException(format(USER_BY_OTP_NOT_FOUND_MSG, otp.getOtp()), 1008));
     }
 
     private void updateOtpAndUserValues(Otp otp, User user) {

@@ -2,7 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Feature;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.FeatureNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.feature.FeatureRqModel;
 import com.budgetmanagementapp.model.feature.FeatureRsModel;
 import com.budgetmanagementapp.model.feature.UpdateFeatureRqModel;
@@ -74,7 +74,7 @@ public class FeatureServiceImpl implements FeatureService {
 
     private Feature findById(String featureId) {
         return featureRepo.byFeatureId(featureId).orElseThrow(
-                () -> new FeatureNotFoundException(format(FEATURE_NOT_FOUND_MSG, featureId))
+                () -> new DataNotFoundException(format(FEATURE_NOT_FOUND_MSG, featureId), 6004)
         );
     }
 }

@@ -81,7 +81,7 @@ public class CustomValidator {
     public static void validateCategoryType(String value) {
         if ((int) Arrays.stream(CategoryType.values()).filter(type -> type.name().equals(value.toUpperCase()))
                 .count() == 0) {
-            throw new CategoryTypeNotFoundException(String.format(CATEGORY_TYPE_NOT_FOUND_MSG, value));
+            throw new DataNotFoundException(String.format(CATEGORY_TYPE_NOT_FOUND_MSG, value), 4001);
         }
     }
 
@@ -89,7 +89,7 @@ public class CustomValidator {
         if ((int) Arrays.stream(values())
                 .filter(type -> type.name().equals(value.toUpperCase()))
                 .count() == 0) {
-            throw new TransactionTypeNotFoundException(String.format(TRANSACTION_TYPE_NOT_FOUND_MSG, value));
+            throw new DataNotFoundException(String.format(TRANSACTION_TYPE_NOT_FOUND_MSG, value), 3003);
         }
     }
 

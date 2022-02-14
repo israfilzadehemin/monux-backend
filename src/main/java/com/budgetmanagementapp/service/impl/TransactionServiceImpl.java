@@ -2,8 +2,8 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.builder.TransactionBuilder;
 import com.budgetmanagementapp.entity.*;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
-import com.budgetmanagementapp.exception.TransactionNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
@@ -240,8 +240,8 @@ public class TransactionServiceImpl implements TransactionService {
         transactions.sort(Comparator.comparing(Transaction::getId).reversed());
 
         if (transactions.isEmpty()) {
-            throw new TransactionNotFoundException(
-                    format(TRANSACTION_NOT_FOUND_MSG, user.getUsername()));
+            throw new DataNotFoundException(
+                    format(TRANSACTION_NOT_FOUND_MSG, user.getUsername()), 3002);
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
@@ -272,8 +272,8 @@ public class TransactionServiceImpl implements TransactionService {
         transactions.sort(Comparator.comparing(Transaction::getDateTime).reversed());
 
         if (transactions.isEmpty()) {
-            throw new TransactionNotFoundException(
-                    format(TRANSACTION_NOT_FOUND_MSG, user.getUsername()));
+            throw new DataNotFoundException(
+                    format(TRANSACTION_NOT_FOUND_MSG, user.getUsername()), 3002);
         } else {
             List<TransactionRsModel> response =
                     transactions.stream()
@@ -489,8 +489,8 @@ public class TransactionServiceImpl implements TransactionService {
     private Transaction transactionByIdAndUser(String transactionId, User user) {
         Transaction transaction = transactionRepo.byIdAndUser(transactionId, user)
                 .orElseThrow(() ->
-                        new TransactionNotFoundException(
-                                format(UNAUTHORIZED_TRANSACTION_MSG, user.getUsername(), transactionId)));
+                        new DataNotFoundException(
+                                format(UNAUTHORIZED_TRANSACTION_MSG, user.getUsername(), transactionId), 3002));
 
         log.info(TRANSACTION_BY_ID_USER, transactionId, user, transaction);
         return transaction;
@@ -499,8 +499,8 @@ public class TransactionServiceImpl implements TransactionService {
     private List<Transaction> transactionsByUserAndIdList(User user, List<String> transactionIds) {
         List<Transaction> transactions = transactionRepo.allByUserAndIdList(user, transactionIds);
         if (transactions.isEmpty()) {
-            throw new TransactionNotFoundException(
-                    format(UNAUTHORIZED_TRANSACTION_MSG, user.getUsername(), transactionIds));
+            throw new DataNotFoundException(
+                    format(UNAUTHORIZED_TRANSACTION_MSG, user.getUsername(), transactionIds), 3002);
         }
 
         log.info(TRANSACTIONS_USER_IDS, user, transactionIds, transactions);

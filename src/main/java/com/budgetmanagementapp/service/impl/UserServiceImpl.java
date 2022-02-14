@@ -53,9 +53,9 @@ public class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         var user = userRepo
                 .byUsernameAndStatus(username, UserStatus.ACTIVE)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+                .orElseThrow(() -> new DataNotFoundException(format(USER_NOT_FOUND_MSG, username), 1008));
 
-        log.info(USER_BY_USERNAME, username, user);
+        log.info(USER_BY_USERNAME, username, user.getUserId());
         return user;
     }
 
@@ -128,7 +128,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoRsModel getUserInfo(String username) {
         User user = userRepo.byUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+                .orElseThrow(() -> new DataNotFoundException(format(USER_NOT_FOUND_MSG, username), 1008));
 
         UserInfoRsModel userInfoRsModel = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
 
@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoRsModel updateUserLanguage(String username, String language) {
         User user = userRepo.byUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+                .orElseThrow(() -> new DataNotFoundException(format(USER_NOT_FOUND_MSG, username), 1008));
         user.setLanguage(language);
         userRepo.save(user);
 
@@ -179,7 +179,7 @@ public class UserServiceImpl implements UserService {
 
     private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
         User user = userRepo.byUsernameAndStatus(requestBody.getUsername(), UserStatus.CONFIRMED)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
+                .orElseThrow(() -> new DataNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername()), 1008));
 
         log.info(USER_BY_USERNAME_STATUS, requestBody.getUsername(), UserStatus.CONFIRMED, user.getUserId());
         return user;
@@ -199,13 +199,13 @@ public class UserServiceImpl implements UserService {
 
     private void checkPasswordDuplication(String oldPassword, String newPassword) {
         if (encoder.matches(newPassword, oldPassword)) {
-            throw new DuplicatePasswordException(PASSWORD_DUPLICATION_MSG);
+            throw new DuplicateException(PASSWORD_DUPLICATION_MSG, 6009);
         }
     }
 
     private void checkUsernameUniqueness(String username) {
         if (userRepo.byUsername(username).isPresent()) {
-            throw new UsernameNotUniqueException(USERNAME_NOT_UNIQUE_MSG);
+                throw new DuplicateException(USERNAME_NOT_UNIQUE_MSG, 1007);
         }
     }
 

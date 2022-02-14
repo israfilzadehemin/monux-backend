@@ -3,7 +3,7 @@ package com.budgetmanagementapp.service.impl;
 import com.budgetmanagementapp.builder.FeedbackBuilder;
 import com.budgetmanagementapp.entity.Feedback;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.FeedbackNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.feedback.FeedbackRqModel;
 import com.budgetmanagementapp.model.feedback.FeedbackRsModel;
 import com.budgetmanagementapp.repository.FeedbackRepository;
@@ -64,7 +64,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     private Feedback feedbackById(String feedbackId, String username) {
         return feedbackRepo.byIdAndUser(feedbackId, userService.findByUsername(username))
                 .orElseThrow(() ->
-                        new FeedbackNotFoundException(format(UNAUTHORIZED_FEEDBACK_MSG, username, feedbackId)));
+                        new DataNotFoundException(format(UNAUTHORIZED_FEEDBACK_MSG, username, feedbackId), 6005));
     }
 
 }

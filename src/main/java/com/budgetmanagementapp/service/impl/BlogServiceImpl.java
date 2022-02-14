@@ -2,7 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Blog;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.BlogNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.blog.BlogRqModel;
 import com.budgetmanagementapp.model.blog.BlogRsModel;
 import com.budgetmanagementapp.model.blog.UpdateBlogRqModel;
@@ -90,7 +90,7 @@ public class BlogServiceImpl implements BlogService {
 
     public Blog blogById(String blogId) {
         return blogRepo.byBlogId(blogId)
-                .orElseThrow(() -> new BlogNotFoundException(format(BLOG_NOT_FOUND_MSG, blogId)));
+                .orElseThrow(() -> new DataNotFoundException(format(BLOG_NOT_FOUND_MSG, blogId), 6001));
     }
 
 }

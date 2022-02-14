@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.ServiceNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.service.ServiceRqModel;
 import com.budgetmanagementapp.model.service.ServiceRsModel;
 import com.budgetmanagementapp.model.service.UpdateServiceRqModel;
@@ -79,7 +79,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     private com.budgetmanagementapp.entity.Service serviceById(String serviceId) {
         return serviceRepo.findByServiceId(serviceId).orElseThrow(
-                () -> new ServiceNotFoundException(format(SERVICE_NOT_FOUND_MSG, serviceId))
+                () -> new DataNotFoundException(format(SERVICE_NOT_FOUND_MSG, serviceId), 6007)
         );
     }
 }

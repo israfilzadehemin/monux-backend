@@ -2,7 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Banner;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.BannerNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.banner.BannerRqModel;
 import com.budgetmanagementapp.model.banner.BannerRsModel;
 import com.budgetmanagementapp.model.banner.UpdateBannerRqModel;
@@ -32,8 +32,7 @@ public class BannerServiceImpl implements BannerService {
     public BannerRsModel getBannerByKeyword(String keyword, String language) {
         var banner = BANNER_MAPPER_INSTANCE.buildBannerResponseModelWithLanguage(
                 bannerRepo.byKeyword(keyword)
-                        .orElseThrow(
-                                () -> new BannerNotFoundException(format(BANNER_NOT_FOUND_MSG, keyword))), language);
+                        .orElseThrow(() -> new DataNotFoundException(format(BANNER_NOT_FOUND_MSG, keyword), 6000)), language);
 
         log.info(BANNER_BY_KEYWORD_MSG, keyword, banner);
         return banner;
@@ -85,7 +84,7 @@ public class BannerServiceImpl implements BannerService {
 
     private Banner bannerById(String bannerId) {
         return bannerRepo.byBannerId(bannerId).orElseThrow(
-                () -> new BannerNotFoundException(format(BANNER_NOT_FOUND_MSG, bannerId)));
+                () -> new DataNotFoundException(format(BANNER_NOT_FOUND_MSG, bannerId), 6000));
     }
 
 }

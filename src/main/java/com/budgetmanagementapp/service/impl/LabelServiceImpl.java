@@ -3,8 +3,8 @@ package com.budgetmanagementapp.service.impl;
 import com.budgetmanagementapp.builder.LabelBuilder;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.DuplicateLabelException;
-import com.budgetmanagementapp.exception.LabelNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
+import com.budgetmanagementapp.exception.DuplicateException;
 import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.LabelRsModel;
 import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
@@ -53,7 +53,7 @@ public class LabelServiceImpl implements LabelService {
         List<LabelRsModel> labels = labelsByUser(includeCommonLabels, user, generalUser);
 
         if (labels.isEmpty()) {
-            throw new LabelNotFoundException(format(LABEL_NOT_FOUND_MSG, username));
+            throw new DataNotFoundException(format(LABEL_NOT_FOUND_MSG, username), 5004);
         }
 
         log.info(ALL_LABELS_MSG, user.getUsername(), labels);
@@ -114,7 +114,7 @@ public class LabelServiceImpl implements LabelService {
 
     private Label byIdAndUser(String labelId, String username) {
         return labelRepo.byIdAndUser(labelId, userByUsername(username))
-                .orElseThrow(() -> new LabelNotFoundException(format(UNAUTHORIZED_LABEL_MSG, username, labelId)));
+                .orElseThrow(() -> new DataNotFoundException(format(UNAUTHORIZED_LABEL_MSG, username, labelId), 5004));
     }
 
     private Optional<Label> byIdAndTypeAndUser(String labelId, String type, User user) {
@@ -139,7 +139,7 @@ public class LabelServiceImpl implements LabelService {
     private void checkDuplicate(String labelName, User user) {
         if (labelRepo.byNameAndUser(labelName, user).isPresent()
                 || labelRepo.byNameAndUser(labelName, userByUsername(COMMON_USERNAME)).isPresent()) {
-            throw new DuplicateLabelException(format(DUPLICATE_LABEL_NAME_MSG, user.getUsername(), labelName));
+            throw new DuplicateException(format(DUPLICATE_LABEL_NAME_MSG, user.getUsername(), labelName), 5000);
         }
     }
 

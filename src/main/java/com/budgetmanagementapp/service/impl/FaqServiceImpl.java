@@ -2,7 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Faq;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.FaqNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.faq.FaqRqModel;
 import com.budgetmanagementapp.model.faq.FaqRsModel;
 import com.budgetmanagementapp.model.faq.UpdateFaqRqModel;
@@ -90,6 +90,6 @@ public class FaqServiceImpl implements FaqService {
     }
 
     private Faq findById(String faqId) {
-        return faqRepo.byId(faqId).orElseThrow(() -> new FaqNotFoundException(format(FAQ_NOT_FOUND_MSG, faqId)));
+        return faqRepo.byId(faqId).orElseThrow(() -> new DataNotFoundException(format(FAQ_NOT_FOUND_MSG, faqId), 6003));
     }
 }

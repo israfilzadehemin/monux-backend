@@ -2,7 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Definition;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.DefinitionNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.definition.DefinitionRqModel;
 import com.budgetmanagementapp.model.definition.DefinitionRsModel;
 import com.budgetmanagementapp.model.definition.UpdateDefinitionRqModel;
@@ -81,7 +81,7 @@ public class DefinitionServiceImpl implements DefinitionService {
 
     private Definition findById(String definitionId) {
         return definitionRepo.byDefinitionId(definitionId).orElseThrow(
-                () -> new DefinitionNotFoundException(format(DEFINITION_NOT_FOUND_MSG, definitionId))
+                () -> new DataNotFoundException(format(DEFINITION_NOT_FOUND_MSG, definitionId), 6002)
         );
     }
 }

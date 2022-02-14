@@ -2,7 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.entity.Step;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.StepNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.step.StepRqModel;
 import com.budgetmanagementapp.model.step.StepRsModel;
 import com.budgetmanagementapp.model.step.UpdateStepRqModel;
@@ -83,7 +83,7 @@ public class StepServiceImpl implements StepService {
 
     private Step stepById(String stepId) {
         return stepRepo.byId(stepId).orElseThrow(
-                () -> new StepNotFoundException(format(STEP_NOT_FOUND_MSG, stepId))
+                () -> new DataNotFoundException(format(STEP_NOT_FOUND_MSG, stepId), 6008)
         );
     }
 }

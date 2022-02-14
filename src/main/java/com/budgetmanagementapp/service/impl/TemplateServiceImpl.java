@@ -2,7 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import com.budgetmanagementapp.builder.TemplateBuilder;
 import com.budgetmanagementapp.entity.*;
-import com.budgetmanagementapp.exception.TemplateNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
 import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
@@ -211,8 +211,8 @@ public class TemplateServiceImpl implements TemplateService {
     private Template templateByIdAndUser(String templateId, User user) {
         var template = templateRepo.byIdAndUser(templateId, user)
                 .orElseThrow(() ->
-                        new TemplateNotFoundException(
-                                format(UNAUTHORIZED_TEMPLATE_MSG, user.getUsername(), templateId)));
+                        new DataNotFoundException(
+                                format(UNAUTHORIZED_TEMPLATE_MSG, user.getUsername(), templateId), 5005));
 
         log.info(TEMPLATE_BY_ID_USER_MSG, templateId, user, template);
         return template;

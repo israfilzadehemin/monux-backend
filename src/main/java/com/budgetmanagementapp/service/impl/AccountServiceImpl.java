@@ -171,8 +171,8 @@ public class AccountServiceImpl implements AccountService {
     public Account byIdAndUser(String accountId, User user) {
         var account = accountRepo
                 .byIdAndUser(accountId, user)
-                .orElseThrow(() -> new AccountNotFoundException(
-                        format(UNAUTHORIZED_ACCOUNT_MSG, user.getUsername(), accountId)));
+                .orElseThrow(() -> new DataNotFoundException(
+                        format(UNAUTHORIZED_ACCOUNT_MSG, user.getUsername(), accountId), 2000));
 
         log.info(ACCOUNT_BY_ID_MSG, accountId, account);
         return account;
@@ -181,7 +181,7 @@ public class AccountServiceImpl implements AccountService {
     private Currency getCurrency(String currencyName) {
         var currency = currencyRepo
                 .byName(currencyName)
-                .orElseThrow(() -> new CurrencyNotFoundException(format(CURRENCY_NOT_FOUND_MSG, currencyName)));
+                .orElseThrow(() -> new DataNotFoundException(format(CURRENCY_NOT_FOUND_MSG, currencyName), 2001));
 
         log.info(CURRENCY_BY_NAME_MSG, currencyName, currency);
         return currency;
@@ -191,7 +191,7 @@ public class AccountServiceImpl implements AccountService {
         var accountType = accountTypeRepo
                 .byName(isInitialAccount ? CASH_ACCOUNT : accountTypeName)
                 .orElseThrow(() ->
-                        new AccountTypeNotFoundException(format(ACCOUNT_TYPE_NOT_FOUND_MSG, accountTypeName)));
+                        new DataNotFoundException(format(ACCOUNT_TYPE_NOT_FOUND_MSG, accountTypeName), 2002));
 
         log.info(ACCOUNT_TYPE_BY_NAME_MSG, accountTypeName, accountType);
         return accountType;
@@ -220,13 +220,13 @@ public class AccountServiceImpl implements AccountService {
 
     private void checkDuplicateAccount(String accountName, User user) {
         if (accountRepo.byNameAndUser(accountName, user).isPresent()) {
-            throw new DuplicateAccountException(format(DUPLICATE_ACCOUNT_NAME_MSG, user.getUsername(), accountName));
+            throw new DuplicateException(format(DUPLICATE_ACCOUNT_NAME_MSG, user.getUsername(), accountName), 2003);
         }
     }
 
     private void checkUpdateDuplicateAccount(String accountName, User user, String accountId) {
         if (accountRepo.byNameAndUserAndIdNot(accountName, user, accountId).isPresent()) {
-            throw new DuplicateAccountException(format(DUPLICATE_ACCOUNT_NAME_MSG, user.getUsername(), accountName));
+            throw new DuplicateException(format(DUPLICATE_ACCOUNT_NAME_MSG, user.getUsername(), accountName), 2003);
         }
     }
 
