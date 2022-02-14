@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 @AllArgsConstructor
@@ -27,5 +28,6 @@ public class TransactionRqModel {
 
     @ApiModelProperty(name = "description", dataType = "string")
     @NotNull
+    @Size(max = 5000)
     String description;
 }

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @Getter
@@ -16,5 +17,6 @@ import javax.validation.constraints.NotBlank;
 public class FeedbackRqModel {
     @ApiModelProperty(name = "description", dataType = "string")
     @NotBlank
+    @Size(max = 5000)
     String description;
 }

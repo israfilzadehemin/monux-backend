@@ -6,6 +6,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,14 +30,17 @@ public class DefinitionRqModel {
 
     @ApiModelProperty(name = "textAz", dataType = "string")
     @NotBlank
+    @Size(max = 5000)
     String textAz;
 
     @ApiModelProperty(name = "textEn", dataType = "string")
     @NotBlank
+    @Size(max = 5000)
     String textEn;
 
     @ApiModelProperty(name = "textRu", dataType = "string")
     @NotBlank
+    @Size(max = 5000)
     String textRu;
 
     @ApiModelProperty(name = "icon", dataType = "string")
