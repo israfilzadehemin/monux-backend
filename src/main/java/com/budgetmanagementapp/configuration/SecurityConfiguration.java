@@ -28,6 +28,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final JwtService jwtService;
 
+    private static final String[] AUTH_WHITELIST = {
+            "/authenticate",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/v3/api-docs",
+            "/webjars/**"
+    };
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
@@ -103,10 +111,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT, BANNERS_URL + CHILD_URL).hasRole(UserRole.ADMIN.getRoleName())
                 .antMatchers(HttpMethod.DELETE, BANNERS_URL + CHILD_URL).hasRole(UserRole.ADMIN.getRoleName())
 
-                .antMatchers("/swagger-ui.html/**").permitAll()
-                .antMatchers("/v2/api-docs/**").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/webjars/**").permitAll()
+                .antMatchers(AUTH_WHITELIST).permitAll()
 
                 .anyRequest().authenticated();
 
