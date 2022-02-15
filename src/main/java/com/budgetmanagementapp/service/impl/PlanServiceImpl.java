@@ -6,7 +6,6 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.plan.PlanRqModel;
 import com.budgetmanagementapp.model.plan.PlanRsModel;
-import com.budgetmanagementapp.model.plan.UpdatePlanRqModel;
 import com.budgetmanagementapp.repository.FeatureRepository;
 import com.budgetmanagementapp.repository.PlanRepository;
 import com.budgetmanagementapp.service.PlanService;
@@ -53,9 +52,9 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public PlanRsModel updatePlan(UpdatePlanRqModel request) {
-        Plan plan = planRepo.byPlanId(request.getPlanId())
-                .orElseThrow(() -> new DataNotFoundException(format(PLAN_NOT_FOUND_MSG, request.getPlanId()), 6006));
+    public PlanRsModel updatePlan(PlanRqModel request, String planId) {
+        Plan plan = planRepo.byPlanId(planId)
+                .orElseThrow(() -> new DataNotFoundException(format(PLAN_NOT_FOUND_MSG, planId), 6006));
 
         plan.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTextEn()).ru(request.getTitleRu())

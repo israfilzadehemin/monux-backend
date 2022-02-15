@@ -2,7 +2,6 @@ package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.model.banner.BannerRqModel;
 import com.budgetmanagementapp.model.banner.BannerRsModel;
-import com.budgetmanagementapp.model.banner.UpdateBannerRqModel;
 
 public interface BannerService {
 
@@ -12,7 +11,7 @@ public interface BannerService {
 
     BannerRsModel createBanner(BannerRqModel request);
 
-    BannerRsModel updateBanner(UpdateBannerRqModel request);
+    BannerRsModel updateBanner(BannerRqModel request, String bannerId);
 
     BannerRsModel deleteBanner(String bannerId);
 

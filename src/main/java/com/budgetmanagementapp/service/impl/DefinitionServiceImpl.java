@@ -5,7 +5,6 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.definition.DefinitionRqModel;
 import com.budgetmanagementapp.model.definition.DefinitionRsModel;
-import com.budgetmanagementapp.model.definition.UpdateDefinitionRqModel;
 import com.budgetmanagementapp.repository.DefinitionRepository;
 import com.budgetmanagementapp.service.DefinitionService;
 import lombok.AllArgsConstructor;
@@ -49,8 +48,8 @@ public class DefinitionServiceImpl implements DefinitionService {
     }
 
     @Override
-    public DefinitionRsModel updateDefinition(UpdateDefinitionRqModel request) {
-        Definition definition = findById(request.getDefinitionId());
+    public DefinitionRsModel updateDefinition(DefinitionRqModel request, String definitionId) {
+        Definition definition = findById(definitionId);
         definition.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())
                 .build());

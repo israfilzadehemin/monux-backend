@@ -3,7 +3,6 @@ package com.budgetmanagementapp.controller;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.service.ServiceRqModel;
 import com.budgetmanagementapp.model.service.ServiceRsModel;
-import com.budgetmanagementapp.model.service.UpdateServiceRqModel;
 import com.budgetmanagementapp.service.ServiceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +17,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.PATH_ID;
+import static com.budgetmanagementapp.utility.UrlConstant.SERVICES_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -26,55 +26,58 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @RestController
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Service")
+@RequestMapping(SERVICES_URL)
 public class ServiceController {
 
     private final ServiceService serviceService;
 
     @ApiOperation("Get all steps")
-    @GetMapping(SERVICE_GET_ALL_SERVICES_URL)
+    @GetMapping
     public ResponseEntity<ResponseModel<List<ServiceRsModel>>> getAllSteps(
             @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
             @RequestParam(name = "language") String language) {
 
-        log.info(REQUEST_MSG, SERVICE_GET_ALL_SERVICES_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, SERVICES_URL, NO_BODY_MSG);
         var response = ResponseModel.of(serviceService.getAllServices(language), OK);
 
-        log.info(RESPONSE_MSG, SERVICE_GET_ALL_SERVICES_URL, response);
+        log.info(RESPONSE_MSG, SERVICES_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Create service")
-    @PostMapping(SERVICE_URL)
+    @PostMapping
     public ResponseEntity<ResponseModel<ServiceRsModel>> createService(@RequestBody @Valid ServiceRqModel request) {
 
-        log.info(REQUEST_MSG, SERVICE_URL, request);
+        log.info(REQUEST_MSG, SERVICES_URL, request);
         var response = ResponseModel.of(serviceService.createService(request), CREATED);
 
-        log.info(RESPONSE_MSG, SERVICE_URL, response);
+        log.info(RESPONSE_MSG, SERVICES_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update service")
-    @PutMapping(SERVICE_URL)
-    public ResponseEntity<ResponseModel<ServiceRsModel>> updateService(@RequestBody @Valid UpdateServiceRqModel request) {
+    @PutMapping(PATH_ID)
+    public ResponseEntity<ResponseModel<ServiceRsModel>> updateService(
+            @RequestBody @Valid ServiceRqModel request,
+            @PathVariable("id") String serviceId) {
 
-        log.info(REQUEST_MSG, SERVICE_URL, request);
-        var response = ResponseModel.of(serviceService.updateService(request), OK);
+        log.info(REQUEST_MSG, SERVICES_URL + PATH_ID, request);
+        var response = ResponseModel.of(serviceService.updateService(request, serviceId), OK);
 
-        log.info(RESPONSE_MSG, SERVICE_URL, response);
+        log.info(RESPONSE_MSG, SERVICES_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete service")
-    @DeleteMapping(SERVICE_URL)
+    @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<ServiceRsModel>> deleteService(
             @ApiParam(name = "service-id", type = "string", required = true)
-            @RequestParam(name = "service-id") String serviceId) {
+            @PathVariable(name = "id") String serviceId) {
 
-        log.info(REQUEST_MSG, SERVICE_URL, serviceId);
+        log.info(REQUEST_MSG, SERVICES_URL + PATH_ID, serviceId);
         var response = ResponseModel.of(serviceService.deleteService(serviceId), OK);
 
-        log.info(RESPONSE_MSG, SERVICE_URL, response);
+        log.info(RESPONSE_MSG, SERVICES_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 

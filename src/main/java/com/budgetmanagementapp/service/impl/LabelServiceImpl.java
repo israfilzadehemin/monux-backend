@@ -7,7 +7,6 @@ import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateException;
 import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.LabelRsModel;
-import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
 import com.budgetmanagementapp.repository.LabelRepository;
 import com.budgetmanagementapp.service.LabelService;
 import com.budgetmanagementapp.service.UserService;
@@ -61,8 +60,8 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
-    public LabelRsModel updateLabel(UpdateLabelRqModel requestBody, String username) {
-        Label label = byIdAndUser(requestBody.getLabelId(), username);
+    public LabelRsModel updateLabel(LabelRqModel requestBody, String labelId, String username) {
+        Label label = byIdAndUser(labelId, username);
         updateLabelValues(requestBody, label);
 
         var labelRsModel = LABEL_MAPPER_INSTANCE.buildLabelResponseModel(label);
@@ -124,7 +123,7 @@ public class LabelServiceImpl implements LabelService {
                 Arrays.asList(user, userService.findByUsername(COMMON_USERNAME)));
     }
 
-    private void updateLabelValues(UpdateLabelRqModel requestBody, Label label) {
+    private void updateLabelValues(LabelRqModel requestBody, Label label) {
         CustomValidator.validateCategoryType(requestBody.getLabelCategory());
         label.setName(requestBody.getLabelName());
         label.setType(requestBody.getLabelCategory());

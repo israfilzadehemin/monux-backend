@@ -1,10 +1,11 @@
-package com.budgetmanagementapp.model.transfer;
+package com.budgetmanagementapp.model.transaction;
 
-import com.budgetmanagementapp.model.transaction.TransactionRsModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
+
+import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @Getter
@@ -13,11 +14,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class TransferRsModel extends TransactionRsModel {
+public class TransferRqModel extends TransactionRqModel {
     @ApiModelProperty(name = "receiverAccountId", dataType = "string", required = true)
+    @NotBlank
     String receiverAccountId;
 
     @ApiModelProperty(name = "senderAccountId", dataType = "string", required = true)
+    @NotBlank
     String senderAccountId;
 
     @ApiModelProperty(name = "rate", dataType = "double", example = "1.7", required = true)

@@ -5,7 +5,6 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.blog.BlogRqModel;
 import com.budgetmanagementapp.model.blog.BlogRsModel;
-import com.budgetmanagementapp.model.blog.UpdateBlogRqModel;
 import com.budgetmanagementapp.repository.BlogRepository;
 import com.budgetmanagementapp.service.BlogService;
 import com.budgetmanagementapp.utility.CustomFormatter;
@@ -58,8 +57,8 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public BlogRsModel updateBlog(UpdateBlogRqModel request) {
-        Blog blog = blogById(request.getBlogId());
+    public BlogRsModel updateBlog(BlogRqModel request, String blogId) {
+        Blog blog = blogById(blogId);
         blog.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())
                 .build());

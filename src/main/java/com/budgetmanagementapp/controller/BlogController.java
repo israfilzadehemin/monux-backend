@@ -3,7 +3,6 @@ package com.budgetmanagementapp.controller;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.blog.BlogRqModel;
 import com.budgetmanagementapp.model.blog.BlogRsModel;
-import com.budgetmanagementapp.model.blog.UpdateBlogRqModel;
 import com.budgetmanagementapp.service.BlogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +17,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.BLOGS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.PATH_ID;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -26,70 +26,73 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @RestController
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Blog")
+@RequestMapping(BLOGS_URL)
 public class BlogController {
 
     private final BlogService blogService;
 
     @ApiOperation("Get all blogs")
-    @GetMapping(BLOG_GET_ALL_BLOGS_URL)
+    @GetMapping
     public ResponseEntity<ResponseModel<List<BlogRsModel>>> getAllBlogs(
             @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
             @RequestParam(name = "language") String language) {
 
-        log.info(REQUEST_MSG, BLOG_GET_ALL_BLOGS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, BLOGS_URL, NO_BODY_MSG);
         var response = ResponseModel.of(blogService.getAllBlogs(language), OK);
 
-        log.info(RESPONSE_MSG, BLOG_GET_ALL_BLOGS_URL, response);
+        log.info(RESPONSE_MSG, BLOGS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get blog by id")
-    @GetMapping(BLOG_GET_BLOG_BY_ID_URL)
+    @GetMapping(PATH_ID)
     public ResponseEntity<ResponseModel<BlogRsModel>> getBlogById(
             @ApiParam(name = "blog-id", type = "string", required = true)
-            @RequestParam(name = "blog-id") String blogId,
+            @PathVariable(name = "id") String blogId,
             @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
             @RequestParam(name = "language") String language) {
 
-        log.info(REQUEST_MSG, BLOG_GET_BLOG_BY_ID_URL, blogId);
+        log.info(REQUEST_MSG, BLOGS_URL + PATH_ID, blogId);
         var response = ResponseModel.of(blogService.getBlogById(blogId, language), OK);
 
-        log.info(RESPONSE_MSG, BLOG_GET_BLOG_BY_ID_URL, response);
+        log.info(RESPONSE_MSG, BLOGS_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Create blog")
-    @PostMapping(BLOG_URL)
+    @PostMapping
     public ResponseEntity<ResponseModel<BlogRsModel>> createBlog(@RequestBody @Valid BlogRqModel request) {
 
-        log.info(REQUEST_MSG, BLOG_URL, request);
+        log.info(REQUEST_MSG, BLOGS_URL, request);
         var response = ResponseModel.of(blogService.addBlog(request), CREATED);
 
-        log.info(RESPONSE_MSG, BLOG_URL, response);
+        log.info(RESPONSE_MSG, BLOGS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update blog")
-    @PutMapping(BLOG_URL)
-    public ResponseEntity<ResponseModel<BlogRsModel>> updateBlog(@RequestBody @Valid UpdateBlogRqModel request) {
+    @PutMapping(PATH_ID)
+    public ResponseEntity<ResponseModel<BlogRsModel>> updateBlog(
+            @RequestBody @Valid BlogRqModel request,
+            @PathVariable("id") String blogId) {
 
-        log.info(REQUEST_MSG, BLOG_URL, request);
-        var response = ResponseModel.of(blogService.updateBlog(request), OK);
+        log.info(REQUEST_MSG, BLOGS_URL + PATH_ID, request);
+        var response = ResponseModel.of(blogService.updateBlog(request, blogId), OK);
 
-        log.info(REQUEST_MSG, BLOG_URL, response);
+        log.info(REQUEST_MSG, BLOGS_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete blog")
-    @DeleteMapping(BLOG_URL)
+    @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<BlogRsModel>> deleteBlog(
             @ApiParam(name = "blog-id", type = "string", required = true)
-            @RequestParam(name = "blog-id") String blogId) {
+            @PathVariable(name = "id") String blogId) {
 
-        log.info(REQUEST_MSG, BLOG_URL, blogId);
+        log.info(REQUEST_MSG, BLOGS_URL + PATH_ID, blogId);
         var response = ResponseModel.of(blogService.deleteBlog(blogId), OK);
 
-        log.info(RESPONSE_MSG, BLOG_URL, response);
+        log.info(RESPONSE_MSG, BLOGS_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 

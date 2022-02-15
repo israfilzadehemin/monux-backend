@@ -4,7 +4,6 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.service.ServiceRqModel;
 import com.budgetmanagementapp.model.service.ServiceRsModel;
-import com.budgetmanagementapp.model.service.UpdateServiceRqModel;
 import com.budgetmanagementapp.repository.ServiceRepository;
 import com.budgetmanagementapp.service.ServiceService;
 import lombok.AllArgsConstructor;
@@ -47,8 +46,8 @@ public class ServiceServiceImpl implements ServiceService {
     }
 
     @Override
-    public ServiceRsModel updateService(UpdateServiceRqModel request) {
-        com.budgetmanagementapp.entity.Service service = serviceById(request.getServiceId());
+    public ServiceRsModel updateService(ServiceRqModel request, String serviceId) {
+        com.budgetmanagementapp.entity.Service service = serviceById(serviceId);
         service.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())
                 .build());

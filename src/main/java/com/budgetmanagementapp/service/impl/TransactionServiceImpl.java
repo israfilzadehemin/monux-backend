@@ -5,12 +5,7 @@ import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
-import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
 import com.budgetmanagementapp.model.transaction.*;
-import com.budgetmanagementapp.model.transfer.TransferRqModel;
-import com.budgetmanagementapp.model.transfer.TransferRsModel;
-import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
 import com.budgetmanagementapp.repository.TransactionRepository;
 import com.budgetmanagementapp.service.*;
 import com.budgetmanagementapp.utility.CustomFormatter;
@@ -128,9 +123,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public InOutRsModel updateTransaction(UpdateInOutRqModel requestBody, String username) {
+    public InOutRsModel updateTransaction(InOutRqModel requestBody, String transactionId, String username) {
         User user = userService.findByUsername(username);
-        Transaction transaction = transactionByIdAndUser(requestBody.getTransactionId(), user);
+        Transaction transaction = transactionByIdAndUser(transactionId, user);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
         Category category =
                 categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), valueOf(transaction.getType()), user);
@@ -162,9 +157,9 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransferRsModel updateTransaction(UpdateTransferRqModel requestBody, String username) {
+    public TransferRsModel updateTransaction(TransferRqModel requestBody, String transactionId, String username) {
         User user = userService.findByUsername(username);
-        Transaction transaction = transactionByIdAndUser(requestBody.getTransactionId(), user);
+        Transaction transaction = transactionByIdAndUser(transactionId, user);
         Account senderAccount = accountService.byIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountService.byIdAndUser(requestBody.getReceiverAccountId(), user);
         BigDecimal oldAmount = transaction.getAmount();
@@ -197,10 +192,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public DebtRsModel updateTransaction(UpdateDebtRqModel requestBody, String username) {
+    public DebtRsModel updateTransaction(DebtRqModel requestBody, String transactionId, String username) {
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
-        Transaction transaction = transactionByIdAndUser(requestBody.getTransactionId(), user);
+        Transaction transaction = transactionByIdAndUser(transactionId, user);
         BigDecimal oldAmount = transaction.getAmount();
 
         checkBalanceToUpdateDebt(requestBody, account, transaction, oldAmount);
@@ -440,7 +435,7 @@ public class TransactionServiceImpl implements TransactionService {
         });
     }
 
-    private Transaction updateTransactionValues(UpdateInOutRqModel requestBody, Transaction transaction,
+    private Transaction updateTransactionValues(InOutRqModel requestBody, Transaction transaction,
                                                 Account account, Category category,
                                                 List<Label> labels) {
         transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
@@ -457,7 +452,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepo.save(transaction);
     }
 
-    private Transaction updateTransactionValues(UpdateTransferRqModel requestBody,
+    private Transaction updateTransactionValues(TransferRqModel requestBody,
                                                 Transaction transaction,
                                                 Account senderAccount,
                                                 Account receiverAccount) {
@@ -470,7 +465,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepo.save(transaction);
     }
 
-    private Transaction updateTransactionValues(UpdateDebtRqModel requestBody,
+    private Transaction updateTransactionValues(DebtRqModel requestBody,
                                                 Account account,
                                                 Transaction transaction) {
         transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
@@ -521,7 +516,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private void checkBalanceToUpdateInOut(UpdateInOutRqModel requestBody,
+    private void checkBalanceToUpdateInOut(InOutRqModel requestBody,
                                            Transaction transaction,
                                            Account account,
                                            BigDecimal oldAmount) {
@@ -533,7 +528,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private void checkBalanceToUpdateTransfer(UpdateTransferRqModel requestBody,
+    private void checkBalanceToUpdateTransfer(TransferRqModel requestBody,
                                               Transaction transaction,
                                               Account senderAccount,
                                               BigDecimal oldAmount) {
@@ -555,7 +550,7 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private void checkBalanceToUpdateDebt(UpdateDebtRqModel requestBody,
+    private void checkBalanceToUpdateDebt(DebtRqModel requestBody,
                                           Account account,
                                           Transaction transaction,
                                           BigDecimal oldAmount) {

@@ -13,10 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
@@ -29,51 +26,52 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @Log4j2
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Report")
+@RequestMapping(TRANSACTIONS_URL)
 public class ReportController {
 
     private final TransactionService transactionService;
 
     @ApiOperation("Get last transactions by months")
-    @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL)
+    @GetMapping(TRANSACTIONS_BY_MONTHS_URL)
     public ResponseEntity<ResponseModel<AmountListRsModel>> getLastTransactionsForMonths(Authentication auth) {
 
-        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_MONTHS_URL, NO_BODY_MSG);
         var response = ResponseModel.of(
                 transactionService.getLastTransactionsByUserAndDateTimeForMonths(
                         ((UserDetails) auth.getPrincipal()).getUsername(), LocalDateTime.now()),
                 OK);
 
-        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_MONTHS_URL, response);
+        log.info(RESPONSE_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_MONTHS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get last transactions by weeks")
-    @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL)
+    @GetMapping(TRANSACTIONS_BY_WEEKS_URL)
     public ResponseEntity<ResponseModel<AmountListRsModel>> getLastTransactionsForWeeks(Authentication auth) {
 
-        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_WEEKS_URL, NO_BODY_MSG);
         var response = ResponseModel.of(
                 transactionService.getLastTransactionsByUserAndDateTimeForWeeks(
                         ((UserDetails) auth.getPrincipal()).getUsername(), LocalDateTime.now()), OK);
 
 
-        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, response);
+        log.info(RESPONSE_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_WEEKS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get transactions between time period by category")
-    @PostMapping(TRANSACTION_TRANSACTIONS_BETWEEN_TIME_URL)
+    @PostMapping(TRANSACTIONS_BY_CATEGORY_URL)
     public ResponseEntity<ResponseModel<CategoryAmountListRsModel>> transactionsBetweenTimeByCategory(
             @RequestBody @Valid TransactionDateRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, requestBody);
+        log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_CATEGORY_URL, requestBody);
         var response = ResponseModel.of(
                 transactionService.transactionsBetweenTimeByCategory(
                         ((UserDetails) auth.getPrincipal()).getUsername(),
                         requestBody.getDateTimeFrom(),
                         requestBody.getDateTimeTo()), OK);
 
-        log.info(RESPONSE_MSG, TRANSACTION_GET_LAST_TRANSACTIONS_BY_WEEKS_URL, response);
+        log.info(RESPONSE_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_CATEGORY_URL, response);
         return ResponseEntity.ok(response);
     }
 }

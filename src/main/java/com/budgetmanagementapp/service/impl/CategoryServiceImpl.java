@@ -7,7 +7,6 @@ import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateException;
 import com.budgetmanagementapp.model.category.CategoryRqModel;
 import com.budgetmanagementapp.model.category.CategoryRsModel;
-import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
 import com.budgetmanagementapp.repository.CategoryRepository;
 import com.budgetmanagementapp.service.CategoryService;
 import com.budgetmanagementapp.service.UserService;
@@ -56,8 +55,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryRsModel updateCategory(UpdateCategoryRqModel requestBody, String username) {
-        Category category = categoryByIdAndUser(requestBody.getCategoryId(), username);
+    public CategoryRsModel updateCategory(CategoryRqModel requestBody, String categoryId, String username) {
+        Category category = categoryByIdAndUser(categoryId, username);
         updateCategoryValues(requestBody, category);
 
         var categoryRsModel = CATEGORY_MAPPER_INSTANCE.buildCategoryResponseModel(category);
@@ -79,7 +78,7 @@ public class CategoryServiceImpl implements CategoryService {
         return category;
     }
 
-    private void updateCategoryValues(UpdateCategoryRqModel requestBody, Category category) {
+    private void updateCategoryValues(CategoryRqModel requestBody, Category category) {
         CustomValidator.validateCategoryType(requestBody.getCategoryType());
 
         category.setIcon(requestBody.getIcon());

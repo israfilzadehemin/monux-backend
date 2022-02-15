@@ -5,7 +5,6 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.banner.BannerRqModel;
 import com.budgetmanagementapp.model.banner.BannerRsModel;
-import com.budgetmanagementapp.model.banner.UpdateBannerRqModel;
 import com.budgetmanagementapp.repository.BannerRepository;
 import com.budgetmanagementapp.service.BannerService;
 import lombok.AllArgsConstructor;
@@ -50,8 +49,8 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public BannerRsModel updateBanner(UpdateBannerRqModel request) {
-        Banner banner = bannerById(request.getBannerId());
+    public BannerRsModel updateBanner(BannerRqModel request, String bannerId) {
+        Banner banner = bannerById(bannerId);
 
         banner.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())

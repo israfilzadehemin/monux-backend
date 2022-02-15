@@ -5,7 +5,6 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.feature.FeatureRqModel;
 import com.budgetmanagementapp.model.feature.FeatureRsModel;
-import com.budgetmanagementapp.model.feature.UpdateFeatureRqModel;
 import com.budgetmanagementapp.repository.FeatureRepository;
 import com.budgetmanagementapp.service.FeatureService;
 import lombok.AllArgsConstructor;
@@ -48,8 +47,8 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public FeatureRsModel updateFeature(UpdateFeatureRqModel request) {
-        Feature feature = findById(request.getFeatureId());
+    public FeatureRsModel updateFeature(FeatureRqModel request, String featureId) {
+        Feature feature = findById(featureId);
         feature.setContent(Translation.builder()
                 .az(request.getContentAz()).en(request.getContentEn()).ru(request.getContentRu())
                 .build());

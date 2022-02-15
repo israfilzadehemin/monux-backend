@@ -4,12 +4,9 @@ import com.budgetmanagementapp.builder.TemplateBuilder;
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
-import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
 import com.budgetmanagementapp.model.transaction.*;
-import com.budgetmanagementapp.model.transfer.TransferRqModel;
-import com.budgetmanagementapp.model.transfer.TransferRsModel;
-import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
+import com.budgetmanagementapp.model.transaction.TransferRqModel;
+import com.budgetmanagementapp.model.transaction.TransferRsModel;
 import com.budgetmanagementapp.repository.TemplateRepository;
 import com.budgetmanagementapp.service.*;
 import com.budgetmanagementapp.utility.CustomFormatter;
@@ -88,9 +85,9 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public InOutRsModel updateTemplate(UpdateInOutRqModel requestBody, String username) {
+    public InOutRsModel updateTemplate(InOutRqModel requestBody, String templateId, String username) {
         User user = userService.findByUsername(username);
-        Template template = templateByIdAndUser(requestBody.getTransactionId(), user);
+        Template template = templateByIdAndUser(templateId, user);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
         Category category =
                 categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), valueOf(template.getType()), user);
@@ -105,9 +102,9 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public TransferRsModel updateTemplate(UpdateTransferRqModel requestBody, String username) {
+    public TransferRsModel updateTemplate(TransferRqModel requestBody, String templateId, String username) {
         User user = userService.findByUsername(username);
-        Template templateByIdAndUser = templateByIdAndUser(requestBody.getTransactionId(), user);
+        Template templateByIdAndUser = templateByIdAndUser(templateId, user);
         Account senderAccount = accountService.byIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountService.byIdAndUser(requestBody.getReceiverAccountId(), user);
 
@@ -125,10 +122,10 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public DebtRsModel updateTemplate(UpdateDebtRqModel requestBody, String username) {
+    public DebtRsModel updateTemplate(DebtRqModel requestBody, String templateId, String username) {
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
-        Template transaction = templateByIdAndUser(requestBody.getTransactionId(), user);
+        Template transaction = templateByIdAndUser(templateId, user);
 
         Template updatedTemplate = updateTemplateValues(requestBody, account, transaction);
 
@@ -164,7 +161,7 @@ public class TemplateServiceImpl implements TemplateService {
         return transactionRsModels;
     }
 
-    private Template updateTemplateValues(UpdateInOutRqModel requestBody, Template template,
+    private Template updateTemplateValues(InOutRqModel requestBody, Template template,
                                           Account account, Category category, List<Label> labels) {
 
         template.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
@@ -182,7 +179,7 @@ public class TemplateServiceImpl implements TemplateService {
         return templateRepo.save(template);
     }
 
-    private Template updateTemplateValues(UpdateTransferRqModel requestBody,
+    private Template updateTemplateValues(TransferRqModel requestBody,
                                           Template template,
                                           Account senderAccount,
                                           Account receiverAccount) {
@@ -194,7 +191,7 @@ public class TemplateServiceImpl implements TemplateService {
         return templateRepo.save(template);
     }
 
-    private Template updateTemplateValues(UpdateDebtRqModel requestBody, Account account, Template template) {
+    private Template updateTemplateValues(DebtRqModel requestBody, Account account, Template template) {
         template.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
         template.setAmount(requestBody.getAmount());
         template.setDescription(requestBody.getDescription());

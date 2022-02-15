@@ -3,7 +3,6 @@ package com.budgetmanagementapp.controller;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.faq.FaqRqModel;
 import com.budgetmanagementapp.model.faq.FaqRsModel;
-import com.budgetmanagementapp.model.faq.UpdateFaqRqModel;
 import com.budgetmanagementapp.service.FaqService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +17,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.FAQ_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.PATH_ID;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -26,40 +26,41 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @Log4j2
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "FAQ")
+@RequestMapping(FAQ_URL)
 public class FaqController {
 
     private final FaqService faqService;
 
     @ApiOperation("Get all faqs")
-    @GetMapping(FAQ_GET_ALL_FAQS_URL)
+    @GetMapping
     public ResponseEntity<ResponseModel<List<FaqRsModel>>> getAllFaqs(
             @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
             @RequestParam(name = "language") String language) {
 
-        log.info(REQUEST_MSG, FAQ_GET_ALL_FAQS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, FAQ_URL, NO_BODY_MSG);
         var response = ResponseModel.of(faqService.getAllFaqs(language), OK);
-
-        log.info(RESPONSE_MSG, FAQ_GET_ALL_FAQS_URL, response);
-        return ResponseEntity.ok(response);
-    }
-
-    @ApiOperation("Get faq by id")
-    @GetMapping(FAQ_URL)
-    public ResponseEntity<ResponseModel<FaqRsModel>> getFaqById(
-            @ApiParam(name = "faq-id", type = "string", required = true)
-            @RequestParam(name = "faq-id") String faqId,
-            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
-            @RequestParam(name = "language") String language) {
-
-        log.info(REQUEST_MSG, FAQ_URL, faqId);
-        var response = ResponseModel.of(faqService.getFaqById(faqId, language), OK);
 
         log.info(RESPONSE_MSG, FAQ_URL, response);
         return ResponseEntity.ok(response);
     }
 
+    @ApiOperation("Get faq by id")
+    @GetMapping(PATH_ID)
+    public ResponseEntity<ResponseModel<FaqRsModel>> getFaqById(
+            @ApiParam(name = "faq-id", type = "string", required = true)
+            @PathVariable(name = "id") String faqId,
+            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
+            @RequestParam(name = "language") String language) {
+
+        log.info(REQUEST_MSG, FAQ_URL + PATH_ID, faqId);
+        var response = ResponseModel.of(faqService.getFaqById(faqId, language), OK);
+
+        log.info(RESPONSE_MSG, FAQ_URL + PATH_ID, response);
+        return ResponseEntity.ok(response);
+    }
+
     @ApiOperation("Create faq")
-    @PostMapping(FAQ_URL)
+    @PostMapping
     public ResponseEntity<ResponseModel<FaqRsModel>> createFaq(@RequestBody @Valid FaqRqModel request) {
 
         log.info(REQUEST_MSG, FAQ_URL, request);
@@ -70,26 +71,28 @@ public class FaqController {
     }
 
     @ApiOperation("Update faq")
-    @PutMapping(FAQ_URL)
-    public ResponseEntity<ResponseModel<FaqRsModel>> updateFaq(@RequestBody @Valid UpdateFaqRqModel request) {
+    @PutMapping(PATH_ID)
+    public ResponseEntity<ResponseModel<FaqRsModel>> updateFaq(
+            @RequestBody @Valid FaqRqModel request,
+            @PathVariable("id") String faqId) {
 
-        log.info(REQUEST_MSG, FAQ_URL, request);
-        var response = ResponseModel.of(faqService.updateFaq(request), OK);
+        log.info(REQUEST_MSG, FAQ_URL + PATH_ID, request);
+        var response = ResponseModel.of(faqService.updateFaq(request, faqId), OK);
 
-        log.info(RESPONSE_MSG, FAQ_URL, response);
+        log.info(RESPONSE_MSG, FAQ_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete faq")
-    @DeleteMapping(FAQ_URL)
+    @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<FaqRsModel>> deleteFaq(
             @ApiParam(name = "faq-id", type = "string", required = true)
-            @RequestParam("faq-id") String faqId) {
+            @PathVariable("id") String faqId) {
 
-        log.info(REQUEST_MSG, FAQ_URL, faqId);
+        log.info(REQUEST_MSG, FAQ_URL + PATH_ID, faqId);
         var response = ResponseModel.of(faqService.deleteFaq(faqId), OK);
 
-        log.info(RESPONSE_MSG, FAQ_URL, response);
+        log.info(RESPONSE_MSG, FAQ_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 }

@@ -5,7 +5,6 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.step.StepRqModel;
 import com.budgetmanagementapp.model.step.StepRsModel;
-import com.budgetmanagementapp.model.step.UpdateStepRqModel;
 import com.budgetmanagementapp.repository.StepRepository;
 import com.budgetmanagementapp.service.StepService;
 import lombok.AllArgsConstructor;
@@ -49,8 +48,8 @@ public class StepServiceImpl implements StepService {
     }
 
     @Override
-    public StepRsModel updateStep(UpdateStepRqModel request) {
-        Step step = stepById(request.getStepId());
+    public StepRsModel updateStep(StepRqModel request, String stepId) {
+        Step step = stepById(stepId);
 
         step.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())

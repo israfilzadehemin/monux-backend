@@ -3,7 +3,6 @@ package com.budgetmanagementapp.controller;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.category.CategoryRqModel;
 import com.budgetmanagementapp.model.category.CategoryRsModel;
-import com.budgetmanagementapp.model.category.UpdateCategoryRqModel;
 import com.budgetmanagementapp.service.CategoryService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,65 +26,67 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @Log4j2
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Category")
+@RequestMapping(CATEGORIES_URL)
 public class CategoryController {
 
     private final CategoryService categoryService;
 
     @ApiOperation("Create category")
-    @PostMapping(CATEGORY_URL)
+    @PostMapping
     public ResponseEntity<ResponseModel<CategoryRsModel>> createCategory(
             @RequestBody @Valid CategoryRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, CATEGORY_URL, requestBody);
+        log.info(REQUEST_MSG, CATEGORIES_URL, requestBody);
         var response =
                 ResponseModel.of(
                         categoryService.createCategory(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                         CREATED);
 
-        log.info(RESPONSE_MSG, CATEGORY_URL, response);
+        log.info(RESPONSE_MSG, CATEGORIES_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get all categories")
-    @GetMapping(CATEGORY_GET_ALL_CATEGORIES_URL)
+    @GetMapping
     public ResponseEntity<ResponseModel<List<CategoryRsModel>>> getAllCategories(Authentication auth) {
 
-        log.info(REQUEST_MSG, CATEGORY_GET_ALL_CATEGORIES_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, CATEGORIES_URL, NO_BODY_MSG);
         var response =
                 ResponseModel.of(
                         categoryService.getCategoriesByUser(((UserDetails) auth.getPrincipal()).getUsername(), true),
                         OK);
 
-        log.info(REQUEST_MSG, CATEGORY_GET_ALL_CATEGORIES_URL, response);
+        log.info(REQUEST_MSG, CATEGORIES_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get all categories of user")
-    @GetMapping(CATEGORY_GET_CATEGORIES_URL)
+    @GetMapping(CATEGORY_BY_USER_URL)
     public ResponseEntity<ResponseModel<List<CategoryRsModel>>> getCategoriesOfUser(Authentication auth) {
 
-        log.info(REQUEST_MSG, CATEGORY_GET_CATEGORIES_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, CATEGORIES_URL + CATEGORY_BY_USER_URL, NO_BODY_MSG);
         var response =
                 ResponseModel.of(
                         categoryService.getCategoriesByUser(((UserDetails) auth.getPrincipal()).getUsername(), false),
                         OK);
 
-        log.info(RESPONSE_MSG, CATEGORY_GET_CATEGORIES_URL, response);
+        log.info(RESPONSE_MSG, CATEGORIES_URL + CATEGORY_BY_USER_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update category")
-    @PutMapping(CATEGORY_URL)
+    @PutMapping(PATH_ID)
     public ResponseEntity<ResponseModel<CategoryRsModel>> updateCustomCategory(
-            @RequestBody @Valid UpdateCategoryRqModel requestBody, Authentication auth) {
+            @RequestBody @Valid CategoryRqModel requestBody,
+            @PathVariable("id") String categoryId, Authentication auth) {
 
-        log.info(REQUEST_MSG, CATEGORY_URL, requestBody);
+        log.info(REQUEST_MSG, CATEGORIES_URL + PATH_ID, requestBody);
         var response =
                 ResponseModel.of(
-                        categoryService.updateCategory(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
+                        categoryService.updateCategory(requestBody, categoryId, ((UserDetails) auth.getPrincipal()).getUsername()),
                         OK);
 
-        log.info(RESPONSE_MSG, CATEGORY_URL, response);
+        log.info(RESPONSE_MSG, CATEGORIES_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 

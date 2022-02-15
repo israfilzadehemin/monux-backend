@@ -1,11 +1,8 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
 import com.budgetmanagementapp.model.transaction.*;
-import com.budgetmanagementapp.model.transfer.TransferRqModel;
-import com.budgetmanagementapp.model.transfer.TransferRsModel;
-import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
+import com.budgetmanagementapp.model.transaction.TransferRqModel;
+import com.budgetmanagementapp.model.transaction.TransferRsModel;
 import com.budgetmanagementapp.utility.TransactionType;
 
 import java.time.LocalDateTime;
@@ -25,11 +22,11 @@ public interface TransactionService {
                                   TransactionType transactionType,
                                   String username);
 
-    InOutRsModel updateTransaction(UpdateInOutRqModel requestBody, String username);
+    InOutRsModel updateTransaction(InOutRqModel requestBody, String transactionId, String username);
 
-    TransferRsModel updateTransaction(UpdateTransferRqModel requestBody, String username);
+    TransferRsModel updateTransaction(TransferRqModel requestBody, String transactionId, String username);
 
-    DebtRsModel updateTransaction(UpdateDebtRqModel requestBody, String username);
+    DebtRsModel updateTransaction(DebtRqModel requestBody, String transactionId, String username);
 
     List<TransactionRsModel> getAllTransactionsByUserAndAccount(String username, String accountId);
 

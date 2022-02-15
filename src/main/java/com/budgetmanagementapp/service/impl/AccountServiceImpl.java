@@ -59,9 +59,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountRsModel updateAccount(UpdateAccountModel requestBody, String username) {
+    public AccountRsModel updateAccount(UpdateAccountModel requestBody, String accountId, String username) {
         User user = userService.findByUsername(username);
-        Account account = byIdAndUser(requestBody.getAccountId(), user);
+        Account account = byIdAndUser(accountId, user);
         checkUpdateDuplicateAccount(requestBody.getNewAccountName(), user, account.getAccountId());
         updateAccountValues(requestBody, account);
 
@@ -103,8 +103,8 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountRsModel updateBalance(UpdateBalanceModel requestBody, String username) {
-        Account account = byIdAndUser(requestBody.getAccountId(), userService.findByUsername(username));
+    public AccountRsModel updateBalance(UpdateBalanceModel requestBody, String accountId, String username) {
+        Account account = byIdAndUser(accountId, userService.findByUsername(username));
         checkNegativeBalance(requestBody, account);
         updateBalanceValue(requestBody, account);
 

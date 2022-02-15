@@ -3,7 +3,6 @@ package com.budgetmanagementapp.controller;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.banner.BannerRqModel;
 import com.budgetmanagementapp.model.banner.BannerRsModel;
-import com.budgetmanagementapp.model.banner.UpdateBannerRqModel;
 import com.budgetmanagementapp.service.BannerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,7 +17,8 @@ import javax.validation.Valid;
 
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.BANNERS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.PATH_ID;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -26,73 +26,74 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @RestController
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Banner")
+@RequestMapping(BANNERS_URL)
 public class BannerController {
 
     private final BannerService bannerService;
 
     @ApiOperation("Get banner by id")
-    @GetMapping(BANNER_URL)
+    @GetMapping(PATH_ID)
     public ResponseEntity<ResponseModel<BannerRsModel>> getBannerById(
-            @ApiParam(name = "banner-id", type = "string", required = true)
-            @RequestParam("banner-id") String bannerId,
+            @ApiParam(name = "id", type = "string", required = true)
+            @PathVariable("id") String bannerId,
             @ApiParam(name = "language", type = "string", example = "az, en, ru", required = true)
             @RequestParam("language") String language) {
 
-        log.info(REQUEST_MSG, BANNER_URL, bannerId);
+        log.info(REQUEST_MSG, BANNERS_URL + PATH_ID, bannerId);
         var response = ResponseModel.of(bannerService.getBannerById(bannerId, language), OK);
 
-        log.info(RESPONSE_MSG, BANNER_URL, response);
+        log.info(RESPONSE_MSG, BANNERS_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get banner by keyword")
-    @GetMapping(BANNER_BY_KEYWORD_URL)
+    @GetMapping
     public ResponseEntity<ResponseModel<BannerRsModel>> getBannerByKeyword(
-            @ApiParam(name = "banner-keyword", type = "string", required = true)
-            @RequestParam("banner-keyword") String keyword,
+            @ApiParam(name = "keyword", type = "string", required = true)
+            @RequestParam("keyword") String keyword,
             @ApiParam(name = "language", type = "string", example = "az, en, ru", required = true)
             @RequestParam("language") String language) {
 
-        log.info(REQUEST_MSG, BANNER_BY_KEYWORD_URL, keyword);
+        log.info(REQUEST_MSG, BANNERS_URL, keyword);
         var response = ResponseModel.of(bannerService.getBannerByKeyword(keyword, language), OK);
 
-        log.info(RESPONSE_MSG, BANNER_BY_KEYWORD_URL, response);
+        log.info(RESPONSE_MSG, BANNERS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Create banner")
-    @PostMapping(BANNER_URL)
+    @PostMapping
     public ResponseEntity<ResponseModel<BannerRsModel>> createBanner(@RequestBody @Valid BannerRqModel request) {
 
-        log.info(REQUEST_MSG, BANNER_URL, request);
+        log.info(REQUEST_MSG, BANNERS_URL, request);
         var response = ResponseModel.of(bannerService.createBanner(request), CREATED);
 
-        log.info(RESPONSE_MSG, BANNER_URL, response);
+        log.info(RESPONSE_MSG, BANNERS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update banner")
-    @PutMapping(BANNER_URL)
+    @PutMapping(PATH_ID)
     public ResponseEntity<ResponseModel<BannerRsModel>> updateBanner(
-            @RequestBody @Valid UpdateBannerRqModel request) {
+            @RequestBody @Valid BannerRqModel request,
+            @PathVariable("id") String bannerId) {
 
-        log.info(REQUEST_MSG, BANNER_URL, request);
-        var response = ResponseModel.of(bannerService.updateBanner(request), OK);
+        var response = ResponseModel.of(bannerService.updateBanner(request, bannerId), OK);
 
-        log.info(RESPONSE_MSG, BANNER_URL, response);
+        log.info(RESPONSE_MSG, BANNERS_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Delete banner")
-    @DeleteMapping(BANNER_URL)
+    @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<BannerRsModel>> deleteBanner(
             @ApiParam(name = "banner-id", type = "string", required = true)
-            @RequestParam(name = "banner-id") String bannerId) {
+            @PathVariable(name = "id") String bannerId) {
 
-        log.info(REQUEST_MSG, BANNER_URL, bannerId);
+        log.info(REQUEST_MSG, BANNERS_URL + PATH_ID, bannerId);
         var response = ResponseModel.of(bannerService.deleteBanner(bannerId), OK);
 
-        log.info(RESPONSE_MSG, BANNER_URL, bannerId);
+        log.info(RESPONSE_MSG, BANNERS_URL + PATH_ID, bannerId);
         return ResponseEntity.ok(response);
 
     }

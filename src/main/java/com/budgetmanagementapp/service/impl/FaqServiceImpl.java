@@ -5,7 +5,6 @@ import com.budgetmanagementapp.entity.Translation;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.faq.FaqRqModel;
 import com.budgetmanagementapp.model.faq.FaqRsModel;
-import com.budgetmanagementapp.model.faq.UpdateFaqRqModel;
 import com.budgetmanagementapp.repository.FaqRepository;
 import com.budgetmanagementapp.service.FaqService;
 import lombok.AllArgsConstructor;
@@ -59,8 +58,8 @@ public class FaqServiceImpl implements FaqService {
     }
 
     @Override
-    public FaqRsModel updateFaq(UpdateFaqRqModel request) {
-        Faq faq = findById(request.getFaqId());
+    public FaqRsModel updateFaq(FaqRqModel request, String faqId) {
+        Faq faq = findById(faqId);
 
         faq.setQuestion(Translation.builder()
                 .az(request.getQuestionAz()).en(request.getQuestionEn()).ru(request.getQuestionRu())

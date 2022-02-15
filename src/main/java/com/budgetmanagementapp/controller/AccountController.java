@@ -1,7 +1,10 @@
 package com.budgetmanagementapp.controller;
 
 import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.account.*;
+import com.budgetmanagementapp.model.account.AccountRqModel;
+import com.budgetmanagementapp.model.account.AccountRsModel;
+import com.budgetmanagementapp.model.account.UpdateAccountModel;
+import com.budgetmanagementapp.model.account.UpdateBalanceModel;
 import com.budgetmanagementapp.service.AccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,103 +32,85 @@ import static org.springframework.http.HttpStatus.OK;
 @Log4j2
 @Validated
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Account")
+@RequestMapping(ACCOUNTS_URL)
 public class AccountController {
-    private static final String REQUEST_PARAM_ACCOUNT_ID = "account-id";
     private final AccountService accountService;
 
     @ApiOperation("Create account")
-    @PostMapping(ACCOUNT_URL)
+    @PostMapping
     public ResponseEntity<ResponseModel<AccountRsModel>> createAccount(@RequestBody AccountRqModel requestBody,
                                                                        Authentication auth) {
         requestBody.setUsername(((UserDetails) auth.getPrincipal()).getUsername());
 
-        log.info(REQUEST_MSG, ACCOUNT_URL, requestBody);
+        log.info(REQUEST_MSG, ACCOUNTS_URL, requestBody);
         var response = ResponseModel.of(accountService.createAccount(requestBody, false), CREATED);
 
-        log.info(RESPONSE_MSG, ACCOUNT_URL, response);
+        log.info(RESPONSE_MSG, ACCOUNTS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update account")
-    @PutMapping(ACCOUNT_URL)
+    @PutMapping(PATH_ID)
     public ResponseEntity<ResponseModel<AccountRsModel>> updateAccount(
-            @RequestBody @Valid UpdateAccountModel requestBody, Authentication auth) {
-        log.info(REQUEST_MSG, ACCOUNT_URL, requestBody);
+            @RequestBody @Valid UpdateAccountModel requestBody,
+            @PathVariable("id") String accountId, Authentication auth) {
+        log.info(REQUEST_MSG, ACCOUNTS_URL + PATH_ID, requestBody);
         var response = ResponseModel.of(
-                accountService.updateAccount(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()), OK);
+                accountService.updateAccount(requestBody, accountId, ((UserDetails) auth.getPrincipal()).getUsername()), OK);
 
-        log.info(RESPONSE_MSG, ACCOUNT_URL, response);
+        log.info(RESPONSE_MSG, ACCOUNTS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update balance of account")
     @PutMapping(ACCOUNT_UPDATE_BALANCE_URL)
     public ResponseEntity<ResponseModel<AccountRsModel>> updateBalance(
-            @RequestBody @Valid UpdateBalanceModel requestBody, Authentication auth) {
-        log.info(REQUEST_MSG, ACCOUNT_UPDATE_BALANCE_URL, requestBody);
+            @RequestBody @Valid UpdateBalanceModel requestBody,
+            @PathVariable("id") String accountId, Authentication auth) {
+        log.info(REQUEST_MSG, ACCOUNTS_URL + ACCOUNT_UPDATE_BALANCE_URL, requestBody);
         var response = ResponseModel.of(
-                accountService.updateBalance(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()), OK);
+                accountService.updateBalance(requestBody, accountId, ((UserDetails) auth.getPrincipal()).getUsername()), OK);
 
-        log.info(RESPONSE_MSG, ACCOUNT_UPDATE_BALANCE_URL, response);
+        log.info(RESPONSE_MSG, ACCOUNTS_URL + ACCOUNT_UPDATE_BALANCE_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get all accounts")
-    @GetMapping(ACCOUNT_GET_ALL_ACCOUNTS_URL)
+    @GetMapping
     public ResponseEntity<ResponseModel<List<AccountRsModel>>> getAllAccounts(Authentication auth) {
-        log.info(REQUEST_MSG, ACCOUNT_GET_ALL_ACCOUNTS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, ACCOUNTS_URL, NO_BODY_MSG);
         var response = ResponseModel.of(
                 accountService.getAllAccountsByUser(((UserDetails) auth.getPrincipal()).getUsername()), OK);
 
-        log.info(RESPONSE_MSG, ACCOUNT_GET_ALL_ACCOUNTS_URL, response);
-        return ResponseEntity.ok(response);
-    }
-
-    @ApiOperation("Get all account types")
-    @GetMapping(ACCOUNT_GET_ALL_ACCOUNT_TYPES_URL)
-    public ResponseEntity<ResponseModel<List<AccountTypeRsModel>>> getAllAccountTypes() {
-        log.info(REQUEST_MSG, ACCOUNT_GET_ALL_ACCOUNT_TYPES_URL, NO_BODY_MSG);
-        var response = ResponseModel.of(accountService.getAllAccountTypes(), OK);
-
-        log.info(RESPONSE_MSG, ACCOUNT_GET_ALL_ACCOUNT_TYPES_URL, response);
-        return ResponseEntity.ok(response);
-    }
-
-    @ApiOperation("Get all currencies")
-    @GetMapping(ACCOUNT_GET_ALL_CURRENCIES_URL)
-    public ResponseEntity<ResponseModel<List<CurrencyRsModel>>> getAllCurrencies() {
-        log.info(REQUEST_MSG, ACCOUNT_GET_ALL_CURRENCIES_URL, NO_BODY_MSG);
-        var response = ResponseModel.of(accountService.getAllCurrencies(), OK);
-
-        log.info(RESPONSE_MSG, ACCOUNT_GET_ALL_CURRENCIES_URL, response);
+        log.info(RESPONSE_MSG, ACCOUNTS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Toggle account allow negative")
     @PostMapping(ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL)
     public ResponseEntity<ResponseModel<AccountRsModel>> toggleAccountAllowNegative(
-            @ApiParam(name = REQUEST_PARAM_ACCOUNT_ID, type = "string", example = "500de72f-7e...", required = true)
-            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) @NotBlank String accountId,
+            @ApiParam(name = "id", type = "string", example = "500de72f-7e...", required = true)
+            @PathVariable(name = "id") @NotBlank String accountId,
             Authentication auth) {
-        log.info(REQUEST_MSG, ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL, accountId);
+        log.info(REQUEST_MSG, ACCOUNTS_URL + ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL, accountId);
         var response = ResponseModel.of(accountService
                 .toggleAllowNegative(accountId, ((UserDetails) auth.getPrincipal()).getUsername()), OK);
 
-        log.info(RESPONSE_MSG, ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL, response);
+        log.info(RESPONSE_MSG, ACCOUNTS_URL + ACCOUNT_TOGGLE_ALLOW_NEGATIVE_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Toggle show in sum")
     @PostMapping(ACCOUNT_TOGGLE_SHOW_IN_SUM_URL)
     public ResponseEntity<ResponseModel<AccountRsModel>> toggleShowInSum(
-            @ApiParam(name = REQUEST_PARAM_ACCOUNT_ID, type = "string", example = "500de72f-7e...", required = true)
-            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) @NotBlank String accountId,
+            @ApiParam(name = "id", type = "string", example = "500de72f-7e...", required = true)
+            @PathVariable(name = "id") @NotBlank String accountId,
             Authentication auth) {
-        log.info(REQUEST_MSG, ACCOUNT_TOGGLE_SHOW_IN_SUM_URL, accountId);
+        log.info(REQUEST_MSG, ACCOUNTS_URL + ACCOUNT_TOGGLE_SHOW_IN_SUM_URL, accountId);
         var response = ResponseModel.of(
                 accountService.toggleShowInSum(accountId, ((UserDetails) auth.getPrincipal()).getUsername()), OK);
 
-        log.info(RESPONSE_MSG, ACCOUNT_TOGGLE_SHOW_IN_SUM_URL, response);
+        log.info(RESPONSE_MSG, ACCOUNTS_URL + ACCOUNT_TOGGLE_SHOW_IN_SUM_URL, response);
         return ResponseEntity.ok(response);
     }
 }

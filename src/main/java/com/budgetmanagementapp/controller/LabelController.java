@@ -3,7 +3,6 @@ package com.budgetmanagementapp.controller;
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.LabelRsModel;
-import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
 import com.budgetmanagementapp.service.LabelService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,76 +27,77 @@ import static org.springframework.http.HttpStatus.OK;
 @AllArgsConstructor
 @Log4j2
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Label")
+@RequestMapping(LABELS_URL)
 public class LabelController {
 
-    private static final String REQUEST_PARAM_LABEL_ID = "label-id";
     private final LabelService labelService;
 
     @ApiOperation("Create label")
-    @PostMapping(LABEL_URL)
+    @PostMapping
     public ResponseEntity<ResponseModel<LabelRsModel>> createLabel(
             @RequestBody @Valid LabelRqModel requestBody, Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_URL, requestBody);
+        log.info(REQUEST_MSG, LABELS_URL, requestBody);
         var response =
                 ResponseModel.of(
                         labelService.createLabel(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                         CREATED);
 
-        log.info(RESPONSE_MSG, LABEL_URL, response);
+        log.info(RESPONSE_MSG, LABELS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get all labels")
-    @GetMapping(LABEL_GET_ALL_LABELS_URL)
+    @GetMapping
     public ResponseEntity<ResponseModel<List<LabelRsModel>>> getAllLabels(Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_GET_ALL_LABELS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, LABELS_URL, NO_BODY_MSG);
         var response =
                 ResponseModel.of(
                         labelService.getLabelsByUser(((UserDetails) auth.getPrincipal()).getUsername(), true),
                         OK);
 
-        log.info(RESPONSE_MSG, LABEL_GET_ALL_LABELS_URL, response);
+        log.info(RESPONSE_MSG, LABELS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get labels of user")
-    @GetMapping(LABEL_GET_LABELS_URL)
+    @GetMapping(LABEL_BY_USER_URL)
     public ResponseEntity<ResponseModel<List<LabelRsModel>>> getLabelsOfUser(Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_GET_LABELS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, LABELS_URL + LABEL_BY_USER_URL, NO_BODY_MSG);
         var response =
                 ResponseModel.of(
                         labelService.getLabelsByUser(((UserDetails) auth.getPrincipal()).getUsername(), false),
                         OK);
 
-        log.info(RESPONSE_MSG, LABEL_GET_LABELS_URL, response);
+        log.info(RESPONSE_MSG, LABELS_URL + LABEL_BY_USER_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update label")
-    @PutMapping(LABEL_URL)
+    @PutMapping(PATH_ID)
     public ResponseEntity<ResponseModel<LabelRsModel>> updateLabel(
-            @RequestBody @Valid UpdateLabelRqModel requestBody, Authentication auth) {
+            @RequestBody @Valid LabelRqModel requestBody,
+            @PathVariable("id") String labelId, Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_URL, requestBody);
+        log.info(REQUEST_MSG, LABELS_URL + PATH_ID, requestBody);
         var response =
                 ResponseModel.of(
-                        labelService.updateLabel(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
+                        labelService.updateLabel(requestBody, labelId, ((UserDetails) auth.getPrincipal()).getUsername()),
                         OK);
 
-        log.info(RESPONSE_MSG, LABEL_URL, response);
+        log.info(RESPONSE_MSG, LABELS_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Toggle label visibility")
     @PostMapping(LABEL_TOGGLE_VISIBILITY_URL)
     public ResponseEntity<ResponseModel<LabelRsModel>> toggleVisibility(
-            @ApiParam(name = REQUEST_PARAM_LABEL_ID, type = "string", required = true)
-            @RequestParam(name = REQUEST_PARAM_LABEL_ID) String labelId, Authentication auth) {
+            @ApiParam(name = "id", type = "string", required = true)
+            @PathVariable(name = "id") String labelId, Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_TOGGLE_VISIBILITY_URL, labelId);
+        log.info(REQUEST_MSG, LABELS_URL + LABEL_TOGGLE_VISIBILITY_URL, labelId);
         var response =
                 ResponseModel.of(
                         labelService.toggleVisibility(labelId, ((UserDetails) auth.getPrincipal()).getUsername()),
