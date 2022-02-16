@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.home.StepRqModel;
-import com.budgetmanagementapp.model.home.StepRsModel;
+import com.budgetmanagementapp.model.step.StepRqModel;
+import com.budgetmanagementapp.model.step.StepRsModel;
 
 import java.util.List;
 

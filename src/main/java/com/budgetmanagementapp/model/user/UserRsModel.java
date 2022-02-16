@@ -1,17 +1,11 @@
 package com.budgetmanagementapp.model.user;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @Getter
@@ -21,43 +15,26 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRsModel {
-    @ApiModelProperty(
-            name = "userId",
-            dataType = "string")
+    @ApiModelProperty(name = "userId", dataType = "string")
     String userId;
 
-    @ApiModelProperty(
-            name = "username",
-            dataType = "string")
+    @ApiModelProperty(name = "username", dataType = "string")
     String username;
 
-    @ApiModelProperty(
-            name = "fullName",
-            dataType = "string")
+    @ApiModelProperty(name = "fullName", dataType = "string")
     String fullName;
 
-    @ApiModelProperty(
-            name = "creationDateTime",
-            dataType = "localDateTime")
+    @ApiModelProperty(name = "creationDateTime", dataType = "localDateTime")
     LocalDateTime creationDateTime;
 
-    @ApiModelProperty(
-            name = "status",
-            dataType = "string",
-            example = "active")
+    @ApiModelProperty(name = "status", dataType = "string", example = "active")
     String status;
 
-    @ApiModelProperty(
-            name = "paymentStatus",
-            dataType = "string",
-            example = "paid")
+    @ApiModelProperty(name = "paymentStatus", dataType = "string", example = "paid")
     String paymentStatus;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModelProperty(
-            name = "language",
-            dataType = "string",
-            example = "az, en, ru")
+    @ApiModelProperty(name = "language", dataType = "string", example = "az, en, ru")
     String language;
 
 }

@@ -1,14 +1,5 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.UserMapper.USER_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_BODY;
-import static com.budgetmanagementapp.utility.Constant.OTP_CONFIRMATION_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_BODY;
-import static com.budgetmanagementapp.utility.Constant.RESET_PASSWORD_SUBJECT;
-import static com.budgetmanagementapp.utility.Constant.STATUS_USED;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.builder.UserBuilder;
 import com.budgetmanagementapp.entity.Otp;
 import com.budgetmanagementapp.entity.User;
@@ -20,16 +11,21 @@ import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
 import com.budgetmanagementapp.utility.MailSenderService;
 import com.budgetmanagementapp.utility.SmsSenderService;
-import java.util.Optional;
-import java.util.Random;
-import javax.mail.MessagingException;
-import javax.transaction.Transactional;
-
 import com.budgetmanagementapp.utility.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.mail.MessagingException;
+import javax.transaction.Transactional;
+import java.util.Optional;
+import java.util.Random;
+
+import static com.budgetmanagementapp.mapper.UserMapper.USER_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.Constant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Service
 @Log4j2
@@ -57,9 +53,9 @@ public class UserServiceImpl implements UserService {
     public User findByUsername(String username) {
         var user = userRepo
                 .byUsernameAndStatus(username, UserStatus.ACTIVE)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+                .orElseThrow(() -> new DataNotFoundException(format(USER_NOT_FOUND_MSG, username), 1008));
 
-        log.info(USER_BY_USERNAME, username, user);
+        log.info(USER_BY_USERNAME, username, user.getUserId());
         return user;
     }
 
@@ -132,7 +128,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoRsModel getUserInfo(String username) {
         User user = userRepo.byUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+                .orElseThrow(() -> new DataNotFoundException(format(USER_NOT_FOUND_MSG, username), 1008));
 
         UserInfoRsModel userInfoRsModel = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
 
@@ -159,7 +155,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserInfoRsModel updateUserLanguage(String username, String language) {
         User user = userRepo.byUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, username)));
+                .orElseThrow(() -> new DataNotFoundException(format(USER_NOT_FOUND_MSG, username), 1008));
         user.setLanguage(language);
         userRepo.save(user);
 
@@ -183,7 +179,7 @@ public class UserServiceImpl implements UserService {
 
     private User userByUsernameAndStatus(CreatePasswordRqModel requestBody) {
         User user = userRepo.byUsernameAndStatus(requestBody.getUsername(), UserStatus.CONFIRMED)
-                .orElseThrow(() -> new UserNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername())));
+                .orElseThrow(() -> new DataNotFoundException(format(USER_NOT_FOUND_MSG, requestBody.getUsername()), 1008));
 
         log.info(USER_BY_USERNAME_STATUS, requestBody.getUsername(), UserStatus.CONFIRMED, user.getUserId());
         return user;
@@ -203,13 +199,13 @@ public class UserServiceImpl implements UserService {
 
     private void checkPasswordDuplication(String oldPassword, String newPassword) {
         if (encoder.matches(newPassword, oldPassword)) {
-            throw new DuplicatePasswordException(PASSWORD_DUPLICATION_MSG);
+            throw new DuplicateException(PASSWORD_DUPLICATION_MSG, 6009);
         }
     }
 
     private void checkUsernameUniqueness(String username) {
         if (userRepo.byUsername(username).isPresent()) {
-            throw new UsernameNotUniqueException(USERNAME_NOT_UNIQUE_MSG);
+                throw new DuplicateException(USERNAME_NOT_UNIQUE_MSG, 1007);
         }
     }
 

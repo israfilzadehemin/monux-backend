@@ -15,7 +15,7 @@ import java.util.UUID;
 public class AccountBuilder {
 
     public Account buildAccount(AccountRqModel requestBody, User user, AccountType accountType,
-                                 Currency currency, boolean isInitialAccount) {
+                                Currency currency, boolean isInitialAccount) {
         return Account.builder()
                 .accountId(UUID.randomUUID().toString())
                 .name(requestBody.getAccountName())

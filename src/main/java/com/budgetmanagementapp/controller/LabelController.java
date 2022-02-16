@@ -3,18 +3,16 @@ package com.budgetmanagementapp.controller;
 import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
 import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.LABEL_CREATE_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.LABEL_GET_ALL_LABELS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.LABEL_GET_LABELS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.LABELS_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.LABEL_BY_USER_URL;
 import static com.budgetmanagementapp.utility.UrlConstant.LABEL_TOGGLE_VISIBILITY_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.LABEL_UPDATE_URL;
+import static com.budgetmanagementapp.utility.UrlConstant.PATH_ID;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.LabelRsModel;
-import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
 import com.budgetmanagementapp.service.LabelService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,91 +26,94 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @AllArgsConstructor
 @Log4j2
 @Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Label")
+@RequestMapping(LABELS_URL)
 public class LabelController {
 
-    private static final String REQUEST_PARAM_LABEL_ID = "label-id";
     private final LabelService labelService;
 
     @ApiOperation("Create label")
-    @PostMapping(LABEL_CREATE_URL)
+    @PostMapping
     public ResponseEntity<ResponseModel<LabelRsModel>> createLabel(
-            @RequestBody @Valid LabelRqModel requestBody, Authentication auth) {
+            @RequestBody @Valid LabelRqModel requestBody, @ApiIgnore Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_CREATE_URL, requestBody);
+        log.info(REQUEST_MSG, LABELS_URL, requestBody);
         var response =
                 ResponseModel.of(
                         labelService.createLabel(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
                         CREATED);
 
-        log.info(RESPONSE_MSG, LABEL_CREATE_URL, response);
+        log.info(RESPONSE_MSG, LABELS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get all labels")
-    @GetMapping(LABEL_GET_ALL_LABELS_URL)
-    public ResponseEntity<ResponseModel<List<LabelRsModel>>> getAllLabels(Authentication auth) {
+    @GetMapping
+    public ResponseEntity<ResponseModel<List<LabelRsModel>>> getAllLabels(@ApiIgnore Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_GET_ALL_LABELS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, LABELS_URL, NO_BODY_MSG);
         var response =
                 ResponseModel.of(
                         labelService.getLabelsByUser(((UserDetails) auth.getPrincipal()).getUsername(), true),
                         OK);
 
-        log.info(RESPONSE_MSG, LABEL_GET_ALL_LABELS_URL, response);
+        log.info(RESPONSE_MSG, LABELS_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Get labels of user")
-    @GetMapping(LABEL_GET_LABELS_URL)
-    public ResponseEntity<ResponseModel<List<LabelRsModel>>> getLabelsOfUser(Authentication auth) {
+    @GetMapping(LABEL_BY_USER_URL)
+    public ResponseEntity<ResponseModel<List<LabelRsModel>>> getLabelsOfUser(@ApiIgnore Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_GET_LABELS_URL, NO_BODY_MSG);
+        log.info(REQUEST_MSG, LABELS_URL + LABEL_BY_USER_URL, NO_BODY_MSG);
         var response =
                 ResponseModel.of(
                         labelService.getLabelsByUser(((UserDetails) auth.getPrincipal()).getUsername(), false),
                         OK);
 
-        log.info(RESPONSE_MSG, LABEL_GET_LABELS_URL, response);
+        log.info(RESPONSE_MSG, LABELS_URL + LABEL_BY_USER_URL, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Update label")
-    @PostMapping(LABEL_UPDATE_URL)
+    @PutMapping(PATH_ID)
     public ResponseEntity<ResponseModel<LabelRsModel>> updateLabel(
-            @RequestBody @Valid UpdateLabelRqModel requestBody, Authentication auth) {
+            @RequestBody @Valid LabelRqModel requestBody,
+            @PathVariable("id") String labelId, @ApiIgnore Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_UPDATE_URL, requestBody);
+        log.info(REQUEST_MSG, LABELS_URL + PATH_ID, requestBody);
         var response =
                 ResponseModel.of(
-                        labelService.updateLabel(requestBody, ((UserDetails) auth.getPrincipal()).getUsername()),
+                        labelService.updateLabel(requestBody, labelId, ((UserDetails) auth.getPrincipal()).getUsername()),
                         OK);
 
-        log.info(RESPONSE_MSG, LABEL_UPDATE_URL, response);
+        log.info(RESPONSE_MSG, LABELS_URL + PATH_ID, response);
         return ResponseEntity.ok(response);
     }
 
     @ApiOperation("Toggle label visibility")
     @PostMapping(LABEL_TOGGLE_VISIBILITY_URL)
     public ResponseEntity<ResponseModel<LabelRsModel>> toggleVisibility(
-            @ApiParam(name = REQUEST_PARAM_LABEL_ID, type = "string", example = "", required = true)
-            @RequestParam(name = REQUEST_PARAM_LABEL_ID) String labelId, Authentication auth) {
+            @ApiParam(name = "id", type = "string", required = true)
+            @PathVariable(name = "id") String labelId, @ApiIgnore Authentication auth) {
 
-        log.info(REQUEST_MSG, LABEL_TOGGLE_VISIBILITY_URL, labelId);
+        log.info(REQUEST_MSG, LABELS_URL + LABEL_TOGGLE_VISIBILITY_URL, labelId);
         var response =
                 ResponseModel.of(
                         labelService.toggleVisibility(labelId, ((UserDetails) auth.getPrincipal()).getUsername()),
                         OK);
 
         return ResponseEntity.ok(response);
-
     }
 }

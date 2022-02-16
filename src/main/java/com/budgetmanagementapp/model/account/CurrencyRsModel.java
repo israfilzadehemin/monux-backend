@@ -12,14 +12,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CurrencyRsModel {
-    @ApiModelProperty(
-            name = "currencyId",
-            dataType = "string")
+    @ApiModelProperty(name = "currencyId", dataType = "string")
     String currencyId;
 
-    @ApiModelProperty(
-            name = "currencyName",
-            dataType = "string",
-            example = "AZN")
+    @ApiModelProperty(name = "currencyName", dataType = "string", example = "AZN")
     String currencyName;
 }

@@ -3,7 +3,7 @@ package com.budgetmanagementapp.builder;
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.model.transaction.DebtRqModel;
 import com.budgetmanagementapp.model.transaction.InOutRqModel;
-import com.budgetmanagementapp.model.transfer.TransferRqModel;
+import com.budgetmanagementapp.model.transaction.TransferRqModel;
 import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.TransactionType;
 import lombok.AllArgsConstructor;

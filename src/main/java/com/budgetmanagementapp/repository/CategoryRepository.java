@@ -2,9 +2,10 @@ package com.budgetmanagementapp.repository;
 
 import com.budgetmanagementapp.entity.Category;
 import com.budgetmanagementapp.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
@@ -25,7 +26,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     }
 
     default Optional<Category> byIdAndTypeAndUsers(String categoryId, String type, List<User> users) {
-        return findByCategoryIdAndTypeAndUserIn(categoryId, type,users);
+        return findByCategoryIdAndTypeAndUserIn(categoryId, type, users);
     }
 
     Optional<Category> findByNameIgnoreCaseAndUser(String name, User user);

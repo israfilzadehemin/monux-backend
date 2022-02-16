@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PaginationTool<T> {
-    public Pageable service(int pageCount, int size, String sortField, String sortDir){
+    public Pageable service(int pageCount, int size, String sortField, String sortDir) {
         Sort sort = Sort.by(sortField);
         sort = sortDir.equals("desc") ? sort.descending() : sort.ascending();
-        return PageRequest.of(pageCount-1,size, sort);
+        return PageRequest.of(pageCount - 1, size, sort);
     }
 
 }

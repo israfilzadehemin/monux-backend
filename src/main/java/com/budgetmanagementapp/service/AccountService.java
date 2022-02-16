@@ -11,7 +11,7 @@ import java.util.Map;
 public interface AccountService {
     AccountRsModel createAccount(AccountRqModel createAccountRqModel, boolean isInitialAccount);
 
-    AccountRsModel updateAccount(UpdateAccountModel accountModel, String username);
+    AccountRsModel updateAccount(UpdateAccountModel accountModel, String accountId, String username);
 
     AccountRsModel toggleAllowNegative(String accountId, String username);
 
@@ -19,7 +19,7 @@ public interface AccountService {
 
     List<AccountRsModel> getAllAccountsByUser(String username);
 
-    AccountRsModel updateBalance(UpdateBalanceModel balanceModel, String username);
+    AccountRsModel updateBalance(UpdateBalanceModel balanceModel, String accountId, String username);
 
     Account byIdAndUser(String accountId, User user);
 

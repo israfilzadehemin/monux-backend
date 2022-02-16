@@ -1,16 +1,12 @@
 package com.budgetmanagementapp.entity;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import javax.persistence.*;
-
 import com.budgetmanagementapp.utility.PaymentStatus;
 import com.budgetmanagementapp.utility.UserStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @NoArgsConstructor
 @AllArgsConstructor

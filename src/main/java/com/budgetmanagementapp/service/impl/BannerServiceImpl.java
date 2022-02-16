@@ -1,23 +1,19 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.BannerMapper.BANNER_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_BY_KEYWORD_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.BANNER_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Banner;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.BannerNotFoundException;
-import com.budgetmanagementapp.model.home.BannerRqModel;
-import com.budgetmanagementapp.model.home.BannerRsModel;
+import com.budgetmanagementapp.exception.DataNotFoundException;
+import com.budgetmanagementapp.model.banner.BannerRqModel;
+import com.budgetmanagementapp.model.banner.BannerRsModel;
 import com.budgetmanagementapp.repository.BannerRepository;
 import com.budgetmanagementapp.service.BannerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import static com.budgetmanagementapp.mapper.BannerMapper.BANNER_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -35,8 +31,7 @@ public class BannerServiceImpl implements BannerService {
     public BannerRsModel getBannerByKeyword(String keyword, String language) {
         var banner = BANNER_MAPPER_INSTANCE.buildBannerResponseModelWithLanguage(
                 bannerRepo.byKeyword(keyword)
-                        .orElseThrow(
-                                () -> new BannerNotFoundException(format(BANNER_NOT_FOUND_MSG, keyword))), language);
+                        .orElseThrow(() -> new DataNotFoundException(format(BANNER_NOT_FOUND_MSG, keyword), 6000)), language);
 
         log.info(BANNER_BY_KEYWORD_MSG, keyword, banner);
         return banner;
@@ -88,7 +83,7 @@ public class BannerServiceImpl implements BannerService {
 
     private Banner bannerById(String bannerId) {
         return bannerRepo.byBannerId(bannerId).orElseThrow(
-                () -> new BannerNotFoundException(format(BANNER_NOT_FOUND_MSG, bannerId)));
+                () -> new DataNotFoundException(format(BANNER_NOT_FOUND_MSG, bannerId), 6000));
     }
 
 }

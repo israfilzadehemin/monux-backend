@@ -5,7 +5,7 @@ import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.model.transaction.DebtRsModel;
 import com.budgetmanagementapp.model.transaction.InOutRsModel;
 import com.budgetmanagementapp.model.transaction.TransactionRsModel;
-import com.budgetmanagementapp.model.transfer.TransferRsModel;
+import com.budgetmanagementapp.model.transaction.TransferRsModel;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

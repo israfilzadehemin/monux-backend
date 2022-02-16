@@ -3,13 +3,13 @@ package com.budgetmanagementapp.repository;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface TransactionRepository extends PagingAndSortingRepository<Transaction, Long> {
 

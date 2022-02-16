@@ -16,39 +16,23 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanRsModel {
-    @ApiModelProperty(
-            name = "planId",
-            dataType = "string")
+    @ApiModelProperty(name = "planId", dataType = "string")
     String planId;
 
-    @ApiModelProperty(
-            name = "title",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "title", dataType = "string", required = true)
     @NotBlank
     Object title;
 
-    @ApiModelProperty(
-            name = "text",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "text", dataType = "string", required = true)
     @NotBlank
     Object text;
 
-    @ApiModelProperty(
-            name = "price",
-            dataType = "bigDecimal",
-            example = "30")
+    @ApiModelProperty(name = "price", dataType = "bigDecimal", example = "30")
     BigDecimal price;
 
-    @ApiModelProperty(
-            name = "periodType",
-            dataType = "string",
-            example = "MONTHLY")
+    @ApiModelProperty(name = "periodType", dataType = "string", example = "MONTHLY")
     String periodType;
 
-    @ApiModelProperty(
-            name = "periodType",
-            dataType = "list of string")
+    @ApiModelProperty(name = "periodType", dataType = "list of string")
     List<String> featuresIds;
 }

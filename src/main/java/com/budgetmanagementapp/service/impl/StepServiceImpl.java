@@ -1,25 +1,22 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.StepMapper.STEP_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_STEPS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.STEP_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.STEP_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.STEP_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.STEP_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Step;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.StepNotFoundException;
-import com.budgetmanagementapp.model.home.StepRqModel;
-import com.budgetmanagementapp.model.home.StepRsModel;
+import com.budgetmanagementapp.exception.DataNotFoundException;
+import com.budgetmanagementapp.model.step.StepRqModel;
+import com.budgetmanagementapp.model.step.StepRsModel;
 import com.budgetmanagementapp.repository.StepRepository;
 import com.budgetmanagementapp.service.StepService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.StepMapper.STEP_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -85,7 +82,7 @@ public class StepServiceImpl implements StepService {
 
     private Step stepById(String stepId) {
         return stepRepo.byId(stepId).orElseThrow(
-                () -> new StepNotFoundException(format(STEP_NOT_FOUND_MSG, stepId))
+                () -> new DataNotFoundException(format(STEP_NOT_FOUND_MSG, stepId), 6008)
         );
     }
 }

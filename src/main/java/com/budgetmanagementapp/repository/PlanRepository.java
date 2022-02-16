@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
-    default Optional<Plan> byPlanId(String planId){
+    default Optional<Plan> byPlanId(String planId) {
         return findByPlanId(planId);
     }
 

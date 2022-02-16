@@ -1,36 +1,29 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.LabelMapper.LABEL_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_LABELS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_LABEL_NAME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LABELS_BY_IDS_TYPE_USER_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LABEL_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LABEL_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LABEL_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_LABEL_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.VISIBILITY_TOGGLED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.builder.LabelBuilder;
 import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.DuplicateLabelException;
-import com.budgetmanagementapp.exception.LabelNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
+import com.budgetmanagementapp.exception.DuplicateException;
 import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.LabelRsModel;
-import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
 import com.budgetmanagementapp.repository.LabelRepository;
 import com.budgetmanagementapp.service.LabelService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Service;
+
+import static com.budgetmanagementapp.mapper.LabelMapper.LABEL_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.Constant.COMMON_USERNAME;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Service
 @AllArgsConstructor
@@ -59,7 +52,7 @@ public class LabelServiceImpl implements LabelService {
         List<LabelRsModel> labels = labelsByUser(includeCommonLabels, user, generalUser);
 
         if (labels.isEmpty()) {
-            throw new LabelNotFoundException(format(LABEL_NOT_FOUND_MSG, username));
+            throw new DataNotFoundException(format(LABEL_NOT_FOUND_MSG, username), 5004);
         }
 
         log.info(ALL_LABELS_MSG, user.getUsername(), labels);
@@ -67,8 +60,8 @@ public class LabelServiceImpl implements LabelService {
     }
 
     @Override
-    public LabelRsModel updateLabel(UpdateLabelRqModel requestBody, String username) {
-        Label label = byIdAndUser(requestBody.getLabelId(), username);
+    public LabelRsModel updateLabel(LabelRqModel requestBody, String labelId, String username) {
+        Label label = byIdAndUser(labelId, username);
         updateLabelValues(requestBody, label);
 
         var labelRsModel = LABEL_MAPPER_INSTANCE.buildLabelResponseModel(label);
@@ -120,7 +113,7 @@ public class LabelServiceImpl implements LabelService {
 
     private Label byIdAndUser(String labelId, String username) {
         return labelRepo.byIdAndUser(labelId, userByUsername(username))
-                .orElseThrow(() -> new LabelNotFoundException(format(UNAUTHORIZED_LABEL_MSG, username, labelId)));
+                .orElseThrow(() -> new DataNotFoundException(format(UNAUTHORIZED_LABEL_MSG, username, labelId), 5004));
     }
 
     private Optional<Label> byIdAndTypeAndUser(String labelId, String type, User user) {
@@ -130,7 +123,7 @@ public class LabelServiceImpl implements LabelService {
                 Arrays.asList(user, userService.findByUsername(COMMON_USERNAME)));
     }
 
-    private void updateLabelValues(UpdateLabelRqModel requestBody, Label label) {
+    private void updateLabelValues(LabelRqModel requestBody, Label label) {
         CustomValidator.validateCategoryType(requestBody.getLabelCategory());
         label.setName(requestBody.getLabelName());
         label.setType(requestBody.getLabelCategory());
@@ -145,7 +138,7 @@ public class LabelServiceImpl implements LabelService {
     private void checkDuplicate(String labelName, User user) {
         if (labelRepo.byNameAndUser(labelName, user).isPresent()
                 || labelRepo.byNameAndUser(labelName, userByUsername(COMMON_USERNAME)).isPresent()) {
-            throw new DuplicateLabelException(format(DUPLICATE_LABEL_NAME_MSG, user.getUsername(), labelName));
+            throw new DuplicateException(format(DUPLICATE_LABEL_NAME_MSG, user.getUsername(), labelName), 5000);
         }
     }
 

@@ -1,24 +1,21 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.ServiceMapper.SERVICE_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_SERVICES_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.SERVICE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.SERVICE_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.SERVICE_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.SERVICE_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.ServiceNotFoundException;
-import com.budgetmanagementapp.model.home.ServiceRqModel;
-import com.budgetmanagementapp.model.home.ServiceRsModel;
+import com.budgetmanagementapp.exception.DataNotFoundException;
+import com.budgetmanagementapp.model.service.ServiceRqModel;
+import com.budgetmanagementapp.model.service.ServiceRsModel;
 import com.budgetmanagementapp.repository.ServiceRepository;
 import com.budgetmanagementapp.service.ServiceService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.ServiceMapper.SERVICE_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -81,7 +78,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     private com.budgetmanagementapp.entity.Service serviceById(String serviceId) {
         return serviceRepo.findByServiceId(serviceId).orElseThrow(
-                () -> new ServiceNotFoundException(format(SERVICE_NOT_FOUND_MSG, serviceId))
+                () -> new DataNotFoundException(format(SERVICE_NOT_FOUND_MSG, serviceId), 6007)
         );
     }
 }

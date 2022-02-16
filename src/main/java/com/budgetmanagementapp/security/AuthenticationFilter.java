@@ -1,14 +1,5 @@
 package com.budgetmanagementapp.security;
 
-import static com.budgetmanagementapp.utility.Constant.CONTENT_TYPE_JSON;
-import static com.budgetmanagementapp.utility.Constant.HEADER_REMEMBER_ME;
-import static com.budgetmanagementapp.utility.Constant.JWT_TOKEN_FORMAT;
-import static com.budgetmanagementapp.utility.MsgConstant.INVALID_CREDENTIALS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INVALID_REQUEST_MODEL_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.JWT_TOKEN_GENERATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_LOGIN_URL;
-
 import com.budgetmanagementapp.exception.InvalidModelException;
 import com.budgetmanagementapp.model.ErrorResponseModel;
 import com.budgetmanagementapp.model.ResponseModel;
@@ -17,10 +8,6 @@ import com.budgetmanagementapp.model.user.UserLoginModel;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.Constant;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
-import javax.servlet.FilterChain;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,6 +16,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.FilterChain;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+import static com.budgetmanagementapp.utility.Constant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.USER_LOGIN_URL;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -84,7 +80,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         generateResponse(response, HttpStatus.BAD_REQUEST, ErrorResponseModel.builder()
                 .code(1010)
                 .message(INVALID_CREDENTIALS_MSG)
-                .build() );
+                .build());
         logger.info(INVALID_CREDENTIALS_MSG);
     }
 

@@ -1,8 +1,9 @@
 package com.budgetmanagementapp.repository;
 
 import com.budgetmanagementapp.entity.AccountType;
-import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.Optional;
 
 public interface AccountTypeRepository extends JpaRepository<AccountType, Long> {
 

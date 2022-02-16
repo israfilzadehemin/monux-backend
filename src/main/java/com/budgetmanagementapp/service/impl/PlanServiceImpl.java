@@ -1,28 +1,24 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.PlanMapper.PLAN_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_PLANS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.PLAN_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.PLAN_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.PLAN_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.PLAN_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Feature;
 import com.budgetmanagementapp.entity.Plan;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.PlanNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.plan.PlanRqModel;
 import com.budgetmanagementapp.model.plan.PlanRsModel;
-import com.budgetmanagementapp.model.plan.UpdatePlanRqModel;
 import com.budgetmanagementapp.repository.FeatureRepository;
 import com.budgetmanagementapp.repository.PlanRepository;
 import com.budgetmanagementapp.service.PlanService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.PlanMapper.PLAN_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -56,9 +52,9 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public PlanRsModel updatePlan(UpdatePlanRqModel request) {
-        Plan plan = planRepo.byPlanId(request.getPlanId())
-                .orElseThrow(() -> new PlanNotFoundException(format(PLAN_NOT_FOUND_MSG, request.getPlanId())));
+    public PlanRsModel updatePlan(PlanRqModel request, String planId) {
+        Plan plan = planRepo.byPlanId(planId)
+                .orElseThrow(() -> new DataNotFoundException(format(PLAN_NOT_FOUND_MSG, planId), 6006));
 
         plan.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTextEn()).ru(request.getTitleRu())
@@ -80,7 +76,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public PlanRsModel deletePlan(String planId) {
         Plan plan = planRepo.byPlanId(planId).orElseThrow(
-                () -> new PlanNotFoundException(format(PLAN_NOT_FOUND_MSG, planId)));
+                () -> new DataNotFoundException(format(PLAN_NOT_FOUND_MSG, planId), 6006));
         planRepo.delete(plan);
 
         PlanRsModel planRsModel = PLAN_MAPPER_INSTANCE.buildPlanResponseModel(plan);
