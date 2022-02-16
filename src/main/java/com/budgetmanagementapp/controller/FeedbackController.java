@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
+import springfox.documentation.annotations.ApiIgnore;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.FEEDBACKS_URL;
@@ -37,7 +38,7 @@ public class FeedbackController {
     @ApiOperation("Create feedback")
     @PostMapping
     public ResponseEntity<ResponseModel<FeedbackRsModel>> createFeedback(
-            @RequestBody @Valid FeedbackRqModel requestBody, Authentication auth) {
+            @RequestBody @Valid FeedbackRqModel requestBody, @ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, FEEDBACKS_URL, requestBody);
         var response =
@@ -51,7 +52,7 @@ public class FeedbackController {
 
     @ApiOperation("Get all feedbacks")
     @GetMapping
-    public ResponseEntity<ResponseModel<List<FeedbackRsModel>>> getAllFeedbacks(Authentication auth) {
+    public ResponseEntity<ResponseModel<List<FeedbackRsModel>>> getAllFeedbacks(@ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, FEEDBACKS_URL, NO_BODY_MSG);
         var response =
@@ -67,7 +68,7 @@ public class FeedbackController {
     @GetMapping(PATH_ID)
     public ResponseEntity<ResponseModel<FeedbackRsModel>> getFeedbackById(
             @ApiParam(name = "id", type = "string", required = true)
-            @PathVariable(name = "id") @NotBlank String feedbackId, Authentication auth) {
+            @PathVariable(name = "id") @NotBlank String feedbackId, @ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, FEEDBACKS_URL + PATH_ID, NO_BODY_MSG);
         var response =

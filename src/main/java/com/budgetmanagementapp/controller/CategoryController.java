@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import springfox.documentation.annotations.ApiIgnore;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.*;
@@ -34,7 +35,7 @@ public class CategoryController {
     @ApiOperation("Create category")
     @PostMapping
     public ResponseEntity<ResponseModel<CategoryRsModel>> createCategory(
-            @RequestBody @Valid CategoryRqModel requestBody, Authentication auth) {
+            @RequestBody @Valid CategoryRqModel requestBody, @ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, CATEGORIES_URL, requestBody);
         var response =
@@ -48,7 +49,7 @@ public class CategoryController {
 
     @ApiOperation("Get all categories")
     @GetMapping
-    public ResponseEntity<ResponseModel<List<CategoryRsModel>>> getAllCategories(Authentication auth) {
+    public ResponseEntity<ResponseModel<List<CategoryRsModel>>> getAllCategories(@ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, CATEGORIES_URL, NO_BODY_MSG);
         var response =
@@ -62,7 +63,7 @@ public class CategoryController {
 
     @ApiOperation("Get all categories of user")
     @GetMapping(CATEGORY_BY_USER_URL)
-    public ResponseEntity<ResponseModel<List<CategoryRsModel>>> getCategoriesOfUser(Authentication auth) {
+    public ResponseEntity<ResponseModel<List<CategoryRsModel>>> getCategoriesOfUser(@ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, CATEGORIES_URL + CATEGORY_BY_USER_URL, NO_BODY_MSG);
         var response =
@@ -78,7 +79,7 @@ public class CategoryController {
     @PutMapping(PATH_ID)
     public ResponseEntity<ResponseModel<CategoryRsModel>> updateCustomCategory(
             @RequestBody @Valid CategoryRqModel requestBody,
-            @PathVariable("id") String categoryId, Authentication auth) {
+            @PathVariable("id") String categoryId, @ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, CATEGORIES_URL + PATH_ID, requestBody);
         var response =
