@@ -3,7 +3,7 @@ package com.budgetmanagementapp.builder;
 import com.budgetmanagementapp.entity.*;
 import com.budgetmanagementapp.model.transaction.DebtRqModel;
 import com.budgetmanagementapp.model.transaction.InOutRqModel;
-import com.budgetmanagementapp.model.transfer.TransferRqModel;
+import com.budgetmanagementapp.model.transaction.TransferRqModel;
 import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.TransactionType;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import static com.budgetmanagementapp.utility.TransactionType.*;
 public class TemplateBuilder {
 
     public Template buildTemplate(InOutRqModel requestBody, User user, Category category,
-                                   List<Label> labels, TransactionType type, Account account) {
+                                  List<Label> labels, TransactionType type, Account account) {
         Template template = Template.builder()
                 .templateId(UUID.randomUUID().toString())
                 .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))
@@ -39,8 +39,8 @@ public class TemplateBuilder {
     }
 
     public Template buildTemplate(TransferRqModel requestBody, User user,
-                                   Account senderAccount,
-                                   Account receiverAccount) {
+                                  Account senderAccount,
+                                  Account receiverAccount) {
         return Template.builder()
                 .templateId(UUID.randomUUID().toString())
                 .type(TRANSFER.name())
@@ -54,8 +54,8 @@ public class TemplateBuilder {
     }
 
     public Template buildTemplate(DebtRqModel requestBody,
-                                   TransactionType type,
-                                   User user, Account account) {
+                                  TransactionType type,
+                                  User user, Account account) {
         Template template = Template.builder()
                 .templateId(UUID.randomUUID().toString())
                 .dateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()))

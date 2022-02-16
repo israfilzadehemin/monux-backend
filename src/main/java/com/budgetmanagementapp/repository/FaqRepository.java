@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface FaqRepository extends JpaRepository<Faq, Long> {
 
-    default Optional<Faq> byId(String faqId){
+    default Optional<Faq> byId(String faqId) {
         return findByFaqId(faqId);
     }
 

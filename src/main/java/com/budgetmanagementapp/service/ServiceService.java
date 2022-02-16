@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.home.ServiceRqModel;
-import com.budgetmanagementapp.model.home.ServiceRsModel;
+import com.budgetmanagementapp.model.service.ServiceRqModel;
+import com.budgetmanagementapp.model.service.ServiceRsModel;
 
 import java.util.List;
 

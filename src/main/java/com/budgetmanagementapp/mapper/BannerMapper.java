@@ -2,8 +2,8 @@ package com.budgetmanagementapp.mapper;
 
 import com.budgetmanagementapp.entity.Banner;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.model.home.BannerRqModel;
-import com.budgetmanagementapp.model.home.BannerRsModel;
+import com.budgetmanagementapp.model.banner.BannerRqModel;
+import com.budgetmanagementapp.model.banner.BannerRsModel;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

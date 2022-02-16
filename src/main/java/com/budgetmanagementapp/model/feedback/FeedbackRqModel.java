@@ -1,16 +1,11 @@
 package com.budgetmanagementapp.model.feedback;
 
-import javax.validation.constraints.NotBlank;
-
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @AllArgsConstructor
 @Getter
@@ -20,9 +15,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class FeedbackRqModel {
-    @ApiModelProperty(
-            name = "description",
-            dataType = "string")
+    @ApiModelProperty(name = "description", dataType = "string")
     @NotBlank
+    @Size(max = 5000)
     String description;
 }

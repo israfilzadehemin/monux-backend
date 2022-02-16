@@ -4,7 +4,7 @@ import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.model.label.LabelRqModel;
 import com.budgetmanagementapp.model.label.LabelRsModel;
-import com.budgetmanagementapp.model.label.UpdateLabelRqModel;
+
 import java.util.List;
 
 public interface LabelService {
@@ -12,7 +12,7 @@ public interface LabelService {
 
     List<LabelRsModel> getLabelsByUser(String username, boolean includeCommonLabels);
 
-    LabelRsModel updateLabel(UpdateLabelRqModel requestBody, String username);
+    LabelRsModel updateLabel(LabelRqModel requestBody, String labelId, String username);
 
     LabelRsModel toggleVisibility(String labelId, String username);
 

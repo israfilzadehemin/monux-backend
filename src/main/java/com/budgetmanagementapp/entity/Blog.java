@@ -30,14 +30,14 @@ public class Blog {
     @JoinTable(
             name = "rel_blog_with_translation_title",
             joinColumns = {@JoinColumn(name = "blog_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")} )
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
     private Translation title;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinTable(
             name = "rel_blog_with_translation_text",
             joinColumns = {@JoinColumn(name = "blog_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")} )
+            inverseJoinColumns = {@JoinColumn(name = "translation_id", referencedColumnName = "id")})
     private Translation text;
 
     @Column(name = "blog_image")

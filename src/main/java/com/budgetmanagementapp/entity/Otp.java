@@ -1,19 +1,9 @@
 package com.budgetmanagementapp.entity;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.OneToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,6 +34,6 @@ public class Otp {
     @JoinTable(
             name = "rel_otp_with_user",
             joinColumns = {@JoinColumn(name = "otp_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")} )
+            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
     User user;
 }

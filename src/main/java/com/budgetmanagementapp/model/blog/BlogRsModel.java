@@ -14,37 +14,21 @@ import java.time.LocalDateTime;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BlogRsModel {
-    @ApiModelProperty(
-            name = "blogId",
-            dataType = "string")
+    @ApiModelProperty(name = "blogId", dataType = "string")
     String blogId;
 
-    @ApiModelProperty(
-            name = "creationDate",
-            dataType = "localDateTime",
-            example = "2021-10-31 12:00",
-            required = true)
+    @ApiModelProperty(name = "creationDate", dataType = "localDateTime", example = "2021-10-31 12:00", required = true)
     LocalDateTime creationDate;
 
-    @ApiModelProperty(
-            name = "updateDate",
-            dataType = "localDateTime",
-            example = "2021-10-31 12:00")
+    @ApiModelProperty(name = "updateDate", dataType = "localDateTime", example = "2021-10-31 12:00")
     LocalDateTime updateDate;
 
-    @ApiModelProperty(
-            name = "title",
-            dataType = "string")
+    @ApiModelProperty(name = "title", dataType = "string")
     Object title;
 
-    @ApiModelProperty(
-            name = "text",
-            dataType = "string")
+    @ApiModelProperty(name = "text", dataType = "string")
     Object text;
 
-    @ApiModelProperty(
-            name = "image",
-            dataType = "string",
-            required = true)
+    @ApiModelProperty(name = "image", dataType = "string", required = true)
     String image;
 }

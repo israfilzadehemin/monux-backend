@@ -2,7 +2,6 @@ package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.model.definition.DefinitionRqModel;
 import com.budgetmanagementapp.model.definition.DefinitionRsModel;
-import com.budgetmanagementapp.model.definition.UpdateDefinitionRqModel;
 
 import java.util.List;
 
@@ -12,7 +11,7 @@ public interface DefinitionService {
 
     DefinitionRsModel createDefinition(DefinitionRqModel request);
 
-    DefinitionRsModel updateDefinition(UpdateDefinitionRqModel request);
+    DefinitionRsModel updateDefinition(DefinitionRqModel request, String definitionId);
 
     DefinitionRsModel deleteDefinition(String definitionId);
 }

@@ -6,7 +6,9 @@ import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.model.account.AccountRsModel;
 import com.budgetmanagementapp.model.account.AccountTypeRsModel;
 import com.budgetmanagementapp.model.account.CurrencyRsModel;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 import org.mapstruct.factory.Mappers;
 
 @Mapper

@@ -12,18 +12,12 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserInfoRsModel {
-    @ApiModelProperty(
-            name = "username",
-            dataType = "string")
+    @ApiModelProperty(name = "username", dataType = "string")
     String username;
 
-    @ApiModelProperty(
-            name = "fullName",
-            dataType = "string")
+    @ApiModelProperty(name = "fullName", dataType = "string")
     String fullName;
 
-    @ApiModelProperty(
-            name = "language",
-            dataType = "string")
+    @ApiModelProperty(name = "language", dataType = "string")
     String language;
 }

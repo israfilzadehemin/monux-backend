@@ -2,8 +2,8 @@ package com.budgetmanagementapp.mapper;
 
 import com.budgetmanagementapp.entity.Service;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.model.home.ServiceRqModel;
-import com.budgetmanagementapp.model.home.ServiceRsModel;
+import com.budgetmanagementapp.model.service.ServiceRqModel;
+import com.budgetmanagementapp.model.service.ServiceRsModel;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

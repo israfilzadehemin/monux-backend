@@ -13,13 +13,9 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResetPasswordRsModel {
-    @ApiModelProperty(
-            name = "username",
-            dataType = "string")
+    @ApiModelProperty(name = "username", dataType = "string")
     String username;
 
-    @ApiModelProperty(
-            name = "password",
-            dataType = "string")
+    @ApiModelProperty(name = "password", dataType = "string")
     String password;
 }

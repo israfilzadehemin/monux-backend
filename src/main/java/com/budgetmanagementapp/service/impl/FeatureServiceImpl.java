@@ -1,26 +1,22 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.FeatureMapper.FEATURE_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_FEATURES_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.FEATURE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.FEATURE_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.FEATURE_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.FEATURE_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Feature;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.FeatureNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.feature.FeatureRqModel;
 import com.budgetmanagementapp.model.feature.FeatureRsModel;
-import com.budgetmanagementapp.model.feature.UpdateFeatureRqModel;
 import com.budgetmanagementapp.repository.FeatureRepository;
 import com.budgetmanagementapp.service.FeatureService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.FeatureMapper.FEATURE_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -51,8 +47,8 @@ public class FeatureServiceImpl implements FeatureService {
     }
 
     @Override
-    public FeatureRsModel updateFeature(UpdateFeatureRqModel request) {
-        Feature feature = findById(request.getFeatureId());
+    public FeatureRsModel updateFeature(FeatureRqModel request, String featureId) {
+        Feature feature = findById(featureId);
         feature.setContent(Translation.builder()
                 .az(request.getContentAz()).en(request.getContentEn()).ru(request.getContentRu())
                 .build());
@@ -77,7 +73,7 @@ public class FeatureServiceImpl implements FeatureService {
 
     private Feature findById(String featureId) {
         return featureRepo.byFeatureId(featureId).orElseThrow(
-                () -> new FeatureNotFoundException(format(FEATURE_NOT_FOUND_MSG, featureId))
+                () -> new DataNotFoundException(format(FEATURE_NOT_FOUND_MSG, featureId), 6004)
         );
     }
 }

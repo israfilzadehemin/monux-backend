@@ -2,8 +2,8 @@ package com.budgetmanagementapp.mapper;
 
 import com.budgetmanagementapp.entity.Step;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.model.home.StepRqModel;
-import com.budgetmanagementapp.model.home.StepRsModel;
+import com.budgetmanagementapp.model.step.StepRqModel;
+import com.budgetmanagementapp.model.step.StepRsModel;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 

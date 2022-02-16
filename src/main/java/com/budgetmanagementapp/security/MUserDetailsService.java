@@ -1,7 +1,5 @@
 package com.budgetmanagementapp.security;
 
-import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
-
 import com.budgetmanagementapp.model.user.UserAuthModel;
 import com.budgetmanagementapp.service.UserService;
 import lombok.AllArgsConstructor;
@@ -10,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import static com.budgetmanagementapp.utility.MsgConstant.USER_NOT_FOUND_MSG;
 
 @Configuration
 @AllArgsConstructor

@@ -24,7 +24,7 @@ public abstract class FeatureMapper {
     public abstract Feature buildFeature(FeatureRqModel request);
 
     @AfterMapping
-    void setExtraFields(@MappingTarget Feature.FeatureBuilder feature, FeatureRqModel request){
+    void setExtraFields(@MappingTarget Feature.FeatureBuilder feature, FeatureRqModel request) {
         feature.featureId(UUID.randomUUID().toString());
 
         feature.content(Translation.builder()

@@ -1,54 +1,28 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.TemplateMapper.TEMPLATE_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_TEMPLATES_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TEMPLATE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TEMPLATE_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DELETED_TEMPLATES_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TEMPLATE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TEMPLATE_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TEMPLATE_BY_ID_USER_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TEMPLATE_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TEMPLATE_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TEMPLATE_MSG;
-import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
-import static com.budgetmanagementapp.utility.TransactionType.INCOME;
-import static com.budgetmanagementapp.utility.TransactionType.valueOf;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.builder.TemplateBuilder;
-import com.budgetmanagementapp.entity.Account;
-import com.budgetmanagementapp.entity.Category;
-import com.budgetmanagementapp.entity.Label;
-import com.budgetmanagementapp.entity.Template;
-import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.TemplateNotFoundException;
+import com.budgetmanagementapp.entity.*;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
-import com.budgetmanagementapp.model.account.UpdateDebtRqModel;
-import com.budgetmanagementapp.model.account.UpdateInOutRqModel;
-import com.budgetmanagementapp.model.transaction.DebtRqModel;
-import com.budgetmanagementapp.model.transaction.DebtRsModel;
-import com.budgetmanagementapp.model.transaction.InOutRqModel;
-import com.budgetmanagementapp.model.transaction.InOutRsModel;
-import com.budgetmanagementapp.model.transaction.TransactionRsModel;
-import com.budgetmanagementapp.model.transfer.TransferRqModel;
-import com.budgetmanagementapp.model.transfer.TransferRsModel;
-import com.budgetmanagementapp.model.transfer.UpdateTransferRqModel;
+import com.budgetmanagementapp.model.transaction.*;
+import com.budgetmanagementapp.model.transaction.TransferRqModel;
+import com.budgetmanagementapp.model.transaction.TransferRsModel;
 import com.budgetmanagementapp.repository.TemplateRepository;
-import com.budgetmanagementapp.service.AccountService;
-import com.budgetmanagementapp.service.CategoryService;
-import com.budgetmanagementapp.service.LabelService;
-import com.budgetmanagementapp.service.TemplateService;
-import com.budgetmanagementapp.service.UserService;
+import com.budgetmanagementapp.service.*;
 import com.budgetmanagementapp.utility.CustomFormatter;
 import com.budgetmanagementapp.utility.TransactionType;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.TemplateMapper.TEMPLATE_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.TransactionType.*;
+import static java.lang.String.format;
 
 @Service
 @Log4j2
@@ -111,9 +85,9 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public InOutRsModel updateTemplate(UpdateInOutRqModel requestBody, String username) {
+    public InOutRsModel updateTemplate(InOutRqModel requestBody, String templateId, String username) {
         User user = userService.findByUsername(username);
-        Template template = templateByIdAndUser(requestBody.getTransactionId(), user);
+        Template template = templateByIdAndUser(templateId, user);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
         Category category =
                 categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), valueOf(template.getType()), user);
@@ -128,9 +102,9 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public TransferRsModel updateTemplate(UpdateTransferRqModel requestBody, String username) {
+    public TransferRsModel updateTemplate(TransferRqModel requestBody, String templateId, String username) {
         User user = userService.findByUsername(username);
-        Template templateByIdAndUser = templateByIdAndUser(requestBody.getTransactionId(), user);
+        Template templateByIdAndUser = templateByIdAndUser(templateId, user);
         Account senderAccount = accountService.byIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountService.byIdAndUser(requestBody.getReceiverAccountId(), user);
 
@@ -148,10 +122,10 @@ public class TemplateServiceImpl implements TemplateService {
     }
 
     @Override
-    public DebtRsModel updateTemplate(UpdateDebtRqModel requestBody, String username) {
+    public DebtRsModel updateTemplate(DebtRqModel requestBody, String templateId, String username) {
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
-        Template transaction = templateByIdAndUser(requestBody.getTransactionId(), user);
+        Template transaction = templateByIdAndUser(templateId, user);
 
         Template updatedTemplate = updateTemplateValues(requestBody, account, transaction);
 
@@ -187,7 +161,7 @@ public class TemplateServiceImpl implements TemplateService {
         return transactionRsModels;
     }
 
-    private Template updateTemplateValues(UpdateInOutRqModel requestBody, Template template,
+    private Template updateTemplateValues(InOutRqModel requestBody, Template template,
                                           Account account, Category category, List<Label> labels) {
 
         template.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
@@ -205,7 +179,7 @@ public class TemplateServiceImpl implements TemplateService {
         return templateRepo.save(template);
     }
 
-    private Template updateTemplateValues(UpdateTransferRqModel requestBody,
+    private Template updateTemplateValues(TransferRqModel requestBody,
                                           Template template,
                                           Account senderAccount,
                                           Account receiverAccount) {
@@ -217,7 +191,7 @@ public class TemplateServiceImpl implements TemplateService {
         return templateRepo.save(template);
     }
 
-    private Template updateTemplateValues(UpdateDebtRqModel requestBody, Account account, Template template) {
+    private Template updateTemplateValues(DebtRqModel requestBody, Account account, Template template) {
         template.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
         template.setAmount(requestBody.getAmount());
         template.setDescription(requestBody.getDescription());
@@ -234,8 +208,8 @@ public class TemplateServiceImpl implements TemplateService {
     private Template templateByIdAndUser(String templateId, User user) {
         var template = templateRepo.byIdAndUser(templateId, user)
                 .orElseThrow(() ->
-                        new TemplateNotFoundException(
-                                format(UNAUTHORIZED_TEMPLATE_MSG, user.getUsername(), templateId)));
+                        new DataNotFoundException(
+                                format(UNAUTHORIZED_TEMPLATE_MSG, user.getUsername(), templateId), 5005));
 
         log.info(TEMPLATE_BY_ID_USER_MSG, templateId, user, template);
         return template;

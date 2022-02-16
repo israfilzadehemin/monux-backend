@@ -15,23 +15,17 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ResetPasswordRqModel {
-    @ApiModelProperty(
-            name = "password",
-            dataType = "string")
+    @ApiModelProperty(name = "password", dataType = "string")
     @NotBlank
     @Size(min = 5)
     String password;
 
-    @ApiModelProperty(
-            name = "confirmPassword",
-            dataType = "string")
+    @ApiModelProperty(name = "confirmPassword", dataType = "string")
     @NotBlank
     @Size(min = 5)
     String confirmPassword;
 
-    @ApiModelProperty(
-            name = "OTP",
-            dataType = "string")
+    @ApiModelProperty(name = "otp", dataType = "string")
     @NotBlank
     @Size(min = 5, max = 5)
     String otp;

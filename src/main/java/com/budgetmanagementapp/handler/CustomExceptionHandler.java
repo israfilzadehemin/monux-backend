@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.handler;
 
-
 import com.budgetmanagementapp.exception.*;
 import com.budgetmanagementapp.model.ErrorResponseModel;
 import com.budgetmanagementapp.model.ResponseModel;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
 
-
 @Log4j2
 @ControllerAdvice
 public class CustomExceptionHandler {
@@ -31,73 +29,46 @@ public class CustomExceptionHandler {
                 || exception instanceof InvalidOtpException
                 || exception instanceof ExpiredOtpException
                 || exception instanceof GenericException
-                || exception instanceof UsernameNotUniqueException
                 || exception instanceof PasswordMismatchException
                 || exception instanceof InitialAccountExistingException
                 || exception instanceof PasswordNotSufficientException
                 || exception instanceof InvalidEmailException
-                || exception instanceof DuplicateAccountException
-                || exception instanceof DuplicateCategoryException
-                || exception instanceof DuplicateLabelException
+                || exception instanceof DuplicateException
                 || exception instanceof TransferToSelfException
                 || exception instanceof NotEnoughBalanceException
                 || exception instanceof InvalidPhoneNumberException
                 || exception instanceof ResetPasswordException
                 || exception instanceof TransferRateException
-                || exception instanceof DuplicatePasswordException
                 || exception instanceof FullNameFormatException
         ) {
             return handleException(exception, HttpStatus.BAD_REQUEST);
-
-        } else if (exception instanceof UserRoleNotFoundException
-                || exception instanceof UserNotFoundException
-                || exception instanceof AccountTypeNotFoundException
-                || exception instanceof CategoryNotFoundException
-                || exception instanceof LabelNotFoundException
-                || exception instanceof FeedbackNotFoundException
-                || exception instanceof CategoryTypeNotFoundException
-                || exception instanceof TransactionTypeNotFoundException
-                || exception instanceof TransactionNotFoundException
-                || exception instanceof TemplateNotFoundException
-                || exception instanceof CurrencyNotFoundException
-                || exception instanceof AccountNotFoundException
-                || exception instanceof NoExistingTransactionException
-                || exception instanceof BlogNotFoundException
-                || exception instanceof PlanNotFoundException
-                || exception instanceof BannerNotFoundException
-                || exception instanceof FaqNotFoundException
-                || exception instanceof DefinitionNotFoundException
-                || exception instanceof FeatureNotFoundException
-                || exception instanceof StepNotFoundException
-                || exception instanceof ServiceNotFoundException
-        ) {
+        } else if (exception instanceof DataNotFoundException) {
             return handleException(exception, HttpStatus.NOT_FOUND);
         }
-
-        throw new RuntimeException(String.valueOf(exception.getClass()));
+        return handleException(exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception exception) {
         if (exception instanceof HttpMessageNotReadableException)
             return handleException(exception, 7000);
-        else if(exception instanceof MissingServletRequestParameterException)
+        else if (exception instanceof MissingServletRequestParameterException)
             return handleException(exception, 7001);
-        else if(exception instanceof HttpRequestMethodNotSupportedException)
+        else if (exception instanceof HttpRequestMethodNotSupportedException)
             return handleException(exception, 7002);
-        else if(exception instanceof MalformedJwtException)
+        else if (exception instanceof MalformedJwtException)
             return handleException(exception, 7003);
-        else if(exception instanceof SignatureException)
+        else if (exception instanceof SignatureException)
             return handleException(exception, 7004);
-        else if(exception instanceof ExpiredJwtException)
+        else if (exception instanceof ExpiredJwtException)
             return handleException(exception, 7005);
-        else if(exception instanceof UnsupportedJwtException)
+        else if (exception instanceof UnsupportedJwtException)
             return handleException(exception, 7006);
-        else if(exception instanceof MethodArgumentNotValidException)
+        else if (exception instanceof MethodArgumentNotValidException)
             return handleException(exception, 7007);
-        else if(exception instanceof ConstraintViolationException)
+        else if (exception instanceof ConstraintViolationException)
             return handleException(exception, 7008);
-        throw new RuntimeException(String.valueOf(exception.getClass()));
+        return handleException(exception, 9999);
     }
 
     private ResponseEntity<?> handleException(AppException exception, HttpStatus status) {
@@ -123,6 +94,5 @@ public class CustomExceptionHandler {
                                 .build())
                         .build());
     }
-
 }
 

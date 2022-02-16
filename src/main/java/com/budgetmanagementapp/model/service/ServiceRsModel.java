@@ -1,4 +1,4 @@
-package com.budgetmanagementapp.model.home;
+package com.budgetmanagementapp.model.service;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -13,11 +13,12 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class StepRsModel {
+public class ServiceRsModel {
     @ApiModelProperty(
-            name = "stepId",
+            name = "serviceId",
             dataType = "string")
-    String stepId;
+    String serviceId;
+
     @ApiModelProperty(
             name = "title",
             dataType = "string")
@@ -32,10 +33,4 @@ public class StepRsModel {
             name = "icon",
             dataType = "string")
     String icon;
-
-    @ApiModelProperty(
-            name = "color",
-            dataType = "string",
-            example = "E633FF")
-    String color;
 }

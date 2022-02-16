@@ -1,26 +1,22 @@
 package com.budgetmanagementapp.service.impl;
 
-import static com.budgetmanagementapp.mapper.DefinitionMapper.DEFINITION_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_DEFINITIONS;
-import static com.budgetmanagementapp.utility.MsgConstant.DEFINITION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEFINITION_DELETED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEFINITION_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEFINITION_UPDATED_MSG;
-import static java.lang.String.format;
-
 import com.budgetmanagementapp.entity.Definition;
 import com.budgetmanagementapp.entity.Translation;
-import com.budgetmanagementapp.exception.DefinitionNotFoundException;
+import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.model.definition.DefinitionRqModel;
 import com.budgetmanagementapp.model.definition.DefinitionRsModel;
-import com.budgetmanagementapp.model.definition.UpdateDefinitionRqModel;
 import com.budgetmanagementapp.repository.DefinitionRepository;
 import com.budgetmanagementapp.service.DefinitionService;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.budgetmanagementapp.mapper.DefinitionMapper.DEFINITION_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
 
 @Log4j2
 @AllArgsConstructor
@@ -52,8 +48,8 @@ public class DefinitionServiceImpl implements DefinitionService {
     }
 
     @Override
-    public DefinitionRsModel updateDefinition(UpdateDefinitionRqModel request) {
-        Definition definition = findById(request.getDefinitionId());
+    public DefinitionRsModel updateDefinition(DefinitionRqModel request, String definitionId) {
+        Definition definition = findById(definitionId);
         definition.setTitle(Translation.builder()
                 .az(request.getTitleAz()).en(request.getTitleEn()).ru(request.getTitleRu())
                 .build());
@@ -84,7 +80,7 @@ public class DefinitionServiceImpl implements DefinitionService {
 
     private Definition findById(String definitionId) {
         return definitionRepo.byDefinitionId(definitionId).orElseThrow(
-                () -> new DefinitionNotFoundException(format(DEFINITION_NOT_FOUND_MSG, definitionId))
+                () -> new DataNotFoundException(format(DEFINITION_NOT_FOUND_MSG, definitionId), 6002)
         );
     }
 }

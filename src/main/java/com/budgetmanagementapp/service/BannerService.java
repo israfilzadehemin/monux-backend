@@ -1,7 +1,7 @@
 package com.budgetmanagementapp.service;
 
-import com.budgetmanagementapp.model.home.BannerRqModel;
-import com.budgetmanagementapp.model.home.BannerRsModel;
+import com.budgetmanagementapp.model.banner.BannerRqModel;
+import com.budgetmanagementapp.model.banner.BannerRsModel;
 
 public interface BannerService {
 
