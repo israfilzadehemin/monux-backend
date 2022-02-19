@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @Getter
 @Setter
@@ -20,4 +22,10 @@ public class UserInfoRsModel {
 
     @ApiModelProperty(name = "language", dataType = "string")
     String language;
+
+    @ApiModelProperty(name = "creationDate", dataType = "localDateTime")
+    LocalDateTime creationDate;
+
+    @ApiModelProperty(name = "paymentDate", dataType = "localDateTime")
+    LocalDateTime paymentDate;
 }

@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: user-payment-date
+      author: Shafa Mammadova
+      changes:
+        - sqlFile:
+            path: liquibase/1/changelog-1.9-user-payment-date.sql
