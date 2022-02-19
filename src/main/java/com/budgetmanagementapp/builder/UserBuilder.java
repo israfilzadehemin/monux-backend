@@ -28,6 +28,7 @@ public class UserBuilder {
                 .username(username)
                 .fullName(fullName)
                 .dateTime(LocalDateTime.now())
+                .paymentDate(LocalDateTime.now())
                 .status(UserStatus.PROCESSING)
                 .paymentStatus(PaymentStatus.NOT_PAID)
                 .roles(Collections.singletonList(

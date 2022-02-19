@@ -27,6 +27,9 @@ public class UserRsModel {
     @ApiModelProperty(name = "creationDateTime", dataType = "localDateTime")
     LocalDateTime creationDateTime;
 
+    @ApiModelProperty(name = "paymentDate", dataType = "localDateTime")
+    LocalDateTime paymentDate;
+
     @ApiModelProperty(name = "status", dataType = "string", example = "active")
     String status;
 
