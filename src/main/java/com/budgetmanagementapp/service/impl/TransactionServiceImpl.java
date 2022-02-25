@@ -325,8 +325,7 @@ public class TransactionServiceImpl implements TransactionService {
         Map<YearMonth, Double> incomeAmountsByMonths = incomeTransactions.stream()
                 .collect(groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
-                        summingDouble(t -> t.getAmount().doubleValue())))
-                .descendingMap();
+                        summingDouble(t -> t.getAmount().doubleValue())));
 
         TreeMap<YearMonth, Double> incomeAmounts = new TreeMap<>();
         yearMonths.forEach(a -> incomeAmounts.put(a,
@@ -335,16 +334,15 @@ public class TransactionServiceImpl implements TransactionService {
         Map<YearMonth, Double> outgoingAmountsByMonths = outgoingTransactions.stream()
                 .collect(groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
-                        summingDouble(t -> t.getAmount().doubleValue())))
-                .descendingMap();
+                        summingDouble(t -> t.getAmount().doubleValue())));
 
         TreeMap<YearMonth, Double> outgoingAmounts = new TreeMap<>();
         yearMonths.forEach(a -> outgoingAmounts.put(a,
                 outgoingAmountsByMonths.get(a) != null ? outgoingAmountsByMonths.get(a) : 0));
 
         AmountListRsModel response = AmountListRsModel.builder()
-                .income(incomeAmounts.descendingMap())
-                .outgoing(outgoingAmounts.descendingMap())
+                .income(incomeAmounts)
+                .outgoing(outgoingAmounts)
                 .build();
 
         log.info(LAST_TRANSACTIONS_BY_MONTHS_MSG, user.getUsername(), response);
@@ -369,8 +367,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .collect(groupingBy(t -> LocalDate.from(t.getDateTime()
                                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.from(LocalDateTime.now())))),
                         TreeMap::new,
-                        summingDouble(t -> t.getAmount().doubleValue())))
-                .descendingMap();
+                        summingDouble(t -> t.getAmount().doubleValue())));
 
         TreeMap<LocalDate, Double> incomeAmounts = new TreeMap<>();
         monthDays.forEach(a -> incomeAmounts.put(a,
@@ -380,16 +377,15 @@ public class TransactionServiceImpl implements TransactionService {
                 .collect(groupingBy(t -> LocalDate.from(t.getDateTime()
                                 .with(TemporalAdjusters.previousOrSame(DayOfWeek.from(LocalDateTime.now())))),
                         TreeMap::new,
-                        summingDouble(t -> t.getAmount().doubleValue())))
-                .descendingMap();
+                        summingDouble(t -> t.getAmount().doubleValue())));
 
         TreeMap<LocalDate, Double> outgoingAmounts = new TreeMap<>();
         monthDays.forEach(a -> outgoingAmounts.put(a,
                 outgoingAmountsByWeeks.get(a) != null ? outgoingAmountsByWeeks.get(a) : 0));
 
         AmountListRsModel response = AmountListRsModel.builder()
-                .income(incomeAmounts.descendingMap())
-                .outgoing(outgoingAmounts.descendingMap())
+                .income(incomeAmounts)
+                .outgoing(outgoingAmounts)
                 .build();
 
         log.info(LAST_TRANSACTIONS_BY_WEEKS_MSG, user.getUsername(), response);

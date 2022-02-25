@@ -71,7 +71,7 @@ public class ReportController {
     @ApiOperation("Get transactions between time period by category")
     @PostMapping(TRANSACTIONS_BY_CATEGORY_URL)
     public ResponseEntity<ResponseModel<CategoryAmountListRsModel>> transactionsBetweenTimeByCategory(
-            @RequestBody @Valid TransactionDateRqModel requestBody, Authentication auth) {
+            @RequestBody @Valid TransactionDateRqModel requestBody, @ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_CATEGORY_URL, requestBody);
         var response = ResponseModel.of(
