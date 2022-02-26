@@ -37,6 +37,9 @@ public class User {
     @Column(name = "date_time")
     private LocalDateTime dateTime;
 
+    @Column(name = "payment_date")
+    private LocalDateTime paymentDate;
+
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
     private UserStatus status;
