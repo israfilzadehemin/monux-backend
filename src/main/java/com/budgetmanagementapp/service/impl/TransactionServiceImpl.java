@@ -4,24 +4,7 @@ import static com.budgetmanagementapp.mapper.TransactionMapper.TRANSACTION_MAPPE
 import static com.budgetmanagementapp.utility.Constant.ACCOUNT_ALL;
 import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
 import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DELETED_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_BY_MONTHS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_BY_WEEKS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTIONS_BETWEEN_TIME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTIONS_USER_IDS;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_BY_ID_USER;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -30,7 +13,6 @@ import static com.budgetmanagementapp.utility.TransactionType.TRANSFER;
 import static com.budgetmanagementapp.utility.TransactionType.valueOf;
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
-import static java.util.Collections.singletonMap;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.reducing;
 import static java.util.stream.Collectors.summingDouble;
@@ -47,6 +29,7 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.NotEnoughBalanceException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
+import com.budgetmanagementapp.model.UpdateBalancesModel;
 import com.budgetmanagementapp.model.transaction.AmountListRsModel;
 import com.budgetmanagementapp.model.transaction.CategoryAmountListRsModel;
 import com.budgetmanagementapp.model.transaction.DebtRqModel;
@@ -97,7 +80,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public TransactionRsModel createTransaction(InOutRqModel requestBody, TransactionType type, String username) {
+    public TransactionRsModel
+    createTransaction(InOutRqModel requestBody, TransactionType type, String username) {
         User user = userService.findByUsername(username);
         Account account = accountService.byIdAndUser(requestBody.getAccountId(), user);
         Category category = categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), type, user);
@@ -105,13 +89,14 @@ public class TransactionServiceImpl implements TransactionService {
 
         checkBalanceToCreateTransaction(requestBody.getAmount(), type, account);
 
-        Map<String, Account> accounts = type.equals(OUTGOING)
-                ? singletonMap(SENDER_ACCOUNT, account)
-                : singletonMap(RECEIVER_ACCOUNT, account);
+        UpdateBalancesModel accounts = UpdateBalancesModel.builder()
+                .to(type.equals(INCOME) ? account : null)
+                .from(type.equals(OUTGOING) ? account : null)
+                .build();
 
         Transaction transaction = transactionRepo.save(
                 transactionBuilder.buildTransaction(requestBody, user, account, category, labels, type));
-        accountService.updateBalanceByRate(requestBody.getAmount(), 1.0, accounts);
+        accountService.updateBalance(requestBody.getAmount(), 1.0, accounts, false);
 
         InOutRsModel inOutRsModel = TRANSACTION_MAPPER_INSTANCE.buildInOutResponseModel(transaction);
         log.info(IN_OUT_TRANSACTION_CREATED_MSG, user.getUsername(), inOutRsModel);
@@ -133,15 +118,12 @@ public class TransactionServiceImpl implements TransactionService {
 
         checkBalanceToCreateTransaction(requestBody.getAmount(), transactionType, senderAccount);
 
-        Map<String, Account> accounts = new HashMap<>() {{
-            put(SENDER_ACCOUNT, senderAccount);
-            put(RECEIVER_ACCOUNT, receiverAccount);
-        }};
+        UpdateBalancesModel accounts = UpdateBalancesModel.builder().from(senderAccount).to(receiverAccount).build();
 
         Transaction transaction = transactionRepo.save(
                 transactionBuilder.buildTransaction(requestBody, user, senderAccount, receiverAccount));
 
-        accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), accounts);
+        accountService.updateBalance(requestBody.getAmount(), requestBody.getRate(), accounts, false);
 
         TransferRsModel transferRsModel = TRANSACTION_MAPPER_INSTANCE.buildTransferResponseModel(transaction);
         log.info(TRANSFER_TRANSACTION_CREATED_MSG, user.getUsername(), transferRsModel);
@@ -156,13 +138,14 @@ public class TransactionServiceImpl implements TransactionService {
 
         checkBalanceToCreateTransaction(requestBody.getAmount(), type, account);
 
-        Map<String, Account> accounts = type.equals(DEBT_OUT)
-                ? singletonMap(SENDER_ACCOUNT, account)
-                : singletonMap(RECEIVER_ACCOUNT, account);
+        UpdateBalancesModel accounts = UpdateBalancesModel.builder()
+                .from(type.equals(DEBT_OUT) ? account : null)
+                .to(type.equals(DEBT_IN) ? account : null)
+                .build();
 
         Transaction transaction = transactionRepo.save(
                 transactionBuilder.buildTransaction(requestBody, type, account, user));
-        accountService.updateBalanceByRate(requestBody.getAmount(), 1.0, accounts);
+        accountService.updateBalance(requestBody.getAmount(), 1.0, accounts, false);
 
         DebtRsModel response = TRANSACTION_MAPPER_INSTANCE.buildDebtResponseModel(transaction);
         log.info(DEBT_TRANSACTION_CREATED_MSG, user.getUsername(), response);
@@ -183,20 +166,12 @@ public class TransactionServiceImpl implements TransactionService {
 
         checkBalanceToUpdateInOut(requestBody, transaction, account, oldAmount);
 
-        Map<String, Account> newAccounts = new HashMap<>();
-        Map<String, Account> oldAccounts = new HashMap<>();
 
-        if (transaction.getType().equals(OUTGOING.name())) {
-            oldAccounts.put(RECEIVER_ACCOUNT, transaction.getSenderAccount());
-            newAccounts.put(SENDER_ACCOUNT, account);
-        } else {
-            oldAccounts.put(SENDER_ACCOUNT, transaction.getReceiverAccount());
-            newAccounts.put(RECEIVER_ACCOUNT, account);
-        }
+
 
         Transaction updatedTransaction = updateTransactionValues(requestBody, transaction, account, category, labels);
-        accountService.updateBalanceByRate(oldAmount, 1.0, oldAccounts);
-        accountService.updateBalanceByRate(requestBody.getAmount(), 1.0, newAccounts);
+        accountService.updateBalance(oldAmount, 1.0, oldAccounts);
+        accountService.updateBalance(requestBody.getAmount(), 1.0, newAccounts);
 
         InOutRsModel inOutRsModel = TRANSACTION_MAPPER_INSTANCE.buildInOutResponseModel(updatedTransaction);
         log.info(IN_OUT_TRANSACTION_UPDATED_MSG, user.getUsername(), inOutRsModel);
@@ -213,10 +188,6 @@ public class TransactionServiceImpl implements TransactionService {
         BigDecimal oldAmount = transaction.getAmount();
         Double oldRate = transaction.getRate();
 
-        if (requestBody.getReceiverAccountId().equals(requestBody.getSenderAccountId())) {
-            throw new TransferToSelfException(TRANSFER_TO_SELF_MSG);
-        }
-
         checkBalanceToUpdateTransfer(requestBody, transaction, senderAccount, oldAmount);
 
         Map<String, Account> oldAccounts = new HashMap<>();
@@ -231,7 +202,7 @@ public class TransactionServiceImpl implements TransactionService {
                 updateTransactionValues(requestBody, transaction, senderAccount, receiverAccount);
 
         accountService.updateBalanceForTransferDelete(oldAmount, oldRate, oldAccounts);
-        accountService.updateBalanceByRate(requestBody.getAmount(), requestBody.getRate(), newAccounts);
+        accountService.updateBalance(requestBody.getAmount(), requestBody.getRate(), newAccounts);
 
         TransferRsModel transferRsModel = TRANSACTION_MAPPER_INSTANCE.buildTransferResponseModel(updatedTransaction);
         log.info(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), transferRsModel);
@@ -260,8 +231,8 @@ public class TransactionServiceImpl implements TransactionService {
         }
 
         Transaction updatedTransaction = updateTransactionValues(requestBody, account, transaction);
-        accountService.updateBalanceByRate(oldAmount, 1.0, oldAccounts);
-        accountService.updateBalanceByRate(requestBody.getAmount(), 1.0, newAccounts);
+        accountService.updateBalance(oldAmount, 1.0, oldAccounts);
+        accountService.updateBalance(requestBody.getAmount(), 1.0, newAccounts);
 
         DebtRsModel response = TRANSACTION_MAPPER_INSTANCE.buildDebtResponseModel(updatedTransaction);
         log.info(DEBT_TRANSACTION_UPDATED_MSG, user.getUsername(), response);
@@ -416,7 +387,8 @@ public class TransactionServiceImpl implements TransactionService {
         return response;
     }
 
-    private TreeMap<LocalDate, Double> getTransactionSumsByWeeks(Map<String, List<Transaction>> transactionGroups, TransactionType income) {
+    private TreeMap<LocalDate, Double> getTransactionSumsByWeeks(Map<String, List<Transaction>> transactionGroups,
+                                                                 TransactionType income) {
         return transactionGroups.get(income.name()).stream()
                 .collect(groupingBy(t -> LocalDate.from(t.getDateTime()),
                         TreeMap::new,
@@ -541,15 +513,12 @@ public class TransactionServiceImpl implements TransactionService {
         }
     }
 
-    private void checkBalanceToUpdateInOut(InOutRqModel requestBody,
-                                           Transaction transaction,
-                                           Account account,
-                                           BigDecimal oldAmount) {
+    private void checkBalanceToUpdateInOut(InOutRqModel requestBody, Transaction transaction,
+                                           Account account, BigDecimal oldAmount) {
         if (transaction.getType().equals(OUTGOING.name())
                 && !account.isAllowNegative()
                 && (account.getBalance().add(oldAmount)).compareTo(requestBody.getAmount()) < 0) {
             throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
-
         }
     }
 

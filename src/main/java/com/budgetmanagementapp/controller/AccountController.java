@@ -15,7 +15,7 @@ import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.account.AccountRqModel;
 import com.budgetmanagementapp.model.account.AccountRsModel;
 import com.budgetmanagementapp.model.account.UpdateAccountModel;
-import com.budgetmanagementapp.model.account.UpdateBalanceModel;
+import com.budgetmanagementapp.model.account.UpdateBalanceRqModel;
 import com.budgetmanagementapp.service.AccountService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -77,7 +77,7 @@ public class AccountController {
     @ApiOperation("Update balance of account")
     @PutMapping(ACCOUNT_UPDATE_BALANCE_URL)
     public ResponseEntity<ResponseModel<AccountRsModel>> updateBalance(
-            @RequestBody @Valid UpdateBalanceModel requestBody,
+            @RequestBody @Valid UpdateBalanceRqModel requestBody,
             @PathVariable("id") String accountId, @ApiIgnore Authentication auth) {
         log.info(REQUEST_MSG, ACCOUNTS_URL + ACCOUNT_UPDATE_BALANCE_URL, requestBody);
         var response = ResponseModel.of(

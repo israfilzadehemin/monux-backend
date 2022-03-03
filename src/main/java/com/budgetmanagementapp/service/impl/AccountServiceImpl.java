@@ -1,33 +1,42 @@
 package com.budgetmanagementapp.service.impl;
 
+import static com.budgetmanagementapp.mapper.AccountMapper.ACCOUNT_MAPPER_INSTANCE;
+import static com.budgetmanagementapp.utility.Constant.CASH_ACCOUNT;
+import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
+import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static java.lang.String.format;
+import static java.util.Objects.isNull;
+
 import com.budgetmanagementapp.builder.AccountBuilder;
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.AccountType;
 import com.budgetmanagementapp.entity.Currency;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.exception.*;
-import com.budgetmanagementapp.model.account.*;
+import com.budgetmanagementapp.exception.DataNotFoundException;
+import com.budgetmanagementapp.exception.DuplicateException;
+import com.budgetmanagementapp.exception.InitialAccountExistingException;
+import com.budgetmanagementapp.exception.NotEnoughBalanceException;
+import com.budgetmanagementapp.model.UpdateBalancesModel;
+import com.budgetmanagementapp.model.account.AccountRqModel;
+import com.budgetmanagementapp.model.account.AccountRsModel;
+import com.budgetmanagementapp.model.account.AccountTypeRsModel;
+import com.budgetmanagementapp.model.account.CurrencyRsModel;
+import com.budgetmanagementapp.model.account.UpdateAccountModel;
+import com.budgetmanagementapp.model.account.UpdateBalanceRqModel;
 import com.budgetmanagementapp.repository.AccountRepository;
 import com.budgetmanagementapp.repository.AccountTypeRepository;
 import com.budgetmanagementapp.repository.CurrencyRepository;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.UserService;
 import com.budgetmanagementapp.utility.CustomValidator;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.budgetmanagementapp.mapper.AccountMapper.ACCOUNT_MAPPER_INSTANCE;
-import static com.budgetmanagementapp.utility.Constant.*;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
 
 @Service
 @Log4j2
@@ -103,7 +112,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountRsModel updateBalance(UpdateBalanceModel requestBody, String accountId, String username) {
+    public AccountRsModel updateBalance(UpdateBalanceRqModel requestBody, String accountId, String username) {
         Account account = byIdAndUser(accountId, userService.findByUsername(username));
         checkNegativeBalance(requestBody, account);
         updateBalanceValue(requestBody, account);
@@ -116,34 +125,30 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public void updateBalanceByRate(BigDecimal amount, Double rate, Map<String, Account> accounts) {
-        if (rate <= 0) throw new TransferRateException(RATE_VALUE_EXCEPTION);
+    public void updateBalance(BigDecimal amount, Double rate, UpdateBalancesModel accounts, boolean isDelete) {
 
-        if (!isNull(accounts.get(SENDER_ACCOUNT))) {
-            accounts.get(SENDER_ACCOUNT).setBalance(accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount));
-            accountRepo.save(accounts.get(SENDER_ACCOUNT));
+        if (!isNull(accounts.getFrom())) {
+            accounts.getFrom().setBalance(accounts.getFrom().getBalance().subtract(amount));
+            accountRepo.save(accounts.getFrom());
         }
 
-        if (!isNull(accounts.get(RECEIVER_ACCOUNT))) {
-            accounts.get(RECEIVER_ACCOUNT).setBalance(
-                    accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount.multiply(BigDecimal.valueOf(rate))));
-            accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
-        }
-    }
-
-    @Transactional
-    @Override
-    public void updateBalanceForTransferDelete(BigDecimal amount, Double rate, Map<String, Account> accounts) {
-        if (!isNull(accounts.get(SENDER_ACCOUNT))) {
-            accounts.get(SENDER_ACCOUNT).setBalance(
-                    accounts.get(SENDER_ACCOUNT).getBalance().subtract(amount.multiply(BigDecimal.valueOf(rate))));
-            accountRepo.save(accounts.get(SENDER_ACCOUNT));
+        if (!isNull(accounts.getTo())) {
+            accounts.getTo().setBalance(accounts.getTo().getBalance().add(amount.multiply(BigDecimal.valueOf(rate))));
+            accountRepo.save(accounts.getTo());
         }
 
-        if (!isNull(accounts.get(RECEIVER_ACCOUNT))) {
-            accounts.get(RECEIVER_ACCOUNT).setBalance(accounts.get(RECEIVER_ACCOUNT).getBalance().add(amount));
-            accountRepo.save(accounts.get(RECEIVER_ACCOUNT));
+        if (isDelete) {
+            if (!isNull(accounts.getFrom())) {
+                accounts.getFrom()
+                        .setBalance(accounts.getFrom().getBalance().add(amount));
+            }
+
+            if (!isNull(accounts.getTo())) {
+                accounts.getTo()
+                        .setBalance(accounts.getTo().getBalance().subtract(amount.multiply(BigDecimal.valueOf(rate))));
+            }
         }
+
     }
 
     @Override
@@ -213,7 +218,7 @@ public class AccountServiceImpl implements AccountService {
         accountRepo.save(account);
     }
 
-    private void updateBalanceValue(UpdateBalanceModel requestBody, Account account) {
+    private void updateBalanceValue(UpdateBalanceRqModel requestBody, Account account) {
         account.setBalance(requestBody.getBalance());
         accountRepo.save(account);
     }
@@ -242,7 +247,7 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
-    private void checkNegativeBalance(UpdateBalanceModel requestBody, Account account) {
+    private void checkNegativeBalance(UpdateBalanceRqModel requestBody, Account account) {
         if (requestBody.getBalance().compareTo(BigDecimal.ZERO) < 0 && !account.isAllowNegative()) {
             throw new NotEnoughBalanceException(format(NEGATIVE_BALANCE_NOT_ALLOWED, account.getAccountId()));
         }

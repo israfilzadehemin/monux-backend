@@ -20,7 +20,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateBalanceModel {
+public class UpdateBalanceRqModel {
 
     @ApiModelProperty(name = "balance", dataType = "bigDecimal", example = "500", required = true)
     @NotNull
