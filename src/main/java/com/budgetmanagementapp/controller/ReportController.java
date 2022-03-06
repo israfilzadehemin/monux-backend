@@ -75,7 +75,7 @@ public class ReportController {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_CATEGORY_URL, requestBody);
         var response = ResponseModel.of(
-                transactionService.transactionsBetweenTimeByCategory(
+                transactionService.getTransactionsInCategoriesByTime(
                         ((UserDetails) auth.getPrincipal()).getUsername(),
                         requestBody.getDateTimeFrom(),
                         requestBody.getDateTimeTo()), OK);

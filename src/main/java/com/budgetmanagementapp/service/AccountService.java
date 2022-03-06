@@ -26,8 +26,6 @@ public interface AccountService {
 
     void updateBalance(BigDecimal amount, Double rate, UpdateBalancesModel accounts, boolean isDelete);
 
-    void updateBalanceForTransferDelete(BigDecimal amount, Double rate, Map<String, Account> accounts);
-
     List<AccountTypeRsModel> getAllAccountTypes();
 
     List<CurrencyRsModel> getAllCurrencies();

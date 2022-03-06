@@ -38,5 +38,5 @@ public interface TransactionService {
 
     AmountListRsModel getTransactionReportInWeeks(String username, LocalDateTime dateTime);
 
-    CategoryAmountListRsModel transactionsBetweenTimeByCategory(String username, String from, String to);
+    CategoryAmountListRsModel getTransactionsInCategoriesByTime(String username, String from, String to);
 }

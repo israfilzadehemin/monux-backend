@@ -2,8 +2,6 @@ package com.budgetmanagementapp.service.impl;
 
 import static com.budgetmanagementapp.mapper.TransactionMapper.TRANSACTION_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.ACCOUNT_ALL;
-import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
-import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
@@ -166,16 +164,30 @@ public class TransactionServiceImpl implements TransactionService {
 
         checkBalanceToUpdateInOut(requestBody, transaction, account, oldAmount);
 
+        UpdateBalancesModel currentAccounts =
+                UpdateBalancesModel.builder()
+                        .from(transaction.getSenderAccount())
+                        .to(transaction.getReceiverAccount())
+                        .build();
+        accountService.updateBalance(oldAmount, 1.0, currentAccounts, true);
 
-
+        Map<TransactionType, Account> accountMap = getAccountByTransactionType(transaction, account);
+        UpdateBalancesModel updatedAccounts = UpdateBalancesModel.builder()
+                .from(accountMap.get(OUTGOING)).to(accountMap.get(INCOME))
+                .build();
 
         Transaction updatedTransaction = updateTransactionValues(requestBody, transaction, account, category, labels);
-        accountService.updateBalance(oldAmount, 1.0, oldAccounts);
-        accountService.updateBalance(requestBody.getAmount(), 1.0, newAccounts);
+        accountService.updateBalance(requestBody.getAmount(), 1.0, updatedAccounts, false);
 
         InOutRsModel inOutRsModel = TRANSACTION_MAPPER_INSTANCE.buildInOutResponseModel(updatedTransaction);
         log.info(IN_OUT_TRANSACTION_UPDATED_MSG, user.getUsername(), inOutRsModel);
         return inOutRsModel;
+    }
+
+    private Map<TransactionType, Account> getAccountByTransactionType(Transaction transaction, Account account) {
+        return new HashMap<>() {{
+            put(TransactionType.valueOf(transaction.getType()), account);
+        }};
     }
 
     @Override
@@ -190,19 +202,16 @@ public class TransactionServiceImpl implements TransactionService {
 
         checkBalanceToUpdateTransfer(requestBody, transaction, senderAccount, oldAmount);
 
-        Map<String, Account> oldAccounts = new HashMap<>();
-        Map<String, Account> newAccounts = new HashMap<>();
-
-        oldAccounts.put(SENDER_ACCOUNT, transaction.getReceiverAccount());
-        oldAccounts.put(RECEIVER_ACCOUNT, transaction.getSenderAccount());
-        newAccounts.put(SENDER_ACCOUNT, senderAccount);
-        newAccounts.put(RECEIVER_ACCOUNT, receiverAccount);
+        UpdateBalancesModel currentAccounts = UpdateBalancesModel.builder()
+                .from(transaction.getSenderAccount()).to(transaction.getReceiverAccount()).build();
+        UpdateBalancesModel updatedAccounts =
+                UpdateBalancesModel.builder().from(senderAccount).to(receiverAccount).build();
 
         Transaction updatedTransaction =
                 updateTransactionValues(requestBody, transaction, senderAccount, receiverAccount);
 
-        accountService.updateBalanceForTransferDelete(oldAmount, oldRate, oldAccounts);
-        accountService.updateBalance(requestBody.getAmount(), requestBody.getRate(), newAccounts);
+        accountService.updateBalance(oldAmount, oldRate, currentAccounts, true);
+        accountService.updateBalance(requestBody.getAmount(), requestBody.getRate(), updatedAccounts, false);
 
         TransferRsModel transferRsModel = TRANSACTION_MAPPER_INSTANCE.buildTransferResponseModel(updatedTransaction);
         log.info(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), transferRsModel);
@@ -219,20 +228,22 @@ public class TransactionServiceImpl implements TransactionService {
 
         checkBalanceToUpdateDebt(requestBody, account, transaction, oldAmount);
 
-        Map<String, Account> oldAccounts = new HashMap<>();
-        Map<String, Account> newAccounts = new HashMap<>();
 
-        if (transaction.getType().equals(DEBT_OUT.name())) {
-            oldAccounts.put(RECEIVER_ACCOUNT, transaction.getSenderAccount());
-            newAccounts.put(SENDER_ACCOUNT, account);
-        } else {
-            oldAccounts.put(SENDER_ACCOUNT, transaction.getReceiverAccount());
-            newAccounts.put(RECEIVER_ACCOUNT, account);
-        }
+        UpdateBalancesModel currentAccounts =
+                UpdateBalancesModel.builder()
+                        .from(transaction.getSenderAccount())
+                        .to(transaction.getReceiverAccount())
+                        .build();
+        accountService.updateBalance(oldAmount, 1.0, currentAccounts, true);
+
+        Map<TransactionType, Account> accountMap = getAccountByTransactionType(transaction, account);
+
+        UpdateBalancesModel updatedAccounts = UpdateBalancesModel.builder()
+                .from(accountMap.get(DEBT_OUT)).to(accountMap.get(DEBT_IN))
+                .build();
 
         Transaction updatedTransaction = updateTransactionValues(requestBody, account, transaction);
-        accountService.updateBalance(oldAmount, 1.0, oldAccounts);
-        accountService.updateBalance(requestBody.getAmount(), 1.0, newAccounts);
+        accountService.updateBalance(requestBody.getAmount(), 1.0, updatedAccounts, false);
 
         DebtRsModel response = TRANSACTION_MAPPER_INSTANCE.buildDebtResponseModel(updatedTransaction);
         log.info(DEBT_TRANSACTION_UPDATED_MSG, user.getUsername(), response);
@@ -304,24 +315,25 @@ public class TransactionServiceImpl implements TransactionService {
     public List<TransactionRsModel> deleteTransactionById(String username, List<String> transactionIds) {
         User user = userService.findByUsername(username);
 
-        List<TransactionRsModel> response = transactionsByUserAndIdList(user, transactionIds).stream().map(tr -> {
-            Map<String, Account> map = new HashMap<>();
+        List<TransactionRsModel> response = transactionsByUserAndIdList(user, transactionIds)
+                .stream()
+                .map(t -> {
+                    UpdateBalancesModel accounts = UpdateBalancesModel.builder().build();
 
-            switch (getTransactionType(tr.getType())) {
-                case INCOME, DEBT_IN -> map.put(SENDER_ACCOUNT, tr.getReceiverAccount());
-                case OUTGOING, DEBT_OUT -> map.put(RECEIVER_ACCOUNT, tr.getSenderAccount());
-                case TRANSFER -> {
-                    map.put(SENDER_ACCOUNT, tr.getReceiverAccount());
-                    map.put(RECEIVER_ACCOUNT, tr.getSenderAccount());
-                }
-            }
+                    switch (getTransactionType(t.getType())) {
+                        case INCOME, DEBT_IN -> accounts.setTo(t.getReceiverAccount());
+                        case OUTGOING, DEBT_OUT -> accounts.setFrom(t.getSenderAccount());
+                        case TRANSFER -> {
+                            accounts.setFrom(t.getSenderAccount());
+                            accounts.setTo(t.getReceiverAccount());
+                        }
+                    }
 
-            accountService.updateBalanceForTransferDelete(tr.getAmount(), tr.getRate(), map);
-
-            transactionRepo.deleteById(user, tr.getTransactionId());
-            return TRANSACTION_MAPPER_INSTANCE.buildGenericResponseModel(tr);
-
-        }).collect(toList());
+                    accountService.updateBalance(t.getAmount(), t.getRate(), accounts, true);
+                    transactionRepo.deleteById(user, t.getTransactionId());
+                    return TRANSACTION_MAPPER_INSTANCE.buildGenericResponseModel(t);
+                })
+                .collect(toList());
 
         log.info(DELETED_TRANSACTIONS_MSG, user.getUsername(), response);
         return response;
@@ -402,22 +414,26 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public CategoryAmountListRsModel transactionsBetweenTimeByCategory(String username, String from, String to) {
-        User user = userService.findByUsername(username);
-        List<Transaction> transactions = transactionRepo.byUserAndDateTime(user,
+    public CategoryAmountListRsModel getTransactionsInCategoriesByTime(String username, String from, String to) {
+        var user = userService.findByUsername(username);
+        var transactions = transactionRepo.byUserAndDateTime(user,
                 CustomFormatter.stringToLocalDateTime(from), CustomFormatter.stringToLocalDateTime(to));
 
         var transactionGroups = groupTransactions(transactions);
 
-        Map<String, BigDecimal> income = transactionGroups.get(INCOME.name()).stream()
-                .collect(groupingBy(t -> t.getCategory().getName(),
-                        reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
+        var income = transactionGroups.get(INCOME.name())
+                .stream()
+                .collect(
+                        groupingBy(t -> t.getCategory().getName(),
+                                reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
 
-        Map<String, BigDecimal> outgoing = transactionGroups.get(OUTGOING.name()).stream()
-                .collect(groupingBy(t -> t.getCategory().getName(),
-                        reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
+        var outgoing = transactionGroups.get(OUTGOING.name())
+                .stream()
+                .collect(
+                        groupingBy(t -> t.getCategory().getName(),
+                                reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
 
-        CategoryAmountListRsModel response = CategoryAmountListRsModel.builder()
+        var response = CategoryAmountListRsModel.builder()
                 .dateTimeFrom(from).dateTimeTo(to).income(income).outgoing(outgoing)
                 .build();
 
@@ -435,17 +451,15 @@ public class TransactionServiceImpl implements TransactionService {
     private Transaction updateTransactionValues(InOutRqModel requestBody, Transaction transaction,
                                                 Account account, Category category,
                                                 List<Label> labels) {
+        Map<TransactionType, Account> accountMap = getAccountByTransactionType(transaction, account);
+
         transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
         transaction.setAmount(requestBody.getAmount());
         transaction.setDescription(requestBody.getDescription());
         transaction.setCategory(category);
         transaction.setLabels(labels);
-
-        if (transaction.getType().equals(INCOME.name())) {
-            transaction.setReceiverAccount(account);
-        } else {
-            transaction.setSenderAccount(account);
-        }
+        transaction.setReceiverAccount(accountMap.get(INCOME));
+        transaction.setSenderAccount(accountMap.get(OUTGOING));
         return transactionRepo.save(transaction);
     }
 

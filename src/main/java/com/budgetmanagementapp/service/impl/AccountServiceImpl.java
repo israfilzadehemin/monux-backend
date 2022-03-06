@@ -2,8 +2,6 @@ package com.budgetmanagementapp.service.impl;
 
 import static com.budgetmanagementapp.mapper.AccountMapper.ACCOUNT_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.CASH_ACCOUNT;
-import static com.budgetmanagementapp.utility.Constant.RECEIVER_ACCOUNT;
-import static com.budgetmanagementapp.utility.Constant.SENDER_ACCOUNT;
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -127,16 +125,6 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void updateBalance(BigDecimal amount, Double rate, UpdateBalancesModel accounts, boolean isDelete) {
 
-        if (!isNull(accounts.getFrom())) {
-            accounts.getFrom().setBalance(accounts.getFrom().getBalance().subtract(amount));
-            accountRepo.save(accounts.getFrom());
-        }
-
-        if (!isNull(accounts.getTo())) {
-            accounts.getTo().setBalance(accounts.getTo().getBalance().add(amount.multiply(BigDecimal.valueOf(rate))));
-            accountRepo.save(accounts.getTo());
-        }
-
         if (isDelete) {
             if (!isNull(accounts.getFrom())) {
                 accounts.getFrom()
@@ -146,6 +134,17 @@ public class AccountServiceImpl implements AccountService {
             if (!isNull(accounts.getTo())) {
                 accounts.getTo()
                         .setBalance(accounts.getTo().getBalance().subtract(amount.multiply(BigDecimal.valueOf(rate))));
+            }
+        } else {
+            if (!isNull(accounts.getFrom())) {
+                accounts.getFrom().setBalance(accounts.getFrom().getBalance().subtract(amount));
+                accountRepo.save(accounts.getFrom());
+            }
+
+            if (!isNull(accounts.getTo())) {
+                accounts.getTo()
+                        .setBalance(accounts.getTo().getBalance().add(amount.multiply(BigDecimal.valueOf(rate))));
+                accountRepo.save(accounts.getTo());
             }
         }
 
