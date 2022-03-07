@@ -2,7 +2,24 @@ package com.budgetmanagementapp.service.impl;
 
 import static com.budgetmanagementapp.mapper.AccountMapper.ACCOUNT_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.CASH_ACCOUNT;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_BY_ID_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_BY_NAME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_TYPE_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ACCOUNT_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ALLOW_NEGATIVE_TOGGLED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_ACCOUNTS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_ACCOUNT_TYPES_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_CURRENCIES_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.BALANCE_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_BY_NAME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.CURRENCY_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DUPLICATE_ACCOUNT_NAME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INITIAL_ACCOUNT_EXISTING_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.NEGATIVE_BALANCE_NOT_ALLOWED;
+import static com.budgetmanagementapp.utility.MsgConstant.SHOW_IN_SUM_TOGGLED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_ACCOUNT_MSG;
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
 
@@ -14,7 +31,7 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
-import com.budgetmanagementapp.exception.NotEnoughBalanceException;
+import com.budgetmanagementapp.exception.InsufficientBalanceException;
 import com.budgetmanagementapp.model.UpdateBalancesModel;
 import com.budgetmanagementapp.model.account.AccountRqModel;
 import com.budgetmanagementapp.model.account.AccountRsModel;
@@ -129,11 +146,13 @@ public class AccountServiceImpl implements AccountService {
             if (!isNull(accounts.getFrom())) {
                 accounts.getFrom()
                         .setBalance(accounts.getFrom().getBalance().add(amount));
+                accountRepo.save(accounts.getFrom());
             }
 
             if (!isNull(accounts.getTo())) {
                 accounts.getTo()
                         .setBalance(accounts.getTo().getBalance().subtract(amount.multiply(BigDecimal.valueOf(rate))));
+                accountRepo.save(accounts.getTo());
             }
         } else {
             if (!isNull(accounts.getFrom())) {
@@ -242,13 +261,13 @@ public class AccountServiceImpl implements AccountService {
 
     private void checkNegativeBalance(Account account) {
         if (account.getBalance().compareTo(BigDecimal.ZERO) < 0) {
-            throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getAccountId()));
+            throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getAccountId()));
         }
     }
 
     private void checkNegativeBalance(UpdateBalanceRqModel requestBody, Account account) {
         if (requestBody.getBalance().compareTo(BigDecimal.ZERO) < 0 && !account.isAllowNegative()) {
-            throw new NotEnoughBalanceException(format(NEGATIVE_BALANCE_NOT_ALLOWED, account.getAccountId()));
+            throw new InsufficientBalanceException(format(NEGATIVE_BALANCE_NOT_ALLOWED, account.getAccountId()));
         }
     }
 }

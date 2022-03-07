@@ -161,7 +161,7 @@ public class TransactionController {
     @GetMapping
     public ResponseEntity<ResponseModel<List<TransactionRsModel>>> getAllTransactions(
             @ApiIgnore Authentication auth,
-            @ApiParam(name = REQUEST_PARAM_ACCOUNT_ID, type = "string", example = "500de72f-7e...", required = true)
+            @ApiParam(name = REQUEST_PARAM_ACCOUNT_ID, type = "string", example = "500de72f-7e...")
             @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) Optional<String> accountId) {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL, accountId);

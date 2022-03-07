@@ -2,7 +2,24 @@ package com.budgetmanagementapp.service.impl;
 
 import static com.budgetmanagementapp.mapper.TransactionMapper.TRANSACTION_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.ACCOUNT_ALL;
-import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.DELETED_TRANSACTIONS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_BY_MONTHS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_BY_WEEKS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTIONS_BETWEEN_TIME_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTIONS_USER_IDS;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_BY_ID_USER;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -25,7 +42,7 @@ import com.budgetmanagementapp.entity.Label;
 import com.budgetmanagementapp.entity.Transaction;
 import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DataNotFoundException;
-import com.budgetmanagementapp.exception.NotEnoughBalanceException;
+import com.budgetmanagementapp.exception.InsufficientBalanceException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
 import com.budgetmanagementapp.model.UpdateBalancesModel;
 import com.budgetmanagementapp.model.transaction.AmountListRsModel;
@@ -160,16 +177,15 @@ public class TransactionServiceImpl implements TransactionService {
                 categoryService.byIdAndTypeAndUser(requestBody.getCategoryId(), valueOf(transaction.getType()), user);
         List<Label> labels =
                 labelService.allByIdsAndTypeAndUser(requestBody.getLabelIds(), transaction.getType(), user);
-        BigDecimal oldAmount = transaction.getAmount();
 
-        checkBalanceToUpdateInOut(requestBody, transaction, account, oldAmount);
+        checkBalanceToUpdateInOut(requestBody, transaction, account, transaction.getAmount());
 
         UpdateBalancesModel currentAccounts =
                 UpdateBalancesModel.builder()
                         .from(transaction.getSenderAccount())
                         .to(transaction.getReceiverAccount())
                         .build();
-        accountService.updateBalance(oldAmount, 1.0, currentAccounts, true);
+        accountService.updateBalance(transaction.getAmount(), 1.0, currentAccounts, true);
 
         Map<TransactionType, Account> accountMap = getAccountByTransactionType(transaction, account);
         UpdateBalancesModel updatedAccounts = UpdateBalancesModel.builder()
@@ -197,21 +213,20 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionByIdAndUser(transactionId, user);
         Account senderAccount = accountService.byIdAndUser(requestBody.getSenderAccountId(), user);
         Account receiverAccount = accountService.byIdAndUser(requestBody.getReceiverAccountId(), user);
-        BigDecimal oldAmount = transaction.getAmount();
         Double oldRate = transaction.getRate();
 
-        checkBalanceToUpdateTransfer(requestBody, transaction, senderAccount, oldAmount);
+        checkBalanceToUpdateTransfer(requestBody, transaction, senderAccount);
 
         UpdateBalancesModel currentAccounts = UpdateBalancesModel.builder()
                 .from(transaction.getSenderAccount()).to(transaction.getReceiverAccount()).build();
+        accountService.updateBalance(transaction.getAmount(), oldRate, currentAccounts, true);
+
         UpdateBalancesModel updatedAccounts =
                 UpdateBalancesModel.builder().from(senderAccount).to(receiverAccount).build();
+        accountService.updateBalance(requestBody.getAmount(), requestBody.getRate(), updatedAccounts, false);
 
         Transaction updatedTransaction =
                 updateTransactionValues(requestBody, transaction, senderAccount, receiverAccount);
-
-        accountService.updateBalance(oldAmount, oldRate, currentAccounts, true);
-        accountService.updateBalance(requestBody.getAmount(), requestBody.getRate(), updatedAccounts, false);
 
         TransferRsModel transferRsModel = TRANSACTION_MAPPER_INSTANCE.buildTransferResponseModel(updatedTransaction);
         log.info(TRANSFER_TRANSACTION_UPDATED_MSG, user.getUsername(), transferRsModel);
@@ -400,8 +415,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     private TreeMap<LocalDate, Double> getTransactionSumsByWeeks(Map<String, List<Transaction>> transactionGroups,
-                                                                 TransactionType income) {
-        return transactionGroups.get(income.name()).stream()
+                                                                 TransactionType type) {
+        return transactionGroups.get(type.name()).stream()
                 .collect(groupingBy(t -> LocalDate.from(t.getDateTime()),
                         TreeMap::new,
                         summingDouble(t -> t.getAmount().doubleValue())));
@@ -476,18 +491,14 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionRepo.save(transaction);
     }
 
-    private Transaction updateTransactionValues(DebtRqModel requestBody,
-                                                Account account,
-                                                Transaction transaction) {
+    private Transaction updateTransactionValues(DebtRqModel requestBody, Account account, Transaction transaction) {
+        Map<TransactionType, Account> accountMap = getAccountByTransactionType(transaction, account);
+
         transaction.setDateTime(CustomFormatter.stringToLocalDateTime(requestBody.getDateTime()));
         transaction.setAmount(requestBody.getAmount());
         transaction.setDescription(requestBody.getDescription());
-
-        if (transaction.getType().equals(DEBT_IN.name())) {
-            transaction.setReceiverAccount(account);
-        } else {
-            transaction.setSenderAccount(account);
-        }
+        transaction.setReceiverAccount(accountMap.get(DEBT_IN));
+        transaction.setSenderAccount(accountMap.get(DEBT_OUT));
 
         return transactionRepo.save(transaction);
     }
@@ -523,58 +534,63 @@ public class TransactionServiceImpl implements TransactionService {
         if ((type.equals(DEBT_OUT) || type.equals(OUTGOING) || type.equals(TRANSFER))
                 && !account.isAllowNegative()
                 && account.getBalance().compareTo(amount) < 0) {
-            throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
+            throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
         }
     }
 
     private void checkBalanceToUpdateInOut(InOutRqModel requestBody, Transaction transaction,
                                            Account account, BigDecimal oldAmount) {
+        //TODO CHECK WITH THE SAME ACCOUNT AND BIGGER AMOUNT
         if (transaction.getType().equals(OUTGOING.name())
                 && !account.isAllowNegative()
                 && (account.getBalance().add(oldAmount)).compareTo(requestBody.getAmount()) < 0) {
-            throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
+            throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
         }
     }
 
     private void checkBalanceToUpdateTransfer(TransferRqModel requestBody,
                                               Transaction transaction,
-                                              Account senderAccount,
-                                              BigDecimal oldAmount) {
-        if (requestBody.getSenderAccountId().equals(transaction.getSenderAccount().getAccountId())) {
-            if (!senderAccount.isAllowNegative()
-                    && ((senderAccount.getBalance().add(oldAmount)).compareTo(requestBody.getAmount()) < 0)) {
-                throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
-            }
-        } else if (requestBody.getSenderAccountId().equals(transaction.getReceiverAccount().getAccountId())) {
-            if (!senderAccount.isAllowNegative()
-                    && (senderAccount.getBalance().subtract(oldAmount)).compareTo(requestBody.getAmount()) < 0) {
-                throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
-            }
+                                              Account senderAccount) {
+        if (senderAccount.isAllowNegative()) {
+            return;
+        }
+
+        if (isSenderSame(requestBody.getSenderAccountId(), transaction)
+                && (senderAccount.getBalance().add(transaction.getAmount())).compareTo(requestBody.getAmount()) < 0) {
+            throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
+        } else if (isSenderReceiver(requestBody.getSenderAccountId(), transaction)
+                && senderAccount.getBalance().subtract(transaction.getAmount()).compareTo(requestBody.getAmount()) < 0) {
+            throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
         } else {
-            if (!senderAccount.isAllowNegative()
-                    && senderAccount.getBalance().compareTo(requestBody.getAmount()) < 0) {
-                throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
+            if (senderAccount.getBalance().compareTo(requestBody.getAmount()) < 0) {
+                throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
             }
         }
     }
 
-    private void checkBalanceToUpdateDebt(DebtRqModel requestBody,
-                                          Account account,
-                                          Transaction transaction,
-                                          BigDecimal oldAmount) {
-        if (transaction.getType().equals(DEBT_OUT.name())) {
-            if (requestBody.getAccountId().equals(transaction.getSenderAccount().getAccountId())
-                    && !account.isAllowNegative()
-                    && ((account.getBalance().add(oldAmount)).compareTo(requestBody.getAmount()) < 0)) {
-                throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
-            }
-
-            if (!requestBody.getAccountId().equals(transaction.getSenderAccount().getAccountId())
-                    && !account.isAllowNegative()
-                    && account.getBalance().compareTo(requestBody.getAmount()) < 0) {
-                throw new NotEnoughBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
-            }
+    private void checkBalanceToUpdateDebt(DebtRqModel requestBody, Account account,
+                                          Transaction transaction, BigDecimal oldAmount) {
+        if (account.isAllowNegative() || !transaction.getType().equals(DEBT_OUT.name())) {
+            return;
         }
+
+        if (isSenderSame(requestBody.getAccountId(), transaction)
+                && ((account.getBalance().add(oldAmount)).compareTo(requestBody.getAmount()) < 0)) {
+            throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
+        }
+
+        if (!isSenderSame(requestBody.getAccountId(), transaction)
+                && account.getBalance().compareTo(requestBody.getAmount()) < 0) {
+            throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, account.getName()));
+        }
+    }
+
+    private boolean isSenderSame(String updatedAccountId, Transaction transaction) {
+        return updatedAccountId.equals(transaction.getSenderAccount().getAccountId());
+    }
+
+    private boolean isSenderReceiver(String updatedAccountId, Transaction transaction) {
+        return updatedAccountId.equals(transaction.getReceiverAccount().getAccountId());
     }
 
 
