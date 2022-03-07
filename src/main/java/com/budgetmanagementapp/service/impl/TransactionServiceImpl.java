@@ -44,7 +44,7 @@ import com.budgetmanagementapp.entity.User;
 import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.InsufficientBalanceException;
 import com.budgetmanagementapp.exception.TransferToSelfException;
-import com.budgetmanagementapp.model.UpdateBalancesModel;
+import com.budgetmanagementapp.model.account.UpdateBalancesModel;
 import com.budgetmanagementapp.model.transaction.AmountListRsModel;
 import com.budgetmanagementapp.model.transaction.CategoryAmountListRsModel;
 import com.budgetmanagementapp.model.transaction.DebtRqModel;

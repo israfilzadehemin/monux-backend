@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.transaction;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -13,12 +13,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TransferRsModel extends TransactionRsModel {
-    @ApiModelProperty(name = "receiverAccountId", dataType = "string", required = true)
+    @Schema(required = true)
     String receiverAccountId;
 
-    @ApiModelProperty(name = "senderAccountId", dataType = "string", required = true)
+    @Schema(required = true)
     String senderAccountId;
 
-    @ApiModelProperty(name = "rate", dataType = "double", example = "1.7", required = true)
+    @Schema(example = "1.7", required = true)
     Double rate;
 }

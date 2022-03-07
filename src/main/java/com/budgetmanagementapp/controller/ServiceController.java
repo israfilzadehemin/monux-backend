@@ -6,7 +6,7 @@ import com.budgetmanagementapp.model.service.ServiceRsModel;
 import com.budgetmanagementapp.service.ServiceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -34,7 +34,7 @@ public class ServiceController {
     @ApiOperation("Get all steps")
     @GetMapping
     public ResponseEntity<ResponseModel<List<ServiceRsModel>>> getAllSteps(
-            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
+            @Parameter(example = "en, az, ru")
             @RequestParam(name = "language") String language) {
 
         log.info(REQUEST_MSG, SERVICES_URL, NO_BODY_MSG);
@@ -71,7 +71,6 @@ public class ServiceController {
     @ApiOperation("Delete service")
     @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<ServiceRsModel>> deleteService(
-            @ApiParam(name = "service-id", type = "string", required = true)
             @PathVariable(name = "id") String serviceId) {
 
         log.info(REQUEST_MSG, SERVICES_URL + PATH_ID, serviceId);

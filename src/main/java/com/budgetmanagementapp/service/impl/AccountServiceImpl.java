@@ -32,7 +32,7 @@ import com.budgetmanagementapp.exception.DataNotFoundException;
 import com.budgetmanagementapp.exception.DuplicateException;
 import com.budgetmanagementapp.exception.InitialAccountExistingException;
 import com.budgetmanagementapp.exception.InsufficientBalanceException;
-import com.budgetmanagementapp.model.UpdateBalancesModel;
+import com.budgetmanagementapp.model.account.UpdateBalancesModel;
 import com.budgetmanagementapp.model.account.AccountRqModel;
 import com.budgetmanagementapp.model.account.AccountRsModel;
 import com.budgetmanagementapp.model.account.AccountTypeRsModel;

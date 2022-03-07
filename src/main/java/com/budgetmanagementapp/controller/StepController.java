@@ -6,7 +6,7 @@ import com.budgetmanagementapp.model.step.StepRsModel;
 import com.budgetmanagementapp.service.StepService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class StepController {
     @ApiOperation("Get all steps")
     @GetMapping
     public ResponseEntity<ResponseModel<List<StepRsModel>>> getAllSteps(
-            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
+            @Parameter(example = "en, az, ru")
             @RequestParam(name = "language") String language) {
 
         log.info(REQUEST_MSG, STEPS_URL, NO_BODY_MSG);
@@ -70,7 +70,6 @@ public class StepController {
     @ApiOperation("Delete step")
     @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<StepRsModel>> deleteStep(
-            @ApiParam(name = "step-id", type = "string", required = true)
             @PathVariable(name = "id") String stepId) {
 
         log.info(REQUEST_MSG, STEPS_URL + PATH_ID, stepId);

@@ -6,7 +6,7 @@ import com.budgetmanagementapp.model.definition.DefinitionRsModel;
 import com.budgetmanagementapp.service.DefinitionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -34,7 +34,7 @@ public class DefinitionController {
     @ApiOperation("Get all definitions")
     @GetMapping
     public ResponseEntity<ResponseModel<List<DefinitionRsModel>>> getAllDefinitions(
-            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
+            @Parameter(example = "en, az, ru")
             @RequestParam(name = "language") String language) {
 
         log.info(REQUEST_MSG, DEFINITIONS_URL, NO_BODY_MSG);
@@ -73,7 +73,6 @@ public class DefinitionController {
     @ApiOperation("Delete definition")
     @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<DefinitionRsModel>> deleteDefinition(
-            @ApiParam(name = "definition-id", type = "string", required = true)
             @PathVariable(name = "id") String definitionId) {
 
         log.info(REQUEST_MSG, DEFINITIONS_URL + PATH_ID, definitionId);

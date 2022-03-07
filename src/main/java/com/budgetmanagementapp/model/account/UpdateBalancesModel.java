@@ -1,4 +1,4 @@
-package com.budgetmanagementapp.model;
+package com.budgetmanagementapp.model.account;
 
 import com.budgetmanagementapp.entity.Account;
 import lombok.AccessLevel;

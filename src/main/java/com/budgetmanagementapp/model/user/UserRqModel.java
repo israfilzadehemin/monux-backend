@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.user;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,11 +14,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRqModel {
-    @ApiModelProperty(name = "username", dataType = "string", example = "example@gmail.com")
+    @Schema(example = "example@gmail.com")
     @NotBlank
     String username;
 
-    @ApiModelProperty(name = "fullName", dataType = "string")
     @NotBlank
     String fullName;
 }

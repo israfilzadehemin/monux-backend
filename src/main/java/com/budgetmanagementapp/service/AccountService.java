@@ -2,12 +2,11 @@ package com.budgetmanagementapp.service;
 
 import com.budgetmanagementapp.entity.Account;
 import com.budgetmanagementapp.entity.User;
-import com.budgetmanagementapp.model.UpdateBalancesModel;
+import com.budgetmanagementapp.model.account.UpdateBalancesModel;
 import com.budgetmanagementapp.model.account.*;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 public interface AccountService {
     AccountRsModel createAccount(AccountRqModel createAccountRqModel, boolean isInitialAccount);
