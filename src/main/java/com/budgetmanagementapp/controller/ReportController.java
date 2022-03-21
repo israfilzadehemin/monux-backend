@@ -46,7 +46,7 @@ public class ReportController {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_MONTHS_URL, NO_BODY_MSG);
         var response = ResponseModel.of(
-                transactionService.getLastTransactionsByUserAndDateTimeForMonths(
+                transactionService.getTransactionReportInMonths(
                         ((UserDetails) auth.getPrincipal()).getUsername(), LocalDateTime.now()),
                 OK);
 
@@ -60,7 +60,7 @@ public class ReportController {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_WEEKS_URL, NO_BODY_MSG);
         var response = ResponseModel.of(
-                transactionService.getLastTransactionsByUserAndDateTimeForWeeks(
+                transactionService.getTransactionReportInWeeks(
                         ((UserDetails) auth.getPrincipal()).getUsername(), LocalDateTime.now()), OK);
 
 
@@ -75,7 +75,7 @@ public class ReportController {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTIONS_BY_CATEGORY_URL, requestBody);
         var response = ResponseModel.of(
-                transactionService.transactionsBetweenTimeByCategory(
+                transactionService.getTransactionsInCategoriesByTime(
                         ((UserDetails) auth.getPrincipal()).getUsername(),
                         requestBody.getDateTimeFrom(),
                         requestBody.getDateTimeTo()), OK);

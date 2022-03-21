@@ -35,7 +35,7 @@ public class CustomExceptionHandler {
                 || exception instanceof InvalidEmailException
                 || exception instanceof DuplicateException
                 || exception instanceof TransferToSelfException
-                || exception instanceof NotEnoughBalanceException
+                || exception instanceof InsufficientBalanceException
                 || exception instanceof InvalidPhoneNumberException
                 || exception instanceof ResetPasswordException
                 || exception instanceof TransferRateException

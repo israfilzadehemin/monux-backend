@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.category;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -14,18 +14,12 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CategoryRsModel {
-    @ApiModelProperty(name = "categoryType", dataType = "string")
     String categoryId;
-
-    @ApiModelProperty(name = "icon", dataType = "string")
-    @NotBlank
     String icon;
 
-    @ApiModelProperty(name = "categoryName", dataType = "string", example = "Salary")
-    @NotBlank
+    @Schema(example = "Salary")
     String categoryName;
 
-    @ApiModelProperty(name = "categoryType", dataType = "string", example = "INCOME")
-    @NotBlank
+    @Schema(example = "INCOME")
     String categoryType;
 }

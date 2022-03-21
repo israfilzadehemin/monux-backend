@@ -34,9 +34,9 @@ public interface TransactionService {
 
     List<TransactionRsModel> deleteTransactionById(String username, List<String> transactionIds);
 
-    AmountListRsModel getLastTransactionsByUserAndDateTimeForMonths(String username, LocalDateTime dateTime);
+    AmountListRsModel getTransactionReportInMonths(String username, LocalDateTime dateTime);
 
-    AmountListRsModel getLastTransactionsByUserAndDateTimeForWeeks(String username, LocalDateTime dateTime);
+    AmountListRsModel getTransactionReportInWeeks(String username, LocalDateTime dateTime);
 
-    CategoryAmountListRsModel transactionsBetweenTimeByCategory(String username, String from, String to);
+    CategoryAmountListRsModel getTransactionsInCategoriesByTime(String username, String from, String to);
 }

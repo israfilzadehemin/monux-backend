@@ -1,55 +1,31 @@
 package com.budgetmanagementapp.controller;
 
-import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
-import static com.budgetmanagementapp.utility.UrlConstant.USERS_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_INITIAL_ACCOUNT_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_CREATE_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_FORGET_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_OTP_CONFIRM_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_RESET_PASSWORD_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_SIGNUP_URL;
-import static com.budgetmanagementapp.utility.UrlConstant.USER_UPDATE_LANG_URL;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-
 import com.budgetmanagementapp.model.ResponseModel;
 import com.budgetmanagementapp.model.account.AccountRqModel;
 import com.budgetmanagementapp.model.account.AccountRsModel;
-import com.budgetmanagementapp.model.user.ConfirmOtpRqModel;
-import com.budgetmanagementapp.model.user.ConfirmOtpRsModel;
-import com.budgetmanagementapp.model.user.CreatePasswordRqModel;
-import com.budgetmanagementapp.model.user.CreatePasswordRsModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRqModel;
-import com.budgetmanagementapp.model.user.ResetPasswordRsModel;
-import com.budgetmanagementapp.model.user.UserInfoRsModel;
-import com.budgetmanagementapp.model.user.UserLoginModel;
-import com.budgetmanagementapp.model.user.UserRqModel;
-import com.budgetmanagementapp.model.user.UserRsModel;
+import com.budgetmanagementapp.model.user.*;
 import com.budgetmanagementapp.service.AccountService;
 import com.budgetmanagementapp.service.OtpService;
 import com.budgetmanagementapp.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import javax.mail.MessagingException;
-import javax.validation.Valid;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import javax.mail.MessagingException;
+import javax.validation.Valid;
+
+import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.UrlConstant.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
@@ -100,8 +76,7 @@ public class UserController {
     @ApiOperation("Forgot password of user")
     @PostMapping(USER_FORGET_PASSWORD_URL)
     public ResponseEntity<ResponseModel<UserRsModel>> forgetPassword(
-            @ApiParam(name = "username", type = "string", required = true) @RequestParam String username)
-            throws MessagingException {
+            @RequestParam String username) throws MessagingException {
 
         log.info(REQUEST_MSG, USERS_URL + USER_RESET_PASSWORD_URL, username);
         var response = ResponseModel.of(userService.forgetPassword(username), OK);
@@ -157,7 +132,7 @@ public class UserController {
     @ApiOperation("Update user language")
     @PutMapping(USER_UPDATE_LANG_URL)
     public ResponseEntity<ResponseModel<UserInfoRsModel>> updateUserLanguage(
-            @ApiParam(name = "language", type = "string", example = "az, en, ru", required = true)
+            @Parameter(example = "az, en, ru")
             @RequestParam("language") String language, Authentication auth) {
 
         log.info(REQUEST_MSG, USERS_URL + USER_UPDATE_LANG_URL, NO_BODY_MSG);

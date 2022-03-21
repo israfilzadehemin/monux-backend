@@ -6,7 +6,7 @@ import com.budgetmanagementapp.model.plan.PlanRsModel;
 import com.budgetmanagementapp.service.PlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -34,7 +34,7 @@ public class PlanController {
     @ApiOperation("Get all plans")
     @GetMapping
     public ResponseEntity<ResponseModel<List<PlanRsModel>>> getAllPlans(
-            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
+            @Parameter(example = "en, az, ru")
             @RequestParam(name = "language") String language) {
 
         log.info(REQUEST_MSG, PLANS_URL, NO_BODY_MSG);
@@ -71,7 +71,6 @@ public class PlanController {
     @ApiOperation("Delete plan")
     @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<PlanRsModel>> deletePlan(
-            @ApiParam(name = "plan-id", type = "string", required = true)
             @PathVariable("id") String planId) {
 
         log.info(REQUEST_MSG, PLANS_URL + PATH_ID, planId);

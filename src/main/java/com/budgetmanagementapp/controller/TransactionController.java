@@ -35,10 +35,11 @@ import com.budgetmanagementapp.model.transaction.TransferRsModel;
 import com.budgetmanagementapp.service.TransactionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
+
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -84,7 +85,7 @@ public class TransactionController {
 
     @ApiOperation("Create outgoing transaction")
     @PostMapping(TRANSACTION_OUTGOING_URL)
-    public ResponseEntity<?> createOutgoingTransaction(
+    public ResponseEntity<ResponseModel<TransactionRsModel>> createOutgoingTransaction(
             @RequestBody @Valid InOutRqModel requestBody, @ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTION_OUTGOING_URL, requestBody);
@@ -161,13 +162,13 @@ public class TransactionController {
     @GetMapping
     public ResponseEntity<ResponseModel<List<TransactionRsModel>>> getAllTransactions(
             @ApiIgnore Authentication auth,
-            @ApiParam(name = REQUEST_PARAM_ACCOUNT_ID, type = "string", example = "500de72f-7e...", required = true)
-            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) Optional<String> accountId) {
+            @Parameter(example = "500de72f-7e...")
+            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID, required = false, defaultValue = ACCOUNT_ALL) String accountId) {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL, accountId);
         var response = ResponseModel.of(
                 transactionService.getAllTransactionsByUserAndAccount(
-                        ((UserDetails) auth.getPrincipal()).getUsername(), accountId.orElse(ACCOUNT_ALL)),
+                        ((UserDetails) auth.getPrincipal()).getUsername(), accountId),
                 OK);
 
         log.info(RESPONSE_MSG, TRANSACTIONS_URL, response);
@@ -178,20 +179,16 @@ public class TransactionController {
     @GetMapping(TRANSACTION_GET_LAST_TRANSACTIONS_URL)
     public ResponseEntity<ResponseModel<List<TransactionRsModel>>> getLastTransactions(
             @ApiIgnore Authentication auth,
-            @RequestParam(name = REQUEST_PARAM_TRANSACTION_COUNT) Optional<Integer> transactionCount,
-            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID) Optional<String> accountId,
-            Optional<String> sortBy,
-            Optional<String> sortDirection) {
+            @RequestParam(name = REQUEST_PARAM_TRANSACTION_COUNT, defaultValue = "1", required = false) Integer transactionCount,
+            @RequestParam(name = REQUEST_PARAM_ACCOUNT_ID, defaultValue = ACCOUNT_ALL, required = false) String accountId,
+            @RequestParam(name = "sort-by", defaultValue = SORT_BY_DATETIME, required = false) String sortBy,
+            @RequestParam(name = "sort-direction", defaultValue = SORT_DIR_DESC, required = false) String sortDirection) {
 
         log.info(REQUEST_MSG, TRANSACTIONS_URL + TRANSACTION_GET_LAST_TRANSACTIONS_URL, accountId);
         var response = ResponseModel.of(
                 transactionService.getLastTransactionsByUserAndAccount(
                         ((UserDetails) auth.getPrincipal()).getUsername(),
-                        accountId.orElse(ACCOUNT_ALL),
-                        1,
-                        transactionCount.orElse(1),
-                        sortBy.orElse(SORT_BY_DATETIME),
-                        sortDirection.orElse(SORT_DIR_DESC)), OK);
+                        accountId, 1, transactionCount, sortBy, sortDirection), OK);
 
         log.info(RESPONSE_MSG, TRANSACTIONS_URL + TRANSACTION_GET_LAST_TRANSACTIONS_URL, response);
         return ResponseEntity.ok(response);

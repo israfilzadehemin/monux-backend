@@ -6,7 +6,6 @@ import com.budgetmanagementapp.model.feedback.FeedbackRsModel;
 import com.budgetmanagementapp.service.FeedbackService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -14,11 +13,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
-import springfox.documentation.annotations.ApiIgnore;
 
 import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.UrlConstant.FEEDBACKS_URL;
@@ -67,7 +66,6 @@ public class FeedbackController {
     @ApiOperation("Get feedback by id")
     @GetMapping(PATH_ID)
     public ResponseEntity<ResponseModel<FeedbackRsModel>> getFeedbackById(
-            @ApiParam(name = "id", type = "string", required = true)
             @PathVariable(name = "id") @NotBlank String feedbackId, @ApiIgnore Authentication auth) {
 
         log.info(REQUEST_MSG, FEEDBACKS_URL + PATH_ID, NO_BODY_MSG);

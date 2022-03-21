@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.banner;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -16,37 +16,36 @@ import javax.validation.constraints.Size;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BannerRqModel {
-    @ApiModelProperty(name = "titleAz", dataType = "string", example = "Ana Səhifə", required = true)
+    @Schema(example = "Ana Səhifə", required = true)
     @NotBlank
     String titleAz;
 
-    @ApiModelProperty(name = "titleEn", dataType = "string", example = "Home Page", required = true)
+    @Schema(example = "Home Page", required = true)
     @NotBlank
     String titleEn;
 
-    @ApiModelProperty(name = "titleRu", dataType = "string", example = "Домашняя страница", required = true)
+    @Schema(example = "Домашняя страница", required = true)
     @NotBlank
     String titleRu;
 
-    @ApiModelProperty(name = "textAz", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     @Size(max = 5000)
     String textAz;
 
-    @ApiModelProperty(name = "textEn", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     @Size(max = 5000)
     String textEn;
 
-    @ApiModelProperty(name = "textRu", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     @Size(max = 5000)
     String textRu;
 
-    @ApiModelProperty(name = "image", dataType = "string")
     String image;
 
-    @ApiModelProperty(name = "keyword", dataType = "string", example = "home", required = true)
+    @Schema(example = "home", required = true)
     @NotBlank
     String keyword;
 }

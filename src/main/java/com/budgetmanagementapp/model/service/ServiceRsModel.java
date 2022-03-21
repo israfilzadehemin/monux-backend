@@ -1,10 +1,7 @@
 package com.budgetmanagementapp.model.service;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import javax.validation.constraints.NotBlank;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,23 +11,8 @@ import javax.validation.constraints.NotBlank;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ServiceRsModel {
-    @ApiModelProperty(
-            name = "serviceId",
-            dataType = "string")
     String serviceId;
-
-    @ApiModelProperty(
-            name = "title",
-            dataType = "string")
     Object title;
-
-    @ApiModelProperty(
-            name = "text",
-            dataType = "string")
     Object text;
-
-    @ApiModelProperty(
-            name = "icon",
-            dataType = "string")
     String icon;
 }

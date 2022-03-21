@@ -1,9 +1,6 @@
 package com.budgetmanagementapp.model.account;
 
-import java.math.BigDecimal;
-import javax.validation.constraints.NotNull;
-
-import io.swagger.annotations.ApiModelProperty;
+import com.budgetmanagementapp.entity.Account;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,9 +17,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateBalanceModel {
-
-    @ApiModelProperty(name = "balance", dataType = "bigDecimal", example = "500", required = true)
-    @NotNull
-    BigDecimal balance;
+public class UpdateBalancesModel {
+    Account from;
+    Account to;
 }

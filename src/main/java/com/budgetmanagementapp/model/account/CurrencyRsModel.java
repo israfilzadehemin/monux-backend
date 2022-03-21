@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.account;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,9 +12,8 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CurrencyRsModel {
-    @ApiModelProperty(name = "currencyId", dataType = "string")
     String currencyId;
 
-    @ApiModelProperty(name = "currencyName", dataType = "string", example = "AZN")
+    @Schema(example = "AZN")
     String currencyName;
 }

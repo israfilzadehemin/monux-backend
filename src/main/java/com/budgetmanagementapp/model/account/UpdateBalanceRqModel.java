@@ -4,7 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 @AllArgsConstructor
 @Getter
@@ -13,12 +14,9 @@ import javax.validation.constraints.NotBlank;
 @Builder
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UpdateAccountModel {
-    @Schema(example = "New Account", required = true)
-    @NotBlank
-    String newAccountName;
+public class UpdateBalanceRqModel {
 
-    @Schema(example = "savingAccount", required = true)
-    @NotBlank
-    String accountTypeName;
+    @Schema(example = "500", required = true)
+    @NotNull
+    BigDecimal balance;
 }

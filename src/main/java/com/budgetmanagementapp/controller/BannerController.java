@@ -6,7 +6,7 @@ import com.budgetmanagementapp.model.banner.BannerRsModel;
 import com.budgetmanagementapp.service.BannerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -34,9 +34,8 @@ public class BannerController {
     @ApiOperation("Get banner by id")
     @GetMapping(PATH_ID)
     public ResponseEntity<ResponseModel<BannerRsModel>> getBannerById(
-            @ApiParam(name = "id", type = "string", required = true)
             @PathVariable("id") String bannerId,
-            @ApiParam(name = "language", type = "string", example = "az, en, ru", required = true)
+            @Parameter(example = "az, en, ru")
             @RequestParam("language") String language) {
 
         log.info(REQUEST_MSG, BANNERS_URL + PATH_ID, bannerId);
@@ -49,9 +48,8 @@ public class BannerController {
     @ApiOperation("Get banner by keyword")
     @GetMapping
     public ResponseEntity<ResponseModel<BannerRsModel>> getBannerByKeyword(
-            @ApiParam(name = "keyword", type = "string", required = true)
             @RequestParam("keyword") String keyword,
-            @ApiParam(name = "language", type = "string", example = "az, en, ru", required = true)
+            @Parameter(example = "az, en, ru")
             @RequestParam("language") String language) {
 
         log.info(REQUEST_MSG, BANNERS_URL, keyword);
@@ -87,7 +85,6 @@ public class BannerController {
     @ApiOperation("Delete banner")
     @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<BannerRsModel>> deleteBanner(
-            @ApiParam(name = "banner-id", type = "string", required = true)
             @PathVariable(name = "id") String bannerId) {
 
         log.info(REQUEST_MSG, BANNERS_URL + PATH_ID, bannerId);

@@ -6,7 +6,7 @@ import com.budgetmanagementapp.model.faq.FaqRsModel;
 import com.budgetmanagementapp.service.FaqService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -34,7 +34,7 @@ public class FaqController {
     @ApiOperation("Get all faqs")
     @GetMapping
     public ResponseEntity<ResponseModel<List<FaqRsModel>>> getAllFaqs(
-            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
+            @Parameter(example = "en, az, ru")
             @RequestParam(name = "language") String language) {
 
         log.info(REQUEST_MSG, FAQ_URL, NO_BODY_MSG);
@@ -47,9 +47,9 @@ public class FaqController {
     @ApiOperation("Get faq by id")
     @GetMapping(PATH_ID)
     public ResponseEntity<ResponseModel<FaqRsModel>> getFaqById(
-            @ApiParam(name = "faq-id", type = "string", required = true)
+            @Parameter(name = "faq-id")
             @PathVariable(name = "id") String faqId,
-            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
+            @Parameter(example = "en, az, ru")
             @RequestParam(name = "language") String language) {
 
         log.info(REQUEST_MSG, FAQ_URL + PATH_ID, faqId);
@@ -86,7 +86,6 @@ public class FaqController {
     @ApiOperation("Delete faq")
     @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<FaqRsModel>> deleteFaq(
-            @ApiParam(name = "faq-id", type = "string", required = true)
             @PathVariable("id") String faqId) {
 
         log.info(REQUEST_MSG, FAQ_URL + PATH_ID, faqId);

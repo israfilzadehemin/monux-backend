@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.transaction;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -18,15 +18,14 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TransactionRqModel {
-    @ApiModelProperty(name = "dateTime", dataType = "string", example = "2021-10-23 04:58")
+    @Schema(example = "2021-10-23 04:58")
     @NotBlank
     String dateTime;
 
-    @ApiModelProperty(name = "amount", dataType = "bigDecimal", example = "200")
+    @Schema(example = "200")
     @NotNull
     BigDecimal amount;
 
-    @ApiModelProperty(name = "description", dataType = "string")
     @NotNull
     @Size(max = 5000)
     String description;

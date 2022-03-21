@@ -1,6 +1,5 @@
 package com.budgetmanagementapp.model.transaction;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -17,15 +16,12 @@ import java.util.List;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class InOutRqModel extends TransactionRqModel {
-    @ApiModelProperty(name = "accountId", dataType = "string")
     @NotBlank
     String accountId;
 
-    @ApiModelProperty(name = "categoryId", dataType = "string")
     @NotBlank
     String categoryId;
 
-    @ApiModelProperty(name = "categoryId", dataType = "list of string")
     @NotNull
     List<String> labelIds;
 }

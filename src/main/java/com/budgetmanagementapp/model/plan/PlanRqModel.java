@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.plan;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
@@ -18,40 +18,39 @@ import java.util.List;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanRqModel {
-    @ApiModelProperty(name = "titleAz", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     String titleAz;
 
-    @ApiModelProperty(name = "titleEn", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     String titleEn;
 
-    @ApiModelProperty(name = "titleRu", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     String titleRu;
 
-    @ApiModelProperty(name = "textAz", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     @Size(max = 5000)
     String textAz;
 
-    @ApiModelProperty(name = "textEn", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     @Size(max = 5000)
     String textEn;
 
-    @ApiModelProperty(name = "textRu", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     @Size(max = 5000)
     String textRu;
 
-    @ApiModelProperty(name = "price", dataType = "bigDecimal", example = "30", required = true)
+    @Schema(example = "30", required = true)
     BigDecimal price;
 
-    @ApiModelProperty(name = "periodType", dataType = "string", example = "MONTHLY", required = true)
+    @Schema(example = "MONTHLY", required = true)
     @NotBlank
     String periodType;
 
-    @ApiModelProperty(name = "periodType", dataType = "list of string")
     List<String> featuresIds;
 }

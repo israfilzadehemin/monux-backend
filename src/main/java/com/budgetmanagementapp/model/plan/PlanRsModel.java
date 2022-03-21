@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.plan;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -16,23 +16,21 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class PlanRsModel {
-    @ApiModelProperty(name = "planId", dataType = "string")
     String planId;
 
-    @ApiModelProperty(name = "title", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     Object title;
 
-    @ApiModelProperty(name = "text", dataType = "string", required = true)
+    @Schema(required = true)
     @NotBlank
     Object text;
 
-    @ApiModelProperty(name = "price", dataType = "bigDecimal", example = "30")
+    @Schema(example = "30")
     BigDecimal price;
 
-    @ApiModelProperty(name = "periodType", dataType = "string", example = "MONTHLY")
+    @Schema(example = "MONTHLY")
     String periodType;
 
-    @ApiModelProperty(name = "periodType", dataType = "list of string")
     List<String> featuresIds;
 }

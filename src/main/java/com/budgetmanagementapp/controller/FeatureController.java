@@ -6,7 +6,7 @@ import com.budgetmanagementapp.model.feature.FeatureRsModel;
 import com.budgetmanagementapp.service.FeatureService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
@@ -34,7 +34,7 @@ public class FeatureController {
     @ApiOperation("Get all features")
     @GetMapping
     public ResponseEntity<ResponseModel<List<FeatureRsModel>>> getAllFeatures(
-            @ApiParam(name = "language", type = "string", example = "en, az, ru", required = true)
+            @Parameter(example = "en, az, ru")
             @RequestParam(name = "language") String language) {
 
         log.info(REQUEST_MSG, FEATURES_URL, NO_BODY_MSG);
@@ -71,7 +71,6 @@ public class FeatureController {
     @ApiOperation("Delete feature")
     @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<FeatureRsModel>> deleteFeature(
-            @ApiParam(name = "feature-id", type = "string", required = true)
             @PathVariable(name = "id") String featureId) {
 
         log.info(RESPONSE_MSG, FEATURES_URL + PATH_ID, featureId);

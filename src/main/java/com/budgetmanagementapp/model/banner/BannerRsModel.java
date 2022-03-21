@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.banner;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,30 +12,15 @@ import lombok.experimental.FieldDefaults;
 @ToString
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class BannerRsModel {
-    @ApiModelProperty(
-            name = "bannerId",
-            dataType = "string")
     String bannerId;
 
-    @ApiModelProperty(
-            name = "title",
-            dataType = "string",
-            example = "Home Page")
+    @Schema(example = "Home Page")
     Object title;
 
-    @ApiModelProperty(
-            name = "text",
-            dataType = "string")
     Object text;
 
-    @ApiModelProperty(
-            name = "image",
-            dataType = "string")
     String image;
 
-    @ApiModelProperty(
-            name = "keyword",
-            dataType = "string",
-            example = "home")
+    @Schema(example = "home")
     String keyword;
 }

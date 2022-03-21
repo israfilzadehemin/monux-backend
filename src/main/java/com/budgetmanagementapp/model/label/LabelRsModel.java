@@ -1,6 +1,6 @@
 package com.budgetmanagementapp.model.label;
 
-import io.swagger.annotations.ApiModelProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -12,15 +12,14 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class LabelRsModel {
-    @ApiModelProperty(name = "labelId", dataType = "string")
     String labelId;
 
-    @ApiModelProperty(name = "labelName", dataType = "string", example = "food")
+    @Schema(example = "food")
     String labelName;
 
-    @ApiModelProperty(name = "labelCategory", dataType = "string", example = "income")
+    @Schema(example = "income")
     String labelCategory;
 
-    @ApiModelProperty(name = "visibility", dataType = "boolean", example = "true")
+    @Schema(example = "true")
     boolean visibility;
 }
