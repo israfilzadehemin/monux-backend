@@ -84,7 +84,7 @@ public class CustomExceptionHandler {
     }
 
     private ResponseEntity<?> handleException(Exception exception, int code) {
-        log.error(exception.getMessage());
+        log.error(exception);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ResponseModel.builder()
                         .status(HttpStatus.BAD_REQUEST)
