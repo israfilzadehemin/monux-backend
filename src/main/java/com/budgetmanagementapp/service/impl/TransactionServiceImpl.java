@@ -2,24 +2,7 @@ package com.budgetmanagementapp.service.impl;
 
 import static com.budgetmanagementapp.mapper.TransactionMapper.TRANSACTION_MAPPER_INSTANCE;
 import static com.budgetmanagementapp.utility.Constant.ACCOUNT_ALL;
-import static com.budgetmanagementapp.utility.MsgConstant.ALL_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DEBT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.DELETED_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.INSUFFICIENT_BALANCE_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.IN_OUT_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_BY_MONTHS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_BY_WEEKS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.LAST_TRANSACTIONS_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTIONS_BETWEEN_TIME_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTIONS_USER_IDS;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_BY_ID_USER;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSACTION_NOT_FOUND_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TO_SELF_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_CREATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.TRANSFER_TRANSACTION_UPDATED_MSG;
-import static com.budgetmanagementapp.utility.MsgConstant.UNAUTHORIZED_TRANSACTION_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.*;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_IN;
 import static com.budgetmanagementapp.utility.TransactionType.DEBT_OUT;
 import static com.budgetmanagementapp.utility.TransactionType.INCOME;
@@ -69,6 +52,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -416,7 +400,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TreeMap<LocalDate, Double> getTransactionSumsByWeeks(Map<String, List<Transaction>> transactionGroups,
                                                                  TransactionType type) {
-        return transactionGroups.get(type.name()).stream()
+        return transactionGroups.getOrDefault(type.name(), Collections.emptyList()).stream()
                 .collect(groupingBy(t -> LocalDate.from(t.getDateTime()),
                         TreeMap::new,
                         summingDouble(t -> t.getAmount().doubleValue())));
@@ -435,14 +419,13 @@ public class TransactionServiceImpl implements TransactionService {
                 CustomFormatter.stringToLocalDateTime(from), CustomFormatter.stringToLocalDateTime(to));
 
         var transactionGroups = groupTransactions(transactions);
-
-        var income = transactionGroups.get(INCOME.name())
+        var income = transactionGroups.getOrDefault(INCOME.name(), Collections.emptyList())
                 .stream()
                 .collect(
                         groupingBy(t -> t.getCategory().getName(),
                                 reducing(BigDecimal.ZERO, Transaction::getAmount, BigDecimal::add)));
 
-        var outgoing = transactionGroups.get(OUTGOING.name())
+        var outgoing = transactionGroups.getOrDefault(OUTGOING.name(), Collections.emptyList())
                 .stream()
                 .collect(
                         groupingBy(t -> t.getCategory().getName(),
@@ -559,7 +542,8 @@ public class TransactionServiceImpl implements TransactionService {
                 && (senderAccount.getBalance().add(transaction.getAmount())).compareTo(requestBody.getAmount()) < 0) {
             throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
         } else if (isSenderReceiver(requestBody.getSenderAccountId(), transaction)
-                && senderAccount.getBalance().subtract(transaction.getAmount()).compareTo(requestBody.getAmount()) < 0) {
+                &&
+                senderAccount.getBalance().subtract(transaction.getAmount()).compareTo(requestBody.getAmount()) < 0) {
             throw new InsufficientBalanceException(format(INSUFFICIENT_BALANCE_MSG, senderAccount.getName()));
         } else {
             if (senderAccount.getBalance().compareTo(requestBody.getAmount()) < 0) {
@@ -596,7 +580,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TreeMap<YearMonth, Double> getTransactionSumsByMonths(Map<String, List<Transaction>> transactionGroups,
                                                                   TransactionType type) {
-        return transactionGroups.get(type.name())
+        return transactionGroups.getOrDefault(type.name(), Collections.emptyList())
                 .stream()
                 .collect(groupingBy(t -> YearMonth.from(t.getDateTime()),
                         TreeMap::new,
