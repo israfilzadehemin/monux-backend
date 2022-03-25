@@ -1,37 +1,45 @@
 package com.budgetmanagementapp.controller;
 
-import com.budgetmanagementapp.model.ResponseModel;
-import com.budgetmanagementapp.model.plan.PlanRqModel;
-import com.budgetmanagementapp.model.plan.PlanRsModel;
-import com.budgetmanagementapp.service.PlanService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.Parameter;
-import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
-
-import static com.budgetmanagementapp.utility.MsgConstant.*;
+import static com.budgetmanagementapp.utility.MsgConstant.NO_BODY_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.REQUEST_MSG;
+import static com.budgetmanagementapp.utility.MsgConstant.RESPONSE_MSG;
 import static com.budgetmanagementapp.utility.UrlConstant.PATH_ID;
 import static com.budgetmanagementapp.utility.UrlConstant.PLANS_URL;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
+import com.budgetmanagementapp.model.ResponseModel;
+import com.budgetmanagementapp.model.plan.PlanRqModel;
+import com.budgetmanagementapp.model.plan.PlanRsModel;
+import com.budgetmanagementapp.service.PlanService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
+import javax.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 @Log4j2
 @AllArgsConstructor
 @RestController
-@Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Plan")
+@Tag(name = "Plan", description = "Plan operations")
 @RequestMapping(PLANS_URL)
 public class PlanController {
 
     private final PlanService planService;
 
-    @ApiOperation("Get all plans")
+    @Operation(description = "Get all plans")
     @GetMapping
     public ResponseEntity<ResponseModel<List<PlanRsModel>>> getAllPlans(
             @Parameter(example = "en, az, ru")
@@ -44,7 +52,7 @@ public class PlanController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Add plan")
+    @Operation(description = "Add plan")
     @PostMapping
     public ResponseEntity<ResponseModel<PlanRsModel>> addPlan(@RequestBody @Valid PlanRqModel request) {
 
@@ -55,7 +63,7 @@ public class PlanController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Update plan")
+    @Operation(description = "Update plan")
     @PutMapping(PATH_ID)
     public ResponseEntity<ResponseModel<PlanRsModel>> updatePlan(
             @RequestBody @Valid PlanRqModel request,
@@ -68,7 +76,7 @@ public class PlanController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Delete plan")
+    @Operation(description = "Delete plan")
     @DeleteMapping(PATH_ID)
     public ResponseEntity<ResponseModel<PlanRsModel>> deletePlan(
             @PathVariable("id") String planId) {

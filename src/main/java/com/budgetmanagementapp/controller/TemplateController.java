@@ -30,13 +30,13 @@ import com.budgetmanagementapp.model.transaction.TransactionRsModel;
 import com.budgetmanagementapp.model.transaction.TransferRqModel;
 import com.budgetmanagementapp.model.transaction.TransferRsModel;
 import com.budgetmanagementapp.service.TemplateService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import javax.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -48,21 +48,20 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import springfox.documentation.annotations.ApiIgnore;
 
 @RestController
 @AllArgsConstructor
 @Log4j2
-@Api(produces = MediaType.APPLICATION_JSON_VALUE, tags = "Template")
+@Tag(name = "Template", description = "Template operations")
 @RequestMapping(TEMPLATES_URL)
 public class TemplateController {
 
     private final TemplateService templateService;
 
-    @ApiOperation("Create income template")
+    @Operation(description = "Create income template")
     @PostMapping(TEMPLATE_INCOME_URL)
     public ResponseEntity<ResponseModel<TransactionRsModel>> createIncomeTemplate(
-            @RequestBody @Valid InOutRqModel requestBody, @ApiIgnore Authentication auth) {
+            @RequestBody @Valid InOutRqModel requestBody, @Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL + TEMPLATE_INCOME_URL, requestBody);
         var response = ResponseModel.of(
@@ -74,10 +73,10 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Create outgoing template")
+    @Operation(description = "Create outgoing template")
     @PostMapping(TEMPLATE_OUTGOING_URL)
     public ResponseEntity<ResponseModel<TransactionRsModel>> createOutgoingTemplate(
-            @RequestBody @Valid InOutRqModel requestBody, @ApiIgnore Authentication auth) {
+            @RequestBody @Valid InOutRqModel requestBody, @Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL + TEMPLATE_OUTGOING_URL, requestBody);
         var response = ResponseModel.of(
@@ -89,10 +88,10 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Create transfer template")
+    @Operation(description = "Create transfer template")
     @PostMapping(TEMPLATE_TRANSFER_URL)
     public ResponseEntity<ResponseModel<TransferRsModel>> createTransferTemplate(
-            @RequestBody @Valid TransferRqModel requestBody, @ApiIgnore Authentication auth) {
+            @RequestBody @Valid TransferRqModel requestBody, @Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL + TEMPLATE_TRANSFER_URL, requestBody);
         var response = ResponseModel.of(
@@ -104,10 +103,10 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Create debt in template")
+    @Operation(description = "Create debt in template")
     @PostMapping(TEMPLATE_DEBT_IN_URL)
     public ResponseEntity<ResponseModel<DebtRsModel>> createDebtInTemplate(
-            @RequestBody @Valid DebtRqModel requestBody, @ApiIgnore Authentication auth) {
+            @RequestBody @Valid DebtRqModel requestBody, @Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL + TEMPLATE_DEBT_IN_URL, requestBody);
         var response = ResponseModel.of(
@@ -120,10 +119,10 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Create debt out template")
+    @Operation(description = "Create debt out template")
     @PostMapping(TEMPLATE_DEBT_OUT_URL)
     public ResponseEntity<ResponseModel<DebtRsModel>> createDebtOutTemplate(
-            @RequestBody @Valid DebtRqModel requestBody, @ApiIgnore Authentication auth) {
+            @RequestBody @Valid DebtRqModel requestBody, @Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL + TEMPLATE_DEBT_OUT_URL, requestBody);
         var response = ResponseModel.of(
@@ -135,9 +134,9 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Get all templates")
+    @Operation(description = "Get all templates")
     @GetMapping
-    public ResponseEntity<ResponseModel<List<TransactionRsModel>>> getAllTemplates(@ApiIgnore Authentication auth) {
+    public ResponseEntity<ResponseModel<List<TransactionRsModel>>> getAllTemplates(@Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL, NO_BODY_MSG);
         var response = ResponseModel.of(
@@ -148,10 +147,10 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Update income and outgoing templates")
+    @Operation(description = "Update income and outgoing templates")
     @PutMapping(TEMPLATE_BY_ID_IN_OUT_URL)
     public ResponseEntity<ResponseModel<InOutRsModel>> updateInOutTemplate(
-            @RequestBody @Valid InOutRqModel requestBody, @ApiIgnore Authentication auth,
+            @RequestBody @Valid InOutRqModel requestBody, @Parameter(hidden = true) Authentication auth,
             @PathVariable("id") String templateId) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL + TEMPLATE_BY_ID_IN_OUT_URL, requestBody);
@@ -163,11 +162,11 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Update transfer template")
+    @Operation(description = "Update transfer template")
     @PutMapping(TEMPLATE_BY_ID_TRANSFER_URL)
     public ResponseEntity<ResponseModel<TransferRsModel>> updateTransferTemplate(
             @RequestBody @Valid TransferRqModel requestBody,
-            @PathVariable("id") String templateId, @ApiIgnore Authentication auth) {
+            @PathVariable("id") String templateId, @Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL + TEMPLATE_BY_ID_TRANSFER_URL, requestBody);
         var response = ResponseModel.of(
@@ -178,11 +177,11 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Update debt in and out template")
+    @Operation(description = "Update debt in and out template")
     @PutMapping(TEMPLATE_BY_ID_DEBT_URL)
     public ResponseEntity<ResponseModel<DebtRsModel>> updateDebtTemplate(
             @RequestBody @Valid DebtRqModel requestBody,
-            @PathVariable("id") String templateId, @ApiIgnore Authentication auth) {
+            @PathVariable("id") String templateId, @Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL + TEMPLATE_BY_ID_DEBT_URL, requestBody);
         var response = ResponseModel.of(
@@ -193,10 +192,10 @@ public class TemplateController {
         return ResponseEntity.ok(response);
     }
 
-    @ApiOperation("Delete template")
+    @Operation(description = "Delete template")
     @DeleteMapping
     public ResponseEntity<ResponseModel<List<TransactionRsModel>>> deleteTemplateTransactions(
-            @RequestBody @Valid DeleteTransactionRqModel requestBody, @ApiIgnore Authentication auth) {
+            @RequestBody @Valid DeleteTransactionRqModel requestBody, @Parameter(hidden = true) Authentication auth) {
 
         log.info(REQUEST_MSG, TEMPLATES_URL, requestBody);
         var response = ResponseModel.of(
