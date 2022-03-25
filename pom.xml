@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.1.RELEASE</version>
+        <version>2.6.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com</groupId>
@@ -36,10 +36,17 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-
+        <!-- Spring Boot Mail -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <!-- JavaX Validation -->
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
         </dependency>
 
         <!--Lombok-->
@@ -69,7 +76,6 @@
             <version>42.3.2</version>
         </dependency>
 
-
         <!--Spring Boot Test-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -91,11 +97,11 @@
             <version>4.5.0</version>
         </dependency>
 
-        <!-- Swagger -->
+        <!-- SpringDoc [Swagger] -->
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.6</version>
         </dependency>
 
         <!-- Apache commons -->
