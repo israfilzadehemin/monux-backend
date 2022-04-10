@@ -24,7 +24,9 @@ public interface UserService {
 
     UserInfoRsModel getUserInfo(String username);
 
-    UserInfoRsModel updateUserInfo(String username, UserRqModel userRqModel);
+    UserInfoRsModel updateUserInfo(String username, UserRqModel requestBody);
+
+    UserInfoRsModel updateUserPass(String username, UpdateUserPassRqModel requestBody);
 
     UserInfoRsModel updateUserLanguage(String username, String language);
 

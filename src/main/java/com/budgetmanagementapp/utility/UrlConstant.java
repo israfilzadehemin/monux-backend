@@ -11,6 +11,7 @@ public class UrlConstant {
     public static final String USER_RESET_PASSWORD_URL = "/reset-password";
     public static final String USER_CREATE_INITIAL_ACCOUNT_URL = "/create-initial-account";
     public static final String USER_UPDATE_LANG_URL = "/update-language";
+    public static final String USER_UPDATE_PASS_URL = "/update-password";
     public static final String USER_LOGIN_URL = "/v1/users/login";
     public static final String ACCOUNTS_URL = "/v1/accounts";
     public static final String ACCOUNT_UPDATE_BALANCE_URL = "/{id}/update-balance";
