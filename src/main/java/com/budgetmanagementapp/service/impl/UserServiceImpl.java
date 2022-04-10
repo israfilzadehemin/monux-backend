@@ -141,15 +141,30 @@ public class UserServiceImpl implements UserService {
         CustomValidator.validateUsername(userRqModel.getUsername());
         CustomValidator.validateFullName(userRqModel.getFullName());
 
-        User user = findByUsername(username);
+        var user = findByUsername(username);
         user.setUsername(userRqModel.getUsername());
         user.setFullName(userRqModel.getFullName());
 
         userRepo.save(user);
-        var userInfoRsModel = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
+        var response = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
 
-        log.info(USER_UPDATE_INFO_MSG, userInfoRsModel);
-        return userInfoRsModel;
+        log.info(USER_UPDATE_INFO_MSG, response);
+        return response;
+    }
+
+    @Override
+    public UserInfoRsModel updateUserPass(String username, UpdateUserPassRqModel requestBody) {
+        var user = findByUsername(username);
+        checkPasswordDuplication(user.getPassword(), requestBody.getPassword());
+        checkPasswordEquality(requestBody.getPassword(), requestBody.getConfirmPassword());
+
+        user.setPassword(encoder.encode(requestBody.getPassword()));
+        userRepo.save(user);
+
+        var response = USER_MAPPER_INSTANCE.buildUserInfoResponseModel(user);
+
+        log.info(USER_UPDATE_INFO_MSG, response);
+        return response;
     }
 
     @Override
